@@ -31,3 +31,11 @@ Builds the app for production to the `build` folder.
 
 Runs the built app in the production mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+
+### `yarn test`
+
+Launches the test runner in the interactive watch mode.
+
+### `yarn test:coverage`
+
+Run tests and generate coverage report
