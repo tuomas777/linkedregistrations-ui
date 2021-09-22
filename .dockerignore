@@ -1,0 +1,9 @@
+*
+!.env
+!public
+!src
+!next-i18next.config.js
+!next.config.js
+!package.json
+!tsconfig.json
+!yarn.lock
