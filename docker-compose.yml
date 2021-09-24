@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: linkedregistrations-ui
+    build:
+      context: .
+      target: ${DOCKER_TARGET:-production}
+    ports:
+      - '${PORT}:${PORT}'
