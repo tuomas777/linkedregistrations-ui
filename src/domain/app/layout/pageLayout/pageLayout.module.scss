@@ -1,0 +1,24 @@
+.pageLayout {
+  --background-color-body: var(--color-white);
+
+  min-height: 100vh;
+  width: 100%;
+
+  display: grid;
+
+  grid-template-rows: 1fr;
+}
+
+.pageBody {
+  display: grid;
+  background-color: var(--background-color-body);
+  padding: var(--padding-body);
+
+  h1 {
+    font-size: var(--fontsize-heading-l);
+  }
+
+  h2 {
+    font-size: var(--fontsize-heading-m);
+  }
+}
