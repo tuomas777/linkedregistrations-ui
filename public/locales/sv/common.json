@@ -12,7 +12,9 @@
   "validation": {
     "string": {
       "charsLeft": "{{count}} tecken kvar",
-      "charsLeft_plural": "{{count}} tecken kvar"
+      "charsLeft_plural": "{{count}} tecken kvar",
+      "email": "Detta fält måste vara en giltig e-postmeddelande",
+      "required": "Detta fält krävs"
     }
   }
 }

@@ -1,4 +1,5 @@
 {
+  "buttonSend": "Lähetä ilmoittautuminen",
   "labelCity": "Kaupunki",
   "labelEmail": "Sähköpostiosoite",
   "labelExtraInfo": "Lisätietoa ilmoittautumisesta (valinnainen)",

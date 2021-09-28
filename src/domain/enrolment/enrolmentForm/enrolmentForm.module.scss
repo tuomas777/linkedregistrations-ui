@@ -1,4 +1,5 @@
 @import '../../../styles/breakpoints.scss';
+@import '../../../styles/widths.scss';
 
 .streetAddressRow {
   display: grid;
@@ -29,4 +30,13 @@
   @include medium-up {
     grid-template-columns: 3fr 3fr;
   }
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  @include min-width-column(2);
 }

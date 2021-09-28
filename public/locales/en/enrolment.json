@@ -1,4 +1,5 @@
 {
+  "buttonSend": "Submit registration",
   "labelCity": "City",
   "labelEmail": "Email address",
   "labelExtraInfo": "Additional registration information (optional)",

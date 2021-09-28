@@ -17,7 +17,7 @@ $widths: (
   // If the column count exists in the map.
   @if map-has-key($widths, $column) {
     // Get the minimum width.
-    min-width: map-get($widths, $column);
+    min-width: map-get($widths, $column) !important;
 
     // If the column count doesn't exist in the map.
   } @else {
@@ -30,7 +30,7 @@ $widths: (
   // If the column count exists in the map.
   @if map-has-key($widths, $column) {
     // Get the maximum width.
-    max-width: map-get($widths, $column);
+    max-width: map-get($widths, $column) !important;
 
     // If the column count doesn't exist in the map.
   } @else {

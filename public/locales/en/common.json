@@ -12,7 +12,9 @@
   "validation": {
     "string": {
       "charsLeft": "{{count}} character left",
-      "charsLeft_plural": "{{count}} characters left"
+      "charsLeft_plural": "{{count}} characters left",
+      "email": "This field must be a valid email",
+      "required": "This field is required"
     }
   }
 }

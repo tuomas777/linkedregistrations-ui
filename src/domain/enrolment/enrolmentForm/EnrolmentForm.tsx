@@ -1,7 +1,9 @@
-import { Field, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { ValidationError } from 'yup';
 
+import Button from '../../../common/components/button/Button';
 import PhoneInputField from '../../../common/components/formFields/PhoneInputField';
 import SingleSelectField from '../../../common/components/formFields/SingleSelectField';
 import TextAreaField from '../../../common/components/formFields/TextAreaField';
@@ -9,6 +11,7 @@ import TextInputField from '../../../common/components/formFields/TextInputField
 import FormGroup from '../../../common/components/formGroup/FormGroup';
 import { ENROLMENT_FIELDS, ENROLMENT_INITIAL_VALUES } from '../constants';
 import useYearOptions from '../hooks/useYearOptions';
+import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import styles from './enrolmentForm.module.scss';
 
 const EnrolmentForm: React.FC = () => {
@@ -19,10 +22,30 @@ const EnrolmentForm: React.FC = () => {
     <Formik
       initialValues={ENROLMENT_INITIAL_VALUES}
       onSubmit={/* istanbul ignore next */ () => undefined}
+      validationSchema={enrolmentSchema}
     >
-      {() => {
+      {({ setErrors, setTouched, values }) => {
+        const clearErrors = () => setErrors({});
+
+        const handleSubmit = async () => {
+          try {
+            clearErrors();
+
+            await enrolmentSchema.validate(values, {
+              abortEarly: false,
+            });
+          } catch (error) {
+            showErrors({
+              error: error as ValidationError,
+              setErrors,
+              setTouched,
+            });
+
+            scrollToFirstError({ error: error as ValidationError });
+          }
+        };
         return (
-          <>
+          <Form noValidate>
             <h3>{t(`titleBasicInfo`)}</h3>
             <FormGroup>
               <Field
@@ -110,7 +133,12 @@ const EnrolmentForm: React.FC = () => {
                 placeholder={t(`placeholderExtraInfo`)}
               />
             </FormGroup>
-          </>
+            <div className={styles.buttonWrapper}>
+              <Button className={styles.button} onClick={handleSubmit}>
+                {t('buttonSend')}
+              </Button>
+            </div>
+          </Form>
         );
       }}
     </Formik>

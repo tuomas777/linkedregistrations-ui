@@ -12,7 +12,9 @@
   "validation": {
     "string": {
       "charsLeft": "{{count}} merkki jäljellä",
-      "charsLeft_plural": "{{count}} merkkiä jäljellä"
+      "charsLeft_plural": "{{count}} merkkiä jäljellä",
+      "email": "Tämän kentän on oltava kelvollinen sähköpostiosoite",
+      "required": "Tämä kenttä on pakollinen"
     }
   }
 }
