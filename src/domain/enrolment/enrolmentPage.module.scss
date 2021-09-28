@@ -1,0 +1,10 @@
+@import '../../styles//widths.scss';
+
+.formContainer {
+  @include max-width-column(6);
+
+  margin: 0 auto;
+  padding: var(--spacing-m);
+  background-color: var(--color-black-5);
+  box-sizing: content-box;
+}

@@ -1,4 +1,18 @@
 {
   "description": "Linked Registrations UI description (en)",
-  "title": "Linked Registrations UI (en)"
+  "dropdownSelect": {
+    "accessibility": {
+      "noResults": "No options",
+      "selectionMessage": "{{value}} has been selected.",
+      "statusMessage": "{{count}} option available, move up or down with arrow keys. Press Enter to make a selection.",
+      "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
+    }
+  },
+  "title": "Linked Registrations UI (en)",
+  "validation": {
+    "string": {
+      "charsLeft": "{{count}} character left",
+      "charsLeft_plural": "{{count}} characters left"
+    }
+  }
 }

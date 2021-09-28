@@ -1,1 +1,23 @@
-{}
+{
+  "labelCity": "Staden",
+  "labelEmail": "E-postadress",
+  "labelExtraInfo": "Ytterligare registreringsinformation (valfritt)",
+  "labelMembershipNumber": "Medlemskortnummer (valfritt)",
+  "labelName": "Namn",
+  "labelPhoneNumber": "Telefonnummer",
+  "labelStreetAddress": "Gatuadress",
+  "labelYearOfBirth": "Födelseår",
+  "labelZip": "Postnummer",
+  "placeholderCity": "Ange staden",
+  "placeholderEmail": "Skriv in din mailadress",
+  "placeholderExtraInfo": "Ange ytterligare information eller begäran",
+  "placeholderMembershipNumber": "Ange medlemskortets nummer",
+  "placeholderName": "Ange registrantens för- och efternamn",
+  "placeholderPhoneNumber": "+358 44 1234 567",
+  "placeholderStreetAddress": "Ange en gatuadress",
+  "placeholderYearOfBirth": "Välj födelseår",
+  "placeholderZip": "Ange postnummer",
+  "titleAdditionalInfo": "Ytterligare information",
+  "titleBasicInfo": "Grundläggande information om registranten",
+  "titleContactInfo": "Kontaktinformation"
+}

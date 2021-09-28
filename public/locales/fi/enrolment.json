@@ -1,1 +1,23 @@
-{}
+{
+  "labelCity": "Kaupunki",
+  "labelEmail": "Sähköpostiosoite",
+  "labelExtraInfo": "Lisätietoa ilmoittautumisesta (valinnainen)",
+  "labelMembershipNumber": "Jäsenkortin numero (valinnainen)",
+  "labelName": "Nimi",
+  "labelPhoneNumber": "Puhelinnumero",
+  "labelStreetAddress": "Katuosoite",
+  "labelYearOfBirth": "Syntymävuosi",
+  "labelZip": "Postinumero",
+  "placeholderCity": "Syötä kaupunki",
+  "placeholderEmail": "Syötä sähköpostiosoite",
+  "placeholderExtraInfo": "Syötä mahdollinen lisätieto tai toive",
+  "placeholderMembershipNumber": "Syötä jäsenkortin numero",
+  "placeholderName": "Syötä ilmoittautujan etu- ja sukunimi",
+  "placeholderPhoneNumber": "+358 44 1234 567",
+  "placeholderStreetAddress": "Syötä katuosoite",
+  "placeholderYearOfBirth": "Valitse syntymävuosi",
+  "placeholderZip": "Syötä postinumero",
+  "titleAdditionalInfo": "Lisätiedot",
+  "titleBasicInfo": "Ilmoittautujan perustiedot",
+  "titleContactInfo": "Yhteystiedot"
+}

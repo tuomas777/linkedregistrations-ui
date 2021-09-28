@@ -1,0 +1,32 @@
+@import '../../../styles/breakpoints.scss';
+
+.streetAddressRow {
+  display: grid;
+  grid-gap: var(--spacing-m);
+  grid-template-columns: repeat(2, 1fr);
+
+  @include medium-up {
+    grid-template-columns: 4fr 2fr;
+  }
+}
+
+.zipRow {
+  display: grid;
+  grid-gap: var(--spacing-m);
+  grid-template-columns: repeat(2, 1fr);
+
+  @include medium-up {
+    grid-template-columns: 2fr 4fr;
+  }
+}
+
+.emailRow,
+.membershipNumberRow {
+  display: grid;
+  grid-gap: var(--spacing-m);
+  grid-template-columns: repeat(2, 1fr);
+
+  @include medium-up {
+    grid-template-columns: 3fr 3fr;
+  }
+}

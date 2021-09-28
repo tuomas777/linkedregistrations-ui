@@ -1,4 +1,18 @@
 {
   "description": "Linked Registrations UI description (sv)",
-  "title": "Linked Registrations UI (sv)"
+  "dropdownSelect": {
+    "accessibility": {
+      "noResults": "Inga alternativ",
+      "selectionMessage": "{{value}} är valt.",
+      "statusMessage": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val.",
+      "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
+    }
+  },
+  "title": "Linked Registrations UI (sv)",
+  "validation": {
+    "string": {
+      "charsLeft": "{{count}} tecken kvar",
+      "charsLeft_plural": "{{count}} tecken kvar"
+    }
+  }
 }

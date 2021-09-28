@@ -1,1 +1,23 @@
-{}
+{
+  "labelCity": "City",
+  "labelEmail": "Email address",
+  "labelExtraInfo": "Additional registration information (optional)",
+  "labelMembershipNumber": "Membership card number (optional)",
+  "labelName": "Name",
+  "labelPhoneNumber": "Telephone number",
+  "labelStreetAddress": "Street address",
+  "labelYearOfBirth": "Year of birth",
+  "labelZip": "Postcode",
+  "placeholderCity": "Enter city",
+  "placeholderEmail": "Enter your email address",
+  "placeholderExtraInfo": "Enter any additional information or request",
+  "placeholderMembershipNumber": "Enter membership card number",
+  "placeholderName": "Syötä ilmoittautujan etu- ja sukunimi",
+  "placeholderPhoneNumber": "+358 44 1234 567",
+  "placeholderStreetAddress": "Enter a street address",
+  "placeholderYearOfBirth": "Select year of birth",
+  "placeholderZip": "Enter postcode",
+  "titleAdditionalInfo": "Additional information",
+  "titleBasicInfo": "Basic information of the registrant",
+  "titleContactInfo": "Contact information"
+}
