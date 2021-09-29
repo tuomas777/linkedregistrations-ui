@@ -1,4 +1,5 @@
 import { Field, Form, Formik } from 'formik';
+import { Fieldset } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { ValidationError } from 'yup';
@@ -46,93 +47,97 @@ const EnrolmentForm: React.FC = () => {
         };
         return (
           <Form noValidate>
-            <h3>{t(`titleBasicInfo`)}</h3>
-            <FormGroup>
-              <Field
-                name={ENROLMENT_FIELDS.NAME}
-                component={TextInputField}
-                label={t(`labelName`)}
-                placeholder={t(`placeholderName`)}
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <div className={styles.streetAddressRow}>
+            <Fieldset heading={t(`titleBasicInfo`)}>
+              <FormGroup>
                 <Field
-                  name={ENROLMENT_FIELDS.STREET_ADDRESS}
+                  name={ENROLMENT_FIELDS.NAME}
                   component={TextInputField}
-                  label={t(`labelStreetAddress`)}
-                  placeholder={t(`placeholderStreetAddress`)}
+                  label={t(`labelName`)}
+                  placeholder={t(`placeholderName`)}
                   required
                 />
-                <Field
-                  name={ENROLMENT_FIELDS.YEAR_OF_BIRTH}
-                  component={SingleSelectField}
-                  label={t(`labelYearOfBirth`)}
-                  options={yearOptions}
-                  placeholder={t(`placeholderYearOfBirth`)}
-                  required
-                />
-              </div>
-            </FormGroup>
-            <FormGroup>
-              <div className={styles.zipRow}>
-                <Field
-                  name={ENROLMENT_FIELDS.ZIP}
-                  component={TextInputField}
-                  label={t(`labelZip`)}
-                  placeholder={t(`placeholderZip`)}
-                  required
-                />
-                <Field
-                  name={ENROLMENT_FIELDS.CITY}
-                  component={TextInputField}
-                  label={t(`labelCity`)}
-                  placeholder={t(`placeholderCity`)}
-                  required
-                />
-              </div>
-            </FormGroup>
+              </FormGroup>
+              <FormGroup>
+                <div className={styles.streetAddressRow}>
+                  <Field
+                    name={ENROLMENT_FIELDS.STREET_ADDRESS}
+                    component={TextInputField}
+                    label={t(`labelStreetAddress`)}
+                    placeholder={t(`placeholderStreetAddress`)}
+                    required
+                  />
+                  <Field
+                    name={ENROLMENT_FIELDS.YEAR_OF_BIRTH}
+                    component={SingleSelectField}
+                    label={t(`labelYearOfBirth`)}
+                    options={yearOptions}
+                    placeholder={t(`placeholderYearOfBirth`)}
+                    required
+                  />
+                </div>
+              </FormGroup>
+              <FormGroup>
+                <div className={styles.zipRow}>
+                  <Field
+                    name={ENROLMENT_FIELDS.ZIP}
+                    component={TextInputField}
+                    label={t(`labelZip`)}
+                    placeholder={t(`placeholderZip`)}
+                    required
+                  />
+                  <Field
+                    name={ENROLMENT_FIELDS.CITY}
+                    component={TextInputField}
+                    label={t(`labelCity`)}
+                    placeholder={t(`placeholderCity`)}
+                    required
+                  />
+                </div>
+              </FormGroup>
+            </Fieldset>
 
-            <h3>{t(`titleContactInfo`)}</h3>
-            <FormGroup>
-              <div className={styles.emailRow}>
-                <Field
-                  name={ENROLMENT_FIELDS.EMAIL}
-                  component={TextInputField}
-                  label={t(`labelEmail`)}
-                  placeholder={t(`placeholderEmail`)}
-                  required
-                />
-                <Field
-                  name={ENROLMENT_FIELDS.PHONE_NUMBER}
-                  component={PhoneInputField}
-                  label={t(`labelPhoneNumber`)}
-                  placeholder={t(`placeholderPhoneNumber`)}
-                  type="tel"
-                />
-              </div>
-            </FormGroup>
+            <Fieldset heading={t(`titleContactInfo`)}>
+              <FormGroup>
+                <div className={styles.emailRow}>
+                  <Field
+                    name={ENROLMENT_FIELDS.EMAIL}
+                    component={TextInputField}
+                    label={t(`labelEmail`)}
+                    placeholder={t(`placeholderEmail`)}
+                    required
+                  />
+                  <Field
+                    name={ENROLMENT_FIELDS.PHONE_NUMBER}
+                    component={PhoneInputField}
+                    label={t(`labelPhoneNumber`)}
+                    placeholder={t(`placeholderPhoneNumber`)}
+                    type="tel"
+                  />
+                </div>
+              </FormGroup>
+            </Fieldset>
 
-            <h3>{t(`titleAdditionalInfo`)}</h3>
-            <FormGroup>
-              <div className={styles.membershipNumberRow}>
+            <Fieldset heading={t(`titleAdditionalInfo`)}>
+              <FormGroup>
+                <div className={styles.membershipNumberRow}>
+                  <Field
+                    name={ENROLMENT_FIELDS.MEMBERSHIP_NUMBER}
+                    component={TextInputField}
+                    label={t(`labelMembershipNumber`)}
+                    placeholder={t(`placeholderMembershipNumber`)}
+                  />
+                </div>
+              </FormGroup>
+              <FormGroup>
                 <Field
-                  name={ENROLMENT_FIELDS.MEMBERSHIP_NUMBER}
-                  component={TextInputField}
-                  label={t(`labelMembershipNumber`)}
-                  placeholder={t(`placeholderMembershipNumber`)}
+                  name={ENROLMENT_FIELDS.EXTRA_INFO}
+                  component={TextAreaField}
+                  label={t(`labelExtraInfo`)}
+                  placeholder={t(`placeholderExtraInfo`)}
                 />
-              </div>
-            </FormGroup>
-            <FormGroup>
-              <Field
-                name={ENROLMENT_FIELDS.EXTRA_INFO}
-                component={TextAreaField}
-                label={t(`labelExtraInfo`)}
-                placeholder={t(`placeholderExtraInfo`)}
-              />
-            </FormGroup>
+              </FormGroup>
+            </Fieldset>
+
             <div className={styles.buttonWrapper}>
               <Button className={styles.button} onClick={handleSubmit}>
                 {t('buttonSend')}
