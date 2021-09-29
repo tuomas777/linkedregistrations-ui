@@ -11,6 +11,7 @@ import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
 import { ENROLMENT_FIELDS, ENROLMENT_INITIAL_VALUES } from '../constants';
+import useLanguageOptions from '../hooks/useLanguageOptions';
 import useYearOptions from '../hooks/useYearOptions';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import styles from './enrolmentForm.module.scss';
@@ -18,6 +19,7 @@ import styles from './enrolmentForm.module.scss';
 const EnrolmentForm: React.FC = () => {
   const { t } = useTranslation('enrolment');
   const yearOptions = useYearOptions();
+  const languageOptions = useLanguageOptions();
 
   return (
     <Formik
@@ -125,6 +127,26 @@ const EnrolmentForm: React.FC = () => {
                     component={TextInputField}
                     label={t(`labelMembershipNumber`)}
                     placeholder={t(`placeholderMembershipNumber`)}
+                  />
+                </div>
+              </FormGroup>
+              <FormGroup>
+                <div className={styles.nativeLanguageRow}>
+                  <Field
+                    name={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
+                    component={SingleSelectField}
+                    label={t(`labelNativeLanguage`)}
+                    options={languageOptions}
+                    placeholder={t(`placeholderNativeLanguage`)}
+                    required
+                  />
+                  <Field
+                    name={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
+                    component={SingleSelectField}
+                    label={t(`labelServiceLanguage`)}
+                    options={languageOptions}
+                    placeholder={t(`placeholderServiceLanguage`)}
+                    required
                   />
                 </div>
               </FormGroup>

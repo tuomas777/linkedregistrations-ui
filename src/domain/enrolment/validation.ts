@@ -27,6 +27,12 @@ export const enrolmentSchema = Yup.object().shape({
   [ENROLMENT_FIELDS.EMAIL]: Yup.string()
     .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
     .email(VALIDATION_MESSAGE_KEYS.EMAIL),
+  [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: Yup.string().required(
+    VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
+  ),
+  [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: Yup.string().required(
+    VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
+  ),
 });
 
 // This functions sets formik errors and touched values correctly after validation.

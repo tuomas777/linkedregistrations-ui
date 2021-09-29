@@ -22,7 +22,8 @@
 }
 
 .emailRow,
-.membershipNumberRow {
+.membershipNumberRow,
+.nativeLanguageRow {
   display: grid;
   grid-gap: var(--spacing-m);
   grid-template-columns: repeat(2, 1fr);
