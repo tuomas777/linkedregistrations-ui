@@ -4,6 +4,15 @@ module.exports = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/src/domain/app/layout/pageLayout/PageLayout.tsx',
+    '<rootDir>/src/pages/',
+    '<rootDir>/src/tests/',
+    '<rootDir>/src/utils/mockDataUtils.ts',
+    '<rootDir>/src/utils/testUtils.ts',
+    'constants.ts',
+    'types.ts',
+  ],
   moduleNameMapper: {
     /* Handle CSS imports (with CSS modules)
       https://jestjs.io/docs/webpack#mocking-css-modules */
