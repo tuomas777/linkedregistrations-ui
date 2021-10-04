@@ -1,10 +1,10 @@
 export type LocalisedObject = {
-  ar: string;
-  en: string;
-  fi: string;
-  ru: string;
-  sv: string;
-  zh_hans: string;
+  ar?: string;
+  en?: string;
+  fi?: string;
+  ru?: string;
+  sv?: string;
+  zh_hans?: string;
 };
 
 export type Meta = {

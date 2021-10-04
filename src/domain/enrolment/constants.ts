@@ -1,20 +1,15 @@
 import { EnrolmentFormFields } from './types';
 
-// type Enrolment {
-//     id: ID!
-//     marketingAllowed: Boolean
-//     nativeLanguage: String
-//     notifications: String
-//     organizationName: String
-//     serviceLanguage: String
-//   }
 export enum ENROLMENT_FIELDS {
+  ACCEPTED = 'accepted',
   CITY = 'city',
   EMAIL = 'email',
   EXTRA_INFO = 'extraInfo',
   MEMBERSHIP_NUMBER = 'membershipNumber',
   NAME = 'name',
   NATIVE_LANGUAGE = 'nativeLanguage',
+  NOTIFICATION_LANGUAGE = 'notificationLanguage',
+  NOTIFICATIONS = 'notifications',
   PHONE_NUMBER = 'phoneNumber',
   SERVICE_LANGUAGE = 'servideLanguage',
   STREET_ADDRESS = 'streetAddress',
@@ -22,13 +17,21 @@ export enum ENROLMENT_FIELDS {
   ZIP = 'zip',
 }
 
+export enum NOTIFICATIONS {
+  EMAIL = 'email',
+  PHONE = 'phone',
+}
+
 export const ENROLMENT_INITIAL_VALUES: EnrolmentFormFields = {
+  [ENROLMENT_FIELDS.ACCEPTED]: false,
   [ENROLMENT_FIELDS.CITY]: '',
   [ENROLMENT_FIELDS.EMAIL]: '',
   [ENROLMENT_FIELDS.EXTRA_INFO]: '',
   [ENROLMENT_FIELDS.MEMBERSHIP_NUMBER]: '',
   [ENROLMENT_FIELDS.NAME]: '',
   [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: '',
+  [ENROLMENT_FIELDS.NOTIFICATION_LANGUAGE]: '',
+  [ENROLMENT_FIELDS.NOTIFICATIONS]: [],
   [ENROLMENT_FIELDS.PHONE_NUMBER]: '',
   [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: '',
   [ENROLMENT_FIELDS.STREET_ADDRESS]: '',
@@ -38,6 +41,7 @@ export const ENROLMENT_INITIAL_VALUES: EnrolmentFormFields = {
 
 export const ENROLMENT_FORM_SELECT_FIELDS = [
   ENROLMENT_FIELDS.NATIVE_LANGUAGE,
+  ENROLMENT_FIELDS.NOTIFICATION_LANGUAGE,
   ENROLMENT_FIELDS.SERVICE_LANGUAGE,
   ENROLMENT_FIELDS.YEAR_OF_BIRTH,
 ];

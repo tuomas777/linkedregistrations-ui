@@ -5,7 +5,16 @@ import { scroller } from 'react-scroll';
 import * as Yup from 'yup';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../constants';
-import { ENROLMENT_FIELDS, ENROLMENT_FORM_SELECT_FIELDS } from './constants';
+import {
+  createMinErrorMessage,
+  isValidPhoneNumber,
+  isValidZip,
+} from '../../utils/validationUtils';
+import {
+  ENROLMENT_FIELDS,
+  ENROLMENT_FORM_SELECT_FIELDS,
+  NOTIFICATIONS,
+} from './constants';
 import { EnrolmentFormFields } from './types';
 
 export const enrolmentSchema = Yup.object().shape({
@@ -18,20 +27,57 @@ export const enrolmentSchema = Yup.object().shape({
   [ENROLMENT_FIELDS.YEAR_OF_BIRTH]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
-  [ENROLMENT_FIELDS.ZIP]: Yup.string().required(
-    VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
-  ),
+  [ENROLMENT_FIELDS.ZIP]: Yup.string()
+    .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+    .test(
+      'isValidZip',
+      VALIDATION_MESSAGE_KEYS.ZIP,
+      (value) => !value || isValidZip(value)
+    ),
   [ENROLMENT_FIELDS.CITY]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
   [ENROLMENT_FIELDS.EMAIL]: Yup.string()
-    .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
-    .email(VALIDATION_MESSAGE_KEYS.EMAIL),
+    .email(VALIDATION_MESSAGE_KEYS.EMAIL)
+    .when(
+      [ENROLMENT_FIELDS.NOTIFICATIONS],
+      (notifications: string[], schema) => {
+        return notifications.includes(NOTIFICATIONS.EMAIL)
+          ? schema.required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+          : schema;
+      }
+    ),
+  [ENROLMENT_FIELDS.PHONE_NUMBER]: Yup.string()
+    .test(
+      'isValidPhoneNumber',
+      VALIDATION_MESSAGE_KEYS.PHONE,
+      (value) => !value || isValidPhoneNumber(value)
+    )
+    .when(
+      [ENROLMENT_FIELDS.NOTIFICATIONS],
+      (notifications: string[], schema) => {
+        return notifications.includes(NOTIFICATIONS.PHONE)
+          ? schema.required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+          : schema;
+      }
+    ),
+  [ENROLMENT_FIELDS.NOTIFICATIONS]: Yup.array()
+    .required(VALIDATION_MESSAGE_KEYS.ARRAY_REQUIRED)
+    .min(1, (param) =>
+      createMinErrorMessage(param, VALIDATION_MESSAGE_KEYS.ARRAY_MIN)
+    ),
+  [ENROLMENT_FIELDS.NOTIFICATION_LANGUAGE]: Yup.string().required(
+    VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
+  ),
   [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
   [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
+  ),
+  [ENROLMENT_FIELDS.ACCEPTED]: Yup.bool().oneOf(
+    [true],
+    VALIDATION_MESSAGE_KEYS.ENROLMENT_ACCEPTED
   ),
 });
 
@@ -68,13 +114,19 @@ export const showErrors = ({
   }
 };
 
-const getFocusableFieldId = (fieldName: string): string => {
+const getFocusableFieldId = (
+  fieldName: string
+): {
+  fieldId: string;
+  fieldType: 'default' | 'checkboxGroup' | 'select';
+} => {
   // For the select elements, focus the toggle button
   if (ENROLMENT_FORM_SELECT_FIELDS.find((item) => item === fieldName)) {
-    return `${fieldName}-toggle-button`;
+    return { fieldId: `${fieldName}-toggle-button`, fieldType: 'select' };
+  } else if (fieldName === ENROLMENT_FIELDS.NOTIFICATIONS) {
+    return { fieldId: fieldName, fieldType: 'checkboxGroup' };
   }
-
-  return fieldName;
+  return { fieldId: fieldName, fieldType: 'default' };
 };
 
 export const scrollToFirstError = ({
@@ -84,7 +136,7 @@ export const scrollToFirstError = ({
 }): void => {
   forEach(error.inner, (e) => {
     const path = e.path ?? /* istanbul ignore next */ '';
-    const fieldId = getFocusableFieldId(path);
+    const { fieldId, fieldType } = getFocusableFieldId(path);
     const field = document.getElementById(fieldId);
 
     /* istanbul ignore else */
@@ -96,7 +148,17 @@ export const scrollToFirstError = ({
         smooth: true,
       });
 
-      field.focus();
+      if (fieldType === 'checkboxGroup') {
+        const focusable = field.querySelectorAll('input');
+
+        /* istanbul ignore else */
+        if (focusable?.[0]) {
+          focusable[0].focus();
+        }
+      } else {
+        field.focus();
+      }
+
       return false;
     }
   });

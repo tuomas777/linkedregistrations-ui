@@ -1,22 +1,29 @@
 {
   "buttonSend": "Submit registration",
+  "labelAccepted": "I agree to share my information with the organizer",
   "labelCity": "City",
   "labelEmail": "Email address",
   "labelExtraInfo": "Additional registration information (optional)",
   "labelMembershipNumber": "Membership card number (optional)",
   "labelName": "Name",
   "labelNativeLanguage": "Native language",
+  "labelNotificationLanguage": "Language of notifications",
   "labelPhoneNumber": "Telephone number",
   "labelServiceLanguage": "Language of communication",
   "labelStreetAddress": "Street address",
   "labelYearOfBirth": "Year of birth",
   "labelZip": "Postcode",
+  "notifications": {
+    "email": "By email",
+    "phone": "By text message"
+  },
   "placeholderCity": "Enter city",
   "placeholderEmail": "Enter your email address",
   "placeholderExtraInfo": "Enter any additional information or request",
   "placeholderMembershipNumber": "Enter membership card number",
   "placeholderName": "Syötä ilmoittautujan etu- ja sukunimi",
   "placeholderNativeLanguage": "Select native language",
+  "placeholderNotificationLanguage": "Language selection for notifications",
   "placeholderPhoneNumber": "+358 44 1234 567",
   "placeholderServiceLanguage": "Select language of communication",
   "placeholderStreetAddress": "Enter a street address",
@@ -24,5 +31,6 @@
   "placeholderZip": "Enter postcode",
   "titleAdditionalInfo": "Additional information",
   "titleBasicInfo": "Basic information of the registrant",
-  "titleContactInfo": "Contact information"
+  "titleContactInfo": "Contact information",
+  "titleNotifications": "Event notifications"
 }

@@ -1,0 +1,7 @@
+.checkbox {
+  --background-unselected: var(--color-white) !important;
+
+  input[type='checkbox']:focus:not(:global(.focus-visible)) + label:before {
+    --focus-outline-color: transparent;
+  }
+}

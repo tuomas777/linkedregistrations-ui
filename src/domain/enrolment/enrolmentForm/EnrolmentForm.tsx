@@ -2,22 +2,32 @@ import { Field, Form, Formik } from 'formik';
 import { Fieldset } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
+import { toast } from 'react-toastify';
 import { ValidationError } from 'yup';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Button from '../../../common/components/button/Button';
+import CheckboxField from '../../../common/components/formFields/CheckboxField';
+import CheckboxGroupField from '../../../common/components/formFields/CheckboxGroupField';
 import PhoneInputField from '../../../common/components/formFields/PhoneInputField';
 import SingleSelectField from '../../../common/components/formFields/SingleSelectField';
 import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
-import { ENROLMENT_FIELDS, ENROLMENT_INITIAL_VALUES } from '../constants';
+import {
+  ENROLMENT_FIELDS,
+  ENROLMENT_INITIAL_VALUES,
+  NOTIFICATIONS,
+} from '../constants';
 import useLanguageOptions from '../hooks/useLanguageOptions';
+import useNotificationOptions from '../hooks/useNotificationOptions';
 import useYearOptions from '../hooks/useYearOptions';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import styles from './enrolmentForm.module.scss';
 
 const EnrolmentForm: React.FC = () => {
   const { t } = useTranslation('enrolment');
+  const notificationOptions = useNotificationOptions();
   const yearOptions = useYearOptions();
   const languageOptions = useLanguageOptions();
 
@@ -34,9 +44,9 @@ const EnrolmentForm: React.FC = () => {
           try {
             clearErrors();
 
-            await enrolmentSchema.validate(values, {
-              abortEarly: false,
-            });
+            await enrolmentSchema.validate(values, { abortEarly: false });
+
+            toast.error('TODO: Save enrolment');
           } catch (error) {
             showErrors({
               error: error as ValidationError,
@@ -47,6 +57,7 @@ const EnrolmentForm: React.FC = () => {
             scrollToFirstError({ error: error as ValidationError });
           }
         };
+
         return (
           <Form noValidate>
             <Fieldset heading={t(`titleBasicInfo`)}>
@@ -106,7 +117,9 @@ const EnrolmentForm: React.FC = () => {
                     component={TextInputField}
                     label={t(`labelEmail`)}
                     placeholder={t(`placeholderEmail`)}
-                    required
+                    required={values.notifications.includes(
+                      NOTIFICATIONS.EMAIL
+                    )}
                   />
                   <Field
                     name={ENROLMENT_FIELDS.PHONE_NUMBER}
@@ -114,6 +127,32 @@ const EnrolmentForm: React.FC = () => {
                     label={t(`labelPhoneNumber`)}
                     placeholder={t(`placeholderPhoneNumber`)}
                     type="tel"
+                    required={values.notifications.includes(
+                      NOTIFICATIONS.PHONE
+                    )}
+                  />
+                </div>
+              </FormGroup>
+            </Fieldset>
+
+            <Fieldset heading={t(`titleNotifications`)}>
+              <FormGroup>
+                <Field
+                  name={ENROLMENT_FIELDS.NOTIFICATIONS}
+                  className={styles.notifications}
+                  component={CheckboxGroupField}
+                  options={notificationOptions}
+                />
+              </FormGroup>
+              <FormGroup>
+                <div className={styles.notificationLanguageRow}>
+                  <Field
+                    name={ENROLMENT_FIELDS.NOTIFICATION_LANGUAGE}
+                    component={SingleSelectField}
+                    label={t(`labelNotificationLanguage`)}
+                    options={languageOptions}
+                    placeholder={t(`placeholderNotificationLanguage`)}
+                    required
                   />
                 </div>
               </FormGroup>
@@ -159,6 +198,13 @@ const EnrolmentForm: React.FC = () => {
                 />
               </FormGroup>
             </Fieldset>
+            <FormGroup>
+              <Field
+                label={t(`labelAccepted`)}
+                name={ENROLMENT_FIELDS.ACCEPTED}
+                component={CheckboxField}
+              />
+            </FormGroup>
 
             <div className={styles.buttonWrapper}>
               <Button className={styles.button} onClick={handleSubmit}>

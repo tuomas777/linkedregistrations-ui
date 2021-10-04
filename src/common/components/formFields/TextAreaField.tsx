@@ -7,9 +7,9 @@ import React from 'react';
 import { getErrorText } from '../../../utils/validationUtils';
 import TextArea from '../textArea/TextArea';
 
-type Props = FieldProps & TextAreaProps;
+export type TextAreaFieldProps = FieldProps & TextAreaProps;
 
-const TextAreaField: React.FC<Props> = ({
+const TextAreaField: React.FC<TextAreaFieldProps> = ({
   field: { name, value, ...field },
   form,
   helperText,

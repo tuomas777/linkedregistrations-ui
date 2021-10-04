@@ -7,9 +7,9 @@ import React from 'react';
 import { getErrorText } from '../../../utils/validationUtils';
 import TextInput from '../textInput/TextInput';
 
-type Props = FieldProps & TextInputProps;
+export type TextInputFieldProps = FieldProps & TextInputProps;
 
-const TextInputField: React.FC<Props> = ({
+const TextInputField: React.FC<TextInputFieldProps> = ({
   field: { name, value, ...field },
   form,
   helperText,

@@ -7,6 +7,11 @@ export enum SUPPORTED_LANGUAGES {
 export const DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES.FI;
 
 export enum VALIDATION_MESSAGE_KEYS {
+  ARRAY_MIN = 'validation.array.min',
+  ARRAY_REQUIRED = 'form.validation.array.required',
   EMAIL = 'validation.string.email',
+  ENROLMENT_ACCEPTED = 'validation.enrolmentAccepted',
+  PHONE = 'validation.string.phone',
   STRING_REQUIRED = 'validation.string.required',
+  ZIP = 'validation.string.zip',
 }

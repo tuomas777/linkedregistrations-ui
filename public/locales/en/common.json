@@ -8,13 +8,23 @@
       "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
     }
   },
+  "showLess": "Show less",
+  "showMore": "Show more",
   "title": "Linked Registrations UI (en)",
   "validation": {
+    "array": {
+      "min": "At least {{min}} item must be selected",
+      "min_plural": "At least {{min}} item must be selected",
+      "required": "At least 1 item must be selected"
+    },
+    "enrolmentAccepted": "Sharing information with the organizer must be approved",
     "string": {
       "charsLeft": "{{count}} character left",
       "charsLeft_plural": "{{count}} characters left",
       "email": "This field must be a valid email",
-      "required": "This field is required"
+      "phone": "This field must be a valid phone number",
+      "required": "This field is required",
+      "zip": "This field must be a valid postcode"
     }
   }
 }

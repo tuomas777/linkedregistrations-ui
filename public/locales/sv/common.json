@@ -8,13 +8,23 @@
       "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
     }
   },
+  "showLess": "Visa mindre",
+  "showMore": "Visa mer",
   "title": "Linked Registrations UI (sv)",
   "validation": {
+    "array": {
+      "min": "Minst {{min}} objekt måste väljas",
+      "min_plural": "Minst {{min}} objekt måste väljas",
+      "required": "Minst 1 objekt måste väljas"
+    },
+    "enrolmentAccepted": "Dela information med arrangören måste godkännas",
     "string": {
       "charsLeft": "{{count}} tecken kvar",
       "charsLeft_plural": "{{count}} tecken kvar",
       "email": "Detta fält måste vara en giltig e-postmeddelande",
-      "required": "Detta fält krävs"
+      "phone": "Detta fält måste vara en giltig telefonnummer",
+      "required": "Detta fält krävs",
+      "zip": "Detta fält måste vara en giltig postnummer"
     }
   }
 }

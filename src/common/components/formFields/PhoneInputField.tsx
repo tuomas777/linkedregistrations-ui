@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import { getErrorText } from '../../../utils/validationUtils';
-import PhoneInput from '../textInput/TextInput';
+import PhoneInput from '../phoneInput/PhoneInput';
 
 type Props = FieldProps & PhoneInputProps;
 

@@ -6,7 +6,7 @@ import styles from './enrolmentPage.module.scss';
 
 const CreateEnrolmentPage: React.FC = () => {
   return (
-    <Container>
+    <Container withOffset>
       <div className={styles.formContainer}>
         <EnrolmentForm />
       </div>

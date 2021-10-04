@@ -5,7 +5,7 @@ import getLocalisedString from '../../utils/getLocalisedString';
 import { LanguagesResponse, LELanguage } from './types';
 
 export const fetchLanguages = (): Promise<LanguagesResponse> =>
-  fetch('https://api.hel.fi/linkedevents/v1/language').then((res) =>
+  fetch('https://api.hel.fi/linkedevents/v1/language/').then((res) =>
     res.json()
   );
 

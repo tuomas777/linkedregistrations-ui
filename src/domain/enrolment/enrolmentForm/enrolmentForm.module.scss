@@ -23,7 +23,8 @@
 
 .emailRow,
 .membershipNumberRow,
-.nativeLanguageRow {
+.nativeLanguageRow,
+.notificationLanguageRow {
   display: grid;
   grid-gap: var(--spacing-m);
   grid-template-columns: repeat(2, 1fr);
@@ -31,6 +32,10 @@
   @include medium-up {
     grid-template-columns: 3fr 3fr;
   }
+}
+
+.notifications {
+  margin-top: var(--spacing-m);
 }
 
 .buttonWrapper {
