@@ -15,3 +15,6 @@ export enum VALIDATION_MESSAGE_KEYS {
   STRING_REQUIRED = 'validation.string.required',
   ZIP = 'validation.string.zip',
 }
+
+export const PAGE_HEADER_ID = 'page-header';
+export const MAIN_CONTENT_ID = 'maincontent';

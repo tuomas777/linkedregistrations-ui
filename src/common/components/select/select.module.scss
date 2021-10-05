@@ -6,10 +6,7 @@
 
   > div:focus-within {
     box-shadow: none;
-
-    button:global(.focus-visible) {
-      outline: var(--focus-outline-width) solid var(--focus-outline-color);
-      outline-offset: 1px;
-    }
+    outline: var(--focus-outline-width) solid var(--focus-outline-color);
+    outline-offset: 1px;
   }
 }

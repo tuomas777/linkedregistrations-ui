@@ -1,4 +1,5 @@
 {
+  "appName": "Linked Registrations",
   "description": "Linked Registrations UI description (en)",
   "dropdownSelect": {
     "accessibility": {
@@ -7,6 +8,16 @@
       "statusMessage": "{{count}} option available, move up or down with arrow keys. Press Enter to make a selection.",
       "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
     }
+  },
+  "navigation": {
+    "languages": {
+      "en": "In English",
+      "fi": "Suomeksi",
+      "sv": "På svenska"
+    },
+    "languageSelectorAriaLabel": "English - language selection",
+    "menuToggleAriaLabel": "Menu",
+    "skipToContentLabel": "Skip to content"
   },
   "showLess": "Show less",
   "showMore": "Show more",

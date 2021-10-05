@@ -1,4 +1,5 @@
 {
+  "appName": "Linked Registrations",
   "description": "Linked Registrations UI description (sv)",
   "dropdownSelect": {
     "accessibility": {
@@ -7,6 +8,16 @@
       "statusMessage": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val.",
       "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
     }
+  },
+  "navigation": {
+    "languages": {
+      "en": "In English",
+      "fi": "Suomeksi",
+      "sv": "På svenska"
+    },
+    "languageSelectorAriaLabel": "Svenska - språkval",
+    "menuToggleAriaLabel": "Menyn",
+    "skipToContentLabel": "Gå till innehållet"
   },
   "showLess": "Visa mindre",
   "showMore": "Visa mer",
