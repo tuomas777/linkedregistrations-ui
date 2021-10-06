@@ -1,5 +1,13 @@
 {
   "buttonSend": "Skicka in registrering",
+  "event": {
+    "audienceAge": {
+      "between": "{{min}} – {{max}} år",
+      "over": "Över {{min}} år",
+      "under": "Under {{max}} år"
+    },
+    "freeEvent": "Fri"
+  },
   "labelAccepted": "Jag godkänner att dela min information med arrangören",
   "labelCity": "Staden",
   "labelEmail": "E-postadress",

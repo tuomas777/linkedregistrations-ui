@@ -1,13 +1,12 @@
 import { capitalize } from 'lodash';
 
 import { OptionType, Language } from '../../types';
+import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
 import getLocalisedString from '../../utils/getLocalisedString';
 import { LanguagesResponse, LELanguage } from './types';
 
 export const fetchLanguages = (): Promise<LanguagesResponse> =>
-  fetch('https://api.hel.fi/linkedevents/v1/language/').then((res) =>
-    res.json()
-  );
+  fetch(getLinkedEventsUrl('/language/')).then((res) => res.json());
 
 export const getLanguageOption = (
   language: LELanguage,

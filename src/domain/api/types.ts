@@ -1,10 +1,13 @@
+export type numberOrNull = number | null;
+export type stringOrNull = string | null;
+
 export type LocalisedObject = {
-  ar?: string;
-  en?: string;
-  fi?: string;
-  ru?: string;
-  sv?: string;
-  zh_hans?: string;
+  ar?: stringOrNull;
+  en?: stringOrNull;
+  fi?: stringOrNull;
+  ru?: stringOrNull;
+  sv?: stringOrNull;
+  zh_hans?: stringOrNull;
 };
 
 export type Meta = {

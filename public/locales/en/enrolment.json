@@ -1,5 +1,13 @@
 {
   "buttonSend": "Submit registration",
+  "event": {
+    "audienceAge": {
+      "between": "{{min}} – {{max}} yr.",
+      "over": "Over {{min}} yr.",
+      "under": "Under {{max}} yr."
+    },
+    "freeEvent": "Free"
+  },
   "labelAccepted": "I agree to share my information with the organizer",
   "labelCity": "City",
   "labelEmail": "Email address",

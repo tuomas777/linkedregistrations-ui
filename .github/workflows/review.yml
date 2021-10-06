@@ -27,6 +27,7 @@ jobs:
         uses: andersinno/kolga-build-action@v2
         env:
           DOCKER_IMAGE_NAME: ${{ env.REPO_NAME }}-review
+          DOCKER_BUILD_ARG_REACT_APP_LINKED_EVENTS_URL: 'https://linkedevents-api.dev.hel.ninja/linkedevents-dev/v1'
 
   review:
     runs-on: ubuntu-latest
