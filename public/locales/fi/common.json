@@ -19,6 +19,7 @@
     "menuToggleAriaLabel": "Valikko",
     "skipToContentLabel": "Siirry sisältöön"
   },
+  "openInNewTab": "(avataan uudessa välilehdessä)",
   "showLess": "Näytä vähemmän",
   "showMore": "Näytä lisää",
   "title": "Linked Registrations UI",

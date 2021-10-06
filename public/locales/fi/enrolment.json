@@ -21,6 +21,8 @@
   "labelStreetAddress": "Katuosoite",
   "labelYearOfBirth": "Syntymävuosi",
   "labelZip": "Postinumero",
+  "notificationLabel": "Lähetämme sinulle vielä erillisen vahvistusviestin, kun tapahtuman järjestäjä on käsitellyt ja vahvistanut ilmoittautumisesi. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Rekisteriseloste {{openInNewTab}}\">Rekisteriseloste</a>",
+  "notificationTitle": "Ilmoittautumisen vahvistaminen",
   "notifications": {
     "email": "Sähköpostilla",
     "phone": "Tekstiviestillä"

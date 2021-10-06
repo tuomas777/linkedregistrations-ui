@@ -21,6 +21,8 @@
   "labelStreetAddress": "Street address",
   "labelYearOfBirth": "Year of birth",
   "labelZip": "Postcode",
+  "notificationLabel": "We will send you a separate confirmation message once the event organizer has processed and confirmed your registration. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registry description {{openInNewTab}}\">Registry description</a>",
+  "notificationTitle": "Confirmation of registration",
   "notifications": {
     "email": "By email",
     "phone": "By text message"

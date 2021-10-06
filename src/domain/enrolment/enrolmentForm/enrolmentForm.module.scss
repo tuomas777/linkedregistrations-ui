@@ -38,6 +38,10 @@
   margin-top: var(--spacing-m);
 }
 
+.notification {
+  margin: var(--spacing-l) 0;
+}
+
 .buttonWrapper {
   display: flex;
   justify-content: flex-end;

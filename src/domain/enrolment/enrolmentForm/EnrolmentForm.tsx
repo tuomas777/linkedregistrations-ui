@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { Fieldset } from 'hds-react';
+import { Fieldset, Notification } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { toast } from 'react-toastify';
@@ -26,7 +26,7 @@ import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import styles from './enrolmentForm.module.scss';
 
 const EnrolmentForm: React.FC = () => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation(['enrolment', 'common']);
   const notificationOptions = useNotificationOptions();
   const yearOptions = useYearOptions();
   const languageOptions = useLanguageOptions();
@@ -206,6 +206,19 @@ const EnrolmentForm: React.FC = () => {
               />
             </FormGroup>
 
+            <Notification
+              className={styles.notification}
+              label="Ilmoittautumisen vahvistaminen"
+            >
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: t('notificationLabel', {
+                    openInNewTab: t('common:openInNewTab'),
+                    url: 'http://www.todo.com',
+                  }),
+                }}
+              ></div>
+            </Notification>
             <div className={styles.buttonWrapper}>
               <Button className={styles.button} onClick={handleSubmit}>
                 {t('buttonSend')}
