@@ -21,7 +21,8 @@
   "labelStreetAddress": "Gatuadress",
   "labelYearOfBirth": "Födelseår",
   "labelZip": "Postnummer",
-  "notificationLabel": "Vi skickar ett separat bekräftelsemeddelande när evenemangsarrangören har behandlat och bekräftat din registrering. Vi använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registerbeskrivning {{openInNewTab}}\">Registerbeskrivning</a>",
+  "linkPrivacyPolicy": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
+  "notificationLabel": "Vi skickar ett separat bekräftelsemeddelande när evenemangsarrangören har behandlat och bekräftat din registrering. Vi använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Integritetspolicy {{openInNewTab}}\">Integritetspolicy</a>",
   "notificationTitle": "Bekräftelse av registrering",
   "notifications": {
     "email": "Via e-post",

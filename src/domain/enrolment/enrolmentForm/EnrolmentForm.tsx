@@ -214,7 +214,7 @@ const EnrolmentForm: React.FC = () => {
                 dangerouslySetInnerHTML={{
                   __html: t('notificationLabel', {
                     openInNewTab: t('common:openInNewTab'),
-                    url: 'http://www.todo.com',
+                    url: t('linkPrivacyPolicy'),
                   }),
                 }}
               ></div>

@@ -21,6 +21,7 @@
   "labelStreetAddress": "Katuosoite",
   "labelYearOfBirth": "Syntymävuosi",
   "labelZip": "Postinumero",
+  "linkPrivacyPolicy": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notificationLabel": "Lähetämme sinulle vielä erillisen vahvistusviestin, kun tapahtuman järjestäjä on käsitellyt ja vahvistanut ilmoittautumisesi. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Rekisteriseloste {{openInNewTab}}\">Rekisteriseloste</a>",
   "notificationTitle": "Ilmoittautumisen vahvistaminen",
   "notifications": {
