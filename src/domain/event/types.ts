@@ -95,6 +95,7 @@ export type EventFields = {
   keywords: Keyword[];
   name: string;
   offers: Offer[];
+  shortDescription: string;
   startTime: Date | null;
 };
 

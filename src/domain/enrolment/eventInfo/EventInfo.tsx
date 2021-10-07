@@ -4,9 +4,7 @@ import React from 'react';
 
 import useLocale from '../../../hooks/useLocale';
 import getLocalisedString from '../../../utils/getLocalisedString';
-import { EVENT_INCLUDES, TEST_EVENT_ID } from '../../event/constants';
 import useEventLocation from '../../event/hooks/useEventLocation';
-import { useEventQuery } from '../../event/query';
 import { Event } from '../../event/types';
 import { getEventFields } from '../../event/utils';
 import { getPlaceFields } from '../../place/utils';
@@ -98,17 +96,4 @@ const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
   );
 };
 
-const EventInfoWrapper: React.FC = () => {
-  const { data } = useEventQuery({
-    id: TEST_EVENT_ID,
-    include: EVENT_INCLUDES,
-  });
-
-  if (!data) {
-    return null;
-  }
-
-  return <EventInfo event={data} />;
-};
-
-export default EventInfoWrapper;
+export default EventInfo;
