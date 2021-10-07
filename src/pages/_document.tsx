@@ -11,11 +11,8 @@ import React from 'react';
 import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../constants';
 
 const documentLang = ({ __NEXT_DATA__ }: DocumentProps): string => {
-  const { props } = __NEXT_DATA__;
-
-  const lang = Object.values(SUPPORTED_LANGUAGES).find(
-    (l) => l === props.initialLanguage
-  );
+  const { locale } = __NEXT_DATA__;
+  const lang = Object.values(SUPPORTED_LANGUAGES).find((l) => l === locale);
 
   return lang || DEFAULT_LANGUAGE;
 };
