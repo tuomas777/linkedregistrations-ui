@@ -4,6 +4,7 @@ import React from 'react';
 
 import useLocale from '../../../hooks/useLocale';
 import getLocalisedString from '../../../utils/getLocalisedString';
+import { EVENT_INCLUDES, TEST_EVENT_ID } from '../../event/constants';
 import useEventLocation from '../../event/hooks/useEventLocation';
 import { useEventQuery } from '../../event/query';
 import { Event } from '../../event/types';
@@ -99,8 +100,8 @@ const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
 
 const EventInfoWrapper: React.FC = () => {
   const { data } = useEventQuery({
-    id: 'helmet:222453',
-    include: ['keywords'],
+    id: TEST_EVENT_ID,
+    include: EVENT_INCLUDES,
   });
 
   if (!data) {
