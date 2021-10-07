@@ -4,6 +4,7 @@ import merge from 'lodash/merge';
 
 import { LocalisedObject, Meta } from '../domain/api/types';
 import { LanguagesResponse, LELanguage } from '../domain/language/types';
+import { getLinkedEventsUrl } from './getLinkedEventsPath';
 
 export const fakeLanguages = (
   count = 1,
@@ -21,6 +22,9 @@ export const fakeLanguage = (overrides?: Partial<LELanguage>): LELanguage => {
       id,
       translation_available: false,
       name: fakeLocalisedObject(),
+      '@id': getLinkedEventsUrl(`/language/${id}/`),
+      '@context': 'http://schema.org',
+      '@type': 'Language',
     },
     overrides
   );
