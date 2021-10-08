@@ -50,7 +50,11 @@ const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
     <div className={styles.eventInfo}>
       <div
         className={styles.image}
-        style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : undefined }}
+        style={{
+          backgroundImage: imageUrl
+            ? `url(${imageUrl})`
+            : /* istanbul ignore next */ undefined,
+        }}
       ></div>
       <div className={styles.eventInfoWrapper}>
         <div className={styles.nameRow}>

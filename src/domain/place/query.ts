@@ -3,6 +3,7 @@ import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import { Place } from './types';
 import { fetchPlace } from './utils';
 
+/* istanbul ignore next */
 export const prefetchPlaceQuery = (
   queryClient: QueryClient,
   id: string

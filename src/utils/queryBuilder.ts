@@ -1,6 +1,6 @@
 import composeQuery from './composeQuery';
 
-interface VariableToKeyItem {
+export interface VariableToKeyItem {
   key: string;
   value: unknown;
 }
@@ -8,6 +8,7 @@ interface VariableToKeyItem {
 const queryBuilder = (items: VariableToKeyItem[]): string => {
   let query = '';
   items.forEach((item) => {
+    /* istanbul ignore else */
     if (Array.isArray(item.value) && item.value?.length) {
       query = composeQuery(query, item.key, item.value.join(','));
     } else if (typeof item.value === 'boolean') {

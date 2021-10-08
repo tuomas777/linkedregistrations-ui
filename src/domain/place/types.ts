@@ -33,7 +33,7 @@ export type Place = {
   name: LocalisedObject;
   n_events: number;
   parent: stringOrNull;
-  position: Position;
+  position: Position | null;
   postal_code: stringOrNull;
   post_office_box_num: stringOrNull;
   publisher: string;

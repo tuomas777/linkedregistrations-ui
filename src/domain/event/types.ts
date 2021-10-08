@@ -3,19 +3,17 @@ import { Image } from '../image/types';
 import { Keyword } from '../keyword/types';
 import { LELanguage } from '../language/types';
 import { Place } from '../place/types';
+import {
+  EventStatus,
+  EventTypeId,
+  PublicationStatus,
+  SuperEventType,
+} from './constants';
 
 type ExternalLink = {
   name: stringOrNull;
   link: stringOrNull;
   language: stringOrNull;
-};
-
-type ExtensionCourse = {
-  enrolment_start_time: stringOrNull;
-  enrolment_end_time: stringOrNull;
-  maximum_attendee_capacity: numberOrNull;
-  minimum_attendee_capacity: numberOrNull;
-  remaining_attendee_capacity: numberOrNull;
 };
 
 export type Offer = {
@@ -30,15 +28,6 @@ type Video = {
   name: stringOrNull;
   url: stringOrNull;
 };
-
-type EventStatus =
-  | 'EventCancelled'
-  | 'EventPostponed'
-  | 'EventRescheduled'
-  | 'EventScheduled';
-type EventTypeId = 'General' | 'Course' | 'Volunteering';
-type PublicationStatus = 'draft' | 'public';
-type SuperEventType = 'recurring' | 'umbrella';
 
 export type Event = {
   id: string;
@@ -55,12 +44,11 @@ export type Event = {
   end_time: stringOrNull;
   enrolment_end_time: stringOrNull;
   enrolment_start_time: stringOrNull;
-  extension_course: ExtensionCourse;
   external_links: ExternalLink[];
   event_status: EventStatus;
   images: Image[];
   info_url: LocalisedObject;
-  in_language: [LELanguage];
+  in_language: LELanguage[];
   keywords: Keyword[];
   last_modified_time: stringOrNull;
   location: Place;
@@ -76,8 +64,8 @@ export type Event = {
   short_description: LocalisedObject;
   start_time: stringOrNull;
   sub_events: Event[];
-  super_event: Event;
-  super_event_type: SuperEventType;
+  super_event: Event | null;
+  super_event_type: SuperEventType | null;
   type_id: EventTypeId;
   videos: Video[];
   '@id': string;

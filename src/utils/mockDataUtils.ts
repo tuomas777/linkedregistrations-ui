@@ -3,8 +3,133 @@ import faker from 'faker';
 import merge from 'lodash/merge';
 
 import { LocalisedObject, Meta } from '../domain/api/types';
+import {
+  EventStatus,
+  EventTypeId,
+  PublicationStatus,
+} from '../domain/event/constants';
+import { Event, Offer } from '../domain/event/types';
+import { Image, ImagesResponse } from '../domain/image/types';
+import { Keyword, KeywordsResponse } from '../domain/keyword/types';
 import { LanguagesResponse, LELanguage } from '../domain/language/types';
-import { getLinkedEventsUrl } from './getLinkedEventsPath';
+import { Place } from '../domain/place/types';
+import generateAtId from './generateAtId';
+
+export const fakeEvent = (overrides?: Partial<Event>): Event => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Event, typeof overrides>(
+    {
+      id,
+      audience: [],
+      audience_max_age: null,
+      audience_min_age: null,
+      custom_data: null,
+      created_by: null,
+      created_time: null,
+      data_source: 'hel',
+      date_published: null,
+      deleted: null,
+      description: fakeLocalisedObject(),
+      end_time: null,
+      enrolment_end_time: null,
+      enrolment_start_time: null,
+      event_status: EventStatus.EventScheduled,
+      external_links: [],
+      images: [],
+      info_url: fakeLocalisedObject(),
+      in_language: [],
+      keywords: [],
+      last_modified_time: '2020-07-13T05:51:05.761000Z',
+      location: fakePlace(),
+      location_extra_info: fakeLocalisedObject(faker.address.streetAddress()),
+      maximum_attendee_capacity: null,
+      minimum_attendee_capacity: null,
+      name: fakeLocalisedObject(faker.name.title()),
+      offers: [],
+      provider_contact_info: null,
+      provider: fakeLocalisedObject(),
+      publication_status: PublicationStatus.Public,
+      publisher: faker.datatype.uuid(),
+      short_description: fakeLocalisedObject(),
+      start_time: '2020-07-13T05:51:05.761000Z',
+      sub_events: [],
+      super_event: null,
+      super_event_type: null,
+      type_id: EventTypeId.General,
+      videos: [],
+      '@id': generateAtId(id, 'event'),
+      '@context': 'http://schema.org',
+      '@type': 'Event',
+    },
+    overrides
+  );
+};
+
+export const fakeImages = (
+  count = 1,
+  images?: Partial<Image>[]
+): ImagesResponse => ({
+  data: generateNodeArray((i) => fakeImage(images?.[i]), count),
+  meta: fakeMeta(count),
+});
+
+export const fakeImage = (overrides?: Partial<Image>): Image => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Image, typeof overrides>(
+    {
+      id,
+      alt_text: faker.image.cats(),
+      created_time: null,
+      cropping: '59,0,503,444',
+      data_source: 'hel',
+      last_modified_time: null,
+      license: 'cc_by',
+      name: faker.random.words(),
+      photographer_name: faker.name.firstName(),
+      publisher: faker.datatype.uuid(),
+      url: faker.internet.url(),
+      '@id': generateAtId(id, 'image'),
+      '@context': 'http://schema.org',
+      '@type': 'Image',
+    },
+    overrides
+  );
+};
+
+export const fakeKeywords = (
+  count = 1,
+  keywords?: Partial<Keyword>[]
+): KeywordsResponse => ({
+  data: generateNodeArray((i) => fakeKeyword(keywords?.[i]), count),
+  meta: fakeMeta(count),
+});
+
+export const fakeKeyword = (overrides?: Partial<Keyword>): Keyword => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Keyword, typeof overrides>(
+    {
+      id,
+      aggregate: false,
+      alt_labels: [],
+      created_time: null,
+      data_source: 'yso',
+      deprecated: false,
+      has_upcoming_events: true,
+      last_modified_time: null,
+      image: null,
+      name: fakeLocalisedObject(),
+      n_nvents: 0,
+      publisher: faker.datatype.uuid(),
+      '@id': generateAtId(id, 'keyword'),
+      '@context': 'http://schema.org',
+      '@type': 'Keyword',
+    },
+    overrides
+  );
+};
 
 export const fakeLanguages = (
   count = 1,
@@ -22,9 +147,62 @@ export const fakeLanguage = (overrides?: Partial<LELanguage>): LELanguage => {
       id,
       translation_available: false,
       name: fakeLocalisedObject(),
-      '@id': getLinkedEventsUrl(`/language/${id}/`),
+      '@id': generateAtId(id, 'language'),
       '@context': 'http://schema.org',
       '@type': 'Language',
+    },
+    overrides
+  );
+};
+
+export const fakeOffers = (count = 1, offers?: Partial<Offer>[]): Offer[] =>
+  generateNodeArray((i) => fakeOffer(offers?.[i]), count);
+
+export const fakeOffer = (overrides?: Partial<Offer>): Offer =>
+  merge<Offer, typeof overrides>(
+    {
+      description: fakeLocalisedObject(),
+      info_url: fakeLocalisedObject(faker.internet.url()),
+      is_free: false,
+      price: fakeLocalisedObject(),
+    },
+    overrides
+  );
+
+export const fakePlace = (overrides?: Partial<Place>): Place => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Place, typeof overrides>(
+    {
+      id,
+      address_country: null,
+      address_locality: fakeLocalisedObject(),
+      address_region: null,
+      contact_type: null,
+      created_time: '2021-02-22T18:14:28.345694Z',
+      custom_data: null,
+      data_source: 'tprek',
+      deleted: false,
+      description: null,
+      divisions: [],
+      email: faker.internet.email(),
+      info_url: fakeLocalisedObject(faker.internet.url()),
+      image: null,
+      last_modified_time: '2021-02-22T18:14:28.659508Z',
+      name: fakeLocalisedObject(),
+      n_events: 0,
+      parent: null,
+      position: null,
+      postal_code: faker.address.zipCode(),
+      post_office_box_num: null,
+      publisher: 'hel:1234',
+      replaced_by: null,
+      street_address: fakeLocalisedObject(),
+      telephone: fakeLocalisedObject(),
+      has_upcoming_events: true,
+      '@id': generateAtId(id, 'place'),
+      '@context': 'http://schema.org',
+      '@type': 'Place',
     },
     overrides
   );

@@ -1,4 +1,4 @@
-import { stringOrNull } from '../api/types';
+import { Meta, stringOrNull } from '../api/types';
 
 export type Image = {
   id: string;
@@ -15,6 +15,11 @@ export type Image = {
   '@id': string;
   '@context': string;
   '@type': string;
+};
+
+export type ImagesResponse = {
+  meta: Meta;
+  data: Image[];
 };
 
 export type ImageOrNull = Image | null;

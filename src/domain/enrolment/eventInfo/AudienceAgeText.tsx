@@ -21,6 +21,7 @@ const AudienceAgeText: React.FC<AudienceAgeTextProps> = ({
     }
     return '-';
   };
+
   return <>{getText()}</>;
 };
 

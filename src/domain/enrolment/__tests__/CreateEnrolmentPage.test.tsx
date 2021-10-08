@@ -3,19 +3,23 @@
  * @jest-environment jsdom
  */
 import { axe } from 'jest-axe';
+import { rest } from 'msw';
 import React from 'react';
 import { toast } from 'react-toastify';
 
 import {
-  actWait,
   configure,
   render,
   screen,
+  setQueryMocks,
   userEvent,
   waitFor,
 } from '../../../utils/testUtils';
+import { event } from '../../event/__mocks__/event';
+import { TEST_EVENT_ID } from '../../event/constants';
 import { languagesResponse } from '../../language/__mocks__/languages';
-import * as languageQueries from '../../language/query';
+import { place } from '../../place/__mocks__/place';
+import { TEST_PLACE_ID } from '../../place/constants';
 import CreateEnrolmentPage from '../CreateEnrolmentPage';
 
 configure({ defaultHidden: true });
@@ -27,6 +31,13 @@ const enrolmentValues = {
   phone: '+358 44 123 4567',
   streetAddress: 'Street address',
   zip: '00100',
+};
+
+const findElement = (key: 'nameInput') => {
+  switch (key) {
+    case 'nameInput':
+      return screen.findByRole('textbox', { name: /nimi/i });
+  }
 };
 
 const getElement = (
@@ -80,22 +91,35 @@ const getElement = (
   }
 };
 
+beforeEach(() => {
+  setQueryMocks(
+    ...[
+      rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
+        res(ctx.status(200), ctx.json(event))
+      ),
+      rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
+        res(ctx.status(200), ctx.json(place))
+      ),
+      rest.get('*/language/', (req, res, ctx) =>
+        res(ctx.status(200), ctx.json(languagesResponse))
+      ),
+    ]
+  );
+});
+
 test.skip('page is accessible', async () => {
   const { container } = render(<CreateEnrolmentPage />);
 
-  await actWait();
+  await findElement('nameInput');
   expect(await axe(container)).toHaveNoViolations();
 });
 
 test('should validate enrolment form and focus invalid field', async () => {
   toast.error = jest.fn();
-  jest.spyOn(languageQueries, 'useLanguagesQuery').mockReturnValue({
-    data: languagesResponse,
-    isLoading: false,
-  } as any);
+
   render(<CreateEnrolmentPage />);
 
-  const nameInput = getElement('nameInput');
+  const nameInput = await findElement('nameInput');
   const streetAddressInput = getElement('streetAddressInput');
   const yearOfBirthButton = getElement('yearOfBirthButton');
   const zipInput = getElement('zipInput');

@@ -3,6 +3,7 @@ import { QueryClient, useQuery, UseQueryResult } from 'react-query';
 import { Event, EventQueryVariables } from './types';
 import { fetchEvent } from './utils';
 
+/* istanbul ignore next */
 export const prefetchEventQuery = (
   queryClient: QueryClient,
   args: EventQueryVariables
