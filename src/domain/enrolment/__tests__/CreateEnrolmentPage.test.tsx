@@ -107,7 +107,7 @@ beforeEach(() => {
   );
 });
 
-test.skip('page is accessible', async () => {
+test('page is accessible', async () => {
   const { container } = render(<CreateEnrolmentPage />);
 
   await findElement('nameInput');
