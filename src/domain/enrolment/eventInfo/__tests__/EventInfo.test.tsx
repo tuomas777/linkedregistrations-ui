@@ -6,7 +6,6 @@ import { rest } from 'msw';
 import React from 'react';
 
 import {
-  actWait,
   configure,
   render,
   screen,
@@ -66,6 +65,5 @@ test('should show event info', async () => {
   );
   getElement('description');
   getElement('price');
-  await actWait(1000);
   getElement('age');
 });
