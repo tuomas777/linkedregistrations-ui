@@ -47,11 +47,9 @@ const getElement = (key: 'age' | 'date' | 'description' | 'name' | 'price') => {
 
 beforeEach(() => {
   setQueryMocks(
-    ...[
-      rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
-        res(ctx.status(200), ctx.json(place))
-      ),
-    ]
+    rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(place))
+    )
   );
 });
 

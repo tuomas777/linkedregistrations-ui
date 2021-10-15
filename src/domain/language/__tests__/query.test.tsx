@@ -7,11 +7,9 @@ import { useLanguagesQuery } from '../query';
 
 test('should return correct data for useLanguagesQuery', async () => {
   setQueryMocks(
-    ...[
-      rest.get('*/language/', (req, res, ctx) =>
-        res(ctx.status(200), ctx.json(languagesResponse))
-      ),
-    ]
+    rest.get('*/language/', (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(languagesResponse))
+    )
   );
 
   const wrapper = getQueryWrapper();

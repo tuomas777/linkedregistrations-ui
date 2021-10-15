@@ -7,11 +7,9 @@ import useLanguageOptions from '../useLanguageOptions';
 
 test('should return language options', async () => {
   setQueryMocks(
-    ...[
-      rest.get('*/language/', (req, res, ctx) =>
-        res(ctx.status(200), ctx.json(languagesResponse))
-      ),
-    ]
+    rest.get('*/language/', (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(languagesResponse))
+    )
   );
   const wrapper = getQueryWrapper();
 
@@ -39,11 +37,9 @@ test('should return language options', async () => {
 
 test('should return empty array', async () => {
   setQueryMocks(
-    ...[
-      rest.get('*/language/', (req, res, ctx) =>
-        res(ctx.status(200), ctx.json({}))
-      ),
-    ]
+    rest.get('*/language/', (req, res, ctx) =>
+      res(ctx.status(200), ctx.json({}))
+    )
   );
   const wrapper = getQueryWrapper();
 

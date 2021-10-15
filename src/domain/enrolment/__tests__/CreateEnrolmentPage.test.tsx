@@ -93,17 +93,15 @@ const getElement = (
 
 beforeEach(() => {
   setQueryMocks(
-    ...[
-      rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
-        res(ctx.status(200), ctx.json(event))
-      ),
-      rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
-        res(ctx.status(200), ctx.json(place))
-      ),
-      rest.get('*/language/', (req, res, ctx) =>
-        res(ctx.status(200), ctx.json(languagesResponse))
-      ),
-    ]
+    rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(event))
+    ),
+    rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(place))
+    ),
+    rest.get('*/language/', (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(languagesResponse))
+    )
   );
 });
 
