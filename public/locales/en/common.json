@@ -8,6 +8,10 @@
       "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
     }
   },
+  "errorPage": {
+    "text": "The page you were looking for was not found. Please try again later. If this problem persists, please contact us.",
+    "title": "Unfortunately this page was not found"
+  },
   "navigation": {
     "languages": {
       "en": "In English",

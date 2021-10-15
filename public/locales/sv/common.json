@@ -8,6 +8,10 @@
       "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
     }
   },
+  "errorPage": {
+    "text": "Sidan du letade efter hittades inte. Vänligen försök igen senare. Kontakta oss om problemet kvarstår.",
+    "title": "Tyvärr hittades inte denna sida"
+  },
   "navigation": {
     "languages": {
       "en": "In English",

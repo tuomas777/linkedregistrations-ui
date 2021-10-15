@@ -1,7 +1,8 @@
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import NextErrorComponent from 'next/error';
 import React from 'react';
+
+import NotFound from '../domain/notFound/NotFound';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
@@ -12,7 +13,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 };
 
 const NotFoundPage = (): React.ReactElement => {
-  return <NextErrorComponent statusCode={404} />;
+  return <NotFound />;
 };
 
 export default NotFoundPage;
