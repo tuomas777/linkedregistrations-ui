@@ -208,7 +208,7 @@ const EnrolmentForm: React.FC = () => {
 
             <Notification
               className={styles.notification}
-              label="Ilmoittautumisen vahvistaminen"
+              label={t('notificationTitle')}
             >
               <div
                 dangerouslySetInnerHTML={{
