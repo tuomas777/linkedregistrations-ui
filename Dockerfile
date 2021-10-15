@@ -60,8 +60,10 @@ COPY --from=staticbuilder --chown=appuser:appuser /app/.next /app/.next
 COPY --chown=appuser:appuser next-i18next.config.js /app/
 COPY --chown=appuser:appuser next.config.js /app/
 
-# Copy public folder, package.json and yarn.lock files
-COPY --chown=appuser:appuser public package.json yarn.lock /app/
+# Copy public folder
+COPY --chown=appuser:appuser public /app/public
+# Copy public package.json and yarn.lock files
+COPY --chown=appuser:appuser package.json yarn.lock /app/
 
 # Install production dependencies
 RUN yarn install --production --frozen-lockfile && yarn cache clean --force
