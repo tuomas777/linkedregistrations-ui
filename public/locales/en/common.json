@@ -1,6 +1,5 @@
 {
   "appName": "Linked Registrations",
-  "description": "Linked Registrations UI description (en)",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "No options",
@@ -8,6 +7,10 @@
       "statusMessage": "{{count}} option available, move up or down with arrow keys. Press Enter to make a selection.",
       "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
     }
+  },
+  "errorPage": {
+    "text": "The page you were looking for was not found. Please try again later. If this problem persists, please contact us.",
+    "title": "Unfortunately this page was not found"
   },
   "navigation": {
     "languages": {
@@ -22,7 +25,6 @@
   "openInNewTab": "(will open in a new tab)",
   "showLess": "Show less",
   "showMore": "Show more",
-  "title": "Linked Registrations UI (en)",
   "validation": {
     "array": {
       "min": "At least {{min}} item must be selected",

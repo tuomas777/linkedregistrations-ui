@@ -1,6 +1,5 @@
 {
   "appName": "Linked Registrations",
-  "description": "Linked Registrations UI description (sv)",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "Inga alternativ",
@@ -8,6 +7,10 @@
       "statusMessage": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val.",
       "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
     }
+  },
+  "errorPage": {
+    "text": "Sidan du letade efter hittades inte. Vänligen försök igen senare. Kontakta oss om problemet kvarstår.",
+    "title": "Tyvärr hittades inte denna sida"
   },
   "navigation": {
     "languages": {
@@ -22,7 +25,6 @@
   "openInNewTab": "(öppnas i en ny flik)",
   "showLess": "Visa mindre",
   "showMore": "Visa mer",
-  "title": "Linked Registrations UI (sv)",
   "validation": {
     "array": {
       "min": "Minst {{min}} objekt måste väljas",
