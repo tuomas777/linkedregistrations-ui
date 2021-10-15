@@ -1,6 +1,5 @@
 {
   "appName": "Linked Registrations",
-  "description": "Linked Registrations UI description (en)",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "No options",
@@ -22,7 +21,6 @@
   "openInNewTab": "(will open in a new tab)",
   "showLess": "Show less",
   "showMore": "Show more",
-  "title": "Linked Registrations UI (en)",
   "validation": {
     "array": {
       "min": "At least {{min}} item must be selected",

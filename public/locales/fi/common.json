@@ -1,6 +1,5 @@
 {
   "appName": "Linked Registrations",
-  "description": "Linked Registrations UI description",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "Ei vaihtoehtoja",
@@ -22,7 +21,6 @@
   "openInNewTab": "(avataan uudessa välilehdessä)",
   "showLess": "Näytä vähemmän",
   "showMore": "Näytä lisää",
-  "title": "Linked Registrations UI",
   "validation": {
     "array": {
       "min": "Vähintään {{min}} vaihtoehto tulee olla valittuna",

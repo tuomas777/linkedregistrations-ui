@@ -1,6 +1,5 @@
 {
   "appName": "Linked Registrations",
-  "description": "Linked Registrations UI description (sv)",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "Inga alternativ",
@@ -22,7 +21,6 @@
   "openInNewTab": "(öppnas i en ny flik)",
   "showLess": "Visa mindre",
   "showMore": "Visa mer",
-  "title": "Linked Registrations UI (sv)",
   "validation": {
     "array": {
       "min": "Minst {{min}} objekt måste väljas",
