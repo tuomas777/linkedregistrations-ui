@@ -1,4 +1,42 @@
 {
+  "appName": "Linked Registrations",
   "description": "Linked Registrations UI description (en)",
-  "title": "Linked Registrations UI (en)"
+  "dropdownSelect": {
+    "accessibility": {
+      "noResults": "No options",
+      "selectionMessage": "{{value}} has been selected.",
+      "statusMessage": "{{count}} option available, move up or down with arrow keys. Press Enter to make a selection.",
+      "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
+    }
+  },
+  "navigation": {
+    "languages": {
+      "en": "In English",
+      "fi": "Suomeksi",
+      "sv": "På svenska"
+    },
+    "languageSelectorAriaLabel": "English - language selection",
+    "menuToggleAriaLabel": "Menu",
+    "skipToContentLabel": "Skip to content"
+  },
+  "openInNewTab": "(will open in a new tab)",
+  "showLess": "Show less",
+  "showMore": "Show more",
+  "title": "Linked Registrations UI (en)",
+  "validation": {
+    "array": {
+      "min": "At least {{min}} item must be selected",
+      "min_plural": "At least {{min}} item must be selected",
+      "required": "At least 1 item must be selected"
+    },
+    "enrolmentAccepted": "Sharing information with the organizer must be approved",
+    "string": {
+      "charsLeft": "{{count}} character left",
+      "charsLeft_plural": "{{count}} characters left",
+      "email": "This field must be a valid email",
+      "phone": "This field must be a valid phone number",
+      "required": "This field is required",
+      "zip": "This field must be a valid postcode"
+    }
+  }
 }

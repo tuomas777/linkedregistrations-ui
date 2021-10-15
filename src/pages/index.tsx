@@ -7,7 +7,6 @@ import styles from '../styles/Home.module.scss';
 
 const Home: NextPage = () => {
   const { t } = useTranslation('common');
-
   return (
     <div className={styles.container}>
       <Head>

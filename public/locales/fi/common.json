@@ -1,4 +1,42 @@
 {
+  "appName": "Linked Registrations",
   "description": "Linked Registrations UI description",
-  "title": "Linked Registrations UI"
+  "dropdownSelect": {
+    "accessibility": {
+      "noResults": "Ei vaihtoehtoja",
+      "selectionMessage": "{{value}} on valittu.",
+      "statusMessage": "{{count}} vaihtoehto valittavissa, siirry nuolinäppäimillä ylös ja alas. Paina Enter-näppäintä valitaksesi.",
+      "statusMessage_plural": "{{count}} vaihtoehtoa valittavissa, siirry nuolinäppäimillä ylös ja alas. Paina Enter-näppäintä valitaksesi."
+    }
+  },
+  "navigation": {
+    "languages": {
+      "en": "In English",
+      "fi": "Suomeksi",
+      "sv": "På svenska"
+    },
+    "languageSelectorAriaLabel": "Suomi - kielivalikko",
+    "menuToggleAriaLabel": "Valikko",
+    "skipToContentLabel": "Siirry sisältöön"
+  },
+  "openInNewTab": "(avataan uudessa välilehdessä)",
+  "showLess": "Näytä vähemmän",
+  "showMore": "Näytä lisää",
+  "title": "Linked Registrations UI",
+  "validation": {
+    "array": {
+      "min": "Vähintään {{min}} vaihtoehto tulee olla valittuna",
+      "min_plural": "Vähintään {{min}} vaihtoehtoa tulee olla valittuna",
+      "required": "Vähintään 1 vaihtoehto tulee olla valittuna"
+    },
+    "enrolmentAccepted": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
+    "string": {
+      "charsLeft": "{{count}} merkki jäljellä",
+      "charsLeft_plural": "{{count}} merkkiä jäljellä",
+      "email": "Tämän kentän on oltava kelvollinen sähköpostiosoite",
+      "phone": "Tämän kentän on oltava kelvollinen puhelinnumero",
+      "required": "Tämä kenttä on pakollinen",
+      "zip": "Tämän kentän on oltava kelvollinen postinumero"
+    }
+  }
 }

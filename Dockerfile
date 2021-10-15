@@ -35,7 +35,7 @@ FROM appbase as staticbuilder
 
 # Set environmental variables (when building image on GitHub) 
 # specified in github workflow files  
-
+ARG REACT_APP_LINKED_EVENTS_URL
 
 # Use non-root user
 USER appuser

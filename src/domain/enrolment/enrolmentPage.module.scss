@@ -1,0 +1,13 @@
+@import '../../styles/widths.scss';
+
+.formContainer {
+  @include max-width-column(6);
+
+  padding: var(--spacing-m) 0;
+  box-sizing: content-box;
+}
+
+.divider {
+  border-top: 1px solid var(--color-black-20);
+  margin: var(--spacing-m) 0;
+}

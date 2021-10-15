@@ -1,4 +1,42 @@
 {
+  "appName": "Linked Registrations",
   "description": "Linked Registrations UI description (sv)",
-  "title": "Linked Registrations UI (sv)"
+  "dropdownSelect": {
+    "accessibility": {
+      "noResults": "Inga alternativ",
+      "selectionMessage": "{{value}} är valt.",
+      "statusMessage": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val.",
+      "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
+    }
+  },
+  "navigation": {
+    "languages": {
+      "en": "In English",
+      "fi": "Suomeksi",
+      "sv": "På svenska"
+    },
+    "languageSelectorAriaLabel": "Svenska - språkval",
+    "menuToggleAriaLabel": "Menyn",
+    "skipToContentLabel": "Gå till innehållet"
+  },
+  "openInNewTab": "(öppnas i en ny flik)",
+  "showLess": "Visa mindre",
+  "showMore": "Visa mer",
+  "title": "Linked Registrations UI (sv)",
+  "validation": {
+    "array": {
+      "min": "Minst {{min}} objekt måste väljas",
+      "min_plural": "Minst {{min}} objekt måste väljas",
+      "required": "Minst 1 objekt måste väljas"
+    },
+    "enrolmentAccepted": "Dela information med arrangören måste godkännas",
+    "string": {
+      "charsLeft": "{{count}} tecken kvar",
+      "charsLeft_plural": "{{count}} tecken kvar",
+      "email": "Detta fält måste vara en giltig e-postmeddelande",
+      "phone": "Detta fält måste vara en giltig telefonnummer",
+      "required": "Detta fält krävs",
+      "zip": "Detta fält måste vara en giltig postnummer"
+    }
+  }
 }
