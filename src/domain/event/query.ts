@@ -4,6 +4,14 @@ import { Event, EventQueryVariables } from './types';
 import { fetchEvent } from './utils';
 
 /* istanbul ignore next */
+export const fetchEventQuery = (
+  queryClient: QueryClient,
+  args: EventQueryVariables
+): Promise<Event> => {
+  return queryClient.fetchQuery('event', () => fetchEvent(args));
+};
+
+/* istanbul ignore next */
 export const prefetchEventQuery = (
   queryClient: QueryClient,
   args: EventQueryVariables

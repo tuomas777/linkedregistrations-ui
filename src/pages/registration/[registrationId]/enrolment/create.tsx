@@ -7,8 +7,7 @@ import {
   EVENT_INCLUDES,
   TEST_EVENT_ID,
 } from '../../../../domain/event/constants';
-import { prefetchEventQuery } from '../../../../domain/event/query';
-import { Event } from '../../../../domain/event/types';
+import { fetchEventQuery } from '../../../../domain/event/query';
 import { prefetchPlaceQuery } from '../../../../domain/place/query';
 import parseIdFromAtId from '../../../../utils/parseIdFromAtId';
 
@@ -17,18 +16,12 @@ const CreateEnrolment: NextPage = () => <CreateEnrolmentPage />;
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const queryClient = new QueryClient();
 
-  await prefetchEventQuery(queryClient, {
+  const event = await fetchEventQuery(queryClient, {
     id: TEST_EVENT_ID,
     include: EVENT_INCLUDES,
   });
 
-  const dehydratedState = dehydrate(queryClient);
-  const eventQuery = dehydratedState.queries.find(
-    (query) => query.queryKey === 'event'
-  );
-
-  if (eventQuery && eventQuery.state.data) {
-    const event = eventQuery.state.data as Event;
+  if (event) {
     const placeId = parseIdFromAtId(event.location['@id']);
 
     if (placeId) {
