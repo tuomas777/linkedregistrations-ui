@@ -8,22 +8,13 @@ import Document, {
 } from 'next/document';
 import React from 'react';
 
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '../constants';
-
-const documentLang = ({ __NEXT_DATA__ }: DocumentProps): string => {
-  const { locale } = __NEXT_DATA__;
-  const lang = Object.values(SUPPORTED_LANGUAGES).find((l) => l === locale);
-
-  return lang || DEFAULT_LANGUAGE;
-};
-
 const document = new jsdom.JSDOM('<!DOCTYPE html>').window.document;
 global.document = document;
 
 class MyDocument extends Document<DocumentProps> {
   render(): React.ReactElement {
     return (
-      <Html lang={documentLang(this.props)}>
+      <Html>
         <Head>
           {Array.from(document.head.getElementsByTagName('style')).map(
             (style, index) => (
