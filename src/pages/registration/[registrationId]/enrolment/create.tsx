@@ -16,18 +16,20 @@ const CreateEnrolment: NextPage = () => <CreateEnrolmentPage />;
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const queryClient = new QueryClient();
 
-  const event = await fetchEventQuery(queryClient, {
-    id: TEST_EVENT_ID,
-    include: EVENT_INCLUDES,
-  });
+  try {
+    const event = await fetchEventQuery(queryClient, {
+      id: TEST_EVENT_ID,
+      include: EVENT_INCLUDES,
+    });
 
-  if (event) {
-    const placeId = parseIdFromAtId(event.location['@id']);
+    if (event) {
+      const placeId = parseIdFromAtId(event.location['@id']);
 
-    if (placeId) {
-      await prefetchPlaceQuery(queryClient, placeId);
+      if (placeId) {
+        await prefetchPlaceQuery(queryClient, placeId);
+      }
     }
-  }
+  } catch {}
 
   return {
     props: {
