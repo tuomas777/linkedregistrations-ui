@@ -72,7 +72,9 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
 
         return (
           <Form noValidate>
-            <Notification className={styles.warning}>{warning}</Notification>
+            {warning && (
+              <Notification className={styles.warning}>{warning}</Notification>
+            )}
             <Fieldset heading={t(`titleBasicInfo`)}>
               <FormGroup>
                 <Field
