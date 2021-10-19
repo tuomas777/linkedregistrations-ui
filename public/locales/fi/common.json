@@ -12,6 +12,8 @@
     "text": "Hakemaasi sivua ei löytynyt. Yritä uudelleen myöhemmin. Jos ongelma jatkuu, ota meihin yhteyttä.",
     "title": "Valitettavasti etsimääsi sivua ei löydy"
   },
+  "loading": "Ladataan...",
+  "loadingFinished": "Lataaminen päättynyt",
   "navigation": {
     "languages": {
       "en": "In English",

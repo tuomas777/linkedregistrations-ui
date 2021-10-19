@@ -7,12 +7,17 @@ import {
   EventStatus,
   EventTypeId,
   PublicationStatus,
+  TEST_EVENT_ID,
 } from '../domain/event/constants';
 import { Event, Offer } from '../domain/event/types';
 import { Image, ImagesResponse } from '../domain/image/types';
 import { Keyword, KeywordsResponse } from '../domain/keyword/types';
 import { LanguagesResponse, LELanguage } from '../domain/language/types';
 import { Place } from '../domain/place/types';
+import {
+  Registration,
+  RegistrationsResponse,
+} from '../domain/registration/types';
 import generateAtId from './generateAtId';
 
 export const fakeEvent = (overrides?: Partial<Event>): Event => {
@@ -203,6 +208,47 @@ export const fakePlace = (overrides?: Partial<Place>): Place => {
       '@id': generateAtId(id, 'place'),
       '@context': 'http://schema.org',
       '@type': 'Place',
+    },
+    overrides
+  );
+};
+
+export const fakeRegistrations = (
+  count = 1,
+  registrations?: Partial<Registration>[]
+): RegistrationsResponse => ({
+  data: generateNodeArray((i) => fakeRegistration(registrations?.[i]), count),
+  meta: fakeMeta(count),
+});
+
+export const fakeRegistration = (
+  overrides?: Partial<Registration>
+): Registration => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Registration, typeof overrides>(
+    {
+      id,
+      audience_max_age: null,
+      audience_min_age: null,
+      confirmation_message: faker.lorem.paragraph(),
+      created_at: null,
+      created_by: faker.name.firstName(),
+      current_attendee_count: 0,
+      current_waiting_attendee_count: 0,
+      enrolment_end_time: '2020-09-30T16:00:00.000000Z',
+      enrolment_start_time: '2020-09-27T15:00:00.000000Z',
+      event_id: TEST_EVENT_ID,
+      instructions: faker.lorem.paragraph(),
+      last_modified_time: '2020-09-12T15:00:00.000000Z',
+      maximum_attendee_capacity: null,
+      minimum_attendee_capacity: null,
+      name: fakeLocalisedObject(faker.name.title()),
+      updated_at: null,
+      waiting_attendee_capacity: null,
+      '@id': generateAtId(id, 'registration'),
+      '@context': 'http://schema.org',
+      '@type': 'Registration',
     },
     overrides
   );

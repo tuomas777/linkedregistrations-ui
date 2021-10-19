@@ -12,6 +12,8 @@
     "text": "The page you were looking for was not found. Please try again later. If this problem persists, please contact us.",
     "title": "Unfortunately this page was not found"
   },
+  "loading": "Loading...",
+  "loadingFinished": "Loading finished",
   "navigation": {
     "languages": {
       "en": "In English",

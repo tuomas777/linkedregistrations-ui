@@ -1,4 +1,10 @@
-import { QueryClient, useQuery, UseQueryResult } from 'react-query';
+import {
+  QueryClient,
+  UseBaseQueryOptions,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from 'react-query';
 
 import { Event, EventQueryVariables } from './types';
 import { fetchEvent } from './utils';
@@ -20,7 +26,8 @@ export const prefetchEventQuery = (
 };
 
 export const useEventQuery = (
-  args: EventQueryVariables
+  args: EventQueryVariables,
+  options?: Pick<UseQueryOptions, 'enabled'>
 ): UseQueryResult<Event> => {
-  return useQuery<Event, Error>('event', () => fetchEvent(args));
+  return useQuery<Event, Error>('event', () => fetchEvent(args), options);
 };
