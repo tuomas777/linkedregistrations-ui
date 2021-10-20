@@ -10,5 +10,3 @@ export type OptionType = {
   label: string;
   value: string;
 };
-
-export type UseQueryOptions2 = Omit<UseQueryOptions>;
