@@ -9,7 +9,7 @@
     }
   },
   "errorPage": {
-    "text": "Hakemaasi sivua ei löytynyt. Yritä uudelleen myöhemmin. Jos ongelma jatkuu, ota meihin yhteyttä.",
+    "text": "Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.",
     "title": "Valitettavasti etsimääsi sivua ei löydy"
   },
   "loading": "Ladataan...",

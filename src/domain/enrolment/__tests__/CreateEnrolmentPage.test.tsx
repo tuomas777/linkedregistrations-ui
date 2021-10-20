@@ -222,6 +222,6 @@ test('should show not found page if registration does not exist', async () => {
   });
 
   screen.getByText(
-    'Hakemaasi sivua ei löytynyt. Yritä uudelleen myöhemmin. Jos ongelma jatkuu, ota meihin yhteyttä.'
+    'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
   );
 });
