@@ -1,5 +1,3 @@
-import { UseQueryOptions } from 'react-query';
-
 export type Language = 'en' | 'fi' | 'sv';
 
 export type Error<T> = {
