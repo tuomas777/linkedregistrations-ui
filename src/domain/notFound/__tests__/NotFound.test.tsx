@@ -16,7 +16,7 @@ test('should render not found page', () => {
 
   expect(
     screen.getByText(
-      'Hakemaasi sivua ei löytynyt. Yritä uudelleen myöhemmin. Jos ongelma jatkuu, ota meihin yhteyttä.'
+      'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
     )
   ).toBeInTheDocument();
 });

@@ -12,6 +12,8 @@
     "text": "Sidan du letade efter hittades inte. Vänligen försök igen senare. Kontakta oss om problemet kvarstår.",
     "title": "Tyvärr hittades inte denna sida"
   },
+  "loading": "Laddar...",
+  "loadingFinished": "Laddningen är klar",
   "navigation": {
     "languages": {
       "en": "In English",

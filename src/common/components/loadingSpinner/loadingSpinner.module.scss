@@ -1,0 +1,21 @@
+.loadingSpinnerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: var(--spacing-m) 0;
+  box-sizing: border-box;
+}
+
+.loadingSpinner {
+  --spinner-size: 7.5rem !important;
+  --spinner-thickness: 1.25rem !important;
+  --spinner-size-small: 1.5rem;
+  --spinner-thickness-small: 0.185rem;
+
+  &.loadingSpinnerSmall {
+    --spinner-size: var(--spinner-size-small) !important;
+    --spinner-thickness: var(--spinner-thickness-small) !important;
+  }
+}

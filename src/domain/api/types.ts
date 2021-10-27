@@ -12,6 +12,6 @@ export type LocalisedObject = {
 
 export type Meta = {
   count: number;
-  next: string | null;
-  previous: string | null;
+  next: stringOrNull;
+  previous: stringOrNull;
 };

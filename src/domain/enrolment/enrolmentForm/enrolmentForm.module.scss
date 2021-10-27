@@ -50,3 +50,7 @@
 .button {
   @include min-width-column(2);
 }
+
+.warning {
+  margin: var(--spacing-m) 0;
+}
