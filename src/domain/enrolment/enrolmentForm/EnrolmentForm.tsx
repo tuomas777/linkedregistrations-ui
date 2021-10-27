@@ -41,7 +41,7 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
   const languageOptions = useLanguageOptions();
   const formDisabled = !isRegistrationPossible(registration);
 
-  const warning = getRegistrationWarning(registration, t);
+  const registrationWarning = getRegistrationWarning(registration, t);
 
   return (
     <Formik
@@ -72,8 +72,10 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
 
         return (
           <Form noValidate>
-            {warning && (
-              <Notification className={styles.warning}>{warning}</Notification>
+            {registrationWarning && (
+              <Notification className={styles.warning}>
+                {registrationWarning}
+              </Notification>
             )}
             <Fieldset heading={t(`titleBasicInfo`)}>
               <FormGroup>
