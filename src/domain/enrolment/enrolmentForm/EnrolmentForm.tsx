@@ -1,19 +1,23 @@
 import { Field, Form, Formik } from 'formik';
 import { Fieldset, Notification } from 'hds-react';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import React from 'react';
-import { toast } from 'react-toastify';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Button from '../../../common/components/button/Button';
 import CheckboxField from '../../../common/components/formFields/CheckboxField';
 import CheckboxGroupField from '../../../common/components/formFields/CheckboxGroupField';
+import DateInputField from '../../../common/components/formFields/DateInputField';
 import PhoneInputField from '../../../common/components/formFields/PhoneInputField';
 import SingleSelectField from '../../../common/components/formFields/SingleSelectField';
 import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
+import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
+import useLocale from '../../../hooks/useLocale';
+import { ROUTES } from '../../app/routes/constants';
 import { Registration } from '../../registration/types';
 import {
   getRegistrationWarning,
@@ -24,9 +28,12 @@ import {
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
 } from '../constants';
+import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
-import useYearOptions from '../hooks/useYearOptions';
+import { useCreateEnrolmentMutation } from '../mutation';
+import { Enrolment, EnrolmentFormFields } from '../types';
+import { getEnrolmentPayload } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import styles from './enrolmentForm.module.scss';
 
@@ -37,15 +44,44 @@ type Props = {
 const EnrolmentForm: React.FC<Props> = ({ registration }) => {
   const { t } = useTranslation(['enrolment', 'common']);
   const notificationOptions = useNotificationOptions();
-  const yearOptions = useYearOptions();
   const languageOptions = useLanguageOptions();
   const formDisabled = !isRegistrationPossible(registration);
+  const locale = useLocale();
+  const router = useRouter();
+
+  const { serverErrorItems, setServerErrorItems, showServerErrors } =
+    useEnrolmentServerErrors();
+
+  const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+    router.push(
+      `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
+        '[registrationId]',
+        registration.id
+      )
+        .replace('[enrolmentId]', enrolment.id)
+        .replace('[accessCode]', enrolment.cancellation_code as string)}`
+    );
+  };
+  const createEnrolmentMutation = useCreateEnrolmentMutation({
+    onError: (error) => {
+      showServerErrors({ error: JSON.parse(error.message) });
+    },
+    onSuccess: (data) => {
+      goToEnrolmentCompletedPage(data);
+    },
+  });
 
   const registrationWarning = getRegistrationWarning(registration, t);
 
+  const initialValues: EnrolmentFormFields = {
+    ...ENROLMENT_INITIAL_VALUES,
+    audienceMaxAge: registration.audience_max_age ?? null,
+    audienceMinAge: registration.audience_min_age ?? null,
+  };
+
   return (
     <Formik
-      initialValues={ENROLMENT_INITIAL_VALUES}
+      initialValues={initialValues}
       onSubmit={/* istanbul ignore next */ () => undefined}
       validationSchema={enrolmentSchema}
     >
@@ -54,11 +90,13 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
 
         const handleSubmit = async () => {
           try {
+            setServerErrorItems([]);
             clearErrors();
 
             await enrolmentSchema.validate(values, { abortEarly: false });
+            const payload = getEnrolmentPayload(values, registration);
 
-            toast.error('TODO: Save enrolment');
+            createEnrolmentMutation.mutate(payload);
           } catch (error) {
             showErrors({
               error: error as ValidationError,
@@ -72,6 +110,7 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
 
         return (
           <Form noValidate>
+            <ServerErrorSummary errors={serverErrorItems} />
             {registrationWarning && (
               <Notification className={styles.warning}>
                 {registrationWarning}
@@ -99,12 +138,16 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
                     required
                   />
                   <Field
-                    name={ENROLMENT_FIELDS.YEAR_OF_BIRTH}
-                    component={SingleSelectField}
+                    name={ENROLMENT_FIELDS.DATE_OF_BIRTH}
+                    component={DateInputField}
                     disabled={formDisabled}
-                    label={t(`labelYearOfBirth`)}
-                    options={yearOptions}
-                    placeholder={t(`placeholderYearOfBirth`)}
+                    label={t(`labelDateOfBirth`)}
+                    language={locale}
+                    maxDate={new Date()}
+                    minDate={
+                      new Date(`${new Date().getFullYear() - 100}-01-01`)
+                    }
+                    placeholder={t(`placeholderDateOfBirth`)}
                     required
                   />
                 </div>
@@ -151,9 +194,7 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
                     label={t(`labelPhoneNumber`)}
                     placeholder={t(`placeholderPhoneNumber`)}
                     type="tel"
-                    required={values.notifications.includes(
-                      NOTIFICATIONS.PHONE
-                    )}
+                    required={values.notifications.includes(NOTIFICATIONS.SMS)}
                   />
                 </div>
               </FormGroup>
@@ -168,19 +209,6 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
                   disabled={formDisabled}
                   options={notificationOptions}
                 />
-              </FormGroup>
-              <FormGroup>
-                <div className={styles.notificationLanguageRow}>
-                  <Field
-                    name={ENROLMENT_FIELDS.NOTIFICATION_LANGUAGE}
-                    component={SingleSelectField}
-                    disabled={formDisabled}
-                    label={t(`labelNotificationLanguage`)}
-                    options={languageOptions}
-                    placeholder={t(`placeholderNotificationLanguage`)}
-                    required
-                  />
-                </div>
               </FormGroup>
             </Fieldset>
 

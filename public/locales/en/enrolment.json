@@ -1,5 +1,9 @@
 {
   "buttonSend": "Submit registration",
+  "completedPage": {
+    "text": "You have signed up to our event {{name}} - welcome!",
+    "title": "Thank you for signing up!"
+  },
   "event": {
     "audienceAge": {
       "between": "{{min}} – {{max}} yr.",
@@ -10,23 +14,22 @@
   },
   "labelAccepted": "I agree to share my information with the organizer",
   "labelCity": "City",
+  "labelDateOfBirth": "Date of birth",
   "labelEmail": "Email address",
   "labelExtraInfo": "Additional registration information (optional)",
   "labelMembershipNumber": "Membership card number (optional)",
   "labelName": "Name",
   "labelNativeLanguage": "Native language",
-  "labelNotificationLanguage": "Language of notifications",
   "labelPhoneNumber": "Telephone number",
   "labelServiceLanguage": "Language of communication",
   "labelStreetAddress": "Street address",
-  "labelYearOfBirth": "Year of birth",
   "labelZip": "Postcode",
   "linkPrivacyPolicy": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notificationLabel": "We will send you a separate confirmation message once the event organizer has processed and confirmed your registration. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Privacy policy {{openInNewTab}}\">Privacy policy</a>",
   "notificationTitle": "Confirmation of registration",
   "notifications": {
     "email": "By email",
-    "phone": "By text message"
+    "sms": "By text message"
   },
   "placeholderCity": "Enter city",
   "placeholderEmail": "Enter your email address",
@@ -34,11 +37,9 @@
   "placeholderMembershipNumber": "Enter membership card number",
   "placeholderName": "Enter the registrant's first and last name",
   "placeholderNativeLanguage": "Select language",
-  "placeholderNotificationLanguage": "Select language",
   "placeholderPhoneNumber": "+358 44 1234 567",
   "placeholderServiceLanguage": "Select language",
   "placeholderStreetAddress": "Enter a street address",
-  "placeholderYearOfBirth": "Select year of birth",
   "placeholderZip": "Enter postcode",
   "titleAdditionalInfo": "Additional information",
   "titleBasicInfo": "Basic information of the registrant",

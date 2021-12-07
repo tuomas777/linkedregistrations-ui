@@ -1,12 +1,17 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @jest-environment jsdom
  */
+import subYears from 'date-fns/subYears';
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
+import mockRouter from 'next-router-mock';
+import singletonRouter from 'next/router';
 import React from 'react';
-import { toast } from 'react-toastify';
 
+import formatDate from '../../../utils/formatDate';
+import { fakeEnrolment } from '../../../utils/mockDataUtils';
 import {
   configure,
   render,
@@ -20,18 +25,25 @@ import { TEST_EVENT_ID } from '../../event/constants';
 import { languagesResponse } from '../../language/__mocks__/languages';
 import { place } from '../../place/__mocks__/place';
 import { TEST_PLACE_ID } from '../../place/constants';
+import { registration } from '../../registration/__mocks__/registration';
+import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import CreateEnrolmentPage from '../CreateEnrolmentPage';
 
 configure({ defaultHidden: true });
 
+jest.mock('next/dist/client/router', () => require('next-router-mock'));
+
 const enrolmentValues = {
   city: 'City',
+  dateOfBirth: formatDate(subYears(new Date(), 9)),
   email: 'participant@email.com',
   name: 'Participan name',
-  phone: '+358 44 123 4567',
+  phoneNumber: '+358 44 123 4567',
   streetAddress: 'Street address',
   zip: '00100',
 };
+
+const enrolment = fakeEnrolment();
 
 const findElement = (key: 'nameInput') => {
   switch (key) {
@@ -44,17 +56,16 @@ const getElement = (
   key:
     | 'acceptCheckbox'
     | 'cityInput'
+    | 'dateOfBirthInput'
     | 'emailCheckbox'
     | 'emailInput'
     | 'nameInput'
     | 'nativeLanguageButton'
-    | 'notificationLanguageButton'
     | 'phoneCheckbox'
     | 'phoneInput'
     | 'serviceLanguageButton'
     | 'streetAddressInput'
     | 'submitButton'
-    | 'yearOfBirthButton'
     | 'zipInput'
 ) => {
   switch (key) {
@@ -64,6 +75,8 @@ const getElement = (
       });
     case 'cityInput':
       return screen.getByRole('textbox', { name: /kaupunki/i });
+    case 'dateOfBirthInput':
+      return screen.getByRole('textbox', { name: /syntymäaika/i });
     case 'emailCheckbox':
       return screen.getByRole('checkbox', { name: /sähköpostilla/i });
     case 'emailInput':
@@ -72,8 +85,6 @@ const getElement = (
       return screen.getByRole('textbox', { name: /nimi/i });
     case 'nativeLanguageButton':
       return screen.getByRole('button', { name: /äidinkieli/i });
-    case 'notificationLanguageButton':
-      return screen.getByRole('button', { name: /ilmoitusten kieli/i });
     case 'phoneCheckbox':
       return screen.getByRole('checkbox', { name: /tekstiviestillä/i });
     case 'phoneInput':
@@ -84,31 +95,12 @@ const getElement = (
       return screen.getByRole('textbox', { name: /katuosoite/i });
     case 'submitButton':
       return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
-    case 'yearOfBirthButton':
-      return screen.getByRole('button', { name: /syntymävuosi/i });
     case 'zipInput':
       return screen.getByRole('textbox', { name: /postinumero/i });
   }
 };
 
-beforeEach(() => {
-  setQueryMocks(
-    rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(event))
-    ),
-    rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(place))
-    ),
-    rest.get('*/language/', (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(languagesResponse))
-    )
-  );
-});
-
-const renderComponent = () =>
-  render(<CreateEnrolmentPage />, {
-    query: { registrationId: '1' },
-  });
+const renderComponent = () => render(<CreateEnrolmentPage />);
 
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
@@ -118,20 +110,38 @@ test.skip('page is accessible', async () => {
 });
 
 test('should validate enrolment form and focus invalid field', async () => {
-  toast.error = jest.fn();
-
+  setQueryMocks(
+    rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(event))
+    ),
+    rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(place))
+    ),
+    rest.get('*/language/', (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(languagesResponse))
+    ),
+    rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(registration))
+    ),
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json(enrolment))
+    )
+  );
+  singletonRouter.push({
+    pathname: 'registration/[registrationId]/enrolment/create',
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
   renderComponent();
 
   const nameInput = await findElement('nameInput');
   const streetAddressInput = getElement('streetAddressInput');
-  const yearOfBirthButton = getElement('yearOfBirthButton');
+  const dateOfBirthInput = getElement('dateOfBirthInput');
   const zipInput = getElement('zipInput');
   const cityInput = getElement('cityInput');
   const emailInput = getElement('emailInput');
   const phoneInput = getElement('phoneInput');
   const emailCheckbox = getElement('emailCheckbox');
   const phoneCheckbox = getElement('phoneCheckbox');
-  const notificationLanguageButton = getElement('notificationLanguageButton');
   const nativeLanguageButton = getElement('nativeLanguageButton');
   const serviceLanguageButton = getElement('serviceLanguageButton');
   const acceptCheckbox = getElement('acceptCheckbox');
@@ -148,11 +158,9 @@ test('should validate enrolment form and focus invalid field', async () => {
 
   userEvent.type(streetAddressInput, enrolmentValues.streetAddress);
   userEvent.click(submitButton);
-  await waitFor(() => expect(yearOfBirthButton).toHaveFocus());
+  await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
-  userEvent.click(yearOfBirthButton);
-  const yearOption = await screen.findByRole('option', { name: /1990/i });
-  userEvent.click(yearOption);
+  userEvent.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
   userEvent.click(submitButton);
   await waitFor(() => expect(zipInput).toHaveFocus());
 
@@ -177,15 +185,7 @@ test('should validate enrolment form and focus invalid field', async () => {
   await waitFor(() => expect(phoneInput).toHaveFocus());
   expect(phoneInput).toBeRequired();
 
-  userEvent.type(phoneInput, enrolmentValues.phone);
-  userEvent.click(submitButton);
-  await waitFor(() => expect(notificationLanguageButton).toHaveFocus());
-
-  userEvent.click(notificationLanguageButton);
-  const notificationLanguageOption = await screen.findByRole('option', {
-    name: /suomi/i,
-  });
-  userEvent.click(notificationLanguageOption);
+  userEvent.type(phoneInput, enrolmentValues.phoneNumber);
   userEvent.click(submitButton);
   await waitFor(() => expect(nativeLanguageButton).toHaveFocus());
 
@@ -208,16 +208,26 @@ test('should validate enrolment form and focus invalid field', async () => {
   userEvent.click(acceptCheckbox);
   userEvent.click(submitButton);
   await waitFor(() =>
-    expect(toast.error).toBeCalledWith('TODO: Save enrolment')
+    expect(mockRouter.asPath).toBe(
+      `/fi/registration/1/enrolment/${enrolment.id}/completed/${enrolment.cancellation_code}`
+    )
   );
 });
 
 test('should show not found page if registration does not exist', async () => {
-  render(<CreateEnrolmentPage />, {
+  setQueryMocks(
+    rest.get(`*/registration/not-found/`, (req, res, ctx) =>
+      res(ctx.status(404), ctx.json({ errorMessage: 'Not found' }))
+    )
+  );
+
+  singletonRouter.push({
+    pathname: 'registration/[registrationId]/enrolment/create',
     query: { registrationId: 'not-found' },
   });
+  renderComponent();
 
-  screen.getByRole('heading', {
+  await screen.findByRole('heading', {
     name: 'Valitettavasti etsimääsi sivua ei löydy',
   });
 

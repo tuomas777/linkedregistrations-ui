@@ -15,6 +15,7 @@ export const eventPathBuilder = (args: EventQueryVariables): string => {
 
   return `/event/${id}/${query}`;
 };
+
 export const getEventFields = (event: Event, locale: Language): EventFields => {
   return {
     audienceMaxAge: event.audience_max_age || null,

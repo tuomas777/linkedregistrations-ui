@@ -8,3 +8,12 @@ export type OptionType = {
   label: string;
   value: string;
 };
+
+export type LEServerError =
+  | Record<string, unknown>
+  | Array<Record<string, unknown> | string>;
+
+export type ServerErrorItem = {
+  label: string;
+  message: string;
+};

@@ -1,3 +1,8 @@
+import endOfDay from 'date-fns/endOfDay';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import startOfDay from 'date-fns/startOfDay';
+import subYears from 'date-fns/subYears';
 import { FormikErrors, FormikTouched } from 'formik';
 import forEach from 'lodash/forEach';
 import set from 'lodash/set';
@@ -5,6 +10,8 @@ import { scroller } from 'react-scroll';
 import * as Yup from 'yup';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../constants';
+import isValidDate from '../../utils/isValidDate';
+import stringToDate from '../../utils/stringToDate';
 import {
   createMinErrorMessage,
   isValidPhoneNumber,
@@ -17,6 +24,56 @@ import {
 } from './constants';
 import { EnrolmentFormFields } from './types';
 
+export const isAboveMinAge = (
+  minAge: string,
+  schema: Yup.StringSchema
+): Yup.StringSchema => {
+  if (minAge) {
+    return schema.test(
+      'isAboveMinAge',
+      () => ({
+        key: VALIDATION_MESSAGE_KEYS.AGE_MIN,
+        min: parseInt(minAge),
+      }),
+      (dateStr) => {
+        if (dateStr && isValidDate(dateStr)) {
+          return isBefore(
+            stringToDate(dateStr),
+            subYears(endOfDay(new Date()), parseInt(minAge))
+          );
+        }
+        return true;
+      }
+    );
+  }
+  return schema;
+};
+
+export const isBelowMaxAge = (
+  maxAge: string,
+  schema: Yup.StringSchema
+): Yup.StringSchema => {
+  if (maxAge) {
+    return schema.test(
+      'isBelowMaxAge',
+      () => ({
+        key: VALIDATION_MESSAGE_KEYS.AGE_MAX,
+        max: parseInt(maxAge),
+      }),
+      (dateStr) => {
+        if (dateStr && isValidDate(dateStr)) {
+          return isAfter(
+            stringToDate(dateStr),
+            subYears(startOfDay(new Date()), parseInt(maxAge) + 1)
+          );
+        }
+        return true;
+      }
+    );
+  }
+  return schema;
+};
+
 export const enrolmentSchema = Yup.object().shape({
   [ENROLMENT_FIELDS.NAME]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
@@ -24,9 +81,15 @@ export const enrolmentSchema = Yup.object().shape({
   [ENROLMENT_FIELDS.STREET_ADDRESS]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
-  [ENROLMENT_FIELDS.YEAR_OF_BIRTH]: Yup.string().required(
-    VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
-  ),
+  [ENROLMENT_FIELDS.DATE_OF_BIRTH]: Yup.string()
+    .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+    .test(
+      'isValidDate',
+      VALIDATION_MESSAGE_KEYS.DATE,
+      (value) => !!value && isValidDate(value)
+    )
+    .when([ENROLMENT_FIELDS.AUDIENCE_MIN_AGE], isAboveMinAge)
+    .when([ENROLMENT_FIELDS.AUDIENCE_MAX_AGE], isBelowMaxAge),
   [ENROLMENT_FIELDS.ZIP]: Yup.string()
     .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
     .test(
@@ -56,7 +119,7 @@ export const enrolmentSchema = Yup.object().shape({
     .when(
       [ENROLMENT_FIELDS.NOTIFICATIONS],
       (notifications: string[], schema) => {
-        return notifications.includes(NOTIFICATIONS.PHONE)
+        return notifications.includes(NOTIFICATIONS.SMS)
           ? schema.required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
           : schema;
       }
@@ -66,9 +129,6 @@ export const enrolmentSchema = Yup.object().shape({
     .min(1, (param) =>
       createMinErrorMessage(param, VALIDATION_MESSAGE_KEYS.ARRAY_MIN)
     ),
-  [ENROLMENT_FIELDS.NOTIFICATION_LANGUAGE]: Yup.string().required(
-    VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
-  ),
   [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),

@@ -25,9 +25,32 @@
     "skipToContentLabel": "Siirry sisältöön"
   },
   "openInNewTab": "(avataan uudessa välilehdessä)",
+  "serverError": {
+    "emailMustBeUnique": "Sähköpostiosoitteella on jo ilmoittautuminen",
+    "endTimeInPast": "Lopetusaika ei voi olla menneisyydessä. Määritä tuleva päättymisaika.",
+    "invalidUrl": "Syötä oikea URL-osoite.",
+    "maxLength255": "Arvo saa olla enintään 255 merkkiä pitkä.",
+    "min0": "Tämän luvun on oltava vähintään 0.",
+    "mustBeUnique": "Arvon tulee olla uniikki.",
+    "nameIsRequired": "Nimi on pakollinen.",
+    "notFoundAllObjects": "Kaikkia päivitettäviä objekteja ei löytynyt.",
+    "notNull": "Tämän kentän arvo ei voi olla \"null\".",
+    "offersIsRequired": "Hintatiedot on määritettävä ennen tapahtuman julkaisemista.",
+    "participantTooOld": "Osallistuja on liian vanha.",
+    "participantTooYoung": "Osallistuja on liian nuori.",
+    "phoneNumberMustBeUnique": "Puhelinnumerolla on jo ilmoittautuminen",
+    "required": "Tämä kenttä ei voi olla tyhjä.",
+    "requiredWhenPublishing": "Tämä kenttä on määritettävä ennen tapahtuman julkaisemista.",
+    "shortDescriptionTooLong": "Lyhyen kuvauksen pituus saa olla enintään 160 merkkiä"
+  },
   "showLess": "Näytä vähemmän",
   "showMore": "Näytä lisää",
+  "titleServerErrorSummary": "Lomakkeella on seuraavat virheet",
   "validation": {
+    "age": {
+      "max": "Yläikäraja on {{max}}v.",
+      "min": "Alaikäraja on {{min}}v."
+    },
     "array": {
       "min": "Vähintään {{min}} vaihtoehto tulee olla valittuna",
       "min_plural": "Vähintään {{min}} vaihtoehtoa tulee olla valittuna",
@@ -37,6 +60,7 @@
     "string": {
       "charsLeft": "{{count}} merkki jäljellä",
       "charsLeft_plural": "{{count}} merkkiä jäljellä",
+      "date": "Tämän kentän on oltava kelvollinen päivämäärä",
       "email": "Tämän kentän on oltava kelvollinen sähköpostiosoite",
       "phone": "Tämän kentän on oltava kelvollinen puhelinnumero",
       "required": "Tämä kenttä on pakollinen",

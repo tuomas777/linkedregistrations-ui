@@ -8,7 +8,7 @@ import { EVENT_INCLUDES } from '../event/constants';
 import { useEventQuery } from '../event/query';
 import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
-import { registrationsResponse } from '../registration/__mocks__/registration';
+import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
 import CreateEnrolmentPageMeta from './createEnrolmentPageMeta/CreateEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
@@ -36,21 +36,24 @@ const CreateEnrolmentPage: React.FC<Props> = ({ event, registration }) => {
 };
 
 const CreateEnrolmentPageWrapper: React.FC = () => {
-  const { query } = useRouter();
-  const registration = registrationsResponse.data.find(
-    (item) => item.id === query.registrationId
-  );
+  const router = useRouter();
+  const { query } = router;
 
-  const { data: event, isLoading } = useEventQuery(
+  const { data: registration, isLoading: isLoadingRegistration } =
+    useRegistrationQuery({
+      id: query.registrationId as string,
+    });
+
+  const { data: event, isLoading: isLoadingEvent } = useEventQuery(
     {
-      id: registration?.event_id as string,
+      id: registration?.event as string,
       include: EVENT_INCLUDES,
     },
-    { enabled: !!registration?.event_id }
+    { enabled: !!registration?.event }
   );
 
   return (
-    <LoadingSpinner isLoading={isLoading}>
+    <LoadingSpinner isLoading={isLoadingRegistration || isLoadingEvent}>
       {registration && event ? (
         <CreateEnrolmentPage event={event} registration={registration} />
       ) : (
