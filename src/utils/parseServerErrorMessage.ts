@@ -45,7 +45,7 @@ const parseServerErrorMessage = ({
     case 'Short description length must be 160 characters or less':
       return t(`common:serverError.shortDescriptionTooLong`);
     case 'Syötä oikea URL-osoite.':
-      return t(`serverError.invalidUrl`);
+      return t(`common:serverError.invalidUrl`);
     case 'The name must be specified.':
       return t(`common:serverError.nameIsRequired`);
     case 'The participant is too old.':

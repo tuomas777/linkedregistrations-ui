@@ -2,7 +2,12 @@ import formatDate from '../../utils/formatDate';
 import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
 import stringToDate from '../../utils/stringToDate';
 import { Registration } from '../registration/types';
-import { NOTIFICATIONS, NOTIFICATION_TYPE } from './constants';
+import { registration } from '../registration/__mocks__/registration';
+import {
+  ENROLMENT_INITIAL_VALUES,
+  NOTIFICATIONS,
+  NOTIFICATION_TYPE,
+} from './constants';
 import {
   CreateEnrolmentMutationInput,
   Enrolment,
@@ -82,3 +87,11 @@ export const getEnrolmentPayload = (
     zipcode: zip || null,
   };
 };
+
+export const getEnrolmentFormInitialValues = (
+  registration: Registration
+): EnrolmentFormFields => ({
+  ...ENROLMENT_INITIAL_VALUES,
+  audienceMaxAge: registration.audience_max_age ?? null,
+  audienceMinAge: registration.audience_min_age ?? null,
+});

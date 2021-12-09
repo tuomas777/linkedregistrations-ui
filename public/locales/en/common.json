@@ -26,7 +26,7 @@
   },
   "openInNewTab": "(will open in a new tab)",
   "serverError": {
-    "emailMustBeUnique": "Email already has registration",
+    "emailMustBeUnique": "Email already has registration.",
     "endTimeInPast": "End time cannot be in the past. Please set a future end time.",
     "invalidUrl": "Enter a valid URL.",
     "maxLength255": "The value can be up to 255 characters long.",
@@ -38,10 +38,10 @@
     "offersIsRequired": "Price info must be specified before an event is published.",
     "participantTooOld": "The participant is too old.",
     "participantTooYoung": "The participant is too young.",
-    "phoneNumberMustBeUnique": "Phone number already has registration",
+    "phoneNumberMustBeUnique": "Phone number already has registration.",
     "required": "This field cannot be left blank.",
     "requiredWhenPublishing": "This field must be specified before an event is published.",
-    "shortDescriptionTooLong": "Short description length must be 160 characters or less"
+    "shortDescriptionTooLong": "Short description length must be 160 characters or less."
   },
   "showLess": "Show less",
   "showMore": "Show more",

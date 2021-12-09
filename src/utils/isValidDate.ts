@@ -15,7 +15,7 @@ const isValidDate = (dateString: string): boolean => {
 
   const monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  // Adjust for leap years
+  /* istanbul ignore else */
   if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0))
     monthLength[1] = 29;
 

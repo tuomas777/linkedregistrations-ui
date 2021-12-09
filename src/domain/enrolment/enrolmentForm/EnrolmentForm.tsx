@@ -23,19 +23,16 @@ import {
   getRegistrationWarning,
   isRegistrationPossible,
 } from '../../registration/utils';
-import {
-  ENROLMENT_FIELDS,
-  ENROLMENT_INITIAL_VALUES,
-  NOTIFICATIONS,
-} from '../constants';
+import { ENROLMENT_FIELDS, NOTIFICATIONS } from '../constants';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import { useCreateEnrolmentMutation } from '../mutation';
-import { Enrolment, EnrolmentFormFields } from '../types';
-import { getEnrolmentPayload } from '../utils';
+import { Enrolment } from '../types';
+import { getEnrolmentFormInitialValues, getEnrolmentPayload } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import styles from './enrolmentForm.module.scss';
+import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 
 type Props = {
   registration: Registration;
@@ -73,11 +70,7 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
 
   const registrationWarning = getRegistrationWarning(registration, t);
 
-  const initialValues: EnrolmentFormFields = {
-    ...ENROLMENT_INITIAL_VALUES,
-    audienceMaxAge: registration.audience_max_age ?? null,
-    audienceMinAge: registration.audience_min_age ?? null,
-  };
+  const initialValues = getEnrolmentFormInitialValues(registration);
 
   return (
     <Formik
@@ -111,11 +104,7 @@ const EnrolmentForm: React.FC<Props> = ({ registration }) => {
         return (
           <Form noValidate>
             <ServerErrorSummary errors={serverErrorItems} />
-            {registrationWarning && (
-              <Notification className={styles.warning}>
-                {registrationWarning}
-              </Notification>
-            )}
+            <RegistrationWarning registration={registration} />
             <Fieldset heading={t(`titleBasicInfo`)}>
               <FormGroup>
                 <Field

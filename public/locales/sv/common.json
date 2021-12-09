@@ -26,7 +26,7 @@
   },
   "openInNewTab": "(öppnas i en ny flik)",
   "serverError": {
-    "emailMustBeUnique": "E-post har redan registrering",
+    "emailMustBeUnique": "E-post har redan registrering.",
     "endTimeInPast": "Sluttiden kan inte vara tidigare. Ange en framtida sluttid.",
     "invalidUrl": "Ange rätt URL.",
     "maxLength255": "Värdet kan vara upp till 255 tecken långt.",
@@ -38,10 +38,10 @@
     "offersIsRequired": "Prisinformation måste anges innan ett evenemang publiceras.",
     "participantTooOld": "Deltagaren är för gammal.",
     "participantTooYoung": "Deltagaren är för ung.",
-    "phoneNumberMustBeUnique": "Telefonnumret har redan registrering",
+    "phoneNumberMustBeUnique": "Telefonnumret har redan registrering.",
     "required": "Det här fältet kan inte lämnas tomt.",
     "requiredWhenPublishing": "Detta fält måste anges innan ett evenemang publiceras.",
-    "shortDescriptionTooLong": "Kort beskrivningslängd måste vara 160 tecken eller mindre"
+    "shortDescriptionTooLong": "Kort beskrivningslängd måste vara 160 tecken eller mindre."
   },
   "showLess": "Visa mindre",
   "showMore": "Visa mer",

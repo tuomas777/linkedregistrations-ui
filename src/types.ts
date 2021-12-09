@@ -10,6 +10,7 @@ export type OptionType = {
 };
 
 export type LEServerError =
+  | string
   | Record<string, unknown>
   | Array<Record<string, unknown> | string>;
 

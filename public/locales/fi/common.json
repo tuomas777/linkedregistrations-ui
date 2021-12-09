@@ -26,7 +26,7 @@
   },
   "openInNewTab": "(avataan uudessa välilehdessä)",
   "serverError": {
-    "emailMustBeUnique": "Sähköpostiosoitteella on jo ilmoittautuminen",
+    "emailMustBeUnique": "Sähköpostiosoitteella on jo ilmoittautuminen.",
     "endTimeInPast": "Lopetusaika ei voi olla menneisyydessä. Määritä tuleva päättymisaika.",
     "invalidUrl": "Syötä oikea URL-osoite.",
     "maxLength255": "Arvo saa olla enintään 255 merkkiä pitkä.",
@@ -38,10 +38,10 @@
     "offersIsRequired": "Hintatiedot on määritettävä ennen tapahtuman julkaisemista.",
     "participantTooOld": "Osallistuja on liian vanha.",
     "participantTooYoung": "Osallistuja on liian nuori.",
-    "phoneNumberMustBeUnique": "Puhelinnumerolla on jo ilmoittautuminen",
+    "phoneNumberMustBeUnique": "Puhelinnumerolla on jo ilmoittautuminen.",
     "required": "Tämä kenttä ei voi olla tyhjä.",
     "requiredWhenPublishing": "Tämä kenttä on määritettävä ennen tapahtuman julkaisemista.",
-    "shortDescriptionTooLong": "Lyhyen kuvauksen pituus saa olla enintään 160 merkkiä"
+    "shortDescriptionTooLong": "Lyhyen kuvauksen pituus saa olla enintään 160 merkkiä."
   },
   "showLess": "Näytä vähemmän",
   "showMore": "Näytä lisää",

@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/**
- * @jest-environment jsdom
- */
 import subYears from 'date-fns/subYears';
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
@@ -109,20 +106,24 @@ test.skip('page is accessible', async () => {
   expect(await axe(container)).toHaveNoViolations();
 });
 
+const defaultMocks = [
+  rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(event))
+  ),
+  rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(place))
+  ),
+  rest.get('*/language/', (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(languagesResponse))
+  ),
+  rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(registration))
+  ),
+];
+
 test('should validate enrolment form and focus invalid field', async () => {
   setQueryMocks(
-    rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(event))
-    ),
-    rest.get(`*/place/${TEST_PLACE_ID}/`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(place))
-    ),
-    rest.get('*/language/', (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(languagesResponse))
-    ),
-    rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(registration))
-    ),
+    ...defaultMocks,
     rest.post(`*/signup/`, (req, res, ctx) =>
       res(ctx.status(201), ctx.json(enrolment))
     )
@@ -160,6 +161,16 @@ test('should validate enrolment form and focus invalid field', async () => {
   userEvent.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
+  userEvent.type(dateOfBirthInput, formatDate(subYears(new Date(), 20)));
+  userEvent.click(submitButton);
+  await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
+
+  userEvent.clear(dateOfBirthInput);
+  userEvent.type(dateOfBirthInput, formatDate(subYears(new Date(), 7)));
+  userEvent.click(submitButton);
+  await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
+
+  userEvent.clear(dateOfBirthInput);
   userEvent.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
   userEvent.click(submitButton);
   await waitFor(() => expect(zipInput).toHaveFocus());
@@ -212,6 +223,77 @@ test('should validate enrolment form and focus invalid field', async () => {
       `/fi/registration/1/enrolment/${enrolment.id}/completed/${enrolment.cancellation_code}`
     )
   );
+});
+
+test('should show server errors', async () => {
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(
+        ctx.status(400),
+        ctx.json({
+          city: ['Tämän kentän arvo ei voi olla "null".'],
+          detail: 'The participant is too old.',
+          name: ['Tämän kentän arvo ei voi olla "null".'],
+          non_field_errors: [
+            'Kenttien email, registration tulee muodostaa uniikki joukko.',
+            'Kenttien phone_number, registration tulee muodostaa uniikki joukko.',
+          ],
+        })
+      )
+    )
+  );
+  singletonRouter.push({
+    pathname: 'registration/[registrationId]/enrolment/create',
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  const nameInput = await findElement('nameInput');
+  const streetAddressInput = getElement('streetAddressInput');
+  const dateOfBirthInput = getElement('dateOfBirthInput');
+  const zipInput = getElement('zipInput');
+  const cityInput = getElement('cityInput');
+  const emailInput = getElement('emailInput');
+  const phoneInput = getElement('phoneInput');
+  const emailCheckbox = getElement('emailCheckbox');
+  const phoneCheckbox = getElement('phoneCheckbox');
+  const nativeLanguageButton = getElement('nativeLanguageButton');
+  const serviceLanguageButton = getElement('serviceLanguageButton');
+  const acceptCheckbox = getElement('acceptCheckbox');
+  const submitButton = getElement('submitButton');
+
+  userEvent.type(nameInput, enrolmentValues.name);
+  userEvent.type(streetAddressInput, enrolmentValues.streetAddress);
+  userEvent.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
+  userEvent.type(zipInput, enrolmentValues.zip);
+  userEvent.type(cityInput, enrolmentValues.city);
+
+  userEvent.click(emailCheckbox);
+  userEvent.type(emailInput, enrolmentValues.email);
+  userEvent.click(phoneCheckbox);
+  userEvent.type(phoneInput, enrolmentValues.phoneNumber);
+  userEvent.click(submitButton);
+  await waitFor(() => expect(nativeLanguageButton).toHaveFocus());
+
+  userEvent.click(nativeLanguageButton);
+  const nativeLanguageOption = await screen.findByRole(
+    'option',
+    { name: /suomi/i },
+    { timeout: 30000 }
+  );
+  userEvent.click(nativeLanguageOption);
+
+  userEvent.click(serviceLanguageButton);
+  const serviceLanguageOption = await screen.findByRole('option', {
+    name: /suomi/i,
+  });
+  userEvent.click(serviceLanguageOption);
+
+  userEvent.click(acceptCheckbox);
+  userEvent.click(submitButton);
+
+  await screen.findByText(/lomakkeella on seuraavat virheet/i);
 });
 
 test('should show not found page if registration does not exist', async () => {
