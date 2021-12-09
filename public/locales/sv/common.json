@@ -49,7 +49,7 @@
   "validation": {
     "age": {
       "max": "Maxåldern är {{max}} år.",
-      "min": "Minimiåldern är 13{{min}} år."
+      "min": "Minimiåldern är {{min}} år."
     },
     "array": {
       "min": "Minst {{min}} objekt måste väljas",
