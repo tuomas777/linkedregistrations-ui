@@ -4,6 +4,11 @@ import merge from 'lodash/merge';
 
 import { LocalisedObject, Meta } from '../domain/api/types';
 import {
+  ATTENDEE_STATUS,
+  NOTIFICATION_TYPE,
+} from '../domain/enrolment/constants';
+import { Enrolment } from '../domain/enrolment/types';
+import {
   EventStatus,
   EventTypeId,
   PublicationStatus,
@@ -14,11 +19,38 @@ import { Image, ImagesResponse } from '../domain/image/types';
 import { Keyword, KeywordsResponse } from '../domain/keyword/types';
 import { LanguagesResponse, LELanguage } from '../domain/language/types';
 import { Place } from '../domain/place/types';
+import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import {
   Registration,
   RegistrationsResponse,
 } from '../domain/registration/types';
 import generateAtId from './generateAtId';
+
+export const fakeEnrolment = (overrides?: Partial<Enrolment>): Enrolment => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Enrolment, typeof overrides>(
+    {
+      id,
+      attendee_status: ATTENDEE_STATUS.Attending,
+      cancellation_code: faker.datatype.uuid(),
+      city: faker.address.city(),
+      date_of_birth: '1990-10-10',
+      email: faker.internet.email(),
+      extra_info: faker.lorem.paragraph(),
+      membership_number: faker.datatype.uuid(),
+      name: faker.name.firstName(),
+      native_language: 'fi',
+      notifications: NOTIFICATION_TYPE.SMS_EMAIL,
+      phone_number: faker.phone.phoneNumberFormat(),
+      registration: TEST_REGISTRATION_ID,
+      service_language: 'fi',
+      street_address: faker.address.streetAddress(),
+      zipcode: faker.address.zipCode('#####'),
+    },
+    overrides
+  );
+};
 
 export const fakeEvent = (overrides?: Partial<Event>): Event => {
   const id = overrides?.id || faker.datatype.uuid();
@@ -229,26 +261,23 @@ export const fakeRegistration = (
   return merge<Registration, typeof overrides>(
     {
       id,
+      attendee_registration: false,
       audience_max_age: null,
       audience_min_age: null,
       confirmation_message: faker.lorem.paragraph(),
       created_at: null,
       created_by: faker.name.firstName(),
       current_attendee_count: 0,
-      current_waiting_attendee_count: 0,
+      current_waiting_list_count: 0,
       enrolment_end_time: '2020-09-30T16:00:00.000000Z',
       enrolment_start_time: '2020-09-27T15:00:00.000000Z',
-      event_id: TEST_EVENT_ID,
+      event: TEST_EVENT_ID,
       instructions: faker.lorem.paragraph(),
-      last_modified_time: '2020-09-12T15:00:00.000000Z',
+      last_modified_at: '2020-09-12T15:00:00.000000Z',
+      last_modified_by: '',
       maximum_attendee_capacity: null,
       minimum_attendee_capacity: null,
-      name: fakeLocalisedObject(faker.name.title()),
-      updated_at: null,
-      waiting_attendee_capacity: null,
-      '@id': generateAtId(id, 'registration'),
-      '@context': 'http://schema.org',
-      '@type': 'Registration',
+      waiting_list_capacity: null,
     },
     overrides
   );

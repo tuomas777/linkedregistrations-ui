@@ -2,7 +2,34 @@ import isFuture from 'date-fns/isFuture';
 import isPast from 'date-fns/isPast';
 import { TFunction } from 'next-i18next';
 
-import { Registration } from './types';
+import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
+import queryBuilder from '../../utils/queryBuilder';
+import {
+  Registration,
+  RegistrationFields,
+  RegistrationQueryVariables,
+} from './types';
+
+export const fetchRegistration = (
+  args: RegistrationQueryVariables
+): Promise<Registration> =>
+  fetch(getLinkedEventsUrl(registrationPathBuilder(args))).then((res) =>
+    res.json()
+  );
+
+export const registrationPathBuilder = (
+  args: RegistrationQueryVariables
+): string => {
+  const { id, include } = args;
+  const variableToKeyItems = [
+    { key: 'include', value: include },
+    { key: 'nocache', value: true },
+  ];
+
+  const query = queryBuilder(variableToKeyItems);
+
+  return `/registration/${id}/${query}`;
+};
 
 export const isAttenceeCapacityUsed = (registration: Registration): boolean => {
   // If there are seats in the event
@@ -20,9 +47,8 @@ export const isAttenceeCapacityUsed = (registration: Registration): boolean => {
 export const isWaitingCapacityUsed = (registration: Registration): boolean => {
   // If there are seats in the event
   if (
-    registration.waiting_attendee_capacity &&
-    registration.current_waiting_attendee_count <
-      registration.waiting_attendee_capacity
+    registration.waiting_list_capacity &&
+    registration.current_waiting_list_count < registration.waiting_list_capacity
   ) {
     return false;
   } else {
@@ -32,8 +58,10 @@ export const isWaitingCapacityUsed = (registration: Registration): boolean => {
 
 export const isRegistrationOpen = (registration: Registration): boolean => {
   return (
-    isPast(new Date(registration.enrolment_start_time)) &&
-    isFuture(new Date(registration.enrolment_end_time))
+    (!registration.enrolment_start_time ||
+      isPast(new Date(registration.enrolment_start_time))) &&
+    (!registration.enrolment_end_time ||
+      isFuture(new Date(registration.enrolment_end_time)))
   );
 };
 
@@ -49,8 +77,8 @@ export const getFreeWaitingAttendeeCapacity = (
   registration: Registration
 ): number => {
   return (
-    (registration.waiting_attendee_capacity ?? /* istanbul ignore next */ 0) -
-    registration.current_waiting_attendee_count
+    (registration.waiting_list_capacity ?? /* istanbul ignore next */ 0) -
+    registration.current_waiting_list_count
   );
 };
 
@@ -69,4 +97,12 @@ export const getRegistrationWarning = (
     });
   }
   return '';
+};
+
+export const getRegistrationFields = (
+  registration: Registration
+): RegistrationFields => {
+  return {
+    confirmationMessage: registration.confirmation_message,
+  };
 };

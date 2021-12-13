@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ParsedUrlQuery } from 'querystring';
 
 import { act, render, RenderResult, fireEvent } from '@testing-library/react';
@@ -9,6 +10,7 @@ import {
   QueryClient,
   QueryClientProvider,
   QueryClientProviderProps,
+  setLogger,
 } from 'react-query';
 import wait from 'waait';
 
@@ -34,20 +36,29 @@ const customRender: CustomRender = (
     defaultOptions: { queries: { retry: false } },
   });
 
-  const Wrapper: React.FC = ({ children }) => (
-    <RouterContext.Provider
-      value={{
-        ...mockRouter,
-        ...router,
-        ...(path ? { pathname: path, asPath: path, basePath: path } : {}),
-        ...(query ? { query } : {}),
-      }}
-    >
-      <QueryClientProvider client={queryClient}>
-        {children as React.ReactElement}
-      </QueryClientProvider>
-    </RouterContext.Provider>
-  );
+  const Wrapper: React.FC = ({ children }) => {
+    setLogger({
+      log: console.log,
+      warn: console.warn,
+      // no more errors on the console
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      error: () => {},
+    });
+    return (
+      <RouterContext.Provider
+        value={{
+          ...mockRouter,
+          ...router,
+          ...(path ? { pathname: path, asPath: path, basePath: path } : {}),
+          ...(query ? { query } : {}),
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          {children as React.ReactElement}
+        </QueryClientProvider>
+      </RouterContext.Provider>
+    );
+  };
 
   const renderResult = render(ui, { wrapper: Wrapper });
   return { ...renderResult };

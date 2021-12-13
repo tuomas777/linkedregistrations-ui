@@ -8,6 +8,7 @@ module.exports = {
     '<rootDir>/src/domain/app/layout/pageLayout/PageLayout.tsx',
     '<rootDir>/src/pages/',
     '<rootDir>/src/tests/',
+    '<rootDir>/src/utils/getPageHeaderHeight.ts',
     '<rootDir>/src/utils/mockDataUtils.ts',
     '<rootDir>/src/utils/testUtils.ts',
     'constants.ts',

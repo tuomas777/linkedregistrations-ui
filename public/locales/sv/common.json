@@ -25,9 +25,32 @@
     "skipToContentLabel": "Gå till innehållet"
   },
   "openInNewTab": "(öppnas i en ny flik)",
+  "serverError": {
+    "emailMustBeUnique": "E-post har redan registrering.",
+    "endTimeInPast": "Sluttiden kan inte vara tidigare. Ange en framtida sluttid.",
+    "invalidUrl": "Ange rätt URL.",
+    "maxLength255": "Värdet kan vara upp till 255 tecken långt.",
+    "mustBeUnique": "Värdet måste vara unikt.",
+    "min0": "Detta nummer måste vara minst 0.",
+    "nameIsRequired": "Namnet krävs.",
+    "notFoundAllObjects": "Det gick inte att hitta alla objekt att uppdatera.",
+    "notNull": "Värdet på detta fält kan inte vara \"null\".",
+    "offersIsRequired": "Prisinformation måste anges innan ett evenemang publiceras.",
+    "participantTooOld": "Deltagaren är för gammal.",
+    "participantTooYoung": "Deltagaren är för ung.",
+    "phoneNumberMustBeUnique": "Telefonnumret har redan registrering.",
+    "required": "Det här fältet kan inte lämnas tomt.",
+    "requiredWhenPublishing": "Detta fält måste anges innan ett evenemang publiceras.",
+    "shortDescriptionTooLong": "Kort beskrivningslängd måste vara 160 tecken eller mindre."
+  },
   "showLess": "Visa mindre",
   "showMore": "Visa mer",
+  "titleServerErrorSummary": "Formuläret innehåller följande fel",
   "validation": {
+    "age": {
+      "max": "Maxåldern är {{max}} år.",
+      "min": "Minimiåldern är {{min}} år."
+    },
     "array": {
       "min": "Minst {{min}} objekt måste väljas",
       "min_plural": "Minst {{min}} objekt måste väljas",
@@ -37,6 +60,7 @@
     "string": {
       "charsLeft": "{{count}} tecken kvar",
       "charsLeft_plural": "{{count}} tecken kvar",
+      "date": "Detta fält måste vara ett giltigt datum",
       "email": "Detta fält måste vara en giltig e-postmeddelande",
       "phone": "Detta fält måste vara en giltig telefonnummer",
       "required": "Detta fält krävs",

@@ -25,9 +25,32 @@
     "skipToContentLabel": "Skip to content"
   },
   "openInNewTab": "(will open in a new tab)",
+  "serverError": {
+    "emailMustBeUnique": "Email already has registration.",
+    "endTimeInPast": "End time cannot be in the past. Please set a future end time.",
+    "invalidUrl": "Enter a valid URL.",
+    "maxLength255": "The value can be up to 255 characters long.",
+    "min0": "This number must be at least 0.",
+    "mustBeUnique": "The value must be unique.",
+    "nameIsRequired": "The name must be specified.",
+    "notFoundAllObjects": "Could not find all objects to update.",
+    "notNull": "The value of this field cannot be \"null\".",
+    "offersIsRequired": "Price info must be specified before an event is published.",
+    "participantTooOld": "The participant is too old.",
+    "participantTooYoung": "The participant is too young.",
+    "phoneNumberMustBeUnique": "Phone number already has registration.",
+    "required": "This field cannot be left blank.",
+    "requiredWhenPublishing": "This field must be specified before an event is published.",
+    "shortDescriptionTooLong": "Short description length must be 160 characters or less."
+  },
   "showLess": "Show less",
   "showMore": "Show more",
+  "titleServerErrorSummary": "Form contains following errors",
   "validation": {
+    "age": {
+      "max": "The maximum age is {{max}} y.",
+      "min": "The minimum age is {{min}} y."
+    },
     "array": {
       "min": "At least {{min}} item must be selected",
       "min_plural": "At least {{min}} item must be selected",
@@ -37,6 +60,7 @@
     "string": {
       "charsLeft": "{{count}} character left",
       "charsLeft_plural": "{{count}} characters left",
+      "date": "This field must be a valid date",
       "email": "This field must be a valid email",
       "phone": "This field must be a valid phone number",
       "required": "This field is required",

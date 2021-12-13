@@ -1,7 +1,10 @@
 import addDays from 'date-fns/addDays';
 import subDays from 'date-fns/subDays';
 
-import { fakeRegistrations } from '../../../utils/mockDataUtils';
+import {
+  fakeRegistration,
+  fakeRegistrations,
+} from '../../../utils/mockDataUtils';
 import {
   TEST_EVENT_ID,
   TEST_EVENT_ID2,
@@ -9,6 +12,7 @@ import {
   TEST_EVENT_ID4,
   TEST_EVENT_ID5,
 } from '../../event/constants';
+import { TEST_REGISTRATION_ID } from '../constants';
 import { Registration } from '../types';
 
 const now = new Date();
@@ -18,43 +22,50 @@ const registrationOverrides = {
   enrolment_end_time,
   enrolment_start_time,
   maximum_attendee_capacity: 10,
-  waiting_attendee_capacity: 10,
+  waiting_list_capacity: 10,
 };
+
+const registration = fakeRegistration({
+  ...registrationOverrides,
+  id: TEST_REGISTRATION_ID,
+  event: TEST_EVENT_ID,
+  audience_max_age: 18,
+  audience_min_age: 8,
+});
 
 const registrationsOverrides: Partial<Registration>[] = [
   {
+    ...registrationOverrides,
     id: '1',
-    event_id: TEST_EVENT_ID,
+    event: TEST_EVENT_ID,
     current_attendee_count: 0,
-    ...registrationOverrides,
   },
   {
+    ...registrationOverrides,
     id: '2',
-    event_id: TEST_EVENT_ID2,
+    event: TEST_EVENT_ID2,
     current_attendee_count: registrationOverrides.maximum_attendee_capacity,
-    current_waiting_attendee_count: 0,
-    ...registrationOverrides,
+    current_waiting_list_count: 0,
   },
   {
+    ...registrationOverrides,
     id: '3',
-    event_id: TEST_EVENT_ID3,
+    event: TEST_EVENT_ID3,
     current_attendee_count: registrationOverrides.maximum_attendee_capacity,
-    current_waiting_attendee_count: 0,
-    ...registrationOverrides,
-    waiting_attendee_capacity: null,
+    current_waiting_list_count: 0,
+    waiting_list_capacity: null,
   },
   {
+    ...registrationOverrides,
     id: '4',
-    event_id: TEST_EVENT_ID4,
+    event: TEST_EVENT_ID4,
     current_attendee_count: registrationOverrides.maximum_attendee_capacity,
-    current_waiting_attendee_count:
-      registrationOverrides.waiting_attendee_capacity,
-    ...registrationOverrides,
+    current_waiting_list_count: registrationOverrides.waiting_list_capacity,
   },
   {
-    id: '5',
-    event_id: TEST_EVENT_ID5,
     ...registrationOverrides,
+    id: '5',
+    event: TEST_EVENT_ID5,
     current_attendee_count: 1000,
     maximum_attendee_capacity: 0,
   },
@@ -65,4 +76,4 @@ const registrationsResponse = fakeRegistrations(
   registrationsOverrides
 );
 
-export { registrationsResponse };
+export { registration, registrationsResponse };
