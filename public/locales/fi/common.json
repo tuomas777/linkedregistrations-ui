@@ -1,5 +1,6 @@
 {
   "appName": "Linked Registrations",
+  "cancel": "Peruuta",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "Ei vaihtoehtoja",
@@ -65,6 +66,7 @@
       "phone": "Tämän kentän on oltava kelvollinen puhelinnumero",
       "required": "Tämä kenttä on pakollinen",
       "zip": "Tämän kentän on oltava kelvollinen postinumero"
-    }
+    },
+    "warning": "Varoitus!"
   }
 }

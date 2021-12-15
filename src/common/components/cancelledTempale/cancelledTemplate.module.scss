@@ -1,0 +1,43 @@
+@import '../../../styles/breakpoints.scss';
+@import '../../../styles/widths.scss';
+
+.cancelledTemplate {
+  --cancelled-template-icon-color: var(--color-error);
+  --cancelled-template-icon-size: 112px;
+  --cancelled-template-title-color: var(--color-black);
+
+  display: grid;
+  grid-gap: var(--spacing-m);
+  padding-top: var(--spacing-5-xl);
+
+  .content {
+    text-align: center;
+    margin: 0 auto;
+
+    h1 {
+      font-size: var(--fontsize-heading-l);
+      color: var(--success-template-title-color);
+      margin: 0;
+      line-height: var(--lineheight-m);
+    }
+
+    p {
+      font-size: var(--fontsize-body-l);
+      line-height: var(--lineheight-l);
+      margin: var(--spacing-2-xs) auto;
+      min-height: var(--spacing-m);
+
+      &:first-of-type {
+        margin: var(--spacing-m) auto var(--spacing-2-xs);
+      }
+
+      @include max-width-column(4);
+    }
+  }
+
+  .icon {
+    color: var(--cancelled-template-icon-color);
+    height: var(--cancelled-template-icon-size);
+    width: var(--cancelled-template-icon-size);
+  }
+}

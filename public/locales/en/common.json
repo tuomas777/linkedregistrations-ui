@@ -1,5 +1,6 @@
 {
   "appName": "Linked Registrations",
+  "cancel": "Undo",
   "dropdownSelect": {
     "accessibility": {
       "noResults": "No options",
@@ -66,5 +67,6 @@
       "required": "This field is required",
       "zip": "This field must be a valid postcode"
     }
-  }
+  },
+  "warning": "Warning!"
 }

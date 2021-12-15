@@ -1,7 +1,4 @@
-import {
-  fakeRegistration,
-  fakeRegistrations,
-} from '../../../utils/mockDataUtils';
+import { fakeEnrolment, fakeRegistration } from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import {
   ENROLMENT_INITIAL_VALUES,
@@ -9,8 +6,10 @@ import {
   NOTIFICATION_TYPE,
 } from '../constants';
 import {
-  getEnrolmentFormInitialValues,
+  getEnrolmentDefaultInitialValues,
+  getEnrolmentInitialValues,
   getEnrolmentNotificationsCode,
+  getEnrolmentNotificationTypes,
   getEnrolmentPayload,
 } from '../utils';
 
@@ -100,10 +99,10 @@ describe('getEnrolmentPayload function', () => {
   });
 });
 
-describe('getEnrolmentFormInitialValues function', () => {
+describe('getEnrolmentDefaultInitialValues function', () => {
   it('should return enrolment initial values', () => {
     expect(
-      getEnrolmentFormInitialValues(
+      getEnrolmentDefaultInitialValues(
         fakeRegistration({
           audience_max_age: 18,
           audience_min_age: 8,
@@ -128,7 +127,7 @@ describe('getEnrolmentFormInitialValues function', () => {
     });
 
     expect(
-      getEnrolmentFormInitialValues(
+      getEnrolmentDefaultInitialValues(
         fakeRegistration({
           audience_max_age: null,
           audience_min_age: null,
@@ -151,5 +150,139 @@ describe('getEnrolmentFormInitialValues function', () => {
       streetAddress: '',
       zip: '',
     });
+  });
+});
+
+describe('getEnrolmentInitialValues function', () => {
+  it('should return default values if value is not set', () => {
+    const {
+      audienceMaxAge,
+      audienceMinAge,
+      city,
+      dateOfBirth,
+      email,
+      extraInfo,
+      membershipNumber,
+      name,
+      nativeLanguage,
+      notifications,
+      phoneNumber,
+      serviceLanguage,
+      streetAddress,
+      zip,
+    } = getEnrolmentInitialValues(
+      fakeEnrolment({
+        city: null,
+        date_of_birth: null,
+        email: null,
+        extra_info: null,
+        membership_number: null,
+        name: null,
+        native_language: null,
+        notifications: NOTIFICATION_TYPE.NO_NOTIFICATION,
+        phone_number: null,
+        service_language: null,
+        street_address: null,
+        zipcode: null,
+      }),
+      fakeRegistration({ audience_min_age: null, audience_max_age: null })
+    );
+
+    expect(audienceMaxAge).toBe(null);
+    expect(audienceMinAge).toBe(null);
+    expect(city).toBe('-');
+    expect(dateOfBirth).toBe('');
+    expect(email).toBe('-');
+    expect(extraInfo).toBe('-');
+    expect(membershipNumber).toBe('-');
+    expect(name).toBe('-');
+    expect(nativeLanguage).toBe('');
+    expect(notifications).toEqual([]);
+    expect(phoneNumber).toBe('-');
+    expect(serviceLanguage).toBe('');
+    expect(streetAddress).toBe('-');
+    expect(zip).toBe('-');
+  });
+
+  it('should return enrolment initial values', () => {
+    const expectedCity = 'City';
+    const expectedDateOfBirth = '10.10.2021';
+    const expectedEmail = 'user@email.com';
+    const expectedExtraInfo = 'Extra info';
+    const expectedMembershipNumber = 'XXX-XXX-XXX';
+    const expectedName = 'Name';
+    const expectedNativeLanguage = 'fi';
+    const expectedNotifications = [NOTIFICATIONS.EMAIL, NOTIFICATIONS.SMS];
+    const expectedPhoneNumber = '+358 44 123 4567';
+    const expectedServiceLanguage = 'sv';
+    const expectedStreetAddress = 'Test address';
+    const expectedZip = '12345';
+
+    const {
+      audienceMaxAge,
+      audienceMinAge,
+      city,
+      dateOfBirth,
+      email,
+      extraInfo,
+      membershipNumber,
+      name,
+      nativeLanguage,
+      notifications,
+      phoneNumber,
+      serviceLanguage,
+      streetAddress,
+      zip,
+    } = getEnrolmentInitialValues(
+      fakeEnrolment({
+        city: expectedCity,
+        date_of_birth: '2021-10-10',
+        email: expectedEmail,
+        extra_info: expectedExtraInfo,
+        membership_number: expectedMembershipNumber,
+        name: expectedName,
+        native_language: expectedNativeLanguage,
+        notifications: NOTIFICATION_TYPE.SMS_EMAIL,
+        phone_number: expectedPhoneNumber,
+        service_language: expectedServiceLanguage,
+        street_address: expectedStreetAddress,
+        zipcode: expectedZip,
+      }),
+      registration
+    );
+
+    expect(audienceMaxAge).toBe(18);
+    expect(audienceMinAge).toBe(8);
+    expect(city).toBe(expectedCity);
+    expect(dateOfBirth).toEqual(expectedDateOfBirth);
+    expect(email).toBe(expectedEmail);
+    expect(extraInfo).toBe(expectedExtraInfo);
+    expect(membershipNumber).toBe(expectedMembershipNumber);
+    expect(name).toBe(expectedName);
+    expect(nativeLanguage).toBe(expectedNativeLanguage);
+    expect(notifications).toEqual(expectedNotifications);
+    expect(phoneNumber).toBe(expectedPhoneNumber);
+    expect(serviceLanguage).toBe(expectedServiceLanguage);
+    expect(streetAddress).toBe(expectedStreetAddress);
+    expect(zip).toBe(expectedZip);
+  });
+});
+
+describe('getEnrolmentNotificationTypes function', () => {
+  it('should return correct notification types', () => {
+    expect(
+      getEnrolmentNotificationTypes(NOTIFICATION_TYPE.NO_NOTIFICATION)
+    ).toEqual([]);
+    expect(getEnrolmentNotificationTypes(NOTIFICATION_TYPE.SMS)).toEqual([
+      NOTIFICATIONS.SMS,
+    ]);
+    expect(getEnrolmentNotificationTypes(NOTIFICATION_TYPE.EMAIL)).toEqual([
+      NOTIFICATIONS.EMAIL,
+    ]);
+    expect(getEnrolmentNotificationTypes(NOTIFICATION_TYPE.SMS_EMAIL)).toEqual([
+      NOTIFICATIONS.EMAIL,
+      NOTIFICATIONS.SMS,
+    ]);
+    expect(getEnrolmentNotificationTypes('lorem ipsum')).toEqual([]);
   });
 });

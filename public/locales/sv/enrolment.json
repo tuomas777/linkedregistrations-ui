@@ -1,5 +1,15 @@
 {
+  "buttonCancel": "Avbryt registreringen",
   "buttonSend": "Skicka in registrering",
+  "cancelEnrolmentModal": {
+    "buttonCancel": "Avbryt registreringen",
+    "text": "Denna operation kan inte ångras.",
+    "title": "Är du säker på att du vill avbryta registreringen?"
+  },
+  "cancelledPage": {
+    "text": "Du har avbokat din anmälan till vårt evenemang {{name}}.",
+    "title": "Din registrering har avbrutits"
+  },
   "completedPage": {
     "text": "Du har registrerat dig för vårt evenemang {{name}} - välkommen!",
     "title": "Tack för din registrering!"
