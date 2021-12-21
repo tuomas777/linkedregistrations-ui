@@ -33,6 +33,23 @@ export const createEnrolment = (
   );
 };
 
+export const deleteEnrolment = (cancellationCode: string): Promise<null> => {
+  return fetch(getLinkedEventsUrl('/signup/'), {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ cancellation_code: cancellationCode }),
+  }).then((res) =>
+    res.json().then((data) => {
+      if (!res.ok) {
+        throw Error(JSON.stringify(data));
+      }
+      return data;
+    })
+  );
+};
+
 export const getEnrolmentNotificationsCode = (
   notifications: string[]
 ): NOTIFICATION_TYPE => {
@@ -47,6 +64,21 @@ export const getEnrolmentNotificationsCode = (
     return NOTIFICATION_TYPE.SMS;
   } else {
     return NOTIFICATION_TYPE.NO_NOTIFICATION;
+  }
+};
+
+export const getEnrolmentNotificationTypes = (
+  notifications: string
+): NOTIFICATIONS[] => {
+  switch (notifications) {
+    case NOTIFICATION_TYPE.SMS:
+      return [NOTIFICATIONS.SMS];
+    case NOTIFICATION_TYPE.EMAIL:
+      return [NOTIFICATIONS.EMAIL];
+    case NOTIFICATION_TYPE.SMS_EMAIL:
+      return [NOTIFICATIONS.EMAIL, NOTIFICATIONS.SMS];
+    default:
+      return [];
   }
 };
 
@@ -88,10 +120,36 @@ export const getEnrolmentPayload = (
   };
 };
 
-export const getEnrolmentFormInitialValues = (
+export const getEnrolmentDefaultInitialValues = (
   registration: Registration
 ): EnrolmentFormFields => ({
   ...ENROLMENT_INITIAL_VALUES,
   audienceMaxAge: registration.audience_max_age ?? null,
   audienceMinAge: registration.audience_min_age ?? null,
 });
+
+export const getEnrolmentInitialValues = (
+  enrolment: Enrolment,
+  registration: Registration
+): EnrolmentFormFields => {
+  return {
+    ...getEnrolmentDefaultInitialValues(registration),
+    accepted: true,
+    city: enrolment.city ?? '-',
+    dateOfBirth: enrolment.date_of_birth
+      ? formatDate(new Date(enrolment.date_of_birth))
+      : '',
+    email: enrolment.email ?? '-',
+    extraInfo: enrolment.extra_info ?? '-',
+    membershipNumber: enrolment.membership_number ?? '-',
+    name: enrolment.name ?? '-',
+    nativeLanguage: enrolment.native_language ?? '',
+    notifications: getEnrolmentNotificationTypes(
+      enrolment.notifications as string
+    ),
+    phoneNumber: enrolment.phone_number ?? '-',
+    serviceLanguage: enrolment.service_language ?? '',
+    streetAddress: enrolment.street_address ?? '-',
+    zip: enrolment.zipcode ?? '-',
+  };
+};

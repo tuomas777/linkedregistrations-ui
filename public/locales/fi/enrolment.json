@@ -1,5 +1,15 @@
 {
+  "buttonCancel": "Peruuta ilmoittautuminen",
   "buttonSend": "Lähetä ilmoittautuminen",
+  "cancelEnrolmentModal": {
+    "buttonCancel": "Peruuta ilmoittautuminen",
+    "text": "Tätä toimintoa ei voi perua.",
+    "title": "Haluatko varmasti poistaa ilmoittautumisen?"
+  },
+  "cancelledPage": {
+    "text": "Olet perunut ilmoittautumisesi tapahtumaamme {{name}}.",
+    "title": "Ilmoittautumisesi on peruttu"
+  },
   "completedPage": {
     "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
     "title": "Kiitos ilmoittautumisestasi!"

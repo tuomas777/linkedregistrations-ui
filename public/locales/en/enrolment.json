@@ -1,5 +1,15 @@
 {
+  "buttonCancel": "Cancel registration",
   "buttonSend": "Submit registration",
+  "cancelEnrolmentModal": {
+    "buttonCancel": "Cancel registration",
+    "text": "This operation cannot be undone.",
+    "title": "Are you sure you want to cancel the registration?"
+  },
+  "cancelledPage": {
+    "text": "You have canceled your registration for our event {{name}}.",
+    "title": "Your registration has been canceled"
+  },
   "completedPage": {
     "text": "You have signed up to our event {{name}} - welcome!",
     "title": "Thank you for signing up!"

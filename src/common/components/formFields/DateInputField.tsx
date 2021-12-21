@@ -47,6 +47,7 @@ const DateInputField: React.FC<Props> = ({
       invalid={Boolean(errorText)}
       onBlur={handleBlur}
       onChange={handleChange}
+      value={value}
     />
   );
 };

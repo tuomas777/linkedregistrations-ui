@@ -57,3 +57,7 @@ export enum NOTIFICATION_TYPE {
   EMAIL = 'email',
   SMS_EMAIL = 'sms and email',
 }
+
+export enum ENROLMENT_EDIT_ACTIONS {
+  CANCEL = 'cancel',
+}
