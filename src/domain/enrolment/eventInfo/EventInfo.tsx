@@ -8,6 +8,8 @@ import useEventLocation from '../../event/hooks/useEventLocation';
 import { Event } from '../../event/types';
 import { getEventFields } from '../../event/utils';
 import { getPlaceFields } from '../../place/utils';
+import { getRegistrationFields } from '../../registration/utils';
+import { registration } from '../../registration/__mocks__/registration';
 import AudienceAgeText from './AudienceAgeText';
 import DateText from './DateText';
 import styles from './eventInfo.module.scss';
@@ -21,8 +23,6 @@ type EventInfoProps = {
 const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
   const locale = useLocale();
   const {
-    audienceMaxAge,
-    audienceMinAge,
     description,
     endTime,
     freeEvent,
@@ -32,6 +32,8 @@ const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
     offers,
     startTime,
   } = getEventFields(event, locale);
+  const { audienceMaxAge, audienceMinAge } =
+    getRegistrationFields(registration);
 
   const { location } = useEventLocation(event);
   const {
@@ -71,10 +73,13 @@ const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
           ))}
         </div>
         <div className={styles.dateRow}>
-          <TextWithIcon
-            icon={<IconClock aria-hidden className={styles.icon} />}
-            text={<DateText endTime={endTime} startTime={startTime} />}
-          />
+          {(endTime || startTime) && (
+            <TextWithIcon
+              icon={<IconClock aria-hidden className={styles.icon} />}
+              text={<DateText endTime={endTime} startTime={startTime} />}
+            />
+          )}
+
           <TextWithIcon
             icon={<IconLocation aria-hidden className={styles.icon} />}
             text={locationText}

@@ -17,6 +17,7 @@
   "event": {
     "audienceAge": {
       "between": "{{min}} – {{max}} yr.",
+      "noAgeLimit": "No age limit",
       "over": "Over {{min}} yr.",
       "under": "Under {{max}} yr."
     },

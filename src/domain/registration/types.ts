@@ -32,5 +32,7 @@ export type RegistrationQueryVariables = {
 };
 
 export type RegistrationFields = {
+  audienceMaxAge: numberOrNull;
+  audienceMinAge: numberOrNull;
   confirmationMessage: string;
 };

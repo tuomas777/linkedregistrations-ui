@@ -23,5 +23,5 @@ test('should render correct text when both maxAge and minAge are set', () => {
 
 test('should render correct text when both maxAge and minAge are unset', () => {
   renderComponent({ maxAge: null, minAge: null });
-  screen.getByText('-');
+  screen.getByText('Ei ikärajaa');
 });

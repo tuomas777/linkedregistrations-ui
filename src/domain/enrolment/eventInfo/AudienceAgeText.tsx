@@ -19,7 +19,7 @@ const AudienceAgeText: React.FC<AudienceAgeTextProps> = ({
     } else if (minAge) {
       return t('event.audienceAge.over', { min: minAge });
     }
-    return '-';
+    return t('event.audienceAge.noAgeLimit');
   };
 
   return <>{getText()}</>;

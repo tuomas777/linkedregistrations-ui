@@ -103,6 +103,8 @@ export const getRegistrationFields = (
   registration: Registration
 ): RegistrationFields => {
   return {
+    audienceMaxAge: registration.audience_max_age || null,
+    audienceMinAge: registration.audience_min_age || null,
     confirmationMessage: registration.confirmation_message,
   };
 };

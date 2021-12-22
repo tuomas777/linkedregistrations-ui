@@ -33,7 +33,7 @@ const findElement = (key: 'location') => {
 const getElement = (key: 'age' | 'date' | 'description' | 'name' | 'price') => {
   switch (key) {
     case 'age':
-      return screen.getByText('8 – 15 v');
+      return screen.getByText('8 – 18 v');
     case 'date':
       return screen.getByText('10.07.2020 – 13.07.2020');
     case 'description':
@@ -64,4 +64,17 @@ test('should show event info', async () => {
   getElement('description');
   getElement('price');
   getElement('age');
+});
+
+test('should show event time correctly if only start time is defined', async () => {
+  render(<EventInfo event={{ ...event, end_time: null }} />);
+
+  await findElement('location');
+  getElement('name');
+  keywordsOverrides.forEach((item) =>
+    screen.getByText(item.name?.fi as string)
+  );
+  getElement('description');
+  getElement('price');
+  screen.getByText('10.7.2020 –');
 });
