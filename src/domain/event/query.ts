@@ -1,6 +1,5 @@
 import {
   QueryClient,
-  UseBaseQueryOptions,
   useQuery,
   UseQueryOptions,
   UseQueryResult,

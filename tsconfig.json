@@ -15,5 +15,12 @@
     "jsx": "preserve"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "**/__mocks__/*",
+    "**/__tests__/*",
+    "src/tests/*",
+    "src/utils/testUtils.tsx",
+    "src/utils/mockDataUtils.ts"
+  ]
 }

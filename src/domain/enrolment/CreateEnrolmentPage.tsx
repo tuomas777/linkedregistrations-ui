@@ -28,7 +28,7 @@ const CreateEnrolmentPage: React.FC<Props> = ({ event, registration }) => {
       <CreateEnrolmentPageMeta event={event} />
       <Container withOffset>
         <div className={styles.formContainer}>
-          <EventInfo event={event} />
+          <EventInfo event={event} registration={registration} />
           <div className={styles.divider} />
           <EnrolmentForm
             initialValues={initialValues}

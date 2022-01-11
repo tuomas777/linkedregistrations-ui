@@ -19,6 +19,7 @@ import {
 import { keywordsOverrides } from '../../../keyword/__mocks__/keyword';
 import { place } from '../../../place/__mocks__/place';
 import { TEST_PLACE_ID } from '../../../place/constants';
+import { registration } from '../../../registration/__mocks__/registration';
 import EventInfo from '../EventInfo';
 
 configure({ defaultHidden: true });
@@ -54,7 +55,7 @@ beforeEach(() => {
 });
 
 test('should show event info', async () => {
-  render(<EventInfo event={event} />);
+  render(<EventInfo event={event} registration={registration} />);
 
   await findElement('location');
   getElement('name');
@@ -67,7 +68,12 @@ test('should show event info', async () => {
 });
 
 test('should show event time correctly if only start time is defined', async () => {
-  render(<EventInfo event={{ ...event, end_time: null }} />);
+  render(
+    <EventInfo
+      event={{ ...event, end_time: null }}
+      registration={registration}
+    />
+  );
 
   await findElement('location');
   getElement('name');

@@ -149,21 +149,21 @@ export const getEnrolmentInitialValues = (
   return {
     ...getEnrolmentDefaultInitialValues(registration),
     accepted: true,
-    city: enrolment.city ?? '-',
+    city: enrolment.city || '-',
     dateOfBirth: enrolment.date_of_birth
       ? formatDate(new Date(enrolment.date_of_birth))
       : '',
-    email: enrolment.email ?? '-',
-    extraInfo: enrolment.extra_info ?? '-',
-    membershipNumber: enrolment.membership_number ?? '-',
-    name: enrolment.name ?? '-',
+    email: enrolment.email || '-',
+    extraInfo: enrolment.extra_info || '-',
+    membershipNumber: enrolment.membership_number || '-',
+    name: enrolment.name || '-',
     nativeLanguage: enrolment.native_language ?? '',
     notifications: getEnrolmentNotificationTypes(
       enrolment.notifications as string
     ),
-    phoneNumber: enrolment.phone_number ?? '-',
+    phoneNumber: enrolment.phone_number || '-',
     serviceLanguage: enrolment.service_language ?? '',
-    streetAddress: enrolment.street_address ?? '-',
-    zip: enrolment.zipcode ?? '-',
+    streetAddress: enrolment.street_address || '-',
+    zip: enrolment.zipcode || '-',
   };
 };

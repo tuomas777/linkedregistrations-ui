@@ -10,5 +10,5 @@ export const prefetchPlaceQuery = (
 ): Promise<void> => queryClient.prefetchQuery('place', () => fetchPlace(id));
 
 export const usePlaceQuery = (id: string): UseQueryResult<Place> => {
-  return useQuery<Place, Error>('place', () => fetchPlace(id));
+  return useQuery('place', () => fetchPlace(id));
 };

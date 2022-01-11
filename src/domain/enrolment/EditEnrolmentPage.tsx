@@ -37,7 +37,7 @@ const EditEnrolmentPage: React.FC<Props> = ({
       <EditEnrolmentPageMeta event={event} />
       <Container withOffset>
         <div className={styles.formContainer}>
-          <EventInfo event={event} />
+          <EventInfo event={event} registration={registration} />
           <div className={styles.divider} />
           <EnrolmentForm
             cancellationCode={cancellationCode}
