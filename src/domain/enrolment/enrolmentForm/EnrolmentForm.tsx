@@ -90,9 +90,7 @@ const EnrolmentForm: React.FC<Props> = ({
       `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
         registration.id
-      )
-        .replace('[enrolmentId]', enrolment.id)
-        .replace('[accessCode]', enrolment.cancellation_code as string)}`
+      ).replace('[accessCode]', enrolment.cancellation_code as string)}`
     );
   };
 

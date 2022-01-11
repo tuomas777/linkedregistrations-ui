@@ -2,10 +2,10 @@ import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { dehydrate, QueryClient } from 'react-query';
 
-import EditEnrolmentPage from '../../../../../../../domain/enrolment/EditEnrolmentPage';
-import { EVENT_INCLUDES } from '../../../../../../../domain/event/constants';
-import { prefetchEventQuery } from '../../../../../../../domain/event/query';
-import { fetchRegistrationQuery } from '../../../../../../../domain/registration/query';
+import EditEnrolmentPage from '../../../../../../domain/enrolment/EditEnrolmentPage';
+import { EVENT_INCLUDES } from '../../../../../../domain/event/constants';
+import { prefetchEventQuery } from '../../../../../../domain/event/query';
+import { fetchRegistrationQuery } from '../../../../../../domain/registration/query';
 
 const EditEnrolment: NextPage = () => <EditEnrolmentPage />;
 

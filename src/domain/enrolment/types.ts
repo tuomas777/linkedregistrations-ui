@@ -57,3 +57,7 @@ export type Enrolment = {
   street_address?: stringOrNull;
   zipcode?: stringOrNull;
 };
+
+export type EnrolmentQueryVariables = {
+  cancellationCode: string;
+};

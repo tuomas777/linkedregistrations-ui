@@ -8,7 +8,6 @@ import React from 'react';
 
 import {
   act,
-  actWait,
   configure,
   render,
   screen,
@@ -17,6 +16,7 @@ import {
   waitFor,
   within,
 } from '../../../utils/testUtils';
+import { ROUTES } from '../../app/routes/constants';
 import { event } from '../../event/__mocks__/event';
 import { TEST_EVENT_ID } from '../../event/constants';
 import { languagesResponse } from '../../language/__mocks__/languages';
@@ -24,6 +24,8 @@ import { place } from '../../place/__mocks__/place';
 import { TEST_PLACE_ID } from '../../place/constants';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { enrolment } from '../__mocks__/enrolment';
+import { TEST_ENROLMENT_CANCELLATION_CODE } from '../constants';
 import EditEnrolmentPage from '../EditEnrolmentPage';
 
 configure({ defaultHidden: true });
@@ -102,13 +104,19 @@ const defaultMocks = [
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),
+  rest.get(`*/signup/*`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(enrolment))
+  ),
 ];
 
 test('should edit enrolment page field', async () => {
   setQueryMocks(...defaultMocks);
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
-    query: { registrationId: TEST_REGISTRATION_ID },
+    pathname: ROUTES.EDIT_ENROLMENT,
+    query: {
+      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
+      registrationId: TEST_REGISTRATION_ID,
+    },
   });
   renderComponent();
 
@@ -146,8 +154,11 @@ test('should cancel enrolment', async () => {
     )
   );
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
-    query: { registrationId: TEST_REGISTRATION_ID },
+    pathname: ROUTES.EDIT_ENROLMENT,
+    query: {
+      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
+      registrationId: TEST_REGISTRATION_ID,
+    },
   });
   renderComponent();
 
@@ -179,8 +190,11 @@ test('should show error message when cancelling enrolment fails', async () => {
     )
   );
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
-    query: { registrationId: TEST_REGISTRATION_ID },
+    pathname: ROUTES.EDIT_ENROLMENT,
+    query: {
+      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
+      registrationId: TEST_REGISTRATION_ID,
+    },
   });
   renderComponent();
 
@@ -208,12 +222,18 @@ test('should show not found page if registration does not exist', async () => {
   setQueryMocks(
     rest.get(`*/registration/not-found/`, (req, res, ctx) =>
       res(ctx.status(404), ctx.json({ errorMessage: 'Not found' }))
+    ),
+    rest.get(`*/signup/*`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(enrolment))
     )
   );
 
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
-    query: { registrationId: 'not-found' },
+    pathname: ROUTES.EDIT_ENROLMENT,
+    query: {
+      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
+      registrationId: 'not-found',
+    },
   });
   renderComponent();
 

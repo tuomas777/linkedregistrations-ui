@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 
 import formatDate from '../../utils/formatDate';
+import queryBuilder from '../../utils/queryBuilder';
 import stringToDate from '../../utils/stringToDate';
 import axiosClient from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
@@ -13,7 +14,31 @@ import {
   CreateEnrolmentMutationInput,
   Enrolment,
   EnrolmentFormFields,
+  EnrolmentQueryVariables,
 } from './types';
+
+export const fetchEnrolment = async (
+  args: EnrolmentQueryVariables
+): Promise<Enrolment> => {
+  try {
+    const { data } = await axiosClient.get(enrolmentPathBuilder(args));
+    return data;
+  } catch (error) {
+    /* istanbul ignore next */
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
+export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
+  const { cancellationCode } = args;
+  const variableToKeyItems = [
+    { key: 'cancellation_code', value: cancellationCode },
+  ];
+
+  const query = queryBuilder(variableToKeyItems);
+
+  return `/signup/${query}`;
+};
 
 export const createEnrolment = async (
   input: CreateEnrolmentMutationInput

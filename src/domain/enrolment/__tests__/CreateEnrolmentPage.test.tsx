@@ -25,6 +25,7 @@ import { TEST_PLACE_ID } from '../../place/constants';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import CreateEnrolmentPage from '../CreateEnrolmentPage';
+import { ROUTES } from '../../app/routes/constants';
 
 configure({ defaultHidden: true });
 
@@ -129,7 +130,7 @@ test('should validate enrolment form and focus invalid field', async () => {
     )
   );
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
+    pathname: ROUTES.CREATE_ENROLMENT,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -220,7 +221,7 @@ test('should validate enrolment form and focus invalid field', async () => {
   userEvent.click(submitButton);
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/fi/registration/1/enrolment/${enrolment.id}/completed/${enrolment.cancellation_code}`
+      `/fi/registration/${registration.id}/enrolment/${enrolment.cancellation_code}/completed`
     )
   );
 });
@@ -244,7 +245,7 @@ test('should show server errors', async () => {
     )
   );
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
+    pathname: ROUTES.CREATE_ENROLMENT,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -304,7 +305,7 @@ test('should show not found page if registration does not exist', async () => {
   );
 
   singletonRouter.push({
-    pathname: 'registration/[registrationId]/enrolment/create',
+    pathname: ROUTES.CREATE_ENROLMENT,
     query: { registrationId: 'not-found' },
   });
   renderComponent();
