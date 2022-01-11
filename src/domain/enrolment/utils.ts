@@ -1,8 +1,9 @@
+import { AxiosError } from 'axios';
+
 import formatDate from '../../utils/formatDate';
-import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
 import stringToDate from '../../utils/stringToDate';
+import axiosClient from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
-import { registration } from '../registration/__mocks__/registration';
 import {
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
@@ -14,40 +15,28 @@ import {
   EnrolmentFormFields,
 } from './types';
 
-export const createEnrolment = (
+export const createEnrolment = async (
   input: CreateEnrolmentMutationInput
 ): Promise<Enrolment> => {
-  return fetch(getLinkedEventsUrl('/signup/'), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(input),
-  }).then((res) =>
-    res.json().then((data) => {
-      if (!res.ok) {
-        throw Error(JSON.stringify(data));
-      }
-      return data;
-    })
-  );
+  try {
+    const { data } = await axiosClient.post('/signup/', JSON.stringify(input));
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
 };
 
-export const deleteEnrolment = (cancellationCode: string): Promise<null> => {
-  return fetch(getLinkedEventsUrl('/signup/'), {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ cancellation_code: cancellationCode }),
-  }).then((res) =>
-    res.json().then((data) => {
-      if (!res.ok) {
-        throw Error(JSON.stringify(data));
-      }
-      return data;
-    })
-  );
+export const deleteEnrolment = async (
+  cancellationCode: string
+): Promise<null> => {
+  try {
+    const { data } = await axiosClient.delete('/signup/', {
+      data: JSON.stringify({ cancellation_code: cancellationCode }),
+    });
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
 };
 
 export const getEnrolmentNotificationsCode = (

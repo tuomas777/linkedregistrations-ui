@@ -1,11 +1,20 @@
+import { AxiosError } from 'axios';
+
 import { Language } from '../../types';
-import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
 import getLocalisedString from '../../utils/getLocalisedString';
 import queryBuilder from '../../utils/queryBuilder';
+import axiosClient from '../app/axios/axiosClient';
 import { Event, EventFields, EventQueryVariables } from './types';
 
-export const fetchEvent = (args: EventQueryVariables): Promise<Event> =>
-  fetch(getLinkedEventsUrl(eventPathBuilder(args))).then((res) => res.json());
+export const fetchEvent = async (args: EventQueryVariables): Promise<Event> => {
+  try {
+    const { data } = await axiosClient.get(eventPathBuilder(args));
+    return data;
+  } catch (error) {
+    /* istanbul ignore next */
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
 
 export const eventPathBuilder = (args: EventQueryVariables): string => {
   const { id, include } = args;

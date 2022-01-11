@@ -1,10 +1,19 @@
+import { AxiosError } from 'axios';
+
 import { Language } from '../../types';
-import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
 import getLocalisedString from '../../utils/getLocalisedString';
+import axiosClient from '../app/axios/axiosClient';
 import { Place, PlaceFields } from './types';
 
-export const fetchPlace = (id: string): Promise<Place> =>
-  fetch(getLinkedEventsUrl(`/place/${id}`)).then((res) => res.json());
+export const fetchPlace = async (id: string): Promise<Event> => {
+  try {
+    const { data } = await axiosClient.get(`/place/${id}/`);
+    return data;
+  } catch (error) {
+    /* istanbul ignore next */
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
 
 export const getPlaceFields = (place: Place, locale: Language): PlaceFields => {
   return {
