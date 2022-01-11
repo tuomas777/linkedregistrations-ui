@@ -1,8 +1,10 @@
+import { AxiosError } from 'axios';
+
 import formatDate from '../../utils/formatDate';
-import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
+import queryBuilder from '../../utils/queryBuilder';
 import stringToDate from '../../utils/stringToDate';
+import axiosClient from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
-import { registration } from '../registration/__mocks__/registration';
 import {
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
@@ -12,42 +14,54 @@ import {
   CreateEnrolmentMutationInput,
   Enrolment,
   EnrolmentFormFields,
+  EnrolmentQueryVariables,
 } from './types';
 
-export const createEnrolment = (
-  input: CreateEnrolmentMutationInput
+export const fetchEnrolment = async (
+  args: EnrolmentQueryVariables
 ): Promise<Enrolment> => {
-  return fetch(getLinkedEventsUrl('/signup/'), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(input),
-  }).then((res) =>
-    res.json().then((data) => {
-      if (!res.ok) {
-        throw Error(JSON.stringify(data));
-      }
-      return data;
-    })
-  );
+  try {
+    const { data } = await axiosClient.get(enrolmentPathBuilder(args));
+    return data;
+  } catch (error) {
+    /* istanbul ignore next */
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
 };
 
-export const deleteEnrolment = (cancellationCode: string): Promise<null> => {
-  return fetch(getLinkedEventsUrl('/signup/'), {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ cancellation_code: cancellationCode }),
-  }).then((res) =>
-    res.json().then((data) => {
-      if (!res.ok) {
-        throw Error(JSON.stringify(data));
-      }
-      return data;
-    })
-  );
+export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
+  const { cancellationCode } = args;
+  const variableToKeyItems = [
+    { key: 'cancellation_code', value: cancellationCode },
+  ];
+
+  const query = queryBuilder(variableToKeyItems);
+
+  return `/signup/${query}`;
+};
+
+export const createEnrolment = async (
+  input: CreateEnrolmentMutationInput
+): Promise<Enrolment> => {
+  try {
+    const { data } = await axiosClient.post('/signup/', JSON.stringify(input));
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
+export const deleteEnrolment = async (
+  cancellationCode: string
+): Promise<null> => {
+  try {
+    const { data } = await axiosClient.delete('/signup/', {
+      data: JSON.stringify({ cancellation_code: cancellationCode }),
+    });
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
 };
 
 export const getEnrolmentNotificationsCode = (
@@ -135,21 +149,21 @@ export const getEnrolmentInitialValues = (
   return {
     ...getEnrolmentDefaultInitialValues(registration),
     accepted: true,
-    city: enrolment.city ?? '-',
+    city: enrolment.city || '-',
     dateOfBirth: enrolment.date_of_birth
       ? formatDate(new Date(enrolment.date_of_birth))
       : '',
-    email: enrolment.email ?? '-',
-    extraInfo: enrolment.extra_info ?? '-',
-    membershipNumber: enrolment.membership_number ?? '-',
-    name: enrolment.name ?? '-',
+    email: enrolment.email || '-',
+    extraInfo: enrolment.extra_info || '-',
+    membershipNumber: enrolment.membership_number || '-',
+    name: enrolment.name || '-',
     nativeLanguage: enrolment.native_language ?? '',
     notifications: getEnrolmentNotificationTypes(
       enrolment.notifications as string
     ),
-    phoneNumber: enrolment.phone_number ?? '-',
+    phoneNumber: enrolment.phone_number || '-',
     serviceLanguage: enrolment.service_language ?? '',
-    streetAddress: enrolment.street_address ?? '-',
-    zip: enrolment.zipcode ?? '-',
+    streetAddress: enrolment.street_address || '-',
+    zip: enrolment.zipcode || '-',
   };
 };

@@ -6,16 +6,24 @@ import { render, screen, setQueryMocks } from '../../../utils/testUtils';
 import { event, eventOverrides } from '../../event/__mocks__/event';
 import { TEST_EVENT_ID } from '../../event/constants';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { enrolment } from '../__mocks__/enrolment';
+import { TEST_ENROLMENT_CANCELLATION_CODE } from '../constants';
 import EnrolmentCompletedPage from '../EnrolmentCompletedPage';
 
 const renderComponent = () =>
   render(<EnrolmentCompletedPage />, {
-    query: { registrationId: TEST_REGISTRATION_ID },
+    query: {
+      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
+      registrationId: TEST_REGISTRATION_ID,
+    },
   });
 
 const defaultMocks = [
   rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(event))
+  ),
+  rest.get(`*/signup/*`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(enrolment))
   ),
 ];
 

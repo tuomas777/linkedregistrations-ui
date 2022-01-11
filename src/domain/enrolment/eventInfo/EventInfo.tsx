@@ -8,8 +8,8 @@ import useEventLocation from '../../event/hooks/useEventLocation';
 import { Event } from '../../event/types';
 import { getEventFields } from '../../event/utils';
 import { getPlaceFields } from '../../place/utils';
+import { Registration } from '../../registration/types';
 import { getRegistrationFields } from '../../registration/utils';
-import { registration } from '../../registration/__mocks__/registration';
 import AudienceAgeText from './AudienceAgeText';
 import DateText from './DateText';
 import styles from './eventInfo.module.scss';
@@ -18,9 +18,10 @@ import TextWithIcon from './TextWithIcon';
 
 type EventInfoProps = {
   event: Event;
+  registration: Registration;
 };
 
-const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
+const EventInfo: React.FC<EventInfoProps> = ({ event, registration }) => {
   const locale = useLocale();
   const {
     description,

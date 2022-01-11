@@ -1,5 +1,10 @@
-import { Field, Form, Formik } from 'formik';
-import { Fieldset, IconCross, Notification } from 'hds-react';
+import { Field, FieldAttributes, Form, Formik } from 'formik';
+import {
+  Fieldset,
+  IconCross,
+  Notification,
+  SingleSelectProps,
+} from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -18,6 +23,7 @@ import FormGroup from '../../../common/components/formGroup/FormGroup';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import useLocale from '../../../hooks/useLocale';
 import useMountedState from '../../../hooks/useMountedState';
+import { OptionType } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
@@ -46,6 +52,16 @@ interface Callbacks {
   onError?: (error: any) => void;
   onSuccess?: () => void;
 }
+
+const LanguageField = (
+  props: FieldAttributes<Omit<SingleSelectProps<OptionType>, 'options'>>
+) => {
+  const languageOptions = useLanguageOptions();
+
+  return (
+    <Field {...props} component={SingleSelectField} options={languageOptions} />
+  );
+};
 
 type Props = {
   cancellationCode?: string;
@@ -77,7 +93,6 @@ const EnrolmentForm: React.FC<Props> = ({
   };
 
   const notificationOptions = useNotificationOptions();
-  const languageOptions = useLanguageOptions();
   const formDisabled = !isRegistrationPossible(registration);
   const locale = useLocale();
   const router = useRouter();
@@ -90,9 +105,7 @@ const EnrolmentForm: React.FC<Props> = ({
       `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
         registration.id
-      )
-        .replace('[enrolmentId]', enrolment.id)
-        .replace('[accessCode]', enrolment.cancellation_code as string)}`
+      ).replace('[accessCode]', enrolment.cancellation_code as string)}`
     );
   };
 
@@ -309,24 +322,20 @@ const EnrolmentForm: React.FC<Props> = ({
                 </FormGroup>
                 <FormGroup>
                   <div className={styles.nativeLanguageRow}>
-                    <Field
+                    <LanguageField
                       name={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
-                      component={SingleSelectField}
                       disabled={formDisabled || readOnly}
                       label={t(`labelNativeLanguage`)}
-                      options={languageOptions}
                       placeholder={
                         readOnly ? '' : t(`placeholderNativeLanguage`)
                       }
                       readOnly={readOnly}
                       required
                     />
-                    <Field
+                    <LanguageField
                       name={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
-                      component={SingleSelectField}
                       disabled={formDisabled || readOnly}
                       label={t(`labelServiceLanguage`)}
-                      options={languageOptions}
                       placeholder={
                         readOnly ? '' : t(`placeholderServiceLanguage`)
                       }

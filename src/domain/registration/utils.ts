@@ -1,21 +1,26 @@
+import { AxiosError } from 'axios';
 import isFuture from 'date-fns/isFuture';
 import isPast from 'date-fns/isPast';
 import { TFunction } from 'next-i18next';
 
-import { getLinkedEventsUrl } from '../../utils/getLinkedEventsPath';
 import queryBuilder from '../../utils/queryBuilder';
+import axiosClient from '../app/axios/axiosClient';
 import {
   Registration,
   RegistrationFields,
   RegistrationQueryVariables,
 } from './types';
 
-export const fetchRegistration = (
+export const fetchRegistration = async (
   args: RegistrationQueryVariables
-): Promise<Registration> =>
-  fetch(getLinkedEventsUrl(registrationPathBuilder(args))).then((res) =>
-    res.json()
-  );
+): Promise<Registration> => {
+  try {
+    const { data } = await axiosClient.get(registrationPathBuilder(args));
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
 
 export const registrationPathBuilder = (
   args: RegistrationQueryVariables

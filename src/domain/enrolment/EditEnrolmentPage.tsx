@@ -10,11 +10,11 @@ import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
-import { enrolment } from './__mocks__/enrolment';
 import EditEnrolmentPageMeta from './editEnrolmentPageMeta/EditEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
 import styles from './enrolmentPage.module.scss';
 import EventInfo from './eventInfo/EventInfo';
+import { useEnrolmentQuery } from './query';
 import { Enrolment } from './types';
 import { getEnrolmentInitialValues } from './utils';
 
@@ -37,7 +37,7 @@ const EditEnrolmentPage: React.FC<Props> = ({
       <EditEnrolmentPageMeta event={event} />
       <Container withOffset>
         <div className={styles.formContainer}>
-          <EventInfo event={event} />
+          <EventInfo event={event} registration={registration} />
           <div className={styles.divider} />
           <EnrolmentForm
             cancellationCode={cancellationCode}
@@ -61,16 +61,19 @@ const EditEnrolmentPageWrapper: React.FC = () => {
     );
 
   const { data: event, isLoading: isLoadingEvent } = useEventQuery(
-    {
-      id: registration?.event as string,
-      include: EVENT_INCLUDES,
-    },
+    { id: registration?.event as string, include: EVENT_INCLUDES },
     { enabled: !!registration?.event }
   );
 
+  const { data: enrolment, isLoading: isLoadingEnrolment } = useEnrolmentQuery({
+    cancellationCode: query.accessCode as string,
+  });
+
   return (
-    <LoadingSpinner isLoading={isLoadingRegistration || isLoadingEvent}>
-      {registration && event ? (
+    <LoadingSpinner
+      isLoading={isLoadingEnrolment || isLoadingEvent || isLoadingRegistration}
+    >
+      {enrolment && event && registration ? (
         <EditEnrolmentPage
           cancellationCode={query.accessCode as string}
           enrolment={enrolment}

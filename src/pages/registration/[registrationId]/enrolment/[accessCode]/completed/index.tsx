@@ -2,12 +2,13 @@ import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { dehydrate, QueryClient } from 'react-query';
 
-import EditEnrolmentPage from '../../../../../../../domain/enrolment/EditEnrolmentPage';
-import { EVENT_INCLUDES } from '../../../../../../../domain/event/constants';
-import { prefetchEventQuery } from '../../../../../../../domain/event/query';
-import { fetchRegistrationQuery } from '../../../../../../../domain/registration/query';
+import EnrolmentCompletedPage from '../../../../../../domain/enrolment/EnrolmentCompletedPage';
+import { prefetchEnrolmentQuery } from '../../../../../../domain/enrolment/query';
+import { EVENT_INCLUDES } from '../../../../../../domain/event/constants';
+import { prefetchEventQuery } from '../../../../../../domain/event/query';
+import { fetchRegistrationQuery } from '../../../../../../domain/registration/query';
 
-const EditEnrolment: NextPage = () => <EditEnrolmentPage />;
+const EnrolmentCompleted: NextPage = () => <EnrolmentCompletedPage />;
 
 export const getServerSideProps: GetServerSideProps = async ({
   locale,
@@ -26,6 +27,10 @@ export const getServerSideProps: GetServerSideProps = async ({
         include: EVENT_INCLUDES,
       });
     }
+
+    await prefetchEnrolmentQuery(queryClient, {
+      cancellationCode: query.accessCode as string,
+    });
   } catch {}
 
   return {
@@ -39,4 +44,4 @@ export const getServerSideProps: GetServerSideProps = async ({
   };
 };
 
-export default EditEnrolment;
+export default EnrolmentCompleted;

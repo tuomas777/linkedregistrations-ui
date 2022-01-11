@@ -1,6 +1,7 @@
 export enum ROUTES {
   CREATE_ENROLMENT = '/registration/[registrationId]/enrolment/create',
-  ENROLMENT_COMPLETED = '/registration/[registrationId]/enrolment/[enrolmentId]/completed/[accessCode]',
+  EDIT_ENROLMENT = '/registration/[registrationId]/enrolment/[accessCode]/edit',
+  ENROLMENT_COMPLETED = '/registration/[registrationId]/enrolment/[accessCode]/completed',
   ENROLMENT_CANCELLED = '/registration/[registrationId]/enrolment/cancelled',
   HOME = '/',
 }
