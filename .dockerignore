@@ -1,9 +1,13 @@
 *
 !.env
+!.sentryclirc
 !public
 !src
 !next-i18next.config.js
 !next.config.js
 !package.json
+!sentry.client.config.js
+!sentry.properties
+!sentry.server.config.js
 !tsconfig.json
 !yarn.lock
