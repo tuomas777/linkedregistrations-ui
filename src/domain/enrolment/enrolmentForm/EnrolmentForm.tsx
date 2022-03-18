@@ -5,6 +5,7 @@ import {
   Notification,
   SingleSelectProps,
 } from 'hds-react';
+import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -28,7 +29,11 @@ import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
-import { ENROLMENT_FIELDS, NOTIFICATIONS } from '../constants';
+import {
+  ENROLMENT_FIELDS,
+  ENROLMENT_QUERY_PARAMS,
+  NOTIFICATIONS,
+} from '../constants';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
@@ -96,17 +101,19 @@ const EnrolmentForm: React.FC<Props> = ({
   const formDisabled = !isRegistrationPossible(registration);
   const locale = useLocale();
   const router = useRouter();
+  const { query } = router;
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrors();
 
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
-    router.push(
-      `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
+    router.push({
+      pathname: `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
         registration.id
-      ).replace('[accessCode]', enrolment.cancellation_code as string)}`
-    );
+      ).replace('[accessCode]', enrolment.cancellation_code as string)}`,
+      query: pick(query, ENROLMENT_QUERY_PARAMS.REDIRECT_URL),
+    });
   };
 
   const goToEnrolmentCancelledPage = () => {
