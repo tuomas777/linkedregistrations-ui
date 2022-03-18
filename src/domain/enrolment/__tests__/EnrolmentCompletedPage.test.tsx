@@ -30,6 +30,30 @@ const renderComponent = (query?: {
     },
   });
 
+const registrationWithoutConfirmationMessage = fakeRegistration({
+  id: TEST_REGISTRATION_ID,
+  event: TEST_EVENT_ID,
+  confirmation_message: '',
+});
+const mockedRegistrationWithoutConfirmationMessageResponse = rest.get(
+  `*/registration/${TEST_REGISTRATION_ID}`,
+  (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(registrationWithoutConfirmationMessage))
+);
+
+const confirmationMessage = 'Custom confirmation message';
+
+const registrationWithConfirmationMessage = fakeRegistration({
+  id: TEST_REGISTRATION_ID,
+  event: TEST_EVENT_ID,
+  confirmation_message: confirmationMessage,
+});
+const mockedRegistrationWithConfirmationMessageResponse = rest.get(
+  `*/registration/${TEST_REGISTRATION_ID}`,
+  (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(registrationWithConfirmationMessage))
+);
+
 const defaultMocks = [
   rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(event))
@@ -52,17 +76,9 @@ afterAll((): void => {
 });
 
 test('should show default enrolment completed text', async () => {
-  const registration = fakeRegistration({
-    id: TEST_REGISTRATION_ID,
-    event: TEST_EVENT_ID,
-    confirmation_message: '',
-  });
-
   setQueryMocks(
     ...defaultMocks,
-    rest.get(`*/registration/${TEST_REGISTRATION_ID}`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(registration))
-    )
+    mockedRegistrationWithoutConfirmationMessageResponse
   );
   renderComponent();
 
@@ -73,18 +89,9 @@ test('should show default enrolment completed text', async () => {
 });
 
 test('should show custom confirmation message', async () => {
-  const confirmationMessage = 'Custom confirmation message';
-  const registration = fakeRegistration({
-    id: TEST_REGISTRATION_ID,
-    event: TEST_EVENT_ID,
-    confirmation_message: confirmationMessage,
-  });
-
   setQueryMocks(
     ...defaultMocks,
-    rest.get(`*/registration/${TEST_REGISTRATION_ID}`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(registration))
-    )
+    mockedRegistrationWithConfirmationMessageResponse
   );
   renderComponent();
 
@@ -94,17 +101,9 @@ test('should show custom confirmation message', async () => {
 
 test('should sutomatically redirect user', async () => {
   const redirectUrl = 'https://www.google.com';
-  const registration = fakeRegistration({
-    id: TEST_REGISTRATION_ID,
-    event: TEST_EVENT_ID,
-    confirmation_message: '',
-  });
-
   setQueryMocks(
     ...defaultMocks,
-    rest.get(`*/registration/${TEST_REGISTRATION_ID}`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(registration))
-    )
+    mockedRegistrationWithoutConfirmationMessageResponse
   );
   renderComponent({ redirect_url: redirectUrl });
 
