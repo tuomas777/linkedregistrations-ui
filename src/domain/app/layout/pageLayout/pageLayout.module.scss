@@ -22,3 +22,7 @@
     font-size: var(--fontsize-heading-m);
   }
 }
+
+.pageLayoutWithoutHeader {
+  grid-template-rows: 1fr !important;
+}

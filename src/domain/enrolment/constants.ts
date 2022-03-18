@@ -24,6 +24,7 @@ export enum NOTIFICATIONS {
 }
 
 export enum ENROLMENT_QUERY_PARAMS {
+  IFRAME = 'iframe',
   REDIRECT_URL = 'redirect_url',
 }
 
