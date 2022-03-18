@@ -106,18 +106,26 @@ const EnrolmentForm: React.FC<Props> = ({
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrors();
 
-  const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+  const goToPage = (pathname: string) => {
     router.push({
-      pathname: `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
+      pathname,
+      query: pick(query, [
+        ENROLMENT_QUERY_PARAMS.IFRAME,
+        ENROLMENT_QUERY_PARAMS.REDIRECT_URL,
+      ]),
+    });
+  };
+  const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+    goToPage(
+      `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
         registration.id
-      ).replace('[accessCode]', enrolment.cancellation_code as string)}`,
-      query: pick(query, ENROLMENT_QUERY_PARAMS.REDIRECT_URL),
-    });
+      ).replace('[accessCode]', enrolment.cancellation_code as string)}`
+    );
   };
 
   const goToEnrolmentCancelledPage = () => {
-    router.push(
+    goToPage(
       `/${locale}${ROUTES.ENROLMENT_CANCELLED.replace(
         '[registrationId]',
         registration.id

@@ -44,6 +44,11 @@ Run tests and generate coverage report
 
 There are some url parameters which can be used when using enrolment form in external service:
 
+`iframe`:
+e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/enrolment/create?iframe=true
+
+This parameter can be used to hide page header. Page header is hidden when iframe=true
+
 `redirect_url`:
 e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/enrolment/create?redirect_url=https://www.google.com/
 

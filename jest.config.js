@@ -5,7 +5,6 @@ module.exports = {
     '!**/node_modules/**',
   ],
   coveragePathIgnorePatterns: [
-    '<rootDir>/src/domain/app/layout/pageLayout/PageLayout.tsx',
     '<rootDir>/src/pages/',
     '<rootDir>/src/tests/',
     '<rootDir>/src/utils/getPageHeaderHeight.ts',
