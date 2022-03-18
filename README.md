@@ -40,6 +40,15 @@ Launches the test runner in the interactive watch mode.
 
 Run tests and generate coverage report
 
+## Url parameters
+
+There are some url parameters which can be used when using enrolment form in external service:
+
+`redirect_url`:
+e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/enrolment/create?redirect_url=https://www.google.com/
+
+This parameter can be used to redirect user automatically to selected url after successful enrolment. It's important to include also protocol to the url.
+
 ## Debugging
 
 ### Debugging project in VS Code

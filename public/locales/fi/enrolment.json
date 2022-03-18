@@ -11,6 +11,8 @@
     "title": "Ilmoittautumisesi on peruttu"
   },
   "completedPage": {
+    "redirectInfo1": "Sinut ohjataan automaattisesti palveluntarjoajan sivulle.",
+    "redirectInfo2": "Jos uudelleenohjaus ei toimi, pääset sivulle <a href=\"{{url}}\">tästä</a>.",
     "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
     "title": "Kiitos ilmoittautumisestasi!"
   },

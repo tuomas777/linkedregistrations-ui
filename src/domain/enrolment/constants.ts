@@ -23,6 +23,10 @@ export enum NOTIFICATIONS {
   SMS = 'sms',
 }
 
+export enum ENROLMENT_QUERY_PARAMS {
+  REDIRECT_URL = 'redirect_url',
+}
+
 export const ENROLMENT_INITIAL_VALUES: EnrolmentFormFields = {
   [ENROLMENT_FIELDS.ACCEPTED]: false,
   [ENROLMENT_FIELDS.AUDIENCE_MAX_AGE]: null,

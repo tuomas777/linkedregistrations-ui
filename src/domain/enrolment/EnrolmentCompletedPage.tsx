@@ -16,6 +16,7 @@ import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
 import { getRegistrationFields } from '../registration/utils';
 import ConfirmationMessage from './confirmationMessage/ConfirmationMessage';
+import { ENROLMENT_QUERY_PARAMS } from './constants';
 import { useEnrolmentQuery } from './query';
 
 type Props = {
@@ -24,11 +25,22 @@ type Props = {
 };
 
 const EnrolmentCompletedPage: React.FC<Props> = ({ event, registration }) => {
+  const { query } = useRouter();
+  const { [ENROLMENT_QUERY_PARAMS.REDIRECT_URL]: redirectUrl } = query;
   const { t } = useTranslation(['enrolment']);
   const locale = useLocale();
 
   const { name } = getEventFields(event, locale);
   const { confirmationMessage } = getRegistrationFields(registration);
+
+  React.useEffect(() => {
+    if (typeof redirectUrl === 'string') {
+      setTimeout(() => {
+        window.location.href = redirectUrl;
+      }, 5000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <MainContent>
@@ -40,6 +52,17 @@ const EnrolmentCompletedPage: React.FC<Props> = ({ event, registration }) => {
           <ConfirmationMessage registration={registration} />
         ) : (
           <p>{t('completedPage.text', { name })}</p>
+        )}
+        {redirectUrl && (
+          <>
+            <br></br>
+            <p>{t('completedPage.redirectInfo1')}</p>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: t('completedPage.redirectInfo2', { url: redirectUrl }),
+              }}
+            />
+          </>
         )}
       </SuccessTemplate>
     </MainContent>

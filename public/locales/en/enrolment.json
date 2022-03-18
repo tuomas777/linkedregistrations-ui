@@ -11,6 +11,8 @@
     "title": "Your registration has been canceled"
   },
   "completedPage": {
+    "redirectInfo1": "You will be automatically redirected to the service provider's page.",
+    "redirectInfo2": "If the redirect does not work, you can access the page <a href=\"{{url}}\">here</a>.",
     "text": "You have signed up to our event {{name}} - welcome!",
     "title": "Thank you for signing up!"
   },

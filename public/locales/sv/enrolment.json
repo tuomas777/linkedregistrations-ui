@@ -11,6 +11,8 @@
     "title": "Din registrering har avbrutits"
   },
   "completedPage": {
+    "redirectInfo1": "Du kommer automatiskt att omdirigeras till tjänsteleverantörens sida.",
+    "redirectInfo2": "Om omdirigeringen inte fungerar kan du komma åt sidan <a href=\"{{url}}\">här</a>.",
     "text": "Du har registrerat dig för vårt evenemang {{name}} - välkommen!",
     "title": "Tack för din registrering!"
   },
