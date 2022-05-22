@@ -8,7 +8,10 @@ interface Props {
   title: string;
 }
 
-const CancelledTemplate: React.FC<Props> = ({ children, title }) => {
+const CancelledTemplate: React.FC<React.PropsWithChildren<Props>> = ({
+  children,
+  title,
+}) => {
   return (
     <Container contentWrapperClassName={styles.cancelledTemplate}>
       <div className={styles.content}>

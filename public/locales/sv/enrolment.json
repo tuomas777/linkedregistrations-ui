@@ -61,7 +61,7 @@
   "titleNotifications": "Evenemangmeddelanden",
   "warnings": {
     "capacityInWaitingList": "Registrering för detta evenemang är fortfarande möjligt, men det är bara {{count}} plats kvar i kön.",
-    "capacityInWaitingList_plural": "Registrering för detta evenemang är fortfarande möjligt, men det är bara {{count}} platser kvar i kön.",
+    "capacityInWaitingList_other": "Registrering för detta evenemang är fortfarande möjligt, men det är bara {{count}} platser kvar i kön.",
     "closed": "Registreringen för detta evenemang är för närvarande stängd. Vänligen försök igen senare."
   }
 }
