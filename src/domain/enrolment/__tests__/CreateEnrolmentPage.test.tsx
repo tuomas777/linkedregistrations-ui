@@ -100,13 +100,6 @@ const getElement = (
 
 const renderComponent = () => render(<CreateEnrolmentPage />);
 
-test.skip('page is accessible', async () => {
-  const { container } = renderComponent();
-
-  await findElement('nameInput');
-  expect(await axe(container)).toHaveNoViolations();
-});
-
 const defaultMocks = [
   rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(event))
@@ -122,7 +115,21 @@ const defaultMocks = [
   ),
 ];
 
+test.skip('page is accessible', async () => {
+  setQueryMocks(...defaultMocks);
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  const { container } = renderComponent();
+
+  await findElement('nameInput');
+  expect(await axe(container)).toHaveNoViolations();
+});
+
 test('should validate enrolment form and focus invalid field', async () => {
+  const user = userEvent.setup();
+
   setQueryMocks(
     ...defaultMocks,
     rest.post(`*/signup/`, (req, res, ctx) =>
@@ -151,74 +158,74 @@ test('should validate enrolment form and focus invalid field', async () => {
 
   expect(nameInput).not.toHaveFocus();
 
-  userEvent.click(submitButton);
+  await user.click(submitButton);
   await waitFor(() => expect(nameInput).toHaveFocus());
 
-  userEvent.type(nameInput, enrolmentValues.name);
-  userEvent.click(submitButton);
+  await user.type(nameInput, enrolmentValues.name);
+  await user.click(submitButton);
   await waitFor(() => expect(streetAddressInput).toHaveFocus());
 
-  userEvent.type(streetAddressInput, enrolmentValues.streetAddress);
-  userEvent.click(submitButton);
+  await user.type(streetAddressInput, enrolmentValues.streetAddress);
+  await user.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
-  userEvent.type(dateOfBirthInput, formatDate(subYears(new Date(), 20)));
-  userEvent.click(submitButton);
+  await user.type(dateOfBirthInput, formatDate(subYears(new Date(), 20)));
+  await user.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
-  userEvent.clear(dateOfBirthInput);
-  userEvent.type(dateOfBirthInput, formatDate(subYears(new Date(), 7)));
-  userEvent.click(submitButton);
+  await user.clear(dateOfBirthInput);
+  await user.type(dateOfBirthInput, formatDate(subYears(new Date(), 7)));
+  await user.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
-  userEvent.clear(dateOfBirthInput);
-  userEvent.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
-  userEvent.click(submitButton);
+  await user.clear(dateOfBirthInput);
+  await user.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
+  await user.click(submitButton);
   await waitFor(() => expect(zipInput).toHaveFocus());
 
-  userEvent.type(zipInput, enrolmentValues.zip);
-  userEvent.click(submitButton);
+  await user.type(zipInput, enrolmentValues.zip);
+  await user.click(submitButton);
   await waitFor(() => expect(cityInput).toHaveFocus());
 
-  userEvent.type(cityInput, enrolmentValues.city);
-  userEvent.click(submitButton);
+  await user.type(cityInput, enrolmentValues.city);
+  await user.click(submitButton);
   await waitFor(() => expect(emailCheckbox).toHaveFocus());
 
   expect(emailInput).not.toBeRequired();
-  userEvent.click(emailCheckbox);
-  userEvent.click(submitButton);
+  await user.click(emailCheckbox);
+  await user.click(submitButton);
   await waitFor(() => expect(emailInput).toHaveFocus());
   expect(emailInput).toBeRequired();
 
   expect(phoneInput).not.toBeRequired();
-  userEvent.type(emailInput, enrolmentValues.email);
-  userEvent.click(phoneCheckbox);
-  userEvent.click(submitButton);
+  await user.type(emailInput, enrolmentValues.email);
+  await user.click(phoneCheckbox);
+  await user.click(submitButton);
   await waitFor(() => expect(phoneInput).toHaveFocus());
   expect(phoneInput).toBeRequired();
 
-  userEvent.type(phoneInput, enrolmentValues.phoneNumber);
-  userEvent.click(submitButton);
+  await user.type(phoneInput, enrolmentValues.phoneNumber);
+  await user.click(submitButton);
   await waitFor(() => expect(nativeLanguageButton).toHaveFocus());
 
-  userEvent.click(nativeLanguageButton);
+  await user.click(nativeLanguageButton);
   const nativeLanguageOption = await screen.findByRole('option', {
     name: /suomi/i,
   });
-  userEvent.click(nativeLanguageOption);
-  userEvent.click(submitButton);
+  await user.click(nativeLanguageOption);
+  await user.click(submitButton);
   await waitFor(() => expect(serviceLanguageButton).toHaveFocus());
 
-  userEvent.click(serviceLanguageButton);
+  await user.click(serviceLanguageButton);
   const serviceLanguageOption = await screen.findByRole('option', {
     name: /suomi/i,
   });
-  userEvent.click(serviceLanguageOption);
-  userEvent.click(submitButton);
+  await user.click(serviceLanguageOption);
+  await user.click(submitButton);
   await waitFor(() => expect(acceptCheckbox).toHaveFocus());
 
-  userEvent.click(acceptCheckbox);
-  userEvent.click(submitButton);
+  await user.click(acceptCheckbox);
+  await user.click(submitButton);
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
       `/fi/registration/${registration.id}/enrolment/${enrolment.cancellation_code}/completed`
@@ -227,6 +234,7 @@ test('should validate enrolment form and focus invalid field', async () => {
 });
 
 test('should show server errors', async () => {
+  const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,
     rest.post(`*/signup/`, (req, res, ctx) =>
@@ -264,35 +272,35 @@ test('should show server errors', async () => {
   const acceptCheckbox = getElement('acceptCheckbox');
   const submitButton = getElement('submitButton');
 
-  userEvent.type(nameInput, enrolmentValues.name);
-  userEvent.type(streetAddressInput, enrolmentValues.streetAddress);
-  userEvent.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
-  userEvent.type(zipInput, enrolmentValues.zip);
-  userEvent.type(cityInput, enrolmentValues.city);
+  await user.type(nameInput, enrolmentValues.name);
+  await user.type(streetAddressInput, enrolmentValues.streetAddress);
+  await user.type(dateOfBirthInput, enrolmentValues.dateOfBirth);
+  await user.type(zipInput, enrolmentValues.zip);
+  await user.type(cityInput, enrolmentValues.city);
 
-  userEvent.click(emailCheckbox);
-  userEvent.type(emailInput, enrolmentValues.email);
-  userEvent.click(phoneCheckbox);
-  userEvent.type(phoneInput, enrolmentValues.phoneNumber);
-  userEvent.click(submitButton);
+  await user.click(emailCheckbox);
+  await user.type(emailInput, enrolmentValues.email);
+  await user.click(phoneCheckbox);
+  await user.type(phoneInput, enrolmentValues.phoneNumber);
+  await user.click(submitButton);
   await waitFor(() => expect(nativeLanguageButton).toHaveFocus());
 
-  userEvent.click(nativeLanguageButton);
+  await user.click(nativeLanguageButton);
   const nativeLanguageOption = await screen.findByRole(
     'option',
     { name: /suomi/i },
     { timeout: 30000 }
   );
-  userEvent.click(nativeLanguageOption);
+  await user.click(nativeLanguageOption);
 
-  userEvent.click(serviceLanguageButton);
+  await user.click(serviceLanguageButton);
   const serviceLanguageOption = await screen.findByRole('option', {
     name: /suomi/i,
   });
-  userEvent.click(serviceLanguageOption);
+  await user.click(serviceLanguageOption);
 
-  userEvent.click(acceptCheckbox);
-  userEvent.click(submitButton);
+  await user.click(acceptCheckbox);
+  await user.click(submitButton);
 
   await screen.findByText(/lomakkeella on seuraavat virheet/i);
 });

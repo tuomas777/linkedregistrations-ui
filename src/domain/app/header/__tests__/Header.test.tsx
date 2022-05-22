@@ -58,23 +58,26 @@ const getElements = (key: 'appName' | 'languageSelector') => {
 };
 
 test('should route to home page by clicking application name', async () => {
+  const user = userEvent.setup();
+
   mockRouter.setCurrentUrl('/registrations');
   renderComponent();
   expect(mockRouter.asPath).toBe('/registrations');
 
   const appName = getElements('appName')[0];
-  userEvent.click(appName);
+  await user.click(appName);
 
-  expect(mockRouter.asPath).toBe('/fi/');
+  expect(mockRouter.asPath).toBe('/fi');
 });
 
 test('should show mobile menu', async () => {
+  const user = userEvent.setup();
   global.innerWidth = 500;
   renderComponent();
 
   expect(document.querySelector('#hds-mobile-menu')).not.toBeInTheDocument();
   const menuButton = getElement('menuButton');
-  userEvent.click(menuButton);
+  await user.click(menuButton);
 
   await waitFor(() =>
     expect(document.querySelector('#hds-mobile-menu')).toBeInTheDocument()
@@ -82,18 +85,19 @@ test('should show mobile menu', async () => {
 });
 
 test('should change language', async () => {
+  const user = userEvent.setup();
   renderComponent();
 
   const languageSelector = getElements('languageSelector')[0];
-  userEvent.click(languageSelector);
+  await user.click(languageSelector);
 
   const enOption = getElement('enOption');
-  userEvent.click(enOption);
+  await user.click(enOption);
   expect(mockRouter.locale).toBe('en');
 
-  userEvent.click(languageSelector);
+  await user.click(languageSelector);
 
   const svOption = getElement('svOption');
-  userEvent.click(svOption);
+  await user.click(svOption);
   expect(mockRouter.locale).toBe('sv');
 });

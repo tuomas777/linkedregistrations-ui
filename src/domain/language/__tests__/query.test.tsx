@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 
 import { getQueryWrapper, setQueryMocks } from '../../../utils/testUtils';
@@ -13,11 +13,11 @@ test('should return correct data for useLanguagesQuery', async () => {
   );
 
   const wrapper = getQueryWrapper();
-  const { result, waitFor } = renderHook(() => useLanguagesQuery(), {
+  const { result } = renderHook(() => useLanguagesQuery(), {
     wrapper,
   });
 
-  await waitFor(() => result.current.isSuccess);
+  await waitFor(() => expect(result.current.isSuccess).toBeTruthy());
 
   expect(result.current.data).toEqual(languagesResponse);
 });

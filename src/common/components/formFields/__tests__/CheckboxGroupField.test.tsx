@@ -22,7 +22,9 @@ const renderComponent = (props?: Partial<CheckboxGroupFieldProps>) =>
     </Formik>
   );
 
-test('should toggle visible options', () => {
+test('should toggle visible options', async () => {
+  const user = userEvent.setup();
+
   const visibleOptionAmount = 5;
   const options = range(1, visibleOptionAmount * 2).map((index) => ({
     label: `Option ${index}`,
@@ -41,7 +43,7 @@ test('should toggle visible options', () => {
     expect(screen.queryByLabelText(label)).not.toBeInTheDocument();
   });
 
-  userEvent.click(screen.getByRole('button', { name: /näytä lisää/i }));
+  await user.click(screen.getByRole('button', { name: /näytä lisää/i }));
 
   restOptions.forEach(({ label }) => {
     expect(screen.queryByLabelText(label)).toBeInTheDocument();
