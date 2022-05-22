@@ -331,6 +331,11 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@emotion/styled-base@^11.0.0":
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/@emotion/styled-base/-/styled-base-11.0.0.tgz#d84547eb39869d406db593cce1fbcbf9c435dbaa"
+  integrity sha512-/NY/PXrQkl/wI0+0E3QWd+m9kMg7h4THmjbPEe0VVnplNtdJC6db0VHDqmaC2tsEDcda6zvy3b8giM9DHa6BLw==
+
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
@@ -2937,28 +2942,29 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hds-core@1.9.0, hds-core@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-1.9.0.tgz#1fb81dfb36d42ca92e7338078911e1b48e6099f0"
-  integrity sha512-YHI7Oa3J8u91r/T6/LlIf+cJ+QR8uRo9+H05tiWw9zHZw8P7hYuaGAA3C8hpjhxPgmZj9XG3To+19xTg4yA/xg==
+hds-core@1.14.0, hds-core@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/hds-core/-/hds-core-1.14.0.tgz#d11fd1047b2f96d022c02e333b0390a586c5204a"
+  integrity sha512-MSH2BgVHOHW+I6gIjs5xNw32QL/P9Mn7+mcc1TvR8hF5GJDWa2mAh0vqaD1SXFfY34/cGr7wJ05V74GDZ6+8XA==
 
-hds-design-tokens@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-1.9.0.tgz#e85681e990d94c5bd348d01f253f51b47f48d29b"
-  integrity sha512-M3VuuQjj2Z0r0+vsdoOz1l+FWESOY0OyU2a2ePCaFkih7jsXWOC4LD8qkkWyE2foRJEFSGGIfSeolvsVmXgFiw==
+hds-design-tokens@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/hds-design-tokens/-/hds-design-tokens-1.14.0.tgz#4f1ef58715f5ec5c3c60e28d75adb94986540d02"
+  integrity sha512-98TrThjUVc/Ot/plsYpABGz9R5moAqGTbGUK63oPdEBQaWtoHlp17NCXsexfujCgOPOuQ4zgTApA/zAVHQOSHw==
 
-hds-react@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-1.9.0.tgz#36e72b65311dbfa521aa69f548bc5783c3c68ede"
-  integrity sha512-Nun3wfKB8el+nHOjqqOiPjo/BjzAK2XlLvVi/TxHVsqHxRsqxbPBzZK66eVg8szCKnIz86Y/IIbOvAaUdkGEdA==
+hds-react@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/hds-react/-/hds-react-1.14.0.tgz#7038dda3ce1c7e27fe5b4a3911878b0efab51b69"
+  integrity sha512-gB73Ayn8Kox3KJH54KbG5idJD2sSdyGxYA8hOcYku8uGY+6O+K1a/fpZb7WJFWG5bB2S+ofncgMm80UvCSFJGg==
   dependencies:
     "@babel/runtime" "7.11.2"
+    "@emotion/styled-base" "^11.0.0"
     "@juggle/resize-observer" "3.2.0"
     "@popperjs/core" "2.5.3"
     "@react-aria/visually-hidden" "3.2.0"
     date-fns "2.16.1"
     downshift "6.0.6"
-    hds-core "1.9.0"
+    hds-core "1.14.0"
     lodash.isequal "4.5.0"
     lodash.isfunction "3.0.9"
     lodash.uniqueid "4.0.1"
@@ -2968,6 +2974,7 @@ hds-react@^1.9.0:
     react-spring "9.3.0"
     react-use-measure "2.0.1"
     react-virtual "2.2.7"
+    typescript "4.5.5"
 
 headers-utils@^3.0.2:
   version "3.0.2"
@@ -5562,6 +5569,11 @@ typescript@4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.3.tgz#bdc5407caa2b109efd4f82fe130656f977a29324"
   integrity sha512-4xfscpisVgqqDfPaJo5vkd+Qd/ItkoagnHpufr+i2QCHBsNYp+G7UAoyFl8aPtx879u38wPV65rZ8qbGZijalA==
+
+typescript@4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.5.tgz#d8c953832d28924a9e3d37c73d729c846c5896f3"
+  integrity sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==
 
 unbox-primitive@^1.0.1:
   version "1.0.1"
