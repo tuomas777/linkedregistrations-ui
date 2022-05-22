@@ -6,7 +6,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Requirements
 
-- Node 12.x
+- Node 14.x
 - Yarn
 - Git
 - Docker
