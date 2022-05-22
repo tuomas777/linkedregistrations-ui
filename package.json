@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@sentry/nextjs": "^6.16.1",
-    "@types/faker": "^5.5.8",
     "@types/jsdom": "^16.2.14",
     "@types/lodash": "^4.14.174",
     "@types/react-scroll": "^1.8.3",
@@ -35,6 +34,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.3.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^14.2.0",
@@ -48,7 +48,6 @@
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^6.1.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "faker": "^5.5.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^28.1.0",
     "jest-axe": "^6.0.0",

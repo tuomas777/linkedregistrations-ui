@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import merge from 'lodash/merge';
 
 import { LocalisedObject, Meta } from '../domain/api/types';
@@ -82,7 +82,7 @@ export const fakeEvent = (overrides?: Partial<Event>): Event => {
       location_extra_info: fakeLocalisedObject(faker.address.streetAddress()),
       maximum_attendee_capacity: null,
       minimum_attendee_capacity: null,
-      name: fakeLocalisedObject(faker.name.title()),
+      name: fakeLocalisedObject(faker.name.jobTitle()),
       offers: [],
       provider_contact_info: null,
       provider: fakeLocalisedObject(),
