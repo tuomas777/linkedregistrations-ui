@@ -36,7 +36,7 @@ const customRender: CustomRender = (
     defaultOptions: { queries: { retry: false } },
   });
 
-  const Wrapper: React.FC = ({ children }) => {
+  const Wrapper: React.JSXElementConstructor<any> = ({ children }) => {
     setLogger({
       log: console.log,
       warn: console.warn,
@@ -53,6 +53,7 @@ const customRender: CustomRender = (
           ...(query ? { query } : {}),
         }}
       >
+        {/* @ts-ignore */}
         <QueryClientProvider client={queryClient}>
           {children as React.ReactElement}
         </QueryClientProvider>
@@ -100,14 +101,16 @@ export const setQueryMocks = (...handlers: RequestHandler[]): void => {
   server.use(...handlers);
 };
 
-export const getQueryWrapper = (): React.FC<QueryClientProviderProps> => {
+export const getQueryWrapper = (): React.JSXElementConstructor<any> => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
 
-  const wrapper: React.FC<QueryClientProviderProps> = ({ children }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  const wrapper: React.FC<React.PropsWithChildren<QueryClientProviderProps>> =
+    ({ children }) => (
+      // @ts-ignore
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
   return wrapper;
 };
 

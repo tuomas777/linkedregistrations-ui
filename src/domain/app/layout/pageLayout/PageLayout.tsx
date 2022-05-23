@@ -6,7 +6,9 @@ import { ENROLMENT_QUERY_PARAMS } from '../../../enrolment/constants';
 import Header from '../../header/Header';
 import styles from './pageLayout.module.scss';
 
-const PageLayout: React.FC = ({ children }) => {
+const PageLayout: React.FC<React.PropsWithChildren<unknown>> = ({
+  children,
+}) => {
   const {
     query: { [ENROLMENT_QUERY_PARAMS.IFRAME]: iframe },
   } = useRouter();

@@ -8,7 +8,10 @@ interface Props {
   className?: string;
 }
 
-const MainContent: React.FC<Props> = ({ children, className }) => {
+const MainContent: React.FC<React.PropsWithChildren<Props>> = ({
+  children,
+  className,
+}) => {
   const mainContent = React.useRef<HTMLDivElement>(null);
 
   return (

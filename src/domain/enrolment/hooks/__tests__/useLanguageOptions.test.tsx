@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 
 import { getQueryWrapper, setQueryMocks } from '../../../../utils/testUtils';
@@ -13,11 +13,11 @@ test('should return language options', async () => {
   );
   const wrapper = getQueryWrapper();
 
-  const { result, waitFor } = renderHook(() => useLanguageOptions(), {
+  const { result } = renderHook(() => useLanguageOptions(), {
     wrapper,
   });
 
-  await waitFor(() => result.current.length !== 0);
+  await waitFor(() => expect(result.current.length).toBeTruthy());
 
   expect(result.current).toEqual([
     { label: 'Arabia', value: 'ar' },

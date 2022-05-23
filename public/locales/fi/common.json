@@ -6,7 +6,7 @@
       "noResults": "Ei vaihtoehtoja",
       "selectionMessage": "{{value}} on valittu.",
       "statusMessage": "{{count}} vaihtoehto valittavissa, siirry nuolinäppäimillä ylös ja alas. Paina Enter-näppäintä valitaksesi.",
-      "statusMessage_plural": "{{count}} vaihtoehtoa valittavissa, siirry nuolinäppäimillä ylös ja alas. Paina Enter-näppäintä valitaksesi."
+      "statusMessage_other": "{{count}} vaihtoehtoa valittavissa, siirry nuolinäppäimillä ylös ja alas. Paina Enter-näppäintä valitaksesi."
     }
   },
   "errorPage": {
@@ -54,13 +54,13 @@
     },
     "array": {
       "min": "Vähintään {{min}} vaihtoehto tulee olla valittuna",
-      "min_plural": "Vähintään {{min}} vaihtoehtoa tulee olla valittuna",
+      "min_other": "Vähintään {{min}} vaihtoehtoa tulee olla valittuna",
       "required": "Vähintään 1 vaihtoehto tulee olla valittuna"
     },
     "enrolmentAccepted": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
     "string": {
       "charsLeft": "{{count}} merkki jäljellä",
-      "charsLeft_plural": "{{count}} merkkiä jäljellä",
+      "charsLeft_other": "{{count}} merkkiä jäljellä",
       "date": "Tämän kentän on oltava kelvollinen päivämäärä",
       "email": "Tämän kentän on oltava kelvollinen sähköpostiosoite",
       "phone": "Tämän kentän on oltava kelvollinen puhelinnumero",

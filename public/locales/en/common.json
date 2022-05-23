@@ -6,7 +6,7 @@
       "noResults": "No options",
       "selectionMessage": "{{value}} has been selected.",
       "statusMessage": "{{count}} option available, move up or down with arrow keys. Press Enter to make a selection.",
-      "statusMessage_plural": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
+      "statusMessage_other": "{{count}} options available, move up or down with arrow keys. Press Enter to make a selection."
     }
   },
   "errorPage": {
@@ -54,13 +54,13 @@
     },
     "array": {
       "min": "At least {{min}} item must be selected",
-      "min_plural": "At least {{min}} item must be selected",
+      "min_other": "At least {{min}} item must be selected",
       "required": "At least 1 item must be selected"
     },
     "enrolmentAccepted": "Sharing information with the organizer must be approved",
     "string": {
       "charsLeft": "{{count}} character left",
-      "charsLeft_plural": "{{count}} characters left",
+      "charsLeft_other": "{{count}} characters left",
       "date": "This field must be a valid date",
       "email": "This field must be a valid email",
       "phone": "This field must be a valid phone number",

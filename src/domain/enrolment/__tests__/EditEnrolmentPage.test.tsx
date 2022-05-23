@@ -7,7 +7,6 @@ import singletonRouter from 'next/router';
 import React from 'react';
 
 import {
-  act,
   configure,
   render,
   screen,
@@ -147,6 +146,8 @@ test('should edit enrolment page field', async () => {
 });
 
 test('should cancel enrolment', async () => {
+  const user = userEvent.setup();
+
   setQueryMocks(
     ...defaultMocks,
     rest.delete(`*/signup/`, (req, res, ctx) =>
@@ -165,7 +166,7 @@ test('should cancel enrolment', async () => {
   await findElement('nameInput');
 
   const cancelButton = getElement('cancelButton');
-  act(() => userEvent.click(cancelButton));
+  await user.click(cancelButton);
   const modal = await screen.findByRole('dialog', {
     name: 'Haluatko varmasti poistaa ilmoittautumisen?',
   });
@@ -173,7 +174,7 @@ test('should cancel enrolment', async () => {
   const cancelEnrolmentButton = withinModal.getByRole('button', {
     name: 'Peruuta ilmoittautuminen',
   });
-  userEvent.click(cancelEnrolmentButton);
+  await user.click(cancelEnrolmentButton);
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
@@ -183,6 +184,8 @@ test('should cancel enrolment', async () => {
 });
 
 test('should show error message when cancelling enrolment fails', async () => {
+  const user = userEvent.setup();
+
   setQueryMocks(
     ...defaultMocks,
     rest.delete(`*/signup/`, (req, res, ctx) =>
@@ -201,7 +204,7 @@ test('should show error message when cancelling enrolment fails', async () => {
   await findElement('nameInput');
 
   const cancelButton = getElement('cancelButton');
-  act(() => userEvent.click(cancelButton));
+  await user.click(cancelButton);
   const modal = await screen.findByRole('dialog', {
     name: 'Haluatko varmasti poistaa ilmoittautumisen?',
   });
@@ -209,7 +212,7 @@ test('should show error message when cancelling enrolment fails', async () => {
   const cancelEnrolmentButton = withinModal.getByRole('button', {
     name: 'Peruuta ilmoittautuminen',
   });
-  userEvent.click(cancelEnrolmentButton);
+  await user.click(cancelEnrolmentButton);
 
   await screen.findByRole(
     'heading',

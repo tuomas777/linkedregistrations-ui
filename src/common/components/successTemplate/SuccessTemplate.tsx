@@ -8,7 +8,10 @@ interface Props {
   title: string;
 }
 
-const SuccessTemplate: React.FC<Props> = ({ children, title }) => {
+const SuccessTemplate: React.FC<React.PropsWithChildren<Props>> = ({
+  children,
+  title,
+}) => {
   return (
     <Container contentWrapperClassName={styles.successTemplate}>
       <div className={styles.content}>

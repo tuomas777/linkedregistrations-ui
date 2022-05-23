@@ -15,7 +15,7 @@ type Props = {
   isLoading: boolean;
 } & LoadingSpinnerProps;
 
-const LoadingSpinner: React.FC<Props> = ({
+const LoadingSpinner: React.FC<React.PropsWithChildren<Props>> = ({
   children,
   className,
   isLoading,

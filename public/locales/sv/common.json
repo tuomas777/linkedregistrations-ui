@@ -6,7 +6,7 @@
       "noResults": "Inga alternativ",
       "selectionMessage": "{{value}} är valt.",
       "statusMessage": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val.",
-      "statusMessage_plural": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
+      "statusMessage_other": "{{count}} alternativ är valbart, flytta upp eller ner med piltangenterna. Tryck Enter för att göra ett val."
     }
   },
   "errorPage": {
@@ -54,13 +54,13 @@
     },
     "array": {
       "min": "Minst {{min}} objekt måste väljas",
-      "min_plural": "Minst {{min}} objekt måste väljas",
+      "min_other": "Minst {{min}} objekt måste väljas",
       "required": "Minst 1 objekt måste väljas"
     },
     "enrolmentAccepted": "Dela information med arrangören måste godkännas",
     "string": {
       "charsLeft": "{{count}} tecken kvar",
-      "charsLeft_plural": "{{count}} tecken kvar",
+      "charsLeft_other": "{{count}} tecken kvar",
       "date": "Detta fält måste vara ett giltigt datum",
       "email": "Detta fält måste vara en giltig e-postmeddelande",
       "phone": "Detta fält måste vara en giltig telefonnummer",
