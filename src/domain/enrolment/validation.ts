@@ -18,6 +18,7 @@ import {
   isValidZip,
 } from '../../utils/validationUtils';
 import {
+  ATTENDEE_FIELDS,
   ENROLMENT_FIELDS,
   ENROLMENT_FORM_SELECT_FIELDS,
   NOTIFICATIONS,
@@ -78,32 +79,36 @@ export const isBelowMaxAge = (
   }
 };
 
-export const enrolmentSchema = Yup.object().shape({
-  [ENROLMENT_FIELDS.NAME]: Yup.string().required(
+export const attendeeSchema = Yup.object().shape({
+  [ATTENDEE_FIELDS.NAME]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
-  [ENROLMENT_FIELDS.STREET_ADDRESS]: Yup.string().required(
+  [ATTENDEE_FIELDS.STREET_ADDRESS]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
-  [ENROLMENT_FIELDS.DATE_OF_BIRTH]: Yup.string()
+  [ATTENDEE_FIELDS.DATE_OF_BIRTH]: Yup.string()
     .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
     .test(
       'isValidDate',
       VALIDATION_MESSAGE_KEYS.DATE,
       (value) => !!value && isValidDate(value)
     )
-    .when([ENROLMENT_FIELDS.AUDIENCE_MIN_AGE], isAboveMinAge)
-    .when([ENROLMENT_FIELDS.AUDIENCE_MAX_AGE], isBelowMaxAge),
-  [ENROLMENT_FIELDS.ZIP]: Yup.string()
+    .when([ATTENDEE_FIELDS.AUDIENCE_MIN_AGE], isAboveMinAge)
+    .when([ATTENDEE_FIELDS.AUDIENCE_MAX_AGE], isBelowMaxAge),
+  [ATTENDEE_FIELDS.ZIP]: Yup.string()
     .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
     .test(
       'isValidZip',
       VALIDATION_MESSAGE_KEYS.ZIP,
       (value) => !value || isValidZip(value)
     ),
-  [ENROLMENT_FIELDS.CITY]: Yup.string().required(
+  [ATTENDEE_FIELDS.CITY]: Yup.string().required(
     VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
   ),
+});
+
+export const enrolmentSchema = Yup.object().shape({
+  [ENROLMENT_FIELDS.ATTENDEES]: Yup.array().of(attendeeSchema),
   [ENROLMENT_FIELDS.EMAIL]: Yup.string()
     .email(VALIDATION_MESSAGE_KEYS.EMAIL)
     .when(

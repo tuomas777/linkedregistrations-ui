@@ -6,11 +6,13 @@ import stringToDate from '../../utils/stringToDate';
 import axiosClient from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import {
+  ATTENDEE_INITIAL_VALUES,
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
 } from './constants';
 import {
+  AttendeeFields,
   CreateEnrolmentMutationInput,
   Enrolment,
   EnrolmentFormFields,
@@ -101,19 +103,16 @@ export const getEnrolmentPayload = (
   registration: Registration
 ): CreateEnrolmentMutationInput => {
   const {
-    city,
-    dateOfBirth,
+    attendees,
     email,
     extraInfo,
     membershipNumber,
-    name,
     nativeLanguage,
     notifications,
     phoneNumber,
     serviceLanguage,
-    streetAddress,
-    zip,
   } = formValues;
+  const { city, dateOfBirth, name, streetAddress, zip } = attendees[0] || {};
 
   return {
     city: city || null,
@@ -134,12 +133,19 @@ export const getEnrolmentPayload = (
   };
 };
 
+export const getAttendeeDefaultInitialValues = (
+  registration: Registration
+): AttendeeFields => ({
+  ...ATTENDEE_INITIAL_VALUES,
+  audienceMaxAge: registration.audience_max_age ?? null,
+  audienceMinAge: registration.audience_min_age ?? null,
+});
+
 export const getEnrolmentDefaultInitialValues = (
   registration: Registration
 ): EnrolmentFormFields => ({
   ...ENROLMENT_INITIAL_VALUES,
-  audienceMaxAge: registration.audience_max_age ?? null,
-  audienceMinAge: registration.audience_min_age ?? null,
+  attendees: [getAttendeeDefaultInitialValues(registration)],
 });
 
 export const getEnrolmentInitialValues = (
@@ -149,21 +155,28 @@ export const getEnrolmentInitialValues = (
   return {
     ...getEnrolmentDefaultInitialValues(registration),
     accepted: true,
-    city: enrolment.city || '-',
-    dateOfBirth: enrolment.date_of_birth
-      ? formatDate(new Date(enrolment.date_of_birth))
-      : '',
+    attendees: [
+      {
+        audienceMaxAge: registration.audience_max_age ?? null,
+        audienceMinAge: registration.audience_min_age ?? null,
+        city: enrolment.city || '-',
+        dateOfBirth: enrolment.date_of_birth
+          ? formatDate(new Date(enrolment.date_of_birth))
+          : '',
+        extraInfo: '',
+        name: enrolment.name || '-',
+        streetAddress: enrolment.street_address || '-',
+        zip: enrolment.zipcode || '-',
+      },
+    ],
     email: enrolment.email || '-',
     extraInfo: enrolment.extra_info || '-',
     membershipNumber: enrolment.membership_number || '-',
-    name: enrolment.name || '-',
     nativeLanguage: enrolment.native_language ?? '',
     notifications: getEnrolmentNotificationTypes(
       enrolment.notifications as string
     ),
     phoneNumber: enrolment.phone_number || '-',
     serviceLanguage: enrolment.service_language ?? '',
-    streetAddress: enrolment.street_address || '-',
-    zip: enrolment.zipcode || '-',
   };
 };

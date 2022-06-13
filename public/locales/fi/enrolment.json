@@ -1,6 +1,9 @@
 {
+  "attendeeDefaultTitle": "Osallistuja {{index}}",
   "buttonCancel": "Peruuta ilmoittautuminen",
+  "buttonDeleteAttendee": "Poista osallistuja",
   "buttonSend": "Lähetä ilmoittautuminen",
+  "buttonUpdateParticipantAmount": "Päivitä",
   "cancelEnrolmentModal": {
     "buttonCancel": "Peruuta ilmoittautuminen",
     "text": "Tätä toimintoa ei voi perua.",
@@ -26,6 +29,7 @@
     "freeEvent": "Maksuton"
   },
   "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa",
+  "labelAttendeeExtraInfo": "Lisätietoa (valinnainen)",
   "labelCity": "Kaupunki",
   "labelDateOfBirth": "Syntymäaika",
   "labelEmail": "Sähköpostiosoite",
@@ -33,6 +37,7 @@
   "labelMembershipNumber": "Jäsenkortin numero (valinnainen)",
   "labelName": "Nimi",
   "labelNativeLanguage": "Äidinkieli",
+  "labelParticipantAmount": "Ilmoittautujien määrä",
   "labelPhoneNumber": "Puhelinnumero",
   "labelServiceLanguage": "Asiointikieli",
   "labelStreetAddress": "Katuosoite",
@@ -44,8 +49,9 @@
     "email": "Sähköpostilla",
     "sms": "Tekstiviestillä"
   },
+  "placeholderAttendeeExtraInfo": "Syötä mahdollinen lisätieto tai toive",
   "placeholderCity": "Syötä kaupunki",
-  "placeholderDateOfBirth": "Muoto P.K.VVVV",
+  "placeholderDateOfBirth": "P.K.VVVV",
   "placeholderEmail": "Syötä sähköpostiosoite",
   "placeholderExtraInfo": "Syötä mahdollinen lisätieto tai toive",
   "placeholderMembershipNumber": "Syötä jäsenkortin numero",

@@ -25,6 +25,10 @@
     "menuToggleAriaLabel": "Valikko",
     "skipToContentLabel": "Siirry sisältöön"
   },
+  "numberInput": {
+    "minusStepButtonAriaLabel": "Vähennä",
+    "plusStepButtonAriaLabel": "Lisää"
+  },
   "openInNewTab": "(avataan uudessa välilehdessä)",
   "serverError": {
     "emailMustBeUnique": "Sähköpostiosoitteella on jo ilmoittautuminen.",
@@ -56,6 +60,10 @@
       "min": "Vähintään {{min}} vaihtoehto tulee olla valittuna",
       "min_other": "Vähintään {{min}} vaihtoehtoa tulee olla valittuna",
       "required": "Vähintään 1 vaihtoehto tulee olla valittuna"
+    },
+    "capacity": {
+      "max": "Osallistujien enimmäismäärä on {{max}}.",
+      "min": "Osallistujien vähimmäismäärä on {{min}}."
     },
     "enrolmentAccepted": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
     "string": {

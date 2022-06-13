@@ -1,0 +1,33 @@
+@import '../../../../../styles/breakpoints.scss';
+@import '../../../../../styles//mixins.scss';
+
+.streetAddressRow {
+  display: grid;
+  grid-gap: var(--spacing-m);
+  grid-template-columns: repeat(2, 1fr);
+
+  @include medium-up {
+    grid-template-columns: 4fr 2fr;
+  }
+}
+
+.zipRow {
+  display: grid;
+  grid-gap: var(--spacing-m);
+  grid-template-columns: repeat(2, 1fr);
+
+  @include medium-up {
+    grid-template-columns: 2fr 4fr;
+  }
+}
+
+.extraInfoField {
+  --textarea-height: 95px !important;
+}
+
+.deleteButton {
+  padding: var(--spacing-s);
+  border: none;
+
+  @include focus-outline(-3px);
+}

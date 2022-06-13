@@ -25,6 +25,10 @@
     "menuToggleAriaLabel": "Menu",
     "skipToContentLabel": "Skip to content"
   },
+  "numberInput": {
+    "minusStepButtonAriaLabel": "Decrease",
+    "plusStepButtonAriaLabel": "Increase"
+  },
   "openInNewTab": "(will open in a new tab)",
   "serverError": {
     "emailMustBeUnique": "Email already has registration.",
@@ -56,6 +60,10 @@
       "min": "At least {{min}} item must be selected",
       "min_other": "At least {{min}} item must be selected",
       "required": "At least 1 item must be selected"
+    },
+    "capacity": {
+      "max": "The maximum number of participants is {{max}}.",
+      "min": "The minimum number of participants is {{min}}."
     },
     "enrolmentAccepted": "Sharing information with the organizer must be approved",
     "string": {

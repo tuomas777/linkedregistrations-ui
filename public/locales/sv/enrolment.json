@@ -1,6 +1,9 @@
 {
+  "attendeeDefaultTitle": "Deltagare {{index}}",
   "buttonCancel": "Avbryt registreringen",
+  "buttonDeleteAttendee": "Ta bort deltagare",
   "buttonSend": "Skicka in registrering",
+  "buttonUpdateParticipantAmount": "Uppdatera",
   "cancelEnrolmentModal": {
     "buttonCancel": "Avbryt registreringen",
     "text": "Denna operation kan inte ångras.",
@@ -26,6 +29,7 @@
     "freeEvent": "Fri"
   },
   "labelAccepted": "Jag godkänner att dela min information med arrangören",
+  "labelAttendeeExtraInfo": "Ytterligare information (valfritt)",
   "labelCity": "Staden",
   "labelDateOfBirth": "Födelsedatum",
   "labelEmail": "E-postadress",
@@ -33,6 +37,7 @@
   "labelMembershipNumber": "Medlemskortnummer (valfritt)",
   "labelName": "Namn",
   "labelNativeLanguage": "Modersmål",
+  "labelParticipantAmount": "Antal registrerade",
   "labelPhoneNumber": "Telefonnummer",
   "labelServiceLanguage": "Transaktionsspråk",
   "labelStreetAddress": "Gatuadress",
@@ -44,8 +49,9 @@
     "email": "Via e-post",
     "sms": "Med sms"
   },
+  "placeholderAttendeeExtraInfo": "Ange ytterligare information eller begäran",
   "placeholderCity": "Ange staden",
-  "placeholderDateOfBirth": "Format D.M.YYYY",
+  "placeholderDateOfBirth": "D.M.YYYY",
   "placeholderEmail": "Skriv in din mailadress",
   "placeholderExtraInfo": "Ange ytterligare information eller begäran",
   "placeholderMembershipNumber": "Ange medlemskortets nummer",

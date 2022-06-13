@@ -11,12 +11,14 @@ import formatDate from '../../../utils/formatDate';
 import { fakeEnrolment } from '../../../utils/mockDataUtils';
 import {
   configure,
+  loadingSpinnerIsNotInDocument,
   render,
   screen,
   setQueryMocks,
   userEvent,
   waitFor,
 } from '../../../utils/testUtils';
+import { ROUTES } from '../../app/routes/constants';
 import { event } from '../../event/__mocks__/event';
 import { TEST_EVENT_ID } from '../../event/constants';
 import { languagesResponse } from '../../language/__mocks__/languages';
@@ -25,7 +27,6 @@ import { TEST_PLACE_ID } from '../../place/constants';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import CreateEnrolmentPage from '../CreateEnrolmentPage';
-import { ROUTES } from '../../app/routes/constants';
 
 configure({ defaultHidden: true });
 
@@ -59,11 +60,13 @@ const getElement = (
     | 'emailInput'
     | 'nameInput'
     | 'nativeLanguageButton'
+    | 'participantAmountInput'
     | 'phoneCheckbox'
     | 'phoneInput'
     | 'serviceLanguageButton'
     | 'streetAddressInput'
     | 'submitButton'
+    | 'updateParticipantAmountButton'
     | 'zipInput'
 ) => {
   switch (key) {
@@ -83,6 +86,10 @@ const getElement = (
       return screen.getByRole('textbox', { name: /nimi/i });
     case 'nativeLanguageButton':
       return screen.getByRole('button', { name: /äidinkieli/i });
+    case 'participantAmountInput':
+      return screen.getByRole('spinbutton', {
+        name: /ilmoittautujien määrä \*/i,
+      });
     case 'phoneCheckbox':
       return screen.getByRole('checkbox', { name: /tekstiviestillä/i });
     case 'phoneInput':
@@ -93,6 +100,8 @@ const getElement = (
       return screen.getByRole('textbox', { name: /katuosoite/i });
     case 'submitButton':
       return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
+    case 'updateParticipantAmountButton':
+      return screen.getByRole('button', { name: /päivitä/i });
     case 'zipInput':
       return screen.getByRole('textbox', { name: /postinumero/i });
   }
@@ -325,4 +334,87 @@ test('should show not found page if registration does not exist', async () => {
   screen.getByText(
     'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
   );
+});
+
+test('should add and delete participants', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json(enrolment))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '2');
+  await user.click(updateParticipantAmountButton);
+
+  screen.getByRole('button', { name: 'Osallistuja 2' });
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '1');
+  await user.click(updateParticipantAmountButton);
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
+});
+
+test('should delete participants by clicking delete participant button', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json(enrolment))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '2');
+  await user.click(updateParticipantAmountButton);
+
+  screen.getByRole('button', { name: 'Osallistuja 2' });
+
+  const deleteParticipantButton = screen.getAllByRole('button', {
+    name: /poista osallistuja/i,
+  })[1];
+  await user.click(deleteParticipantButton);
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
 });

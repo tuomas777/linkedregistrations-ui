@@ -15,7 +15,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Button from '../../../common/components/button/Button';
 import CheckboxField from '../../../common/components/formFields/CheckboxField';
 import CheckboxGroupField from '../../../common/components/formFields/CheckboxGroupField';
-import DateInputField from '../../../common/components/formFields/DateInputField';
 import PhoneInputField from '../../../common/components/formFields/PhoneInputField';
 import SingleSelectField from '../../../common/components/formFields/SingleSelectField';
 import TextAreaField from '../../../common/components/formFields/TextAreaField';
@@ -46,6 +45,7 @@ import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import { Enrolment, EnrolmentFormFields } from '../types';
 import { getEnrolmentPayload } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
+import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
 
 export enum ENROLMENT_MODALS {
@@ -71,6 +71,7 @@ const LanguageField = (
 type Props = {
   cancellationCode?: string;
   initialValues: EnrolmentFormFields;
+  participantAmount?: number;
   readOnly?: boolean;
   registration: Registration;
 };
@@ -78,6 +79,7 @@ type Props = {
 const EnrolmentForm: React.FC<Props> = ({
   cancellationCode,
   initialValues,
+  participantAmount,
   readOnly,
   registration,
 }) => {
@@ -213,70 +215,12 @@ const EnrolmentForm: React.FC<Props> = ({
             <Form noValidate>
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
-              <Fieldset heading={t(`titleBasicInfo`)}>
-                <FormGroup>
-                  <Field
-                    name={ENROLMENT_FIELDS.NAME}
-                    component={TextInputField}
-                    disabled={formDisabled}
-                    label={t(`labelName`)}
-                    placeholder={readOnly ? '' : t(`placeholderName`)}
-                    readOnly={readOnly}
-                    required
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <div className={styles.streetAddressRow}>
-                    <Field
-                      name={ENROLMENT_FIELDS.STREET_ADDRESS}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelStreetAddress`)}
-                      placeholder={
-                        readOnly ? '' : t(`placeholderStreetAddress`)
-                      }
-                      readOnly={readOnly}
-                      required
-                    />
-                    <Field
-                      name={ENROLMENT_FIELDS.DATE_OF_BIRTH}
-                      component={DateInputField}
-                      disabled={formDisabled}
-                      label={t(`labelDateOfBirth`)}
-                      language={locale}
-                      maxDate={new Date()}
-                      minDate={
-                        new Date(`${new Date().getFullYear() - 100}-01-01`)
-                      }
-                      placeholder={readOnly ? '' : t(`placeholderDateOfBirth`)}
-                      readOnly={readOnly}
-                      required
-                    />
-                  </div>
-                </FormGroup>
-                <FormGroup>
-                  <div className={styles.zipRow}>
-                    <Field
-                      name={ENROLMENT_FIELDS.ZIP}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelZip`)}
-                      placeholder={readOnly ? '' : t(`placeholderZip`)}
-                      readOnly={readOnly}
-                      required
-                    />
-                    <Field
-                      name={ENROLMENT_FIELDS.CITY}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelCity`)}
-                      placeholder={readOnly ? '' : t(`placeholderCity`)}
-                      readOnly={readOnly}
-                      required
-                    />
-                  </div>
-                </FormGroup>
-              </Fieldset>
+              <Attendees
+                formDisabled={formDisabled}
+                participantAmount={participantAmount}
+                readOnly={readOnly}
+                registration={registration}
+              />
 
               <Fieldset heading={t(`titleContactInfo`)}>
                 <FormGroup>

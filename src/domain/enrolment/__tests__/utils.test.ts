@@ -65,18 +65,25 @@ describe('getEnrolmentPayload function', () => {
     const payload = getEnrolmentPayload(
       {
         ...ENROLMENT_INITIAL_VALUES,
-        city,
-        dateOfBirth,
+        attendees: [
+          {
+            audienceMaxAge: null,
+            audienceMinAge: null,
+            city,
+            dateOfBirth,
+            extraInfo: '',
+            name,
+            streetAddress,
+            zip: zipcode,
+          },
+        ],
         email,
         extraInfo,
         membershipNumber,
-        name,
         nativeLanguage,
         notifications,
         phoneNumber,
         serviceLanguage,
-        streetAddress,
-        zip: zipcode,
       },
       registration
     );
@@ -110,20 +117,25 @@ describe('getEnrolmentDefaultInitialValues function', () => {
       )
     ).toEqual({
       accepted: false,
-      audienceMaxAge: 18,
-      audienceMinAge: 8,
-      city: '',
-      dateOfBirth: '',
+      attendees: [
+        {
+          audienceMaxAge: 18,
+          audienceMinAge: 8,
+          city: '',
+          dateOfBirth: '',
+          extraInfo: '',
+          name: '',
+          streetAddress: '',
+          zip: '',
+        },
+      ],
       email: '',
       extraInfo: '',
       membershipNumber: '',
-      name: '',
       nativeLanguage: '',
       notifications: [],
       phoneNumber: '',
       serviceLanguage: '',
-      streetAddress: '',
-      zip: '',
     });
 
     expect(
@@ -135,20 +147,26 @@ describe('getEnrolmentDefaultInitialValues function', () => {
       )
     ).toEqual({
       accepted: false,
-      audienceMaxAge: null,
-      audienceMinAge: null,
-      city: '',
-      dateOfBirth: '',
+      attendees: [
+        {
+          audienceMaxAge: null,
+          audienceMinAge: null,
+          city: '',
+          dateOfBirth: '',
+          extraInfo: '',
+          name: '',
+          streetAddress: '',
+          zip: '',
+        },
+      ],
       email: '',
       extraInfo: '',
       membershipNumber: '',
-      name: '',
+
       nativeLanguage: '',
       notifications: [],
       phoneNumber: '',
       serviceLanguage: '',
-      streetAddress: '',
-      zip: '',
     });
   });
 });
@@ -156,20 +174,14 @@ describe('getEnrolmentDefaultInitialValues function', () => {
 describe('getEnrolmentInitialValues function', () => {
   it('should return default values if value is not set', () => {
     const {
-      audienceMaxAge,
-      audienceMinAge,
-      city,
-      dateOfBirth,
+      attendees,
       email,
       extraInfo,
       membershipNumber,
-      name,
       nativeLanguage,
       notifications,
       phoneNumber,
       serviceLanguage,
-      streetAddress,
-      zip,
     } = getEnrolmentInitialValues(
       fakeEnrolment({
         city: null,
@@ -188,20 +200,25 @@ describe('getEnrolmentInitialValues function', () => {
       fakeRegistration({ audience_min_age: null, audience_max_age: null })
     );
 
-    expect(audienceMaxAge).toBe(null);
-    expect(audienceMinAge).toBe(null);
-    expect(city).toBe('-');
-    expect(dateOfBirth).toBe('');
+    expect(attendees).toEqual([
+      {
+        audienceMaxAge: null,
+        audienceMinAge: null,
+        city: '-',
+        dateOfBirth: '',
+        extraInfo: '',
+        name: '-',
+        streetAddress: '-',
+        zip: '-',
+      },
+    ]);
     expect(email).toBe('-');
     expect(extraInfo).toBe('-');
     expect(membershipNumber).toBe('-');
-    expect(name).toBe('-');
     expect(nativeLanguage).toBe('');
     expect(notifications).toEqual([]);
     expect(phoneNumber).toBe('-');
     expect(serviceLanguage).toBe('');
-    expect(streetAddress).toBe('-');
-    expect(zip).toBe('-');
   });
 
   it('should return enrolment initial values', () => {
@@ -219,20 +236,14 @@ describe('getEnrolmentInitialValues function', () => {
     const expectedZip = '12345';
 
     const {
-      audienceMaxAge,
-      audienceMinAge,
-      city,
-      dateOfBirth,
+      attendees,
       email,
       extraInfo,
       membershipNumber,
-      name,
       nativeLanguage,
       notifications,
       phoneNumber,
       serviceLanguage,
-      streetAddress,
-      zip,
     } = getEnrolmentInitialValues(
       fakeEnrolment({
         city: expectedCity,
@@ -251,20 +262,25 @@ describe('getEnrolmentInitialValues function', () => {
       registration
     );
 
-    expect(audienceMaxAge).toBe(18);
-    expect(audienceMinAge).toBe(8);
-    expect(city).toBe(expectedCity);
-    expect(dateOfBirth).toEqual(expectedDateOfBirth);
+    expect(attendees).toEqual([
+      {
+        audienceMaxAge: 18,
+        audienceMinAge: 8,
+        city: expectedCity,
+        dateOfBirth: expectedDateOfBirth,
+        extraInfo: '',
+        name: expectedName,
+        streetAddress: expectedStreetAddress,
+        zip: expectedZip,
+      },
+    ]);
     expect(email).toBe(expectedEmail);
     expect(extraInfo).toBe(expectedExtraInfo);
     expect(membershipNumber).toBe(expectedMembershipNumber);
-    expect(name).toBe(expectedName);
     expect(nativeLanguage).toBe(expectedNativeLanguage);
     expect(notifications).toEqual(expectedNotifications);
     expect(phoneNumber).toBe(expectedPhoneNumber);
     expect(serviceLanguage).toBe(expectedServiceLanguage);
-    expect(streetAddress).toBe(expectedStreetAddress);
-    expect(zip).toBe(expectedZip);
   });
 });
 

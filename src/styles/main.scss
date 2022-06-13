@@ -2,6 +2,10 @@
 
 html,
 body {
+  --label-height: 1.75rem;
+  --focus-outline-width: 3px;
+  --focus-outline-color: var(--color-coat-of-arms);
+
   padding: 0;
   margin: 0;
 }

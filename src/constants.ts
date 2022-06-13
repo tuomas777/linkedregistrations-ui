@@ -16,6 +16,8 @@ export enum VALIDATION_MESSAGE_KEYS {
   AGE_MIN = 'validation.age.min',
   ARRAY_MIN = 'validation.array.min',
   ARRAY_REQUIRED = 'validation.array.required',
+  CAPACITY_MAX = 'validation.capacity.max',
+  CAPACITY_MIN = 'validation.capacity.min',
   DATE = 'validation.string.date',
   EMAIL = 'validation.string.email',
   ENROLMENT_ACCEPTED = 'validation.enrolmentAccepted',
