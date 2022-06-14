@@ -4,7 +4,6 @@ import isBefore from 'date-fns/isBefore';
 import startOfDay from 'date-fns/startOfDay';
 import subYears from 'date-fns/subYears';
 import { FormikErrors, FormikTouched } from 'formik';
-import forEach from 'lodash/forEach';
 import set from 'lodash/set';
 import { scroller } from 'react-scroll';
 import * as Yup from 'yup';
@@ -17,6 +16,7 @@ import {
   isValidPhoneNumber,
   isValidZip,
 } from '../../utils/validationUtils';
+import wait from '../../utils/wait';
 import {
   ATTENDEE_FIELDS,
   ENROLMENT_FIELDS,
@@ -198,13 +198,23 @@ const getFocusableFieldId = (
   return { fieldId: fieldName, fieldType: 'default' };
 };
 
-export const scrollToFirstError = ({
+export const scrollToFirstError = async ({
   error,
+  setOpenAccordion,
 }: {
   error: Yup.ValidationError;
-}): void => {
-  forEach(error.inner, (e) => {
+  setOpenAccordion: (index: number) => void;
+}): Promise<void> => {
+  for (const e of error.inner) {
     const path = e.path ?? /* istanbul ignore next */ '';
+
+    if (/^attendees\[[0-9]*\]\./.test(path)) {
+      const attendeeIndex = Number(path.match(/(?<=\[)[[0-9]*(?=\])/)?.[0]);
+      setOpenAccordion(attendeeIndex);
+
+      await wait(100);
+    }
+
     const { fieldId, fieldType } = getFocusableFieldId(path);
     const field = document.getElementById(fieldId);
 
@@ -228,7 +238,7 @@ export const scrollToFirstError = ({
         field.focus();
       }
 
-      return false;
+      break;
     }
-  });
+  }
 };

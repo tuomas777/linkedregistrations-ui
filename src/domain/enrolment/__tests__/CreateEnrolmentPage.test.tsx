@@ -377,6 +377,33 @@ test('should add and delete participants', async () => {
   ).not.toBeInTheDocument();
 });
 
+test('should show and hide participant specific fields', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json(enrolment))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const nameInput = getElement('nameInput');
+  const toggleButton = screen.getByRole('button', { name: 'Osallistuja 1' });
+
+  await user.click(toggleButton);
+  expect(nameInput).not.toBeInTheDocument();
+
+  await user.click(toggleButton);
+  getElement('nameInput');
+});
+
 test('should delete participants by clicking delete participant button', async () => {
   const user = userEvent.setup();
 

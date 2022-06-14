@@ -13,6 +13,9 @@ import { Registration } from '../registration/types';
 import EditEnrolmentPageMeta from './editEnrolmentPageMeta/EditEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
 import styles from './enrolmentPage.module.scss';
+import EnrolmentPageContext, {
+  useEnrolmentPageContextValue,
+} from './enrolmentPageContext/EnrolmentPageContext';
 import EventInfo from './eventInfo/EventInfo';
 import { useEnrolmentQuery } from './query';
 import { Enrolment } from './types';
@@ -69,17 +72,24 @@ const EditEnrolmentPageWrapper: React.FC = () => {
     cancellationCode: query.accessCode as string,
   });
 
+  const { openParticipant, setOpenParticipant, toggleOpenParticipant } =
+    useEnrolmentPageContextValue();
+
   return (
     <LoadingSpinner
       isLoading={isLoadingEnrolment || isLoadingEvent || isLoadingRegistration}
     >
       {enrolment && event && registration ? (
-        <EditEnrolmentPage
-          cancellationCode={query.accessCode as string}
-          enrolment={enrolment}
-          event={event}
-          registration={registration}
-        />
+        <EnrolmentPageContext.Provider
+          value={{ openParticipant, setOpenParticipant, toggleOpenParticipant }}
+        >
+          <EditEnrolmentPage
+            cancellationCode={query.accessCode as string}
+            enrolment={enrolment}
+            event={event}
+            registration={registration}
+          />
+        </EnrolmentPageContext.Provider>
       ) : (
         <NotFound />
       )}

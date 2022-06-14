@@ -6,28 +6,47 @@ import {
   screen,
   userEvent,
 } from '../../../../utils/testUtils';
-import Accordion from '../Accordion';
+import Accordion, { AccordionProps } from '../Accordion';
 
 configure({ defaultHidden: true });
 
 const content = 'Accordion content';
 const toggleButtonLabel = 'Toggle';
 
-const renderComponent = () =>
+const defaultProps: AccordionProps = {
+  toggleButtonLabel,
+  open: true,
+  onClick: jest.fn(),
+};
+
+const renderComponent = (props?: Partial<AccordionProps>) =>
   render(
-    <Accordion toggleButtonLabel={toggleButtonLabel}>{content}</Accordion>
+    <Accordion {...defaultProps} {...props}>
+      {content}
+    </Accordion>
   );
 
-test('should show content only when accordion is open', async () => {
-  const user = userEvent.setup();
-
-  renderComponent();
+test('should not show contentif accordion is not open', async () => {
+  renderComponent({ open: false });
 
   expect(
     screen.queryByRole('region', { hidden: false })
   ).not.toBeInTheDocument();
+});
 
-  await user.click(screen.getByRole('button', { name: toggleButtonLabel }));
+test('should show contentif accordion is open', async () => {
+  renderComponent({ open: true });
 
-  screen.getByRole('region');
+  screen.getByRole('region', { hidden: false });
+});
+
+test('should call onClick', async () => {
+  const user = userEvent.setup();
+  const onClick = jest.fn();
+
+  renderComponent({ open: true, onClick });
+
+  const toggleButton = screen.getByRole('button', { name: toggleButtonLabel });
+  await user.click(toggleButton);
+  expect(onClick).toBeCalled();
 });

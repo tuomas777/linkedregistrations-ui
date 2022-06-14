@@ -77,7 +77,6 @@ const Attendees: React.FC<Props> = ({
                   attendeePath={getAttendeePath(index)}
                   formDisabled={formDisabled}
                   index={index}
-                  initiallyOpen={index === 0}
                   onDelete={() => arrayHelpers.remove(index)}
                   readOnly={readOnly}
                   showDelete={attendees.length > 1}

@@ -1,26 +1,57 @@
-import { IconAngleDown, IconAngleUp, useAccordion } from 'hds-react';
+import { IconAngleDown, IconAngleUp } from 'hds-react';
 import React from 'react';
 
+import useIdWithPrefix from '../../../hooks/useIdWithPrefix';
 import styles from './accordion.module.scss';
 
-interface AccordionProps {
+export interface AccordionProps {
   deleteButton?: React.ReactElement;
-  initiallyOpen?: boolean;
+  id?: string;
+  onClick: () => void;
+  open: boolean;
   toggleButtonLabel: string;
 }
+
+type ToggleButtonProps = {
+  'aria-controls': string;
+  'aria-expanded': boolean;
+  'aria-label': string;
+  id: string;
+  onClick: () => void;
+};
+
+type ContentProps = {
+  'aria-label': string;
+  id: string;
+  style?: React.CSSProperties;
+};
 
 const Accordion: React.FC<React.PropsWithChildren<AccordionProps>> = ({
   children,
   deleteButton,
-  /* istanbul ignore next */
-  initiallyOpen = false,
+  id: _id,
+  onClick,
+  open,
   toggleButtonLabel,
 }) => {
-  const { isOpen, buttonProps, contentProps } = useAccordion({
-    initiallyOpen,
-  });
+  const id = useIdWithPrefix({ id: _id, prefix: 'accordion-' });
+  const contentId = `${id}-content`;
+  const toggleId = `${id}-toggle`;
 
-  const icon = isOpen ? (
+  const toggleButtonProps: ToggleButtonProps = {
+    'aria-controls': contentId,
+    'aria-expanded': open,
+    'aria-label': toggleButtonLabel,
+    id: toggleId,
+    onClick,
+  };
+
+  const commonContentProps = { 'aria-label': toggleButtonLabel, id: contentId };
+  const contentProps: ContentProps = open
+    ? { ...commonContentProps }
+    : { ...commonContentProps, style: { display: 'none' } };
+
+  const icon = open ? (
     <IconAngleUp aria-hidden />
   ) : (
     <IconAngleDown aria-hidden />
@@ -30,8 +61,7 @@ const Accordion: React.FC<React.PropsWithChildren<AccordionProps>> = ({
     <div className={styles.accordion}>
       <div className={styles.headingWrapper}>
         <button
-          {...buttonProps}
-          aria-label={toggleButtonLabel}
+          {...toggleButtonProps}
           className={styles.toggleButton}
           type="button"
         >
@@ -41,13 +71,8 @@ const Accordion: React.FC<React.PropsWithChildren<AccordionProps>> = ({
         {deleteButton}
       </div>
 
-      <div
-        aria-label={toggleButtonLabel}
-        {...contentProps}
-        className={styles.content}
-        role="region"
-      >
-        {children}
+      <div {...contentProps} className={styles.content} role="region">
+        {open && children}
       </div>
     </div>
   );

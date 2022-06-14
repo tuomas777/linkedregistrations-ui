@@ -1,7 +1,7 @@
 import { FastField as Field } from 'formik';
 import { IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import Accordion from '../../../../../common/components/accordion/Accordion';
 import DateInputField from '../../../../../common/components/formFields/DateInputField';
@@ -10,6 +10,7 @@ import TextInputField from '../../../../../common/components/formFields/TextInpu
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
 import { ATTENDEE_FIELDS } from '../../../constants';
+import EnrolmentPageContext from '../../../enrolmentPageContext/EnrolmentPageContext';
 import { AttendeeFields } from '../../../types';
 import styles from './attendee.module.scss';
 
@@ -18,7 +19,6 @@ type Props = {
   attendeePath: string;
   formDisabled: boolean;
   index: number;
-  initiallyOpen: boolean;
   onDelete: () => void;
   readOnly?: boolean;
   showDelete: boolean;
@@ -32,13 +32,14 @@ const Attendee: React.FC<Props> = ({
   attendeePath,
   formDisabled,
   index,
-  initiallyOpen,
   onDelete,
   readOnly,
   showDelete,
 }) => {
   const { t } = useTranslation(['enrolment']);
   const locale = useLocale();
+  const { openParticipant, toggleOpenParticipant } =
+    useContext(EnrolmentPageContext);
 
   return (
     <Accordion
@@ -54,7 +55,8 @@ const Attendee: React.FC<Props> = ({
           </button>
         ) : undefined
       }
-      initiallyOpen={initiallyOpen}
+      onClick={() => toggleOpenParticipant(index)}
+      open={openParticipant === index}
       toggleButtonLabel={
         attendee.name || t('attendeeDefaultTitle', { index: index + 1 })
       }

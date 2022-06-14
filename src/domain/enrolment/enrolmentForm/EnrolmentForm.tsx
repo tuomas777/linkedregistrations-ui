@@ -8,7 +8,7 @@ import {
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,6 +33,7 @@ import {
   ENROLMENT_QUERY_PARAMS,
   NOTIFICATIONS,
 } from '../constants';
+import EnrolmentPageContext from '../enrolmentPageContext/EnrolmentPageContext';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
@@ -85,6 +86,7 @@ const EnrolmentForm: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
+  const { setOpenParticipant } = useContext(EnrolmentPageContext);
   const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
     null
   );
@@ -201,7 +203,10 @@ const EnrolmentForm: React.FC<Props> = ({
               setTouched,
             });
 
-            scrollToFirstError({ error: error as ValidationError });
+            scrollToFirstError({
+              error: error as ValidationError,
+              setOpenAccordion: setOpenParticipant,
+            });
           }
         };
 

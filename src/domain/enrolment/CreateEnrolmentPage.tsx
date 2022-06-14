@@ -20,6 +20,9 @@ import {
 import CreateEnrolmentPageMeta from './createEnrolmentPageMeta/CreateEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
 import styles from './enrolmentPage.module.scss';
+import EnrolmentPageContext, {
+  useEnrolmentPageContextValue,
+} from './enrolmentPageContext/EnrolmentPageContext';
 import EventInfo from './eventInfo/EventInfo';
 import { getEnrolmentDefaultInitialValues } from './utils';
 
@@ -119,10 +122,17 @@ const CreateEnrolmentPageWrapper: React.FC = () => {
     { enabled: !!registration?.event }
   );
 
+  const { openParticipant, setOpenParticipant, toggleOpenParticipant } =
+    useEnrolmentPageContextValue();
+
   return (
     <LoadingSpinner isLoading={isLoadingRegistration || isLoadingEvent}>
       {registration && event ? (
-        <CreateEnrolmentPage event={event} registration={registration} />
+        <EnrolmentPageContext.Provider
+          value={{ openParticipant, setOpenParticipant, toggleOpenParticipant }}
+        >
+          <CreateEnrolmentPage event={event} registration={registration} />
+        </EnrolmentPageContext.Provider>
       ) : (
         <NotFound />
       )}
