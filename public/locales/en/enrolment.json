@@ -65,6 +65,7 @@
   "titleBasicInfo": "Basic information of the registrant",
   "titleContactInfo": "Contact information",
   "titleNotifications": "Event notifications",
+  "titleRegistration": "Registration",
   "warnings": {
     "capacityInWaitingList": "Registration for this event is still possible, but there are only {{count}} seat left in the queue.",
     "capacityInWaitingList_other": "Registration for this event is still possible, but there are only {{count}} seats left in the queue.",

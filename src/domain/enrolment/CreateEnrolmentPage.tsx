@@ -1,10 +1,7 @@
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React from 'react';
 
-import Button from '../../common/components/button/Button';
 import LoadingSpinner from '../../common/components/loadingSpinner/LoadingSpinner';
-import NumberInput from '../../common/components/numberInput/NumberInput';
 import Container from '../app/layout/container/Container';
 import MainContent from '../app/layout/mainContent/MainContent';
 import { EVENT_INCLUDES } from '../event/constants';
@@ -13,10 +10,6 @@ import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
-import {
-  getAttendeeCapacityError,
-  getFreeAttendeeCapacity,
-} from '../registration/utils';
 import CreateEnrolmentPageMeta from './createEnrolmentPageMeta/CreateEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
 import styles from './enrolmentPage.module.scss';
@@ -32,28 +25,7 @@ type Props = {
 };
 
 const CreateEnrolmentPage: React.FC<Props> = ({ event, registration }) => {
-  const { t } = useTranslation(['enrolment', 'common']);
-  const [participantAmount, setParticipantAmount] = useState(1);
-  const [confirmedParticipantAmount, setConfirmedParticipantAmount] =
-    useState(1);
-  const freeCapacity = getFreeAttendeeCapacity(registration);
   const initialValues = getEnrolmentDefaultInitialValues(registration);
-
-  const attendeeCapacityError = getAttendeeCapacityError(
-    registration,
-    participantAmount,
-    t
-  );
-
-  const handleParticipantAmountChange: React.ChangeEventHandler<
-    HTMLInputElement
-  > = (event) => {
-    setParticipantAmount(Number(event.target.value));
-  };
-
-  const handleUpdateParticipantAmount = () => {
-    setConfirmedParticipantAmount(participantAmount);
-  };
 
   return (
     <MainContent>
@@ -61,39 +33,9 @@ const CreateEnrolmentPage: React.FC<Props> = ({ event, registration }) => {
       <Container withOffset>
         <div className={styles.formContainer}>
           <EventInfo event={event} registration={registration} />
-          <div className={styles.divider} />
-          <div className={styles.participantAmountRow}>
-            <NumberInput
-              id="participant-amount-field"
-              minusStepButtonAriaLabel={t(
-                'common:numberInput.minusStepButtonAriaLabel'
-              )}
-              plusStepButtonAriaLabel={t(
-                'common:numberInput.plusStepButtonAriaLabel'
-              )}
-              errorText={attendeeCapacityError}
-              invalid={!!attendeeCapacityError}
-              label={t(`labelParticipantAmount`)}
-              min={1}
-              max={freeCapacity}
-              onChange={handleParticipantAmountChange}
-              required
-              step={1}
-              value={participantAmount}
-            />
-            <div className={styles.buttonWrapper}>
-              <Button
-                disabled={!!attendeeCapacityError}
-                onClick={handleUpdateParticipantAmount}
-                variant="secondary"
-              >
-                {t(`buttonUpdateParticipantAmount`)}
-              </Button>
-            </div>
-          </div>
+
           <EnrolmentForm
             initialValues={initialValues}
-            participantAmount={confirmedParticipantAmount}
             registration={registration}
           />
         </div>

@@ -65,6 +65,7 @@
   "titleBasicInfo": "Ilmoittautujan perustiedot",
   "titleContactInfo": "Yhteystiedot",
   "titleNotifications": "Tapahtumaa koskevat ilmoitukset",
+  "titleRegistration": "Ilmoittautuminen",
   "warnings": {
     "capacityInWaitingList": "Ilmoittautuminen tähän tapahtumaan on vielä mahdollista, mutta jonopaikkoja on jäljellä vain {{count}} kpl.",
     "capacityInWaitingList_other": "Ilmoittautuminen tähän tapahtumaan on vielä mahdollista, mutta jonopaikkoja on jäljellä vain {{count}} kpl.",

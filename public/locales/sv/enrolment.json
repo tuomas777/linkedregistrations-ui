@@ -65,6 +65,7 @@
   "titleBasicInfo": "Grundläggande information om registranten",
   "titleContactInfo": "Kontaktinformation",
   "titleNotifications": "Evenemangmeddelanden",
+  "titleRegistration": "Registrering",
   "warnings": {
     "capacityInWaitingList": "Registrering för detta evenemang är fortfarande möjligt, men det är bara {{count}} plats kvar i kön.",
     "capacityInWaitingList_other": "Registrering för detta evenemang är fortfarande möjligt, men det är bara {{count}} platser kvar i kön.",

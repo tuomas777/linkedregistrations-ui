@@ -42,6 +42,7 @@ import {
   useCreateEnrolmentMutation,
   useDeleteEnrolmentMutation,
 } from '../mutation';
+import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import { Enrolment, EnrolmentFormFields } from '../types';
 import { getEnrolmentPayload } from '../utils';
@@ -72,7 +73,6 @@ const LanguageField = (
 type Props = {
   cancellationCode?: string;
   initialValues: EnrolmentFormFields;
-  participantAmount?: number;
   readOnly?: boolean;
   registration: Registration;
 };
@@ -80,7 +80,6 @@ type Props = {
 const EnrolmentForm: React.FC<Props> = ({
   cancellationCode,
   initialValues,
-  participantAmount,
   readOnly,
   registration,
 }) => {
@@ -220,12 +219,16 @@ const EnrolmentForm: React.FC<Props> = ({
             <Form noValidate>
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
-              <Attendees
-                formDisabled={formDisabled}
-                participantAmount={participantAmount}
-                readOnly={readOnly}
+
+              <div className={styles.divider} />
+              <h2>{t('titleRegistration')}</h2>
+
+              <ParticipantAmountSelector
+                disabled={formDisabled || !!readOnly}
                 registration={registration}
               />
+
+              <Attendees formDisabled={formDisabled} readOnly={readOnly} />
 
               <Fieldset heading={t(`titleContactInfo`)}>
                 <FormGroup>

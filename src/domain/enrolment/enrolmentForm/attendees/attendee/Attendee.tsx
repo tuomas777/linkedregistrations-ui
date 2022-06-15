@@ -1,5 +1,5 @@
 import { FastField as Field } from 'formik';
-import { IconTrash } from 'hds-react';
+import { Fieldset, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useContext } from 'react';
 
@@ -61,65 +61,65 @@ const Attendee: React.FC<Props> = ({
         attendee.name || t('attendeeDefaultTitle', { index: index + 1 })
       }
     >
-      <FormGroup>
-        <Field
-          name={getFieldName(attendeePath, ATTENDEE_FIELDS.NAME)}
-          component={TextInputField}
-          disabled={formDisabled}
-          label={t(`labelName`)}
-          placeholder={readOnly ? '' : t(`placeholderName`)}
-          readOnly={readOnly}
-          required
-        />
-      </FormGroup>
-      <FormGroup>
-        <div className={styles.streetAddressRow}>
+      <Fieldset heading={t(`titleBasicInfo`)}>
+        <FormGroup>
           <Field
-            name={getFieldName(attendeePath, ATTENDEE_FIELDS.STREET_ADDRESS)}
+            name={getFieldName(attendeePath, ATTENDEE_FIELDS.NAME)}
             component={TextInputField}
             disabled={formDisabled}
-            label={t(`labelStreetAddress`)}
-            placeholder={readOnly ? '' : t(`placeholderStreetAddress`)}
+            label={t(`labelName`)}
+            placeholder={readOnly ? '' : t(`placeholderName`)}
             readOnly={readOnly}
             required
           />
-          <Field
-            name={getFieldName(attendeePath, ATTENDEE_FIELDS.DATE_OF_BIRTH)}
-            component={DateInputField}
-            disabled={formDisabled}
-            label={t(`labelDateOfBirth`)}
-            language={locale}
-            maxDate={new Date()}
-            minDate={new Date(`${new Date().getFullYear() - 100}-01-01`)}
-            placeholder={readOnly ? '' : t(`placeholderDateOfBirth`)}
-            readOnly={readOnly}
-            required
-          />
-        </div>
-      </FormGroup>
-      <FormGroup>
-        <div className={styles.zipRow}>
-          <Field
-            name={getFieldName(attendeePath, ATTENDEE_FIELDS.ZIP)}
-            component={TextInputField}
-            disabled={formDisabled}
-            label={t(`labelZip`)}
-            placeholder={readOnly ? '' : t(`placeholderZip`)}
-            readOnly={readOnly}
-            required
-          />
-          <Field
-            name={getFieldName(attendeePath, ATTENDEE_FIELDS.CITY)}
-            component={TextInputField}
-            disabled={formDisabled}
-            label={t(`labelCity`)}
-            placeholder={readOnly ? '' : t(`placeholderCity`)}
-            readOnly={readOnly}
-            required
-          />
-        </div>
-      </FormGroup>
-      <FormGroup>
+        </FormGroup>
+        <FormGroup>
+          <div className={styles.streetAddressRow}>
+            <Field
+              name={getFieldName(attendeePath, ATTENDEE_FIELDS.STREET_ADDRESS)}
+              component={TextInputField}
+              disabled={formDisabled}
+              label={t(`labelStreetAddress`)}
+              placeholder={readOnly ? '' : t(`placeholderStreetAddress`)}
+              readOnly={readOnly}
+              required
+            />
+            <Field
+              name={getFieldName(attendeePath, ATTENDEE_FIELDS.DATE_OF_BIRTH)}
+              component={DateInputField}
+              disabled={formDisabled}
+              label={t(`labelDateOfBirth`)}
+              language={locale}
+              maxDate={new Date()}
+              minDate={new Date(`${new Date().getFullYear() - 100}-01-01`)}
+              placeholder={readOnly ? '' : t(`placeholderDateOfBirth`)}
+              readOnly={readOnly}
+              required
+            />
+          </div>
+        </FormGroup>
+        <FormGroup>
+          <div className={styles.zipRow}>
+            <Field
+              name={getFieldName(attendeePath, ATTENDEE_FIELDS.ZIP)}
+              component={TextInputField}
+              disabled={formDisabled}
+              label={t(`labelZip`)}
+              placeholder={readOnly ? '' : t(`placeholderZip`)}
+              readOnly={readOnly}
+              required
+            />
+            <Field
+              name={getFieldName(attendeePath, ATTENDEE_FIELDS.CITY)}
+              component={TextInputField}
+              disabled={formDisabled}
+              label={t(`labelCity`)}
+              placeholder={readOnly ? '' : t(`placeholderCity`)}
+              readOnly={readOnly}
+              required
+            />
+          </div>
+        </FormGroup>
         <Field
           name={getFieldName(attendeePath, ATTENDEE_FIELDS.EXTRA_INFO)}
           className={styles.extraInfoField}
@@ -129,7 +129,7 @@ const Attendee: React.FC<Props> = ({
           placeholder={readOnly ? '' : t(`placeholderAttendeeExtraInfo`)}
           readOnly={readOnly}
         />
-      </FormGroup>
+      </Fieldset>
     </Accordion>
   );
 };

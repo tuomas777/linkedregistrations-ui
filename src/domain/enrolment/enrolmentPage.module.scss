@@ -7,22 +7,3 @@
   padding: var(--spacing-m) 0;
   box-sizing: content-box;
 }
-
-.divider {
-  border-top: 1px solid var(--color-black-20);
-  margin: var(--spacing-m) 0;
-}
-
-.participantAmountRow {
-  display: grid;
-  grid-gap: var(--spacing-m);
-  grid-template-columns: repeat(2, 1fr);
-
-  @include medium-up {
-    grid-template-columns: 2fr 4fr;
-  }
-
-  .buttonWrapper {
-    padding-top: var(--label-height);
-  }
-}
