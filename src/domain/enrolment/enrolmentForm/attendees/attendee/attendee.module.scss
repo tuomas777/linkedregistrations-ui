@@ -4,7 +4,17 @@
 .streetAddressRow {
   display: grid;
   grid-gap: var(--spacing-m);
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
+
+  @include small-down {
+    > div:first-child {
+      order: 2;
+    }
+
+    > div:last-child {
+      order: 1;
+    }
+  }
 
   @include medium-up {
     grid-template-columns: 4fr 2fr;
@@ -14,7 +24,7 @@
 .zipRow {
   display: grid;
   grid-gap: var(--spacing-m);
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
 
   @include medium-up {
     grid-template-columns: 2fr 4fr;

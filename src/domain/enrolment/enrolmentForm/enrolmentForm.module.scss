@@ -6,7 +6,7 @@
 .nativeLanguageRow {
   display: grid;
   grid-gap: var(--spacing-m);
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
 
   @include medium-up {
     grid-template-columns: 1fr 1fr;

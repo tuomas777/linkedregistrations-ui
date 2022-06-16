@@ -11,5 +11,11 @@
 
   .buttonWrapper {
     padding-top: var(--label-height);
+
+    button {
+      @include small-down {
+        width: 100%;
+      }
+    }
   }
 }
