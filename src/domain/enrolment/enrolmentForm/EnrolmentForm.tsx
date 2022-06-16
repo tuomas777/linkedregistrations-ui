@@ -20,7 +20,9 @@ import SingleSelectField from '../../../common/components/formFields/SingleSelec
 import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
+import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
+import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import useMountedState from '../../../hooks/useMountedState';
 import { OptionType } from '../../../types';
@@ -45,7 +47,7 @@ import {
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import { Enrolment, EnrolmentFormFields } from '../types';
-import { getEnrolmentPayload } from '../utils';
+import { clearCreateEventFormData, getEnrolmentPayload } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
@@ -85,6 +87,8 @@ const EnrolmentForm: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
+  const formSavingDisabled = React.useRef(false);
+
   const { setOpenParticipant } = useContext(EnrolmentPageContext);
   const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
     null
@@ -119,6 +123,9 @@ const EnrolmentForm: React.FC<Props> = ({
     });
   };
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+    formSavingDisabled.current = true;
+    clearCreateEventFormData(registration.id);
+
     goToPage(
       `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
@@ -217,6 +224,14 @@ const EnrolmentForm: React.FC<Props> = ({
               onClose={closeModal}
             />
             <Form noValidate>
+              {!readOnly && (
+                <FormikPersist
+                  isSessionStorage={true}
+                  name={`${FORM_NAMES.CREATE_EVENT_FORM}-${registration.id}`}
+                  savingDisabled={formSavingDisabled.current}
+                />
+              )}
+
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
 

@@ -30,3 +30,7 @@ export const PAGE_HEADER_ID = 'page-header';
 export const MAIN_CONTENT_ID = 'maincontent';
 
 export const DATE_FORMAT = 'd.M.yyyy';
+
+export enum FORM_NAMES {
+  CREATE_EVENT_FORM = 'create-event-form',
+}

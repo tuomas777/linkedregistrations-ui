@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 
+import { FORM_NAMES } from '../../constants';
 import formatDate from '../../utils/formatDate';
 import queryBuilder from '../../utils/queryBuilder';
 import stringToDate from '../../utils/stringToDate';
@@ -179,4 +180,10 @@ export const getEnrolmentInitialValues = (
     phoneNumber: enrolment.phone_number || '-',
     serviceLanguage: enrolment.service_language ?? '',
   };
+};
+
+export const clearCreateEventFormData = (registrationId: string): void => {
+  sessionStorage.removeItem(
+    `${FORM_NAMES.CREATE_EVENT_FORM}-${registrationId}`
+  );
 };
