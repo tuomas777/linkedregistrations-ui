@@ -1,3 +1,4 @@
+import isPast from 'date-fns/isPast';
 import { Field, FieldAttributes, Form, Formik } from 'formik';
 import {
   Fieldset,
@@ -46,8 +47,14 @@ import {
 } from '../mutation';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
+import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { Enrolment, EnrolmentFormFields } from '../types';
-import { clearCreateEventFormData, getEnrolmentPayload } from '../utils';
+import {
+  clearCreateEnrolmentFormData,
+  clearEnrolmentReservationData,
+  getEnrolmentPayload,
+  getEnrolmentReservationData,
+} from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
@@ -124,7 +131,8 @@ const EnrolmentForm: React.FC<Props> = ({
   };
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
     formSavingDisabled.current = true;
-    clearCreateEventFormData(registration.id);
+    clearCreateEnrolmentFormData(registration.id);
+    clearEnrolmentReservationData(registration.id);
 
     goToPage(
       `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
@@ -184,6 +192,11 @@ const EnrolmentForm: React.FC<Props> = ({
     deleteEnrolmentMutation.mutate(cancellationCode as string);
   };
 
+  const isRestoringDisabled = () => {
+    const data = getEnrolmentReservationData(registration.id);
+    return !readOnly && (!data || isPast(data.expires * 1000));
+  };
+
   return (
     <Formik
       initialValues={initialValues}
@@ -224,16 +237,22 @@ const EnrolmentForm: React.FC<Props> = ({
               onClose={closeModal}
             />
             <Form noValidate>
-              {!readOnly && (
-                <FormikPersist
-                  isSessionStorage={true}
-                  name={`${FORM_NAMES.CREATE_EVENT_FORM}-${registration.id}`}
-                  savingDisabled={formSavingDisabled.current}
-                />
-              )}
+              <FormikPersist
+                isSessionStorage={true}
+                name={`${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registration.id}`}
+                restoringDisabled={isRestoringDisabled()}
+                savingDisabled={formSavingDisabled.current}
+              />
 
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
+
+              {!readOnly && (
+                <>
+                  <div className={styles.divider} />
+                  <ReservationTimer registration={registration} />
+                </>
+              )}
 
               <div className={styles.divider} />
               <h2>{t('titleRegistration')}</h2>
@@ -243,7 +262,11 @@ const EnrolmentForm: React.FC<Props> = ({
                 registration={registration}
               />
 
-              <Attendees formDisabled={formDisabled} readOnly={readOnly} />
+              <Attendees
+                formDisabled={formDisabled}
+                readOnly={readOnly}
+                registration={registration}
+              />
 
               <Fieldset heading={t(`titleContactInfo`)}>
                 <FormGroup>

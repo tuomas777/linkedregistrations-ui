@@ -12,7 +12,11 @@ import {
 } from '../../registration/utils';
 import { ENROLMENT_FIELDS } from '../constants';
 import { AttendeeFields } from '../types';
-import { getAttendeeDefaultInitialValues } from '../utils';
+import {
+  getAttendeeDefaultInitialValues,
+  getEnrolmentReservationData,
+  updateEnrolmentReservationData,
+} from '../utils';
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {
@@ -32,7 +36,9 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     name: ENROLMENT_FIELDS.ATTENDEES,
   });
 
-  const [participantAmount, setParticipantAmount] = useState(1);
+  const [participantAmount, setParticipantAmount] = useState(
+    Math.max(getEnrolmentReservationData(registration.id)?.participants ?? 0, 1)
+  );
   const freeCapacity = getFreeAttendeeCapacity(registration);
 
   const handleParticipantAmountChange: React.ChangeEventHandler<
@@ -66,6 +72,8 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       ].slice(0, participantAmount);
 
       setAttendees(newAttendees);
+      // TODO: Update reservation from API when BE is ready
+      updateEnrolmentReservationData(registration, newAttendees.length);
     }
   };
 

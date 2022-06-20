@@ -7,9 +7,9 @@ import useIsMounted from '../../../hooks/useIsMounted';
 
 export interface PersistProps {
   debounceTime?: number;
-
   isSessionStorage?: boolean;
   name: string;
+  restoringDisabled?: boolean;
   savingDisabled?: boolean;
 }
 
@@ -18,6 +18,7 @@ const FormikPersist = ({
 
   isSessionStorage = false,
   name,
+  restoringDisabled,
   savingDisabled,
 }: PersistProps): null => {
   const isMounted = useIsMounted();
@@ -57,7 +58,7 @@ const FormikPersist = ({
       ? window.sessionStorage.getItem(name)
       : window.localStorage.getItem(name);
 
-    if (maybeState) {
+    if (!restoringDisabled && maybeState) {
       formik.setFormikState(JSON.parse(maybeState));
 
       // Validate form after setting state

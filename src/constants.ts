@@ -31,6 +31,10 @@ export const MAIN_CONTENT_ID = 'maincontent';
 
 export const DATE_FORMAT = 'd.M.yyyy';
 
+export enum RESERVATION_NAMES {
+  ENROLMENT_RESERVATION = 'enrolment-reservation',
+}
+
 export enum FORM_NAMES {
-  CREATE_EVENT_FORM = 'create-event-form',
+  CREATE_ENROLMENT_FORM = 'create-enrolment-form',
 }
