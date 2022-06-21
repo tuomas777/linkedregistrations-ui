@@ -94,7 +94,7 @@ const EnrolmentForm: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
-  const formSavingDisabled = React.useRef(false);
+  const formSavingDisabled = React.useRef(!!readOnly);
 
   const { setOpenParticipant } = useContext(EnrolmentPageContext);
   const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
