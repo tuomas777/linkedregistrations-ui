@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import subYears from 'date-fns/subYears';
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
@@ -17,6 +16,7 @@ import {
   setQueryMocks,
   userEvent,
   waitFor,
+  within,
 } from '../../../utils/testUtils';
 import { ROUTES } from '../../app/routes/constants';
 import { event } from '../../event/__mocks__/event';
@@ -372,6 +372,14 @@ test('should add and delete participants', async () => {
   await user.type(participantAmountInput, '1');
   await user.click(updateParticipantAmountButton);
 
+  const dialog = screen.getByRole('dialog', {
+    name: 'Vahvista osallistujan poistaminen',
+  });
+  const deleteParticipantButton = within(dialog).getByRole('button', {
+    name: 'Poista osallistuja',
+  });
+  await user.click(deleteParticipantButton);
+
   expect(
     screen.queryByRole('button', { name: 'Osallistuja 2' })
   ).not.toBeInTheDocument();
@@ -436,9 +444,17 @@ test('should delete participants by clicking delete participant button', async (
 
   screen.getByRole('button', { name: 'Osallistuja 2' });
 
-  const deleteParticipantButton = screen.getAllByRole('button', {
+  const deleteButton = screen.getAllByRole('button', {
     name: /poista osallistuja/i,
   })[1];
+  await user.click(deleteButton);
+
+  const dialog = screen.getByRole('dialog', {
+    name: 'Vahvista osallistujan poistaminen',
+  });
+  const deleteParticipantButton = within(dialog).getByRole('button', {
+    name: 'Poista osallistuja',
+  });
   await user.click(deleteParticipantButton);
 
   expect(

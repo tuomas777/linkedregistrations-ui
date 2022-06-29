@@ -19,6 +19,15 @@
     "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
     "title": "Kiitos ilmoittautumisestasi!"
   },
+  "deleteParticipantModal": {
+    "buttonDelete": "Poista osallistuja",
+    "buttonDelete_other": "Poista osallistujat",
+    "text1": "Haluatko varmasti poistaa osallistujan? Myös osallistujan varaus poistetaan.",
+    "text1_other": "Haluatko varmasti poistaa osallistujat? Myös osallistujien varaukset poistetaan.",
+    "text2": "Tätä toimintoa ei voi perua.",
+    "title": "Vahvista osallistujan poistaminen",
+    "title_other": "Vahvista osallistujien poistaminen"
+  },
   "event": {
     "audienceAge": {
       "between": "{{min}} – {{max}} v",

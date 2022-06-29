@@ -40,7 +40,7 @@ import EnrolmentPageContext from '../enrolmentPageContext/EnrolmentPageContext';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
-import ConfirmCancelModal from '../modals/ConfirmCancelModal';
+import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
 import {
   useCreateEnrolmentMutation,
   useDeleteEnrolmentMutation,

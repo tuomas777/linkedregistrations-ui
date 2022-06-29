@@ -11,6 +11,7 @@ import {
   getFreeAttendeeCapacity,
 } from '../../registration/utils';
 import { ENROLMENT_FIELDS } from '../constants';
+import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
 import {
   getAttendeeDefaultInitialValues,
@@ -29,6 +30,10 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   registration,
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
+
+  const [openModal, setOpenModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [participantsToDelete, setParticipantsToDelete] = useState(0);
 
   const [{ value: attendees }, , { setValue: setAttendees }] = useField<
     AttendeeFields[]
@@ -58,9 +63,11 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     [registration]
   );
 
-  const handleUpdateParticipantAmount = () => {
+  const updateParticipantAmount = () => {
     /* istanbul ignore next */
     if (participantAmount !== attendees.length) {
+      setSaving(true);
+
       const filledAttendees = attendees.filter(
         (a) => !isEqual(a, attendeeInitialValues)
       );
@@ -74,41 +81,70 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       setAttendees(newAttendees);
       // TODO: Update reservation from API when BE is ready
       updateEnrolmentReservationData(registration, newAttendees.length);
+
+      setSaving(false);
+      closeModal();
+    }
+  };
+
+  const closeModal = () => {
+    setOpenModal(false);
+  };
+
+  const openParticipantModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleUpdateClick = () => {
+    if (participantAmount < attendees.length) {
+      setParticipantsToDelete(attendees.length - participantAmount);
+      openParticipantModal();
+    } else {
+      updateParticipantAmount();
     }
   };
 
   return (
-    <div className={styles.participantAmountSelector}>
-      <NumberInput
-        id="participant-amount-field"
-        minusStepButtonAriaLabel={t(
-          'common:numberInput.minusStepButtonAriaLabel'
-        )}
-        plusStepButtonAriaLabel={t(
-          'common:numberInput.plusStepButtonAriaLabel'
-        )}
-        disabled={disabled}
-        errorText={attendeeCapacityError}
-        invalid={!!attendeeCapacityError}
-        label={t(`labelParticipantAmount`)}
-        min={1}
-        max={freeCapacity}
-        onChange={handleParticipantAmountChange}
-        required
-        step={1}
-        value={participantAmount}
+    <>
+      <ConfirmDeleteParticipantModal
+        isOpen={openModal}
+        isSaving={saving}
+        onClose={closeModal}
+        onDelete={updateParticipantAmount}
+        participantCount={participantsToDelete}
       />
-      <div className={styles.buttonWrapper}>
-        <Button
-          disabled={disabled || !!attendeeCapacityError}
-          onClick={handleUpdateParticipantAmount}
-          type="button"
-          variant="secondary"
-        >
-          {t(`buttonUpdateParticipantAmount`)}
-        </Button>
+      <div className={styles.participantAmountSelector}>
+        <NumberInput
+          id="participant-amount-field"
+          minusStepButtonAriaLabel={t(
+            'common:numberInput.minusStepButtonAriaLabel'
+          )}
+          plusStepButtonAriaLabel={t(
+            'common:numberInput.plusStepButtonAriaLabel'
+          )}
+          disabled={disabled}
+          errorText={attendeeCapacityError}
+          invalid={!!attendeeCapacityError}
+          label={t(`labelParticipantAmount`)}
+          min={1}
+          max={freeCapacity}
+          onChange={handleParticipantAmountChange}
+          required
+          step={1}
+          value={participantAmount}
+        />
+        <div className={styles.buttonWrapper}>
+          <Button
+            disabled={disabled || !!attendeeCapacityError}
+            onClick={handleUpdateClick}
+            type="button"
+            variant="secondary"
+          >
+            {t(`buttonUpdateParticipantAmount`)}
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

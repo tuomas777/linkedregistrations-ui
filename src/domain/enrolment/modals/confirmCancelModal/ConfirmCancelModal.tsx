@@ -2,8 +2,8 @@ import { Dialog, IconAlertCircle } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-import Button from '../../../common/components/button/Button';
-import styles from './modals.module.scss';
+import Button from '../../../../common/components/button/Button';
+import styles from '../../../../common/components/dialog/dialog.module.scss';
 
 export interface ConfirmCancelModalProps {
   isOpen: boolean;
