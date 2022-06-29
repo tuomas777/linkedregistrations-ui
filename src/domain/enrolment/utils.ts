@@ -1,20 +1,29 @@
 import { AxiosError } from 'axios';
+import addMinutes from 'date-fns/addMinutes';
+import isPast from 'date-fns/isPast';
 
+import { FORM_NAMES, RESERVATION_NAMES } from '../../constants';
 import formatDate from '../../utils/formatDate';
+import getUnixTime from '../../utils/getUnixTime';
 import queryBuilder from '../../utils/queryBuilder';
 import stringToDate from '../../utils/stringToDate';
 import axiosClient from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import {
+  ATTENDEE_INITIAL_VALUES,
   ENROLMENT_INITIAL_VALUES,
+  ENROLMENT_TIME_IN_MINUTES,
+  ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES,
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
 } from './constants';
 import {
+  AttendeeFields,
   CreateEnrolmentMutationInput,
   Enrolment,
   EnrolmentFormFields,
   EnrolmentQueryVariables,
+  EnrolmentReservation,
 } from './types';
 
 export const fetchEnrolment = async (
@@ -101,19 +110,16 @@ export const getEnrolmentPayload = (
   registration: Registration
 ): CreateEnrolmentMutationInput => {
   const {
-    city,
-    dateOfBirth,
+    attendees,
     email,
     extraInfo,
     membershipNumber,
-    name,
     nativeLanguage,
     notifications,
     phoneNumber,
     serviceLanguage,
-    streetAddress,
-    zip,
   } = formValues;
+  const { city, dateOfBirth, name, streetAddress, zip } = attendees[0] || {};
 
   return {
     city: city || null,
@@ -134,12 +140,19 @@ export const getEnrolmentPayload = (
   };
 };
 
+export const getAttendeeDefaultInitialValues = (
+  registration: Registration
+): AttendeeFields => ({
+  ...ATTENDEE_INITIAL_VALUES,
+  audienceMaxAge: registration.audience_max_age ?? null,
+  audienceMinAge: registration.audience_min_age ?? null,
+});
+
 export const getEnrolmentDefaultInitialValues = (
   registration: Registration
 ): EnrolmentFormFields => ({
   ...ENROLMENT_INITIAL_VALUES,
-  audienceMaxAge: registration.audience_max_age ?? null,
-  audienceMinAge: registration.audience_min_age ?? null,
+  attendees: [getAttendeeDefaultInitialValues(registration)],
 });
 
 export const getEnrolmentInitialValues = (
@@ -149,21 +162,92 @@ export const getEnrolmentInitialValues = (
   return {
     ...getEnrolmentDefaultInitialValues(registration),
     accepted: true,
-    city: enrolment.city || '-',
-    dateOfBirth: enrolment.date_of_birth
-      ? formatDate(new Date(enrolment.date_of_birth))
-      : '',
+    attendees: [
+      {
+        audienceMaxAge: registration.audience_max_age ?? null,
+        audienceMinAge: registration.audience_min_age ?? null,
+        city: enrolment.city || '-',
+        dateOfBirth: enrolment.date_of_birth
+          ? formatDate(new Date(enrolment.date_of_birth))
+          : '',
+        extraInfo: '',
+        name: enrolment.name || '-',
+        streetAddress: enrolment.street_address || '-',
+        zip: enrolment.zipcode || '-',
+      },
+    ],
     email: enrolment.email || '-',
     extraInfo: enrolment.extra_info || '-',
     membershipNumber: enrolment.membership_number || '-',
-    name: enrolment.name || '-',
     nativeLanguage: enrolment.native_language ?? '',
     notifications: getEnrolmentNotificationTypes(
       enrolment.notifications as string
     ),
     phoneNumber: enrolment.phone_number || '-',
     serviceLanguage: enrolment.service_language ?? '',
-    streetAddress: enrolment.street_address || '-',
-    zip: enrolment.zipcode || '-',
   };
+};
+
+export const clearCreateEnrolmentFormData = (registrationId: string): void => {
+  sessionStorage?.removeItem(
+    `${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registrationId}`
+  );
+};
+
+export const clearEnrolmentReservationData = (registrationId: string): void => {
+  sessionStorage?.removeItem(
+    `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`
+  );
+};
+
+export const getEnrolmentReservationData = (
+  registrationId: string
+): EnrolmentReservation | null => {
+  /* istanbul ignore next */
+  if (typeof sessionStorage === 'undefined') return null;
+
+  const data = sessionStorage?.getItem(
+    `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`
+  );
+
+  return data ? JSON.parse(data) : null;
+};
+
+export const setEnrolmentReservationData = (
+  registrationId: string,
+  reservationData: EnrolmentReservation
+): void => {
+  sessionStorage?.setItem(
+    `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`,
+    JSON.stringify(reservationData)
+  );
+};
+
+export const updateEnrolmentReservationData = (
+  registration: Registration,
+  participants: number
+) => {
+  const data = getEnrolmentReservationData(registration.id);
+  // TODO: Get this data from the API when BE part is implemented
+  /* istanbul ignore else */
+  if (data && !isPast(data.expires * 1000)) {
+    setEnrolmentReservationData(registration.id, {
+      ...data,
+      expires: getUnixTime(
+        addMinutes(
+          data.started * 1000,
+          ENROLMENT_TIME_IN_MINUTES +
+            Math.max(participants - 1, 0) *
+              ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES
+        )
+      ),
+      participants,
+    });
+  }
+};
+
+export const getRegistrationTimeLeft = (registration: Registration) => {
+  const now = new Date();
+  const reservationData = getEnrolmentReservationData(registration.id);
+  return reservationData ? reservationData.expires - getUnixTime(now) : 0;
 };

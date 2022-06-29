@@ -25,6 +25,10 @@
     "menuToggleAriaLabel": "Menyn",
     "skipToContentLabel": "Gå till innehållet"
   },
+  "numberInput": {
+    "minusStepButtonAriaLabel": "Minska",
+    "plusStepButtonAriaLabel": "Öka"
+  },
   "openInNewTab": "(öppnas i en ny flik)",
   "serverError": {
     "emailMustBeUnique": "E-post har redan registrering.",
@@ -56,6 +60,10 @@
       "min": "Minst {{min}} objekt måste väljas",
       "min_other": "Minst {{min}} objekt måste väljas",
       "required": "Minst 1 objekt måste väljas"
+    },
+    "capacity": {
+      "max": "Max antal deltagare är {{max}}.",
+      "min": "Minsta antal deltagare är {{min}}."
     },
     "enrolmentAccepted": "Dela information med arrangören måste godkännas",
     "string": {

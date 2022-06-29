@@ -1,21 +1,26 @@
-import { EnrolmentFormFields } from './types';
+import { AttendeeFields, EnrolmentFormFields } from './types';
 
-export enum ENROLMENT_FIELDS {
-  ACCEPTED = 'accepted',
+export enum ATTENDEE_FIELDS {
   AUDIENCE_MAX_AGE = 'audienceMaxAge',
   AUDIENCE_MIN_AGE = 'audienceMinAge',
   CITY = 'city',
   DATE_OF_BIRTH = 'dateOfBirth',
+  EXTRA_INFO = 'extraInfo',
+  NAME = 'name',
+  STREET_ADDRESS = 'streetAddress',
+  ZIP = 'zip',
+}
+
+export enum ENROLMENT_FIELDS {
+  ACCEPTED = 'accepted',
+  ATTENDEES = 'attendees',
   EMAIL = 'email',
   EXTRA_INFO = 'extraInfo',
   MEMBERSHIP_NUMBER = 'membershipNumber',
-  NAME = 'name',
   NATIVE_LANGUAGE = 'nativeLanguage',
   NOTIFICATIONS = 'notifications',
   PHONE_NUMBER = 'phoneNumber',
   SERVICE_LANGUAGE = 'serviceLanguage',
-  STREET_ADDRESS = 'streetAddress',
-  ZIP = 'zip',
 }
 
 export enum NOTIFICATIONS {
@@ -28,22 +33,27 @@ export enum ENROLMENT_QUERY_PARAMS {
   REDIRECT_URL = 'redirect_url',
 }
 
+export const ATTENDEE_INITIAL_VALUES: AttendeeFields = {
+  [ATTENDEE_FIELDS.AUDIENCE_MAX_AGE]: null,
+  [ATTENDEE_FIELDS.AUDIENCE_MIN_AGE]: null,
+  [ATTENDEE_FIELDS.CITY]: '',
+  [ATTENDEE_FIELDS.DATE_OF_BIRTH]: '',
+  [ATTENDEE_FIELDS.EXTRA_INFO]: '',
+  [ATTENDEE_FIELDS.NAME]: '',
+  [ATTENDEE_FIELDS.STREET_ADDRESS]: '',
+  [ATTENDEE_FIELDS.ZIP]: '',
+};
+
 export const ENROLMENT_INITIAL_VALUES: EnrolmentFormFields = {
   [ENROLMENT_FIELDS.ACCEPTED]: false,
-  [ENROLMENT_FIELDS.AUDIENCE_MAX_AGE]: null,
-  [ENROLMENT_FIELDS.AUDIENCE_MIN_AGE]: null,
-  [ENROLMENT_FIELDS.CITY]: '',
-  [ENROLMENT_FIELDS.DATE_OF_BIRTH]: '',
+  [ENROLMENT_FIELDS.ATTENDEES]: [],
   [ENROLMENT_FIELDS.EMAIL]: '',
   [ENROLMENT_FIELDS.EXTRA_INFO]: '',
   [ENROLMENT_FIELDS.MEMBERSHIP_NUMBER]: '',
-  [ENROLMENT_FIELDS.NAME]: '',
   [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: '',
   [ENROLMENT_FIELDS.NOTIFICATIONS]: [],
   [ENROLMENT_FIELDS.PHONE_NUMBER]: '',
   [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: '',
-  [ENROLMENT_FIELDS.STREET_ADDRESS]: '',
-  [ENROLMENT_FIELDS.ZIP]: '',
 };
 
 export const ENROLMENT_FORM_SELECT_FIELDS = [
@@ -69,3 +79,6 @@ export enum ENROLMENT_EDIT_ACTIONS {
 
 export const TEST_ENROLMENT_CANCELLATION_CODE =
   '12345678-1234-5678-1234-123456789012';
+
+export const ENROLMENT_TIME_IN_MINUTES = 30;
+export const ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES = 1;

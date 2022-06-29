@@ -1,7 +1,15 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-console */
 import { ParsedUrlQuery } from 'querystring';
 
-import { act, render, RenderResult, fireEvent } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  RenderResult,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { RequestHandler } from 'msw';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { NextRouter } from 'next/router';
@@ -14,6 +22,7 @@ import {
 } from 'react-query';
 import wait from 'waait';
 
+import { testId } from '../common/components/loadingSpinner/LoadingSpinner';
 import { server } from '../tests/msw/server';
 
 export const arrowUpKeyPressHelper = (): boolean =>
@@ -106,11 +115,12 @@ export const getQueryWrapper = (): React.JSXElementConstructor<any> => {
     defaultOptions: { queries: { retry: false } },
   });
 
-  const wrapper: React.FC<React.PropsWithChildren<QueryClientProviderProps>> =
-    ({ children }) => (
-      // @ts-ignore
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+  const wrapper: React.FC<
+    React.PropsWithChildren<QueryClientProviderProps>
+  > = ({ children }) => (
+    // @ts-ignore
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
   return wrapper;
 };
 
@@ -118,8 +128,16 @@ type CustomRenderResult = RenderResult;
 
 const actWait = (amount?: number): Promise<void> => act(() => wait(amount));
 
+const loadingSpinnerIsNotInDocument = async (timeout = 1000): Promise<void> =>
+  waitFor(
+    () => {
+      expect(screen.queryAllByTestId(testId)).toHaveLength(0);
+    },
+    { timeout }
+  );
+
 // eslint-disable-next-line import/export
-export { actWait, customRender as render };
+export { actWait, customRender as render, loadingSpinnerIsNotInDocument };
 
 // re-export everything
 // eslint-disable-next-line import/export

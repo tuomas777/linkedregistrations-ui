@@ -1,3 +1,4 @@
+import isPast from 'date-fns/isPast';
 import { Field, FieldAttributes, Form, Formik } from 'formik';
 import {
   Fieldset,
@@ -8,20 +9,21 @@ import {
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Button from '../../../common/components/button/Button';
 import CheckboxField from '../../../common/components/formFields/CheckboxField';
 import CheckboxGroupField from '../../../common/components/formFields/CheckboxGroupField';
-import DateInputField from '../../../common/components/formFields/DateInputField';
 import PhoneInputField from '../../../common/components/formFields/PhoneInputField';
 import SingleSelectField from '../../../common/components/formFields/SingleSelectField';
 import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
+import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
+import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import useMountedState from '../../../hooks/useMountedState';
 import { OptionType } from '../../../types';
@@ -34,18 +36,27 @@ import {
   ENROLMENT_QUERY_PARAMS,
   NOTIFICATIONS,
 } from '../constants';
+import EnrolmentPageContext from '../enrolmentPageContext/EnrolmentPageContext';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
-import ConfirmCancelModal from '../modals/ConfirmCancelModal';
+import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
 import {
   useCreateEnrolmentMutation,
   useDeleteEnrolmentMutation,
 } from '../mutation';
+import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
+import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { Enrolment, EnrolmentFormFields } from '../types';
-import { getEnrolmentPayload } from '../utils';
+import {
+  clearCreateEnrolmentFormData,
+  clearEnrolmentReservationData,
+  getEnrolmentPayload,
+  getEnrolmentReservationData,
+} from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
+import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
 
 export enum ENROLMENT_MODALS {
@@ -83,6 +94,9 @@ const EnrolmentForm: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
+  const formSavingDisabled = React.useRef(!!readOnly);
+
+  const { setOpenParticipant } = useContext(EnrolmentPageContext);
   const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
     null
   );
@@ -116,6 +130,10 @@ const EnrolmentForm: React.FC<Props> = ({
     });
   };
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+    formSavingDisabled.current = true;
+    clearCreateEnrolmentFormData(registration.id);
+    clearEnrolmentReservationData(registration.id);
+
     goToPage(
       `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
@@ -174,6 +192,11 @@ const EnrolmentForm: React.FC<Props> = ({
     deleteEnrolmentMutation.mutate(cancellationCode as string);
   };
 
+  const isRestoringDisabled = () => {
+    const data = getEnrolmentReservationData(registration.id);
+    return !readOnly && (!data || isPast(data.expires * 1000));
+  };
+
   return (
     <Formik
       initialValues={initialValues}
@@ -199,7 +222,10 @@ const EnrolmentForm: React.FC<Props> = ({
               setTouched,
             });
 
-            scrollToFirstError({ error: error as ValidationError });
+            scrollToFirstError({
+              error: error as ValidationError,
+              setOpenAccordion: setOpenParticipant,
+            });
           }
         };
 
@@ -211,72 +237,36 @@ const EnrolmentForm: React.FC<Props> = ({
               onClose={closeModal}
             />
             <Form noValidate>
+              <FormikPersist
+                isSessionStorage={true}
+                name={`${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registration.id}`}
+                restoringDisabled={isRestoringDisabled()}
+                savingDisabled={formSavingDisabled.current}
+              />
+
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
-              <Fieldset heading={t(`titleBasicInfo`)}>
-                <FormGroup>
-                  <Field
-                    name={ENROLMENT_FIELDS.NAME}
-                    component={TextInputField}
-                    disabled={formDisabled}
-                    label={t(`labelName`)}
-                    placeholder={readOnly ? '' : t(`placeholderName`)}
-                    readOnly={readOnly}
-                    required
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <div className={styles.streetAddressRow}>
-                    <Field
-                      name={ENROLMENT_FIELDS.STREET_ADDRESS}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelStreetAddress`)}
-                      placeholder={
-                        readOnly ? '' : t(`placeholderStreetAddress`)
-                      }
-                      readOnly={readOnly}
-                      required
-                    />
-                    <Field
-                      name={ENROLMENT_FIELDS.DATE_OF_BIRTH}
-                      component={DateInputField}
-                      disabled={formDisabled}
-                      label={t(`labelDateOfBirth`)}
-                      language={locale}
-                      maxDate={new Date()}
-                      minDate={
-                        new Date(`${new Date().getFullYear() - 100}-01-01`)
-                      }
-                      placeholder={readOnly ? '' : t(`placeholderDateOfBirth`)}
-                      readOnly={readOnly}
-                      required
-                    />
-                  </div>
-                </FormGroup>
-                <FormGroup>
-                  <div className={styles.zipRow}>
-                    <Field
-                      name={ENROLMENT_FIELDS.ZIP}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelZip`)}
-                      placeholder={readOnly ? '' : t(`placeholderZip`)}
-                      readOnly={readOnly}
-                      required
-                    />
-                    <Field
-                      name={ENROLMENT_FIELDS.CITY}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelCity`)}
-                      placeholder={readOnly ? '' : t(`placeholderCity`)}
-                      readOnly={readOnly}
-                      required
-                    />
-                  </div>
-                </FormGroup>
-              </Fieldset>
+
+              {!readOnly && (
+                <>
+                  <div className={styles.divider} />
+                  <ReservationTimer registration={registration} />
+                </>
+              )}
+
+              <div className={styles.divider} />
+              <h2>{t('titleRegistration')}</h2>
+
+              <ParticipantAmountSelector
+                disabled={formDisabled || !!readOnly}
+                registration={registration}
+              />
+
+              <Attendees
+                formDisabled={formDisabled}
+                readOnly={readOnly}
+                registration={registration}
+              />
 
               <Fieldset heading={t(`titleContactInfo`)}>
                 <FormGroup>

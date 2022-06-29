@@ -16,6 +16,8 @@ export enum VALIDATION_MESSAGE_KEYS {
   AGE_MIN = 'validation.age.min',
   ARRAY_MIN = 'validation.array.min',
   ARRAY_REQUIRED = 'validation.array.required',
+  CAPACITY_MAX = 'validation.capacity.max',
+  CAPACITY_MIN = 'validation.capacity.min',
   DATE = 'validation.string.date',
   EMAIL = 'validation.string.email',
   ENROLMENT_ACCEPTED = 'validation.enrolmentAccepted',
@@ -28,3 +30,11 @@ export const PAGE_HEADER_ID = 'page-header';
 export const MAIN_CONTENT_ID = 'maincontent';
 
 export const DATE_FORMAT = 'd.M.yyyy';
+
+export enum RESERVATION_NAMES {
+  ENROLMENT_RESERVATION = 'enrolment-reservation',
+}
+
+export enum FORM_NAMES {
+  CREATE_ENROLMENT_FORM = 'create-enrolment-form',
+}

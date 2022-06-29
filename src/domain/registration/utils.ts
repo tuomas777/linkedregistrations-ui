@@ -3,6 +3,7 @@ import isFuture from 'date-fns/isFuture';
 import isPast from 'date-fns/isPast';
 import { TFunction } from 'next-i18next';
 
+import { VALIDATION_MESSAGE_KEYS } from '../../constants';
 import queryBuilder from '../../utils/queryBuilder';
 import axiosClient from '../app/axios/axiosClient';
 import {
@@ -47,6 +48,40 @@ export const isAttenceeCapacityUsed = (registration: Registration): boolean => {
   } else {
     return true;
   }
+};
+
+export const getFreeAttendeeCapacity = (
+  registration: Registration
+): number | undefined => {
+  // If there are seats in the event
+  if (!registration.maximum_attendee_capacity) {
+    return undefined;
+  }
+  return Math.max(
+    registration.maximum_attendee_capacity -
+      registration.current_attendee_count,
+    0
+  );
+};
+
+export const getAttendeeCapacityError = (
+  registration: Registration,
+  participantAmount: number,
+  t: TFunction
+): string | undefined => {
+  if (participantAmount < 1) {
+    return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MIN}`, { min: 1 });
+  }
+
+  const freeCapacity = getFreeAttendeeCapacity(registration);
+
+  if (freeCapacity && participantAmount > freeCapacity) {
+    return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MAX}`, {
+      max: freeCapacity,
+    });
+  }
+
+  return undefined;
 };
 
 export const isWaitingCapacityUsed = (registration: Registration): boolean => {
