@@ -3,7 +3,7 @@ import {
   useQuery,
   UseQueryOptions,
   UseQueryResult,
-} from 'react-query';
+} from '@tanstack/react-query';
 
 import { Registration, RegistrationQueryVariables } from './types';
 import { fetchRegistration } from './utils';
@@ -30,7 +30,7 @@ export const prefetchRegistrationQuery = (
 
 export const useRegistrationQuery = (
   args: RegistrationQueryVariables,
-  options?: Pick<UseQueryOptions, 'enabled'>
+  options?: Pick<UseQueryOptions, 'enabled' | 'retry'>
 ): UseQueryResult<Registration> => {
   return useQuery<Registration, Error>(
     ['registration', args.id],
