@@ -11,6 +11,9 @@ const moduleExports = {
   sassOptions: {
     includePaths: ['src/styles'],
   },
+  sentry: {
+    hideSourceMaps: true,
+  },
 };
 
 const sentryWebpackPluginOptions = {
