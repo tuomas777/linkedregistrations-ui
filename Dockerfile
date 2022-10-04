@@ -84,6 +84,8 @@ RUN yarn install --production --frozen-lockfile && yarn cache clean --force
 
 ARG NEXTAUTH_SECRET
 ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
 
 # Expose port
 EXPOSE $PORT
