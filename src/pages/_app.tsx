@@ -14,6 +14,7 @@ import type { AppProps } from 'next/app';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 
+import CookieConsent from '../domain/app/cookieConsent/CookieConsent';
 import PageLayout from '../domain/app/layout/pageLayout/PageLayout';
 import ApiTokenUpdater from '../domain/auth/ApiTokenUpdater';
 
@@ -28,6 +29,7 @@ const MyApp = ({
       <ApiTokenUpdater />
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
+          <CookieConsent />
           <ToastContainer hideProgressBar={true} theme="colored" />
           <PageLayout {...pageProps}>
             <Component {...pageProps} />
