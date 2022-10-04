@@ -4,19 +4,22 @@ import { LEServerError, ServerErrorItem } from '../../../types';
 import parseServerErrorMessage from '../../../utils/parseServerErrorMessage';
 import pascalCase from '../../../utils/pascalCase';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ErrorObject = Record<string, any>;
+type ErrorType = ErrorObject | ErrorObject[] | string;
+
 export const parseEnrolmentServerErrors = ({
   error,
   t,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: Record<string, any> | Record<string, any>[] | string;
+  error: ErrorType;
   t: TFunction;
 }): ServerErrorItem[] => {
   // LE returns errors as array when trying to create/edit multiple enrolments in same request.
   // In that case call parseEnrolmentServerErrors recursively to get all single errors
   if (Array.isArray(error)) {
-    return error.reduce(
-      (previous: ServerErrorItem[], r) => [
+    return (error as ErrorObject[]).reduce(
+      (previous: ServerErrorItem[], r: ErrorType) => [
         ...previous,
         ...parseEnrolmentServerErrors({ error: r, t }),
       ],

@@ -8,8 +8,9 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
-import { appWithTranslation } from 'next-i18next';
+import { appWithTranslation, SSRConfig } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -18,10 +19,15 @@ import CookieConsent from '../domain/app/cookieConsent/CookieConsent';
 import PageLayout from '../domain/app/layout/pageLayout/PageLayout';
 import ApiTokenUpdater from '../domain/auth/ApiTokenUpdater';
 
+type Props = {
+  dehydratedState?: unknown;
+  session?: Session | null;
+} & SSRConfig;
+
 const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps) => {
+}: AppProps<Props>) => {
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
@@ -40,4 +46,4 @@ const MyApp = ({
   );
 };
 
-export default appWithTranslation(MyApp);
+export default appWithTranslation<AppProps<Props>>(MyApp);
