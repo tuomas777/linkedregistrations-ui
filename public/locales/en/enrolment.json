@@ -2,7 +2,7 @@
   "attendeeDefaultTitle": "Participant {{index}}",
   "buttonCancel": "Cancel registration",
   "buttonDeleteAttendee": "Delete participant",
-  "buttonSend": "Submit registration",
+  "buttonGoToSummary": "Continue to registration",
   "buttonUpdateParticipantAmount": "Update",
   "cancelEnrolmentModal": {
     "buttonCancel": "Cancel registration",
@@ -37,7 +37,7 @@
     },
     "freeEvent": "Free"
   },
-  "labelAccepted": "I agree to share my information with the organizer",
+  "labelAccepted": "I agree to share my information with the organizer. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Privacy policy {{openInNewTab}}\">Privacy policy</a>",
   "labelAttendeeExtraInfo": "Additional information (optional)",
   "labelCity": "City",
   "labelDateOfBirth": "Date of birth",
@@ -52,8 +52,6 @@
   "labelStreetAddress": "Street address",
   "labelZip": "Postcode",
   "linkPrivacyPolicy": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
-  "notificationLabel": "We will send you a separate confirmation message once the event organizer has processed and confirmed your registration. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Privacy policy {{openInNewTab}}\">Privacy policy</a>",
-  "notificationTitle": "Confirmation of registration",
   "notifications": {
     "email": "By email",
     "sms": "By text message"

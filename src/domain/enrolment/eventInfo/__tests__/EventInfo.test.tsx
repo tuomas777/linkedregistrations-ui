@@ -82,5 +82,5 @@ test('should show event time correctly if only start time is defined', async () 
   );
   getElement('description');
   getElement('price');
-  screen.getByText('10.7.2020 –');
+  screen.getByText('10.7.2020, 15.00 –');
 });

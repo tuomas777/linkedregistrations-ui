@@ -2,7 +2,7 @@
 import addMinutes from 'date-fns/addMinutes';
 import isPast from 'date-fns/isPast';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import getUnixTime from '../../../utils/getUnixTime';
 import { Registration } from '../../registration/types';
@@ -14,6 +14,8 @@ import {
 } from '../utils';
 
 interface Props {
+  onReservationNotFound?: () => void;
+  onExpired?: () => void;
   registration: Registration;
 }
 
@@ -30,14 +32,21 @@ const getTimeStr = (timeLeft: number) => {
     .join(':');
 };
 
-const ReservationTimer: React.FC<Props> = ({ registration }) => {
+const ReservationTimer: React.FC<Props> = ({
+  onReservationNotFound,
+  onExpired,
+  registration,
+}) => {
   const { t } = useTranslation('enrolment');
-  const [timeLeft, setTimeLeft] = React.useState(0);
+  const [timeLeft, setTimeLeft] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     const data = getEnrolmentReservationData(registration.id);
-    // TODO: Get this data from the API when BE part is implemented
-    if (!data || isPast(data.expires * 1000)) {
+
+    if (!data && onReservationNotFound) {
+      return onReservationNotFound();
+    } else if (!data || isPast(data.expires * 1000)) {
+      // TODO: Get this data from the API when BE part is implemented
       const now = new Date();
 
       setEnrolmentReservationData(registration.id, {
@@ -58,11 +67,20 @@ const ReservationTimer: React.FC<Props> = ({ registration }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [registration, timeLeft]);
+  }, [onExpired, registration, timeLeft]);
+
+  useEffect(() => {
+    const data = getEnrolmentReservationData(registration.id);
+
+    if (data && timeLeft !== null && timeLeft <= 0) {
+      onExpired && onExpired();
+    }
+  }, [onExpired, registration.id, timeLeft]);
 
   return (
     <div>
-      {t('timeLeft')} <strong>{getTimeStr(timeLeft)}</strong>
+      {t('timeLeft')}{' '}
+      <strong>{timeLeft !== null && getTimeStr(timeLeft)}</strong>
     </div>
   );
 };

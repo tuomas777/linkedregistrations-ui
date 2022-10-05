@@ -18,3 +18,5 @@ export type ServerErrorItem = {
   label: string;
   message: string;
 };
+
+export type FalsyType = false | null | undefined | '' | 0;

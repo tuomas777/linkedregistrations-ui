@@ -2,15 +2,15 @@ import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import CreateEnrolmentPage from '../../../../domain/enrolment/CreateEnrolmentPage';
-import { EVENT_INCLUDES } from '../../../../domain/event/constants';
-import { fetchEventQuery } from '../../../../domain/event/query';
-import { prefetchPlaceQuery } from '../../../../domain/place/query';
-import { fetchRegistrationQuery } from '../../../../domain/registration/query';
-import { getSessionAndUser } from '../../../../utils/getSessionAndUser';
-import parseIdFromAtId from '../../../../utils/parseIdFromAtId';
+import CreateEnrolmentSummaryPage from '../../../../../../domain/enrolment/summaryPage/SummaryPage';
+import { EVENT_INCLUDES } from '../../../../../../domain/event/constants';
+import { fetchEventQuery } from '../../../../../../domain/event/query';
+import { prefetchPlaceQuery } from '../../../../../../domain/place/query';
+import { fetchRegistrationQuery } from '../../../../../../domain/registration/query';
+import { getSessionAndUser } from '../../../../../../utils/getSessionAndUser';
+import parseIdFromAtId from '../../../../../../utils/parseIdFromAtId';
 
-const CreateEnrolment: NextPage = () => <CreateEnrolmentPage />;
+const CreateEnrolment: NextPage = () => <CreateEnrolmentSummaryPage />;
 
 export const getServerSideProps: GetServerSideProps = async ({
   locale,
@@ -53,6 +53,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       ...(await serverSideTranslations(locale as string, [
         'common',
         'enrolment',
+        'summary',
       ])),
       dehydratedState: dehydrate(queryClient),
       session,

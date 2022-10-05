@@ -2,7 +2,7 @@
   "attendeeDefaultTitle": "Osallistuja {{index}}",
   "buttonCancel": "Peruuta ilmoittautuminen",
   "buttonDeleteAttendee": "Poista osallistuja",
-  "buttonSend": "Lähetä ilmoittautuminen",
+  "buttonGoToSummary": "Jatka ilmoittautumiseen",
   "buttonUpdateParticipantAmount": "Päivitä",
   "cancelEnrolmentModal": {
     "buttonCancel": "Peruuta ilmoittautuminen",
@@ -37,7 +37,7 @@
     },
     "freeEvent": "Maksuton"
   },
-  "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa",
+  "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Rekisteriseloste {{openInNewTab}}\">Rekisteriseloste</a>",
   "labelAttendeeExtraInfo": "Lisätietoa (valinnainen)",
   "labelCity": "Kaupunki",
   "labelDateOfBirth": "Syntymäaika",
@@ -52,8 +52,6 @@
   "labelStreetAddress": "Katuosoite",
   "labelZip": "Postinumero",
   "linkPrivacyPolicy": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
-  "notificationLabel": "Lähetämme sinulle vielä erillisen vahvistusviestin, kun tapahtuman järjestäjä on käsitellyt ja vahvistanut ilmoittautumisesi. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Rekisteriseloste {{openInNewTab}}\">Rekisteriseloste</a>",
-  "notificationTitle": "Ilmoittautumisen vahvistaminen",
   "notifications": {
     "email": "Sähköpostilla",
     "sms": "Tekstiviestillä"

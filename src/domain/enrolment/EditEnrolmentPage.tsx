@@ -12,11 +12,11 @@ import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
 import EditEnrolmentPageMeta from './editEnrolmentPageMeta/EditEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
-import styles from './enrolmentPage.module.scss';
 import EnrolmentPageContext, {
   useEnrolmentPageContextValue,
 } from './enrolmentPageContext/EnrolmentPageContext';
 import EventInfo from './eventInfo/EventInfo';
+import FormContainer from './formContainer/FormContainer';
 import { useEnrolmentQuery } from './query';
 import { Enrolment } from './types';
 import { getEnrolmentInitialValues } from './utils';
@@ -39,16 +39,16 @@ const EditEnrolmentPage: React.FC<Props> = ({
     <MainContent>
       <EditEnrolmentPageMeta event={event} />
       <Container withOffset>
-        <div className={styles.formContainer}>
+        <FormContainer>
           <EventInfo event={event} registration={registration} />
-          <div className={styles.divider} />
+
           <EnrolmentForm
             cancellationCode={cancellationCode}
             initialValues={initialValues}
             readOnly={true}
             registration={registration}
           />
-        </div>
+        </FormContainer>
       </Container>
     </MainContent>
   );
