@@ -26,7 +26,6 @@ import FormContainer from '../formContainer/FormContainer';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import { useCreateEnrolmentMutation } from '../mutation';
 import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
-import useReservationTimerCallbacks from '../reservationTimer/hooks/useReservationTimerCallbacks';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
 import { Enrolment } from '../types';
@@ -78,13 +77,6 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
       )
     );
   };
-
-  // Handle reservation missing or expired expections
-  useReservationTimerCallbacks({
-    onDataNotFound: goToCreateEnrolmentPage,
-    onExpired: goToCreateEnrolmentPage,
-    registration: registration,
-  });
 
   const initialValues = getEnrolmentDefaultInitialValues(registration);
 
@@ -163,6 +155,8 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
                   <ReservationTimer
                     initializeReservationData={false}
+                    onDataNotFound={goToCreateEnrolmentPage}
+                    onExpired={goToCreateEnrolmentPage}
                     registration={registration}
                   />
                   <Divider />

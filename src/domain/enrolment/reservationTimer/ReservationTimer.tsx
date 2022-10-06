@@ -13,11 +13,14 @@ import {
   setEnrolmentReservationData,
 } from '../utils';
 import { useReservationTimer } from './hooks/useReservationTimer';
+import useReservationTimerCallbacks, {
+  ReservationTimerCallbacks,
+} from './hooks/useReservationTimerCallbacks';
 
-interface Props {
+type Props = {
   initializeReservationData: boolean;
   registration: Registration;
-}
+} & ReservationTimerCallbacks;
 
 const getTimeStr = (timeLeft: number) => {
   const hours = Math.floor(timeLeft / 3600);
@@ -34,10 +37,15 @@ const getTimeStr = (timeLeft: number) => {
 
 const ReservationTimer: React.FC<Props> = ({
   initializeReservationData,
+  onDataNotFound,
+  onExpired,
   registration,
 }) => {
   const { t } = useTranslation('enrolment');
   const { timeLeft, setTimeLeft } = useReservationTimer();
+
+  // Handle reservation missing or expired expections
+  useReservationTimerCallbacks({ onDataNotFound, onExpired, registration });
 
   React.useEffect(() => {
     const data = getEnrolmentReservationData(registration.id);

@@ -4,11 +4,14 @@ import { Registration } from '../../../registration/types';
 import { getEnrolmentReservationData } from '../../utils';
 import { useReservationTimer } from './useReservationTimer';
 
-interface Props {
-  onDataNotFound: () => void;
-  onExpired: () => void;
-  registration: Registration;
+export interface ReservationTimerCallbacks {
+  onDataNotFound?: () => void;
+  onExpired?: () => void;
 }
+
+type Props = {
+  registration: Registration;
+} & ReservationTimerCallbacks;
 
 const useReservationTimerCallbacks = ({
   onDataNotFound,
@@ -21,7 +24,7 @@ const useReservationTimerCallbacks = ({
     const data = getEnrolmentReservationData(registration.id);
 
     if (!data) {
-      onDataNotFound();
+      onDataNotFound && onDataNotFound();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -30,7 +33,7 @@ const useReservationTimerCallbacks = ({
     /* istanbul ignore else */
     if (!callbacksDisabled) {
       if (timeLeft !== null && timeLeft <= 0) {
-        onExpired();
+        onExpired && onExpired();
       }
     }
   }, [callbacksDisabled, onExpired, registration.id, timeLeft]);
