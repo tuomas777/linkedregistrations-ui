@@ -25,7 +25,10 @@ import Divider from '../divider/Divider';
 import FormContainer from '../formContainer/FormContainer';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import { useCreateEnrolmentMutation } from '../mutation';
+import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
+import useReservationTimerCallbacks from '../reservationTimer/hooks/useReservationTimerCallbacks';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
+import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
 import { Enrolment } from '../types';
 import {
   clearCreateEnrolmentFormData,
@@ -46,25 +49,16 @@ type SummaryPageProps = {
 };
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
+  const { disableCallbacks: disabledReservationTimerCallbacks } =
+    useReservationTimer();
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
-  const initialValues = getEnrolmentDefaultInitialValues(registration);
-
-  const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrors();
-
-  const goToPage = (pathname: string) => {
-    router.push({
-      pathname,
-      query: pick(router.query, [
-        ENROLMENT_QUERY_PARAMS.IFRAME,
-        ENROLMENT_QUERY_PARAMS.REDIRECT_URL,
-      ]),
-    });
-  };
-
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+    // Disabled reservation timer callbacks
+    // so user is not redirected to create enrolment page
+    disabledReservationTimerCallbacks();
+
     clearCreateEnrolmentFormData(registration.id);
     clearEnrolmentReservationData(registration.id);
 
@@ -83,6 +77,28 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
         router.query.registrationId as string
       )
     );
+  };
+
+  // Handle reservation missing or expired expections
+  useReservationTimerCallbacks({
+    onDataNotFound: goToCreateEnrolmentPage,
+    onExpired: goToCreateEnrolmentPage,
+    registration: registration,
+  });
+
+  const initialValues = getEnrolmentDefaultInitialValues(registration);
+
+  const { serverErrorItems, setServerErrorItems, showServerErrors } =
+    useEnrolmentServerErrors();
+
+  const goToPage = (pathname: string) => {
+    router.push({
+      pathname,
+      query: pick(router.query, [
+        ENROLMENT_QUERY_PARAMS.IFRAME,
+        ENROLMENT_QUERY_PARAMS.REDIRECT_URL,
+      ]),
+    });
   };
 
   const createEnrolmentMutation = useCreateEnrolmentMutation({
@@ -144,9 +160,9 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                   />
 
                   <Divider />
+
                   <ReservationTimer
-                    onReservationNotFound={goToCreateEnrolmentPage}
-                    onExpired={goToCreateEnrolmentPage}
+                    initializeReservationData={false}
                     registration={registration}
                   />
                   <Divider />
@@ -198,7 +214,9 @@ const SummaryPageWrapper: React.FC = () => {
       }
     >
       {event && registration ? (
-        <SummaryPage event={event} registration={registration} />
+        <ReservationTimerProvider>
+          <SummaryPage event={event} registration={registration} />
+        </ReservationTimerProvider>
       ) : (
         <NotFound />
       )}

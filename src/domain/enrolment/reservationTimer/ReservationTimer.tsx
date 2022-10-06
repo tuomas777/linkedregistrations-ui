@@ -2,7 +2,7 @@
 import addMinutes from 'date-fns/addMinutes';
 import isPast from 'date-fns/isPast';
 import { useTranslation } from 'next-i18next';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import getUnixTime from '../../../utils/getUnixTime';
 import { Registration } from '../../registration/types';
@@ -12,10 +12,10 @@ import {
   getRegistrationTimeLeft,
   setEnrolmentReservationData,
 } from '../utils';
+import { useReservationTimer } from './hooks/useReservationTimer';
 
 interface Props {
-  onReservationNotFound?: () => void;
-  onExpired?: () => void;
+  initializeReservationData: boolean;
   registration: Registration;
 }
 
@@ -33,19 +33,16 @@ const getTimeStr = (timeLeft: number) => {
 };
 
 const ReservationTimer: React.FC<Props> = ({
-  onReservationNotFound,
-  onExpired,
+  initializeReservationData,
   registration,
 }) => {
   const { t } = useTranslation('enrolment');
-  const [timeLeft, setTimeLeft] = React.useState<number | null>(null);
+  const { timeLeft, setTimeLeft } = useReservationTimer();
 
   React.useEffect(() => {
     const data = getEnrolmentReservationData(registration.id);
 
-    if (!data && onReservationNotFound) {
-      return onReservationNotFound();
-    } else if (!data || isPast(data.expires * 1000)) {
+    if (initializeReservationData && (!data || isPast(data.expires * 1000))) {
       // TODO: Get this data from the API when BE part is implemented
       const now = new Date();
 
@@ -67,15 +64,7 @@ const ReservationTimer: React.FC<Props> = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [onExpired, registration, timeLeft]);
-
-  useEffect(() => {
-    const data = getEnrolmentReservationData(registration.id);
-
-    if (data && timeLeft !== null && timeLeft <= 0) {
-      onExpired && onExpired();
-    }
-  }, [onExpired, registration.id, timeLeft]);
+  }, [registration, setTimeLeft, timeLeft]);
 
   return (
     <div>
