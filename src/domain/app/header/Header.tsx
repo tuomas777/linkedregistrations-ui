@@ -24,7 +24,7 @@ const Header: React.FC = () => {
 
   const { data: user } = useUserQuery(
     { username: session?.sub as string },
-    { enabled: !!session?.sub }
+    { enabled: Boolean(session?.sub && session?.apiToken) }
   );
 
   const locale = useLocale();
@@ -100,7 +100,7 @@ const Header: React.FC = () => {
 
       <Navigation.Actions>
         <Navigation.User
-          authenticated={Boolean(session && user)}
+          authenticated={Boolean(session?.apiToken && user)}
           label={t('common:signIn')}
           onSignIn={() => signIn('tunnistamo')}
           userName={user?.display_name}

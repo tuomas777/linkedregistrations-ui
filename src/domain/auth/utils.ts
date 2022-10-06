@@ -29,17 +29,12 @@ export const fetchApiToken = async ({
 }: {
   accessToken: string;
 }): Promise<string | null> => {
-  try {
-    const res: AxiosResponse = await axios.get(OIDC_API_TOKEN_ENDPOINT, {
-      headers: { Authorization: `bearer ${accessToken}` },
-    });
+  const res: AxiosResponse = await axios.get(OIDC_API_TOKEN_ENDPOINT, {
+    headers: { Authorization: `bearer ${accessToken}` },
+  });
 
-    const apiToken = res.data[API_SCOPE];
-    return apiToken;
-  } catch (e) {
-    console.error(`Failed to fetch api token with error ${e}`);
-    return null;
-  }
+  const apiToken = res.data[API_SCOPE];
+  return apiToken;
 };
 
 export const getApiTokenExpirationTime = (): number =>
