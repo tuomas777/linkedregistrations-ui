@@ -10,7 +10,6 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
-import useLocale from '../../../hooks/useLocale';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
@@ -48,7 +47,6 @@ type SummaryPageProps = {
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const { t } = useTranslation(['summary']);
-  const locale = useLocale();
   const router = useRouter();
 
   const initialValues = getEnrolmentDefaultInitialValues(registration);
@@ -66,33 +64,24 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     });
   };
 
-  const getToCreateEnrolmentPage = () => {
-    goToPage(
-      ROUTES.CREATE_ENROLMENT.replace(
-        '[registrationId]',
-        router.query.registrationId as string
-      )
-    );
-  };
-
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
     clearCreateEnrolmentFormData(registration.id);
     clearEnrolmentReservationData(registration.id);
 
     goToPage(
-      `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
+      ROUTES.ENROLMENT_COMPLETED.replace(
         '[registrationId]',
         registration.id
-      ).replace('[accessCode]', enrolment.cancellation_code as string)}`
+      ).replace('[accessCode]', enrolment.cancellation_code as string)
     );
   };
 
   const goToCreateEnrolmentPage = () => {
     goToPage(
-      `/${locale}${ROUTES.CREATE_ENROLMENT.replace(
+      ROUTES.CREATE_ENROLMENT.replace(
         '[registrationId]',
-        registration.id
-      )}`
+        router.query.registrationId as string
+      )
     );
   };
 
@@ -156,8 +145,8 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
                   <Divider />
                   <ReservationTimer
-                    onReservationNotFound={getToCreateEnrolmentPage}
-                    onExpired={getToCreateEnrolmentPage}
+                    onReservationNotFound={goToCreateEnrolmentPage}
+                    onExpired={goToCreateEnrolmentPage}
                     registration={registration}
                   />
                   <Divider />

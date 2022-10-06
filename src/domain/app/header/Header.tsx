@@ -29,13 +29,14 @@ const Header: React.FC = () => {
 
   const locale = useLocale();
   const router = useRouter();
+
   const { changeLanguage, languageOptions } = useSelectLanguage();
 
   const { t } = useTranslation('common');
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   const NAVIGATION_ITEMS: NavigationItem[] = [
-    router.route === ROUTES.CREATE_ENROLMENT_SUMMARY && {
+    router.pathname === ROUTES.CREATE_ENROLMENT_SUMMARY && {
       icon: <IconArrowLeft aria-hidden />,
       labelKey: 'navigation.backToEnrolmentForm',
       url: ROUTES.CREATE_ENROLMENT.replace(
@@ -48,16 +49,23 @@ const Header: React.FC = () => {
   const navigationItems = NAVIGATION_ITEMS.map(
     ({ labelKey, url, ...rest }) => ({
       label: t(labelKey),
-      url: `/${locale}${url}`,
+      url,
       ...rest,
     })
   );
 
   const goToHomePage = (e?: Event) => {
     e?.preventDefault();
-    router.push(`/${locale}${ROUTES.HOME}`);
-    toggleMenu();
+    router.push(ROUTES.HOME);
+    setMenuOpen(false);
   };
+
+  const goToPage =
+    (pathname: string) => (e?: React.MouseEvent<HTMLAnchorElement>) => {
+      e?.preventDefault();
+      router.push(pathname);
+      toggleMenu();
+    };
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -85,6 +93,7 @@ const Header: React.FC = () => {
             icon={item.icon}
             href={item.url}
             label={item.label}
+            onClick={goToPage(item.url)}
           />
         ))}
       </Navigation.Row>
