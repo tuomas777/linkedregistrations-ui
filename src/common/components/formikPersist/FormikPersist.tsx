@@ -65,7 +65,7 @@ const FormikPersist = ({
       timeout = setTimeout(async () => {
         await formik.validateForm();
         isInitialized.current = true;
-      });
+      }, 10);
     } else {
       isInitialized.current = true;
     }

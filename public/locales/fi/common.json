@@ -16,6 +16,7 @@
   "loading": "Ladataan...",
   "loadingFinished": "Lataaminen päättynyt",
   "navigation": {
+    "backToEnrolmentForm": "Palaa ilmoittautumiskaavakkeeseen",
     "languages": {
       "en": "In English",
       "fi": "Suomeksi",

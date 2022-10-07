@@ -78,7 +78,8 @@ export const getNextAuthOptions = (req: NextApiRequest) => {
               const apiToken = await fetchApiToken({
                 accessToken: token.accessToken as string,
               });
-              token.apiToken = apiToken ?? null;
+
+              token.apiToken = apiToken;
               token.apiTokenExpiresAt = getApiTokenExpirationTime();
             } catch (e) {
               token.apiToken = null;
@@ -93,11 +94,11 @@ export const getNextAuthOptions = (req: NextApiRequest) => {
         return token;
       },
       async session({ session, token }) {
-        session.accessToken = token.accessToken ?? null;
-        session.accessTokenExpiresAt = token.accessTokenExpiresAt ?? null;
-        session.apiToken = token.apiToken ?? null;
-        session.apiTokenExpiresAt = token.apiTokenExpiresAt ?? null;
-        session.sub = token.sub ?? null;
+        session.accessToken = token.accessToken || null;
+        session.accessTokenExpiresAt = token.accessTokenExpiresAt || null;
+        session.apiToken = token.apiToken || null;
+        session.apiTokenExpiresAt = token.apiTokenExpiresAt || null;
+        session.sub = token.sub || null;
 
         if (session.user && !session.user?.image) {
           session.user.image = null;

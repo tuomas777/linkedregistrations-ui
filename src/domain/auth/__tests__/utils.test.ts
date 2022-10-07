@@ -42,16 +42,6 @@ const apiTokenFetchSucceeded = async ({
   axiosCalled({ accessToken, axiosFn });
 };
 
-const apiTokenFetchFailed = async ({
-  accessToken,
-  axiosFn,
-}: {
-  accessToken: string;
-  axiosFn: jest.SpyInstance;
-}) => {
-  axiosCalled({ accessToken, axiosFn });
-};
-
 describe('fetchApiToken function', () => {
   it('should fetxh api token', async () => {
     const axiosGet = jest
@@ -64,24 +54,6 @@ describe('fetchApiToken function', () => {
       accessToken,
       axiosFn: axiosGet,
     });
-  });
-
-  it('should show toast error message when failing to renew api token', async () => {
-    console.error = jest.fn();
-    const error = new Error('error');
-
-    const axiosGet = jest.spyOn(mockAxios, 'get').mockRejectedValue(error);
-
-    await fetchApiToken({ accessToken });
-
-    await apiTokenFetchFailed({
-      accessToken,
-      axiosFn: axiosGet,
-    });
-
-    expect(console.error).toBeCalledWith(
-      `Failed to fetch api token with error ${error}`
-    );
   });
 });
 

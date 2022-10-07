@@ -6,6 +6,7 @@ import { rest } from 'msw';
 import { Session } from 'next-auth';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
+import singletonRouter from 'next/router';
 import React from 'react';
 
 import { fakeUser } from '../../../../utils/mockDataUtils';
@@ -18,7 +19,9 @@ import {
   userEvent,
   waitFor,
 } from '../../../../utils/testUtils';
+import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { TEST_USER_ID } from '../../../user/constants';
+import { ROUTES } from '../../routes/constants';
 import Header from '../Header';
 
 configure({ defaultHidden: true });
@@ -53,12 +56,21 @@ const getElement = (key: 'enOption' | 'menuButton' | 'svOption') => {
 };
 
 const getElements = (
-  key: 'appName' | 'languageSelector' | 'signInButton' | 'signOutLink'
+  key:
+    | 'appName'
+    | 'backToEnrolmentFormLink'
+    | 'languageSelector'
+    | 'signInButton'
+    | 'signOutLink'
 ) => {
   switch (key) {
     case 'appName':
       return screen.getAllByRole('link', {
         name: /linked registrations/i,
+      });
+    case 'backToEnrolmentFormLink':
+      return screen.getAllByRole('link', {
+        name: /palaa ilmoittautumiskaavakkeeseen/i,
       });
     case 'languageSelector':
       return screen.getAllByRole('button', {
@@ -74,14 +86,14 @@ const getElements = (
 test('should route to home page by clicking application name', async () => {
   const user = userEvent.setup();
 
-  mockRouter.setCurrentUrl('/registrations');
+  singletonRouter.push({ pathname: '/registrations' });
   renderComponent();
   expect(mockRouter.asPath).toBe('/registrations');
 
   const appName = getElements('appName')[0];
   await user.click(appName);
 
-  expect(mockRouter.asPath).toBe('/fi');
+  expect(mockRouter.asPath).toBe('/');
 });
 
 test('should show mobile menu', async () => {
@@ -134,12 +146,12 @@ test('should start logout process', async () => {
   const username = 'Username';
   const userData = fakeUser({ display_name: username });
 
-  const defaultMocks = [
+  const mocks = [
     rest.get(`*/user/${TEST_USER_ID}/`, (req, res, ctx) =>
       res(ctx.status(200), ctx.json(userData))
     ),
   ];
-  setQueryMocks(...defaultMocks);
+  setQueryMocks(...mocks);
 
   const session = fakeAuthenticatedSession();
   renderComponent(session);
@@ -155,4 +167,19 @@ test('should start logout process', async () => {
   await user.click(signOutLinks[0]);
 
   await waitFor(() => expect(nextAuth.signOut).toBeCalled());
+});
+
+test('should show back to enrolment form link', async () => {
+  const user = userEvent.setup();
+
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  const backToEnrolmentFormLinks = getElements('backToEnrolmentFormLink');
+  await user.click(backToEnrolmentFormLinks[0]);
+
+  expect(mockRouter.asPath).toBe('/registration/1/enrolment/create');
 });

@@ -1,5 +1,5 @@
-@import '../../styles/breakpoints.scss';
-@import '../../styles/widths.scss';
+@import '../../../styles/breakpoints.scss';
+@import '../../../styles/widths.scss';
 
 .formContainer {
   @include max-width-column(6);

@@ -1,11 +1,6 @@
 import isPast from 'date-fns/isPast';
 import { Field, FieldAttributes, Form, Formik } from 'formik';
-import {
-  Fieldset,
-  IconCross,
-  Notification,
-  SingleSelectProps,
-} from 'hds-react';
+import { IconCross, SingleSelectProps } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -14,6 +9,7 @@ import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Button from '../../../common/components/button/Button';
+import Fieldset from '../../../common/components/fieldset/Fieldset';
 import CheckboxField from '../../../common/components/formFields/CheckboxField';
 import CheckboxGroupField from '../../../common/components/formFields/CheckboxGroupField';
 import PhoneInputField from '../../../common/components/formFields/PhoneInputField';
@@ -31,30 +27,25 @@ import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
+import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   ENROLMENT_FIELDS,
   ENROLMENT_QUERY_PARAMS,
   NOTIFICATIONS,
 } from '../constants';
+import Divider from '../divider/Divider';
 import EnrolmentPageContext from '../enrolmentPageContext/EnrolmentPageContext';
 import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
-import {
-  useCreateEnrolmentMutation,
-  useDeleteEnrolmentMutation,
-} from '../mutation';
+import { useDeleteEnrolmentMutation } from '../mutation';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
-import { Enrolment, EnrolmentFormFields } from '../types';
-import {
-  clearCreateEnrolmentFormData,
-  clearEnrolmentReservationData,
-  getEnrolmentPayload,
-  getEnrolmentReservationData,
-} from '../utils';
+import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
+import { EnrolmentFormFields } from '../types';
+import { getEnrolmentReservationData } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
@@ -129,16 +120,12 @@ const EnrolmentForm: React.FC<Props> = ({
       ]),
     });
   };
-  const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
-    formSavingDisabled.current = true;
-    clearCreateEnrolmentFormData(registration.id);
-    clearEnrolmentReservationData(registration.id);
-
+  const goToEnrolmentSummaryPage = () => {
     goToPage(
-      `/${locale}${ROUTES.ENROLMENT_COMPLETED.replace(
+      `/${locale}${ROUTES.CREATE_ENROLMENT_SUMMARY.replace(
         '[registrationId]',
         registration.id
-      ).replace('[accessCode]', enrolment.cancellation_code as string)}`
+      )}`
     );
   };
 
@@ -150,23 +137,6 @@ const EnrolmentForm: React.FC<Props> = ({
       )}`
     );
   };
-
-  const createEnrolmentMutation = useCreateEnrolmentMutation({
-    onError: (error, variables) => {
-      showServerErrors({ error: JSON.parse(error.message) });
-      reportError({
-        data: {
-          error: JSON.parse(error.message),
-          payload: variables,
-          payloadAsString: JSON.stringify(variables),
-        },
-        message: 'Failed to create enrolment',
-      });
-    },
-    onSuccess: (data) => {
-      goToEnrolmentCompletedPage(data);
-    },
-  });
 
   const deleteEnrolmentMutation = useDeleteEnrolmentMutation({
     onError: (error, variables) => {
@@ -212,9 +182,8 @@ const EnrolmentForm: React.FC<Props> = ({
             clearErrors();
 
             await enrolmentSchema.validate(values, { abortEarly: false });
-            const payload = getEnrolmentPayload(values, registration);
 
-            createEnrolmentMutation.mutate(payload);
+            goToEnrolmentSummaryPage();
           } catch (error) {
             showErrors({
               error: error as ValidationError,
@@ -248,13 +217,16 @@ const EnrolmentForm: React.FC<Props> = ({
               <RegistrationWarning registration={registration} />
 
               {!readOnly && (
-                <>
-                  <div className={styles.divider} />
-                  <ReservationTimer registration={registration} />
-                </>
+                <ReservationTimerProvider
+                  initializeReservationData={true}
+                  registration={registration}
+                >
+                  <Divider />
+                  <ReservationTimer />
+                </ReservationTimerProvider>
               )}
 
-              <div className={styles.divider} />
+              <Divider />
               <h2>{t('titleRegistration')}</h2>
 
               <ParticipantAmountSelector
@@ -364,40 +336,31 @@ const EnrolmentForm: React.FC<Props> = ({
                   <FormGroup>
                     <Field
                       disabled={formDisabled}
-                      label={t(`labelAccepted`)}
+                      label={
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: t('labelAccepted', {
+                              openInNewTab: t('common:openInNewTab'),
+                              url: t('linkPrivacyPolicy'),
+                            }),
+                          }}
+                        />
+                      }
                       name={ENROLMENT_FIELDS.ACCEPTED}
                       component={CheckboxField}
                     />
                   </FormGroup>
 
-                  <Notification
-                    className={styles.notification}
-                    label={t('notificationTitle')}
-                  >
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: t('notificationLabel', {
-                          openInNewTab: t('common:openInNewTab'),
-                          url: t('linkPrivacyPolicy'),
-                        }),
-                      }}
-                    ></div>
-                  </Notification>
-                  <div className={styles.buttonWrapper}>
-                    <Button
-                      className={styles.button}
-                      disabled={formDisabled}
-                      onClick={handleSubmit}
-                    >
-                      {t('buttonSend')}
+                  <ButtonWrapper>
+                    <Button disabled={formDisabled} onClick={handleSubmit}>
+                      {t('buttonGoToSummary')}
                     </Button>
-                  </div>
+                  </ButtonWrapper>
                 </>
               )}
               {readOnly && (
-                <div className={styles.buttonWrapper}>
+                <ButtonWrapper>
                   <Button
-                    className={styles.button}
                     disabled={formDisabled}
                     iconLeft={<IconCross aria-hidden={true} />}
                     onClick={() => setOpenModal(ENROLMENT_MODALS.CANCEL)}
@@ -405,7 +368,7 @@ const EnrolmentForm: React.FC<Props> = ({
                   >
                     {t('buttonCancel')}
                   </Button>
-                </div>
+                </ButtonWrapper>
               )}
             </Form>
           </>

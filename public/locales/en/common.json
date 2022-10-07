@@ -16,6 +16,7 @@
   "loading": "Loading...",
   "loadingFinished": "Loading finished",
   "navigation": {
+    "backToEnrolmentForm": "Back to the registration form",
     "languages": {
       "en": "In English",
       "fi": "Suomeksi",

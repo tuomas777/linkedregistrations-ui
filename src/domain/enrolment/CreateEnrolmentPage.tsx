@@ -12,11 +12,11 @@ import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
 import CreateEnrolmentPageMeta from './createEnrolmentPageMeta/CreateEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
-import styles from './enrolmentPage.module.scss';
 import EnrolmentPageContext, {
   useEnrolmentPageContextValue,
 } from './enrolmentPageContext/EnrolmentPageContext';
 import EventInfo from './eventInfo/EventInfo';
+import FormContainer from './formContainer/FormContainer';
 import { getEnrolmentDefaultInitialValues } from './utils';
 
 type Props = {
@@ -31,14 +31,14 @@ const CreateEnrolmentPage: React.FC<Props> = ({ event, registration }) => {
     <MainContent>
       <CreateEnrolmentPageMeta event={event} />
       <Container withOffset>
-        <div className={styles.formContainer}>
+        <FormContainer>
           <EventInfo event={event} registration={registration} />
 
           <EnrolmentForm
             initialValues={initialValues}
             registration={registration}
           />
-        </div>
+        </FormContainer>
       </Container>
     </MainContent>
   );
