@@ -6,17 +6,16 @@ import {
   render,
   screen,
   setQueryMocks,
-} from '../../../../utils/testUtils';
+} from '../../../../../utils/testUtils';
 import {
   event,
   eventOverrides,
   locationText,
-} from '../../../event/__mocks__/event';
-import { keywordsOverrides } from '../../../keyword/__mocks__/keyword';
-import { place } from '../../../place/__mocks__/place';
-import { TEST_PLACE_ID } from '../../../place/constants';
-import { registration } from '../../../registration/__mocks__/registration';
-import EventInfo from '../EventInfo';
+} from '../../../../event/__mocks__/event';
+import { place } from '../../../../place/__mocks__/place';
+import { TEST_PLACE_ID } from '../../../../place/constants';
+import { registration } from '../../../../registration/__mocks__/registration';
+import SummaryEventInfo from '../SummaryEventInfo';
 
 configure({ defaultHidden: true });
 
@@ -27,14 +26,12 @@ const findElement = (key: 'location') => {
   }
 };
 
-const getElement = (key: 'age' | 'date' | 'description' | 'name' | 'price') => {
+const getElement = (key: 'age' | 'date' | 'name' | 'price') => {
   switch (key) {
     case 'age':
       return screen.getByText('8 – 18 v');
     case 'date':
       return screen.getByText('10.07.2020 – 13.07.2020');
-    case 'description':
-      return screen.getByText(eventOverrides.description.fi as string);
     case 'name':
       return screen.getByText(eventOverrides.name.fi as string);
     case 'price':
@@ -51,21 +48,17 @@ beforeEach(() => {
 });
 
 test('should show event info', async () => {
-  render(<EventInfo event={event} registration={registration} />);
+  render(<SummaryEventInfo event={event} registration={registration} />);
 
   await findElement('location');
   getElement('name');
-  keywordsOverrides.forEach((item) =>
-    screen.getByText(item.name?.fi as string)
-  );
-  getElement('description');
   getElement('price');
   getElement('age');
 });
 
 test('should show event time correctly if only start time is defined', async () => {
   render(
-    <EventInfo
+    <SummaryEventInfo
       event={{ ...event, end_time: null }}
       registration={registration}
     />
@@ -76,7 +69,7 @@ test('should show event time correctly if only start time is defined', async () 
 
 test('should show event time correctly if only end time is defined', async () => {
   render(
-    <EventInfo
+    <SummaryEventInfo
       event={{ ...event, start_time: null }}
       registration={registration}
     />

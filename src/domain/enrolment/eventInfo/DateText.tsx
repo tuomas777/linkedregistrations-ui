@@ -4,7 +4,7 @@ import getDateRangeStr from '../../../utils/getDateRangeStr';
 
 export interface DateTextProps {
   endTime: Date | null;
-  startTime: Date;
+  startTime: Date | null;
 }
 
 const DateText: React.FC<DateTextProps> = ({ endTime, startTime }) => {

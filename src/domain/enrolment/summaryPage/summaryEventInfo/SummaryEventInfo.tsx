@@ -5,6 +5,8 @@ import useLocale from '../../../../hooks/useLocale';
 import useEventLocationText from '../../../event/hooks/useEventLocationText';
 import { Event } from '../../../event/types';
 import { getEventFields } from '../../../event/utils';
+import { Registration } from '../../../registration/types';
+import { getRegistrationFields } from '../../../registration/utils';
 import AudienceAgeText from '../../eventInfo/AudienceAgeText';
 import DateText from '../../eventInfo/DateText';
 import PriceText from '../../eventInfo/PriceText';
@@ -12,19 +14,17 @@ import styles from './summaryEventInfo.module.scss';
 
 type EventInfoProps = {
   event: Event;
+  registration: Registration;
 };
 
-const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
+const EventInfo: React.FC<EventInfoProps> = ({ event, registration }) => {
   const locale = useLocale();
-  const {
-    audienceMaxAge,
-    audienceMinAge,
-    endTime,
-    freeEvent,
-    name,
-    offers,
-    startTime,
-  } = getEventFields(event, locale);
+  const { endTime, freeEvent, name, offers, startTime } = getEventFields(
+    event,
+    locale
+  );
+  const { audienceMaxAge, audienceMinAge } =
+    getRegistrationFields(registration);
 
   const locationText = useEventLocationText(event);
 
@@ -34,7 +34,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ event }) => {
         <h1>{name}</h1>
       </div>
       <div className={styles.dateRow}>
-        {startTime && (
+        {(endTime || startTime) && (
           <TextWithIcon
             text={<DateText endTime={endTime} startTime={startTime} />}
           />

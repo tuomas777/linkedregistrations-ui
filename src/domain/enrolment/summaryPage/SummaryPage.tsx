@@ -122,7 +122,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
           >
             {t('notificationLabel')}
           </Notification>
-          <SummaryEventInfo event={event} />
+          <SummaryEventInfo event={event} registration={registration} />
 
           <Formik
             initialValues={initialValues}
@@ -154,10 +154,8 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                   <Divider />
 
                   <ReservationTimer
-                    initializeReservationData={false}
                     onDataNotFound={goToCreateEnrolmentPage}
                     onExpired={goToCreateEnrolmentPage}
-                    registration={registration}
                   />
                   <Divider />
                   <Attendees />
@@ -208,7 +206,10 @@ const SummaryPageWrapper: React.FC = () => {
       }
     >
       {event && registration ? (
-        <ReservationTimerProvider>
+        <ReservationTimerProvider
+          initializeReservationData={false}
+          registration={registration}
+        >
           <SummaryPage event={event} registration={registration} />
         </ReservationTimerProvider>
       ) : (

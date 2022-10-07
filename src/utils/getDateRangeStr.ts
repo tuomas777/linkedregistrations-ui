@@ -19,17 +19,27 @@ const getDateRangeStr = ({
   language,
   start,
 }: {
-  end?: Date | null;
+  end: Date | null;
   language: Language;
-  start: Date;
+  start: Date | null;
 }): string => {
   const timeZone = 'Europe/Helsinki';
-  const startDate = utcToZonedTime(start, timeZone);
-  const nextDay = utcToZonedTime(addDays(startDate, 1), timeZone);
-  nextDay.setHours(5, 0, 0, 0);
-
   const dateFormat = 'd.M.yyyy';
   const timeFormat = getTimeFormat(language);
+
+  if (!end && !start) return '';
+
+  if (end && !start) {
+    const endDate = utcToZonedTime(end, timeZone);
+    const dateStr = formatDate(endDate, dateFormat, language);
+    const timeStr = formatDate(endDate, timeFormat, language);
+
+    return `– ${[dateStr, timeStr].join(', ')}`;
+  }
+
+  const startDate = utcToZonedTime(start as Date, timeZone);
+  const nextDay = utcToZonedTime(addDays(startDate, 1), timeZone);
+  nextDay.setHours(5, 0, 0, 0);
 
   if (!end) {
     const dateStr = formatDate(startDate, dateFormat, language);

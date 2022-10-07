@@ -213,167 +213,163 @@ const EnrolmentForm: React.FC<Props> = ({
                 savingDisabled={formSavingDisabled.current}
               />
 
-              <ReservationTimerProvider>
-                <ServerErrorSummary errors={serverErrorItems} />
-                <RegistrationWarning registration={registration} />
+              <ServerErrorSummary errors={serverErrorItems} />
+              <RegistrationWarning registration={registration} />
 
-                {!readOnly && (
-                  <>
-                    <Divider />
-                    <ReservationTimer
-                      initializeReservationData={true}
-                      registration={registration}
-                    />
-                  </>
-                )}
-
-                <Divider />
-                <h2>{t('titleRegistration')}</h2>
-
-                <ParticipantAmountSelector
-                  disabled={formDisabled || !!readOnly}
+              {!readOnly && (
+                <ReservationTimerProvider
+                  initializeReservationData={true}
                   registration={registration}
-                />
+                >
+                  <Divider />
+                  <ReservationTimer />
+                </ReservationTimerProvider>
+              )}
 
-                <Attendees
-                  formDisabled={formDisabled}
-                  readOnly={readOnly}
-                  registration={registration}
-                />
+              <Divider />
+              <h2>{t('titleRegistration')}</h2>
 
-                <Fieldset heading={t(`titleContactInfo`)}>
-                  <FormGroup>
-                    <div className={styles.emailRow}>
-                      <Field
-                        name={ENROLMENT_FIELDS.EMAIL}
-                        component={TextInputField}
-                        disabled={formDisabled}
-                        label={t(`labelEmail`)}
-                        placeholder={readOnly ? '' : t(`placeholderEmail`)}
-                        readOnly={readOnly}
-                        required={values.notifications.includes(
-                          NOTIFICATIONS.EMAIL
-                        )}
-                      />
-                      <Field
-                        name={ENROLMENT_FIELDS.PHONE_NUMBER}
-                        component={PhoneInputField}
-                        disabled={formDisabled}
-                        label={t(`labelPhoneNumber`)}
-                        placeholder={
-                          readOnly ? '' : t(`placeholderPhoneNumber`)
-                        }
-                        readOnly={readOnly}
-                        required={values.notifications.includes(
-                          NOTIFICATIONS.SMS
-                        )}
-                        type="tel"
-                      />
-                    </div>
-                  </FormGroup>
-                </Fieldset>
+              <ParticipantAmountSelector
+                disabled={formDisabled || !!readOnly}
+                registration={registration}
+              />
 
-                <Fieldset heading={t(`titleNotifications`)}>
-                  <FormGroup>
+              <Attendees
+                formDisabled={formDisabled}
+                readOnly={readOnly}
+                registration={registration}
+              />
+
+              <Fieldset heading={t(`titleContactInfo`)}>
+                <FormGroup>
+                  <div className={styles.emailRow}>
                     <Field
-                      name={ENROLMENT_FIELDS.NOTIFICATIONS}
-                      className={styles.notifications}
-                      component={CheckboxGroupField}
-                      disabled={formDisabled || readOnly}
-                      options={notificationOptions}
-                    />
-                  </FormGroup>
-                </Fieldset>
-
-                <Fieldset heading={t(`titleAdditionalInfo`)}>
-                  <FormGroup>
-                    <div className={styles.membershipNumberRow}>
-                      <Field
-                        name={ENROLMENT_FIELDS.MEMBERSHIP_NUMBER}
-                        component={TextInputField}
-                        disabled={formDisabled}
-                        label={t(`labelMembershipNumber`)}
-                        placeholder={
-                          readOnly ? '' : t(`placeholderMembershipNumber`)
-                        }
-                        readOnly={readOnly}
-                      />
-                    </div>
-                  </FormGroup>
-                  <FormGroup>
-                    <div className={styles.nativeLanguageRow}>
-                      <LanguageField
-                        name={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
-                        disabled={formDisabled || readOnly}
-                        label={t(`labelNativeLanguage`)}
-                        placeholder={
-                          readOnly ? '' : t(`placeholderNativeLanguage`)
-                        }
-                        readOnly={readOnly}
-                        required
-                      />
-                      <LanguageField
-                        name={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
-                        disabled={formDisabled || readOnly}
-                        label={t(`labelServiceLanguage`)}
-                        placeholder={
-                          readOnly ? '' : t(`placeholderServiceLanguage`)
-                        }
-                        required
-                      />
-                    </div>
-                  </FormGroup>
-                  <FormGroup>
-                    <Field
-                      name={ENROLMENT_FIELDS.EXTRA_INFO}
-                      component={TextAreaField}
+                      name={ENROLMENT_FIELDS.EMAIL}
+                      component={TextInputField}
                       disabled={formDisabled}
-                      label={t(`labelExtraInfo`)}
-                      placeholder={readOnly ? '' : t(`placeholderExtraInfo`)}
+                      label={t(`labelEmail`)}
+                      placeholder={readOnly ? '' : t(`placeholderEmail`)}
+                      readOnly={readOnly}
+                      required={values.notifications.includes(
+                        NOTIFICATIONS.EMAIL
+                      )}
+                    />
+                    <Field
+                      name={ENROLMENT_FIELDS.PHONE_NUMBER}
+                      component={PhoneInputField}
+                      disabled={formDisabled}
+                      label={t(`labelPhoneNumber`)}
+                      placeholder={readOnly ? '' : t(`placeholderPhoneNumber`)}
+                      readOnly={readOnly}
+                      required={values.notifications.includes(
+                        NOTIFICATIONS.SMS
+                      )}
+                      type="tel"
+                    />
+                  </div>
+                </FormGroup>
+              </Fieldset>
+
+              <Fieldset heading={t(`titleNotifications`)}>
+                <FormGroup>
+                  <Field
+                    name={ENROLMENT_FIELDS.NOTIFICATIONS}
+                    className={styles.notifications}
+                    component={CheckboxGroupField}
+                    disabled={formDisabled || readOnly}
+                    options={notificationOptions}
+                  />
+                </FormGroup>
+              </Fieldset>
+
+              <Fieldset heading={t(`titleAdditionalInfo`)}>
+                <FormGroup>
+                  <div className={styles.membershipNumberRow}>
+                    <Field
+                      name={ENROLMENT_FIELDS.MEMBERSHIP_NUMBER}
+                      component={TextInputField}
+                      disabled={formDisabled}
+                      label={t(`labelMembershipNumber`)}
+                      placeholder={
+                        readOnly ? '' : t(`placeholderMembershipNumber`)
+                      }
                       readOnly={readOnly}
                     />
-                  </FormGroup>
-                </Fieldset>
-                {!readOnly && (
-                  <>
-                    <FormGroup>
-                      <Field
-                        disabled={formDisabled}
-                        label={
-                          <span
-                            dangerouslySetInnerHTML={{
-                              __html: t('labelAccepted', {
-                                openInNewTab: t('common:openInNewTab'),
-                                url: t('linkPrivacyPolicy'),
-                              }),
-                            }}
-                          />
-                        }
-                        name={ENROLMENT_FIELDS.ACCEPTED}
-                        component={CheckboxField}
-                      />
-                    </FormGroup>
-
-                    <ButtonWrapper>
-                      <Button disabled={formDisabled} onClick={handleSubmit}>
-                        {t('buttonGoToSummary')}
-                      </Button>
-                    </ButtonWrapper>
-                  </>
-                )}
-                {readOnly && (
-                  <ButtonWrapper>
-                    <Button
+                  </div>
+                </FormGroup>
+                <FormGroup>
+                  <div className={styles.nativeLanguageRow}>
+                    <LanguageField
+                      name={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
+                      disabled={formDisabled || readOnly}
+                      label={t(`labelNativeLanguage`)}
+                      placeholder={
+                        readOnly ? '' : t(`placeholderNativeLanguage`)
+                      }
+                      readOnly={readOnly}
+                      required
+                    />
+                    <LanguageField
+                      name={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
+                      disabled={formDisabled || readOnly}
+                      label={t(`labelServiceLanguage`)}
+                      placeholder={
+                        readOnly ? '' : t(`placeholderServiceLanguage`)
+                      }
+                      required
+                    />
+                  </div>
+                </FormGroup>
+                <FormGroup>
+                  <Field
+                    name={ENROLMENT_FIELDS.EXTRA_INFO}
+                    component={TextAreaField}
+                    disabled={formDisabled}
+                    label={t(`labelExtraInfo`)}
+                    placeholder={readOnly ? '' : t(`placeholderExtraInfo`)}
+                    readOnly={readOnly}
+                  />
+                </FormGroup>
+              </Fieldset>
+              {!readOnly && (
+                <>
+                  <FormGroup>
+                    <Field
                       disabled={formDisabled}
-                      iconLeft={<IconCross aria-hidden={true} />}
-                      onClick={() => setOpenModal(ENROLMENT_MODALS.CANCEL)}
-                      variant={'danger'}
-                    >
-                      {t('buttonCancel')}
+                      label={
+                        <span
+                          dangerouslySetInnerHTML={{
+                            __html: t('labelAccepted', {
+                              openInNewTab: t('common:openInNewTab'),
+                              url: t('linkPrivacyPolicy'),
+                            }),
+                          }}
+                        />
+                      }
+                      name={ENROLMENT_FIELDS.ACCEPTED}
+                      component={CheckboxField}
+                    />
+                  </FormGroup>
+
+                  <ButtonWrapper>
+                    <Button disabled={formDisabled} onClick={handleSubmit}>
+                      {t('buttonGoToSummary')}
                     </Button>
                   </ButtonWrapper>
-                )}
-              </ReservationTimerProvider>
+                </>
+              )}
+              {readOnly && (
+                <ButtonWrapper>
+                  <Button
+                    disabled={formDisabled}
+                    iconLeft={<IconCross aria-hidden={true} />}
+                    onClick={() => setOpenModal(ENROLMENT_MODALS.CANCEL)}
+                    variant={'danger'}
+                  >
+                    {t('buttonCancel')}
+                  </Button>
+                </ButtonWrapper>
+              )}
             </Form>
           </>
         );
