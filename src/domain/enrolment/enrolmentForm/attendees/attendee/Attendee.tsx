@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { FastField as Field } from 'formik';
 import { Fieldset, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
@@ -74,7 +75,11 @@ const Attendee: React.FC<Props> = ({
           />
         </FormGroup>
         <FormGroup>
-          <div className={styles.streetAddressRow}>
+          <div
+            className={classNames(styles.streetAddressRow, {
+              [styles.readOnly]: readOnly,
+            })}
+          >
             <Field
               name={getFieldName(attendeePath, ATTENDEE_FIELDS.STREET_ADDRESS)}
               component={TextInputField}
@@ -86,20 +91,30 @@ const Attendee: React.FC<Props> = ({
             />
             <Field
               name={getFieldName(attendeePath, ATTENDEE_FIELDS.DATE_OF_BIRTH)}
-              component={DateInputField}
               disabled={formDisabled}
               label={t(`labelDateOfBirth`)}
               language={locale}
-              maxDate={new Date()}
-              minDate={new Date(`${new Date().getFullYear() - 100}-01-01`)}
               placeholder={readOnly ? '' : t(`placeholderDateOfBirth`)}
               readOnly={readOnly}
               required
+              {...(readOnly
+                ? { component: TextInputField }
+                : {
+                    component: DateInputField,
+                    maxDate: new Date(),
+                    minDate: new Date(
+                      `${new Date().getFullYear() - 100}-01-01`
+                    ),
+                  })}
             />
           </div>
         </FormGroup>
         <FormGroup>
-          <div className={styles.zipRow}>
+          <div
+            className={classNames(styles.zipRow, {
+              [styles.readOnly]: readOnly,
+            })}
+          >
             <Field
               name={getFieldName(attendeePath, ATTENDEE_FIELDS.ZIP)}
               component={TextInputField}
