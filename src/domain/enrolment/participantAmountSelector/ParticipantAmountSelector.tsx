@@ -2,6 +2,7 @@ import { useField } from 'formik';
 import isEqual from 'lodash/isEqual';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import Button from '../../../common/components/button/Button';
 import NumberInput from '../../../common/components/numberInput/NumberInput';
@@ -10,13 +11,17 @@ import {
   getAttendeeCapacityError,
   getFreeAttendeeCapacity,
 } from '../../registration/utils';
+import { useUpdateReserveSeatsMutation } from '../../reserveSeats/mutation';
+import {
+  getSeatsReservationData,
+  setSeatsReservationData,
+} from '../../reserveSeats/utils';
 import { ENROLMENT_FIELDS } from '../constants';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
 import {
   getAttendeeDefaultInitialValues,
   getEnrolmentReservationData,
-  updateEnrolmentReservationData,
 } from '../utils';
 import styles from './participantAmountSelector.module.scss';
 
@@ -37,9 +42,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
   const [{ value: attendees }, , { setValue: setAttendees }] = useField<
     AttendeeFields[]
-  >({
-    name: ENROLMENT_FIELDS.ATTENDEES,
-  });
+  >({ name: ENROLMENT_FIELDS.ATTENDEES });
 
   const [participantAmount, setParticipantAmount] = useState(
     Math.max(getEnrolmentReservationData(registration.id)?.participants ?? 0, 1)
@@ -63,11 +66,23 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     [registration]
   );
 
-  const updateParticipantAmount = () => {
-    /* istanbul ignore next */
-    if (participantAmount !== attendees.length) {
-      setSaving(true);
+  const updateReserveSeatsMutation = useUpdateReserveSeatsMutation({
+    onError: (error, variables) => {
+      toast.error('Failed to update seats reservation');
 
+      reportError({
+        data: {
+          error: JSON.parse(error.message),
+          payload: variables,
+          payloadAsString: JSON.stringify(variables),
+        },
+        message: 'Failed to update reserve seats',
+      });
+
+      setSaving(false);
+      closeModal();
+    },
+    onSuccess: (data) => {
       const filledAttendees = attendees.filter(
         (a) => !isEqual(a, attendeeInitialValues)
       );
@@ -80,10 +95,26 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
       setAttendees(newAttendees);
       // TODO: Update reservation from API when BE is ready
-      updateEnrolmentReservationData(registration, newAttendees.length);
+      setSeatsReservationData(registration.id, data);
 
       setSaving(false);
       closeModal();
+    },
+  });
+
+  const updateParticipantAmount = () => {
+    /* istanbul ignore next */
+    if (participantAmount !== attendees.length) {
+      setSaving(true);
+
+      const data = getSeatsReservationData(registration.id);
+
+      updateReserveSeatsMutation.mutate({
+        code: data?.code as string,
+        registration: registration.id,
+        seats: participantAmount,
+        waitlist: false,
+      });
     }
   };
 

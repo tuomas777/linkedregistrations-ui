@@ -1,4 +1,3 @@
-import addMinutes from 'date-fns/addMinutes';
 import isPast from 'date-fns/isPast';
 import React, {
   FC,
@@ -8,14 +7,13 @@ import React, {
   useState,
 } from 'react';
 
-import getUnixTime from '../../../utils/getUnixTime';
 import { Registration } from '../../registration/types';
-import { ENROLMENT_TIME_IN_MINUTES } from '../constants';
+import { useReserveSeatsMutation } from '../../reserveSeats/mutation';
 import {
-  getEnrolmentReservationData,
   getRegistrationTimeLeft,
-  setEnrolmentReservationData,
-} from '../utils';
+  getSeatsReservationData,
+  setSeatsReservationData,
+} from '../../reserveSeats/utils';
 
 export type ReservationTimerContextProps = {
   callbacksDisabled: boolean;
@@ -41,22 +39,34 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   const callbacksDisabled = useRef(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
+  const reserveSeatsMutation = useReserveSeatsMutation({
+    onError: (error, variables) => {
+      reportError({
+        data: {
+          error: JSON.parse(error.message),
+          payload: variables,
+          payloadAsString: JSON.stringify(variables),
+        },
+        message: 'Failed to reserve seats',
+      });
+    },
+    onSuccess: (data) => {
+      setSeatsReservationData(registration.id, data);
+    },
+  });
+
   const disableCallbacks = useCallback(() => {
     callbacksDisabled.current = true;
   }, []);
 
   React.useEffect(() => {
-    const data = getEnrolmentReservationData(registration.id);
+    const data = getSeatsReservationData(registration.id);
 
     if (initializeReservationData && (!data || isPast(data.expires * 1000))) {
-      // TODO: Get this data from the API when BE part is implemented
-      const now = new Date();
-
-      setEnrolmentReservationData(registration.id, {
-        expires: getUnixTime(addMinutes(now, ENROLMENT_TIME_IN_MINUTES)),
-        participants: 1,
-        session: '',
-        started: getUnixTime(now),
+      reserveSeatsMutation.mutate({
+        registration: registration.id,
+        seats: 1,
+        waitlist: true,
       });
     }
 

@@ -256,9 +256,3 @@ export const updateEnrolmentReservationData = (
     });
   }
 };
-
-export const getRegistrationTimeLeft = (registration: Registration) => {
-  const now = new Date();
-  const reservationData = getEnrolmentReservationData(registration.id);
-  return reservationData ? reservationData.expires - getUnixTime(now) : 0;
-};

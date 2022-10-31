@@ -11,7 +11,6 @@ import {
   getEnrolmentNotificationsCode,
   getEnrolmentNotificationTypes,
   getEnrolmentPayload,
-  getRegistrationTimeLeft,
 } from '../utils';
 
 describe('getEnrolmentNotificationsCode function', () => {
@@ -301,11 +300,5 @@ describe('getEnrolmentNotificationTypes function', () => {
       NOTIFICATIONS.SMS,
     ]);
     expect(getEnrolmentNotificationTypes('lorem ipsum')).toEqual([]);
-  });
-});
-
-describe('getRegistrationTimeLeft function', () => {
-  it('should return 0 if data is not stored to session storage', () => {
-    expect(getRegistrationTimeLeft(registration)).toEqual(0);
   });
 });
