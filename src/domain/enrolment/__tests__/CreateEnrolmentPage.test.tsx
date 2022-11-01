@@ -5,9 +5,10 @@ import { rest } from 'msw';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 import formatDate from '../../../utils/formatDate';
-import { fakeEnrolment } from '../../../utils/mockDataUtils';
+import { fakeSeatsReservation } from '../../../utils/mockDataUtils';
 import {
   configure,
   loadingSpinnerIsNotInDocument,
@@ -42,7 +43,8 @@ const enrolmentValues = {
   zip: '00100',
 };
 
-const enrolment = fakeEnrolment();
+let seats = 1;
+const seatsReservation = fakeSeatsReservation();
 
 const findElement = (key: 'nameInput') => {
   switch (key) {
@@ -109,6 +111,13 @@ const getElement = (
 
 const renderComponent = () => render(<CreateEnrolmentPage />);
 
+beforeEach(() => {
+  seats = 1;
+  // values stored in tests will also be available in other tests unless you run
+  localStorage.clear();
+  sessionStorage.clear();
+});
+
 const defaultMocks = [
   rest.get(`*/event/${TEST_EVENT_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(event))
@@ -139,7 +148,12 @@ test.skip('page is accessible', async () => {
 test('should validate enrolment form and focus invalid field', async () => {
   const user = userEvent.setup();
 
-  setQueryMocks(...defaultMocks);
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
   singletonRouter.push({
     pathname: ROUTES.CREATE_ENROLMENT,
     query: { registrationId: TEST_REGISTRATION_ID },
@@ -266,8 +280,8 @@ test('should add and delete participants', async () => {
 
   setQueryMocks(
     ...defaultMocks,
-    rest.post(`*/signup/`, (req, res, ctx) =>
-      res(ctx.status(201), ctx.json(enrolment))
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
     )
   );
   singletonRouter.push({
@@ -289,12 +303,14 @@ test('should add and delete participants', async () => {
 
   await user.clear(participantAmountInput);
   await user.type(participantAmountInput, '2');
+  seats = 2;
   await user.click(updateParticipantAmountButton);
 
-  screen.getByRole('button', { name: 'Osallistuja 2' });
+  await screen.findByRole('button', { name: 'Osallistuja 2' });
 
   await user.clear(participantAmountInput);
   await user.type(participantAmountInput, '1');
+  seats = 1;
   await user.click(updateParticipantAmountButton);
 
   const dialog = screen.getByRole('dialog', {
@@ -305,9 +321,50 @@ test('should add and delete participants', async () => {
   });
   await user.click(deleteParticipantButton);
 
+  await waitFor(() =>
+    expect(
+      screen.queryByRole('button', { name: 'Osallistuja 2' })
+    ).not.toBeInTheDocument()
+  );
+});
+
+test('should show toast message when updating seats reservation fails', async () => {
+  toast.error = jest.fn();
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      seats === 2
+        ? res(ctx.status(400), ctx.json({}))
+        : res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
   expect(
     screen.queryByRole('button', { name: 'Osallistuja 2' })
   ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '2');
+  seats = 2;
+  await user.click(updateParticipantAmountButton);
+
+  await waitFor(() =>
+    expect(toast.error).toBeCalledWith('Failed to update seats reservation')
+  );
 });
 
 test('should show and hide participant specific fields', async () => {
@@ -315,8 +372,8 @@ test('should show and hide participant specific fields', async () => {
 
   setQueryMocks(
     ...defaultMocks,
-    rest.post(`*/signup/`, (req, res, ctx) =>
-      res(ctx.status(201), ctx.json(enrolment))
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
     )
   );
   singletonRouter.push({
@@ -342,8 +399,8 @@ test('should delete participants by clicking delete participant button', async (
 
   setQueryMocks(
     ...defaultMocks,
-    rest.post(`*/signup/`, (req, res, ctx) =>
-      res(ctx.status(201), ctx.json(enrolment))
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
     )
   );
   singletonRouter.push({
@@ -365,9 +422,10 @@ test('should delete participants by clicking delete participant button', async (
 
   await user.clear(participantAmountInput);
   await user.type(participantAmountInput, '2');
+  seats = 2;
   await user.click(updateParticipantAmountButton);
 
-  screen.getByRole('button', { name: 'Osallistuja 2' });
+  await screen.findByRole('button', { name: 'Osallistuja 2' });
 
   const deleteButton = screen.getAllByRole('button', {
     name: /poista osallistuja/i,
@@ -380,9 +438,67 @@ test('should delete participants by clicking delete participant button', async (
   const deleteParticipantButton = within(dialog).getByRole('button', {
     name: 'Poista osallistuja',
   });
+  seats = 1;
   await user.click(deleteParticipantButton);
 
+  await waitFor(() =>
+    expect(
+      screen.queryByRole('button', { name: 'Osallistuja 2' })
+    ).not.toBeInTheDocument()
+  );
+});
+
+test('should show toast message when updating seats reservation fails', async () => {
+  toast.error = jest.fn();
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      seats === 2
+        ? res(ctx.status(400), ctx.json({}))
+        : res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
   expect(
-    screen.queryByRole('button', { name: 'Osallistuja 2' })
+    screen.queryByRole('button', { name: 'Osallistuja 3' })
   ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '3');
+  seats = 3;
+  await user.click(updateParticipantAmountButton);
+
+  await screen.findByRole('button', { name: 'Osallistuja 3' });
+
+  const deleteButton = screen.getAllByRole('button', {
+    name: /poista osallistuja/i,
+  })[1];
+  await user.click(deleteButton);
+
+  const dialog = screen.getByRole('dialog', {
+    name: 'Vahvista osallistujan poistaminen',
+  });
+  const deleteParticipantButton = within(dialog).getByRole('button', {
+    name: 'Poista osallistuja',
+  });
+  seats = 2;
+  await user.click(deleteParticipantButton);
+
+  await waitFor(() =>
+    expect(toast.error).toBeCalledWith('Failed to update seats reservation')
+  );
 });
