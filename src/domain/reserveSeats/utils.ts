@@ -78,21 +78,6 @@ export const setSeatsReservationData = (
   );
 };
 
-export const updateSeatsReservationData = (
-  registration: Registration,
-  seats: number
-) => {
-  const data = getSeatsReservationData(registration.id);
-  // TODO: Get this data from the API when BE part is implemented
-  /* istanbul ignore else */
-  if (data && !isPast(data.expires * 1000)) {
-    setSeatsReservationData(registration.id, {
-      ...data,
-      seats,
-    });
-  }
-};
-
 // TODO: Remove this when API returns also expiration time
 export const getSeatsReservationExpirationTime = (
   seatsReservation: SeatsReservation
@@ -105,6 +90,10 @@ export const getSeatsReservationExpirationTime = (
           ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES
     )
   );
+};
+
+export const isSeatsReservationExpired = (data: SeatsReservationExtended) => {
+  return isPast(data.expires * 1000);
 };
 
 export const getRegistrationTimeLeft = (registration: Registration) => {

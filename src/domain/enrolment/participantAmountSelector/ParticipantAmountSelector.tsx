@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 import Button from '../../../common/components/button/Button';
 import NumberInput from '../../../common/components/numberInput/NumberInput';
+import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import {
   getAttendeeCapacityError,
@@ -19,10 +20,7 @@ import {
 import { ENROLMENT_FIELDS } from '../constants';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
-import {
-  getAttendeeDefaultInitialValues,
-  getEnrolmentReservationData,
-} from '../utils';
+import { getAttendeeDefaultInitialValues } from '../utils';
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {
@@ -45,7 +43,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   >({ name: ENROLMENT_FIELDS.ATTENDEES });
 
   const [participantAmount, setParticipantAmount] = useState(
-    Math.max(getEnrolmentReservationData(registration.id)?.participants ?? 0, 1)
+    Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)
   );
   const freeCapacity = getFreeAttendeeCapacity(registration);
 
@@ -83,15 +81,16 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       closeModal();
     },
     onSuccess: (data) => {
+      const seats = data.seats;
       const filledAttendees = attendees.filter(
         (a) => !isEqual(a, attendeeInitialValues)
       );
       const newAttendees = [
         ...filledAttendees,
-        ...Array(Math.max(participantAmount - filledAttendees.length, 0)).fill(
+        ...Array(Math.max(seats - filledAttendees.length, 0)).fill(
           attendeeInitialValues
         ),
-      ].slice(0, participantAmount);
+      ].slice(0, seats);
 
       setAttendees(newAttendees);
       // TODO: Update reservation from API when BE is ready

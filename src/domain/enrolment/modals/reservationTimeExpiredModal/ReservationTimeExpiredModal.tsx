@@ -42,7 +42,7 @@ const ReservationTimeExpiredModal: React.FC<
       />
       <Dialog.Content>
         <p id={descriptionId}>
-          {t('reservation:reservationTimeExpiredModal.text1')}
+          {t('reservation:reservationTimeExpiredModal.text')}
         </p>
       </Dialog.Content>
       <Dialog.ActionButtons>

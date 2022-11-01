@@ -1,4 +1,3 @@
-import isPast from 'date-fns/isPast';
 import { Field, FieldAttributes, Form, Formik } from 'formik';
 import { IconCross, SingleSelectProps } from 'hds-react';
 import pick from 'lodash/pick';
@@ -27,6 +26,10 @@ import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
+import {
+  getSeatsReservationData,
+  isSeatsReservationExpired,
+} from '../../reserveSeats/utils';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   ENROLMENT_FIELDS,
@@ -45,7 +48,6 @@ import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
 import { EnrolmentFormFields } from '../types';
-import { getEnrolmentReservationData } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
@@ -163,8 +165,8 @@ const EnrolmentForm: React.FC<Props> = ({
   };
 
   const isRestoringDisabled = () => {
-    const data = getEnrolmentReservationData(registration.id);
-    return !readOnly && (!data || isPast(data.expires * 1000));
+    const data = getSeatsReservationData(registration.id);
+    return !readOnly && (!data || isSeatsReservationExpired(data));
   };
 
   return (

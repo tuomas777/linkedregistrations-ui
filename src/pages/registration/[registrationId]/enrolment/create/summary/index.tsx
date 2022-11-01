@@ -53,6 +53,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       ...(await serverSideTranslations(locale as string, [
         'common',
         'enrolment',
+        'reservation',
         'summary',
       ])),
       dehydratedState: dehydrate(queryClient),

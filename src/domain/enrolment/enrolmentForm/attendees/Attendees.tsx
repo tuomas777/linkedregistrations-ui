@@ -1,6 +1,7 @@
 import { FieldArray, useField } from 'formik';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { reportError } from '../../../app/sentry/utils';
 
 import { Registration } from '../../../registration/types';
 import { useUpdateReserveSeatsMutation } from '../../../reserveSeats/mutation';

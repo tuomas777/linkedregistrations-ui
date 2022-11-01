@@ -13,6 +13,7 @@ import { FORM_NAMES } from '../../../constants';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
+import { reportError } from '../../app/sentry/utils';
 import { EVENT_INCLUDES } from '../../event/constants';
 import { useEventQuery } from '../../event/query';
 import { Event } from '../../event/types';
@@ -48,15 +49,15 @@ type SummaryPageProps = {
 };
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
-  const { disableCallbacks: disabledReservationTimerCallbacks } =
+  const { disableCallbacks: disableReservationTimerCallbacks } =
     useReservationTimer();
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
-    // Disabled reservation timer callbacks
+    // Disable reservation timer callbacks
     // so user is not redirected to create enrolment page
-    disabledReservationTimerCallbacks();
+    disableReservationTimerCallbacks();
 
     clearCreateEnrolmentFormData(registration.id);
     clearEnrolmentReservationData(registration.id);
@@ -153,10 +154,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
                   <Divider />
 
-                  <ReservationTimer
-                    onDataNotFound={goToCreateEnrolmentPage}
-                    onExpired={goToCreateEnrolmentPage}
-                  />
+                  <ReservationTimer onDataNotFound={goToCreateEnrolmentPage} />
                   <Divider />
                   <Attendees />
                   <InformantInfo values={values} />
