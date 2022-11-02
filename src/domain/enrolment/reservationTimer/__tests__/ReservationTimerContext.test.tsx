@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+import addSeconds from 'date-fns/addSeconds';
+import subSeconds from 'date-fns/subSeconds';
 import { rest } from 'msw';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
@@ -6,7 +8,6 @@ import React from 'react';
 import { toast } from 'react-toastify';
 
 import { RESERVATION_NAMES } from '../../../../constants';
-import getUnixTime from '../../../../utils/getUnixTime';
 import { fakeSeatsReservation } from '../../../../utils/mockDataUtils';
 import {
   render,
@@ -19,7 +20,7 @@ import {
 import { ROUTES } from '../../../app/routes/constants';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
-import { SeatsReservationExtended } from '../../../reserveSeats/types';
+import { SeatsReservation } from '../../../reserveSeats/types';
 import { ReservationTimerProvider } from '../ReservationTimerContext';
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
@@ -38,7 +39,7 @@ beforeEach(() => {
   sessionStorage.clear();
 });
 
-const setSessionStorageValues = (reservation: SeatsReservationExtended) => {
+const setSessionStorageValues = (reservation: SeatsReservation) => {
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
     switch (key) {
       case `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registration.id}`:
@@ -49,14 +50,17 @@ const setSessionStorageValues = (reservation: SeatsReservationExtended) => {
   });
 };
 
-const getReservationData = (expiresOffset: number) => {
+const getReservationData = (expirationOffset: number) => {
   const now = new Date();
-  const started = getUnixTime(now);
+  let expiration = '';
 
-  const reservation: SeatsReservationExtended = {
-    ...fakeSeatsReservation(),
-    expires: started + expiresOffset,
-  };
+  if (expirationOffset) {
+    expiration = addSeconds(now, expirationOffset).toISOString();
+  } else {
+    expiration = subSeconds(now, expirationOffset).toISOString();
+  }
+
+  const reservation = fakeSeatsReservation({ expiration });
 
   return reservation;
 };

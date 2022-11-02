@@ -1,19 +1,13 @@
 import { AxiosError } from 'axios';
-import addMinutes from 'date-fns/addMinutes';
 import isPast from 'date-fns/isPast';
 
 import { RESERVATION_NAMES } from '../../constants';
 import getUnixTime from '../../utils/getUnixTime';
 import { callPost } from '../app/axios/axiosClient';
-import {
-  ENROLMENT_TIME_IN_MINUTES,
-  ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES,
-} from '../enrolment/constants';
 import { Registration } from '../registration/types';
 import {
   ReserveSeatsInput,
   SeatsReservation,
-  SeatsReservationExtended,
   UpdateReserveSeatsInput,
 } from './types';
 
@@ -52,7 +46,7 @@ export const updateReserveSeats = async ({
 
 export const getSeatsReservationData = (
   registrationId: string
-): SeatsReservationExtended | null => {
+): SeatsReservation | null => {
   /* istanbul ignore next */
   if (typeof sessionStorage === 'undefined') return null;
 
@@ -67,38 +61,18 @@ export const setSeatsReservationData = (
   registrationId: string,
   seatsReservation: SeatsReservation
 ): void => {
-  const extendedData: SeatsReservationExtended = {
-    ...seatsReservation,
-    expires: getSeatsReservationExpirationTime(seatsReservation),
-  };
-
   sessionStorage?.setItem(
     `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`,
-    JSON.stringify(extendedData)
+    JSON.stringify(seatsReservation)
   );
 };
 
-// TODO: Remove this when API returns also expiration time
-export const getSeatsReservationExpirationTime = (
-  seatsReservation: SeatsReservation
-) => {
-  return getUnixTime(
-    addMinutes(
-      new Date(seatsReservation.timestamp),
-      ENROLMENT_TIME_IN_MINUTES +
-        Math.max(seatsReservation.seats - 1, 0) *
-          ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES
-    )
-  );
+export const isSeatsReservationExpired = (data: SeatsReservation) => {
+  return isPast(new Date(data.expiration));
 };
 
-export const isSeatsReservationExpired = (data: SeatsReservationExtended) => {
-  return isPast(data.expires * 1000);
-};
-
-export const getRegistrationTimeLeft = (registration: Registration) => {
+export const getRegistrationTimeLeft = (data: SeatsReservation | null) => {
   const now = new Date();
-  const reservationData = getSeatsReservationData(registration.id);
 
-  return reservationData ? reservationData.expires - getUnixTime(now) : 0;
+  return data ? getUnixTime(new Date(data.expiration)) - getUnixTime(now) : 0;
 };

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { faker } from '@faker-js/faker';
+import addMinutes from 'date-fns/addMinutes';
 import merge from 'lodash/merge';
 
 import { LocalisedObject, Meta } from '../domain/api/types';
@@ -291,6 +292,7 @@ export const fakeSeatsReservation = (
   return merge<SeatsReservation, typeof overrides>(
     {
       code: faker.datatype.uuid(),
+      expiration: addMinutes(new Date(), 30).toISOString(),
       registration: TEST_REGISTRATION_ID,
       seats: 1,
       timestamp: new Date().toISOString(),

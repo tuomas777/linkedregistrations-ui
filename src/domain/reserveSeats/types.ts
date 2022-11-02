@@ -1,11 +1,10 @@
 export type SeatsReservation = {
   code: string;
+  expiration: string;
   registration: string;
   seats: number;
   timestamp: string;
 };
-
-export type SeatsReservationExtended = { expires: number } & SeatsReservation;
 
 export type ReserveSeatsInput = {
   registration: string;

@@ -50,8 +50,13 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
 }) => {
   const router = useRouter();
   const callbacksDisabled = useRef(false);
+  const timerEnabled = useRef(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const enableTimer = useCallback(() => {
+    timerEnabled.current = true;
+  }, []);
 
   const reserveSeatsMutation = useReserveSeatsMutation({
     onError: (error, variables) => {
@@ -67,7 +72,9 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
       });
     },
     onSuccess: (data) => {
+      enableTimer();
       setSeatsReservationData(registration.id, data);
+      setTimeLeft(getRegistrationTimeLeft(data));
     },
   });
 
@@ -107,27 +114,31 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
         seats: 1,
         waitlist: true,
       });
+    } else {
+      enableTimer();
+      setTimeLeft(getRegistrationTimeLeft(data));
     }
 
-    setTimeLeft(getRegistrationTimeLeft(registration));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft(getRegistrationTimeLeft(registration));
-
-      const data = getSeatsReservationData(registration.id);
-
       /* istanbul ignore else */
-      if (!callbacksDisabled.current) {
-        if (!data || isSeatsReservationExpired(data)) {
-          disableCallbacks();
+      if (timerEnabled.current) {
+        const data = getSeatsReservationData(registration.id);
+        setTimeLeft(getRegistrationTimeLeft(data));
 
-          clearCreateEnrolmentFormData(registration.id);
-          clearEnrolmentReservationData(registration.id);
+        /* istanbul ignore else */
+        if (!callbacksDisabled.current) {
+          if (!data || isSeatsReservationExpired(data)) {
+            disableCallbacks();
 
-          setIsModalOpen(true);
+            clearCreateEnrolmentFormData(registration.id);
+            clearEnrolmentReservationData(registration.id);
+
+            setIsModalOpen(true);
+          }
         }
       }
     }, 1000);

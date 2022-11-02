@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import addSeconds from 'date-fns/addSeconds';
+import subSeconds from 'date-fns/subSeconds';
 import subYears from 'date-fns/subYears';
 import { FormikState } from 'formik';
 import { rest } from 'msw';
@@ -8,7 +10,6 @@ import React from 'react';
 
 import { FORM_NAMES, RESERVATION_NAMES } from '../../../../constants';
 import formatDate from '../../../../utils/formatDate';
-import getUnixTime from '../../../../utils/getUnixTime';
 import {
   fakeEnrolment,
   fakeSeatsReservation,
@@ -29,7 +30,7 @@ import { place } from '../../../place/__mocks__/place';
 import { TEST_PLACE_ID } from '../../../place/constants';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
-import { SeatsReservationExtended } from '../../../reserveSeats/types';
+import { SeatsReservation } from '../../../reserveSeats/types';
 import { ENROLMENT_INITIAL_VALUES, NOTIFICATIONS } from '../../constants';
 import { EnrolmentFormFields } from '../../types';
 import SummaryPage from '../SummaryPage';
@@ -47,7 +48,7 @@ const enrolment = fakeEnrolment();
 
 const setFormValues = (
   values: Partial<EnrolmentFormFields>,
-  reservation?: SeatsReservationExtended
+  reservation?: SeatsReservation
 ) => {
   const state: FormikState<EnrolmentFormFields> = {
     errors: {},
@@ -73,14 +74,17 @@ const setFormValues = (
   });
 };
 
-const getReservationData = (expiresOffset: number) => {
+const getReservationData = (expirationOffset: number) => {
   const now = new Date();
-  const started = getUnixTime(now);
+  let expiration = '';
 
-  const reservation: SeatsReservationExtended = {
-    ...fakeSeatsReservation(),
-    expires: started + expiresOffset,
-  };
+  if (expirationOffset) {
+    expiration = addSeconds(now, expirationOffset).toISOString();
+  } else {
+    expiration = subSeconds(now, expirationOffset).toISOString();
+  }
+
+  const reservation = fakeSeatsReservation({ expiration });
 
   return reservation;
 };
