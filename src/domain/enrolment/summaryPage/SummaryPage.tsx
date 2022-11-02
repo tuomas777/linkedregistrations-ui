@@ -13,6 +13,7 @@ import { FORM_NAMES } from '../../../constants';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
+import { reportError } from '../../app/sentry/utils';
 import { EVENT_INCLUDES } from '../../event/constants';
 import { useEventQuery } from '../../event/query';
 import { Event } from '../../event/types';
@@ -22,8 +23,9 @@ import { Registration } from '../../registration/types';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import Divider from '../divider/Divider';
+import { EnrolmentServerErrorsProvider } from '../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
+import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import FormContainer from '../formContainer/FormContainer';
-import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import { useCreateEnrolmentMutation } from '../mutation';
 import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
@@ -48,15 +50,15 @@ type SummaryPageProps = {
 };
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
-  const { disableCallbacks: disabledReservationTimerCallbacks } =
+  const { disableCallbacks: disableReservationTimerCallbacks } =
     useReservationTimer();
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
   const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
-    // Disabled reservation timer callbacks
+    // Disable reservation timer callbacks
     // so user is not redirected to create enrolment page
-    disabledReservationTimerCallbacks();
+    disableReservationTimerCallbacks();
 
     clearCreateEnrolmentFormData(registration.id);
     clearEnrolmentReservationData(registration.id);
@@ -81,7 +83,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const initialValues = getEnrolmentDefaultInitialValues(registration);
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrors();
+    useEnrolmentServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
@@ -95,7 +97,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
   const createEnrolmentMutation = useCreateEnrolmentMutation({
     onError: (error, variables) => {
-      showServerErrors({ error: JSON.parse(error.message) });
+      showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
       reportError({
         data: {
           error: JSON.parse(error.message),
@@ -153,10 +155,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
                   <Divider />
 
-                  <ReservationTimer
-                    onDataNotFound={goToCreateEnrolmentPage}
-                    onExpired={goToCreateEnrolmentPage}
-                  />
+                  <ReservationTimer onDataNotFound={goToCreateEnrolmentPage} />
                   <Divider />
                   <Attendees />
                   <InformantInfo values={values} />
@@ -206,12 +205,14 @@ const SummaryPageWrapper: React.FC = () => {
       }
     >
       {event && registration ? (
-        <ReservationTimerProvider
-          initializeReservationData={false}
-          registration={registration}
-        >
-          <SummaryPage event={event} registration={registration} />
-        </ReservationTimerProvider>
+        <EnrolmentServerErrorsProvider>
+          <ReservationTimerProvider
+            initializeReservationData={false}
+            registration={registration}
+          >
+            <SummaryPage event={event} registration={registration} />
+          </ReservationTimerProvider>
+        </EnrolmentServerErrorsProvider>
       ) : (
         <NotFound />
       )}

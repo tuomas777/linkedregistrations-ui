@@ -5,19 +5,22 @@ import React, { useState } from 'react';
 
 import Button from '../../../common/components/button/Button';
 import NumberInput from '../../../common/components/numberInput/NumberInput';
+import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import {
   getAttendeeCapacityError,
   getFreeAttendeeCapacity,
 } from '../../registration/utils';
+import { useUpdateReserveSeatsMutation } from '../../reserveSeats/mutation';
+import {
+  getSeatsReservationData,
+  setSeatsReservationData,
+} from '../../reserveSeats/utils';
 import { ENROLMENT_FIELDS } from '../constants';
+import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
-import {
-  getAttendeeDefaultInitialValues,
-  getEnrolmentReservationData,
-  updateEnrolmentReservationData,
-} from '../utils';
+import { getAttendeeDefaultInitialValues } from '../utils';
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {
@@ -31,18 +34,19 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
+  const { setServerErrorItems, showServerErrors } =
+    useEnrolmentServerErrorsContext();
+
   const [openModal, setOpenModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [participantsToDelete, setParticipantsToDelete] = useState(0);
 
   const [{ value: attendees }, , { setValue: setAttendees }] = useField<
     AttendeeFields[]
-  >({
-    name: ENROLMENT_FIELDS.ATTENDEES,
-  });
+  >({ name: ENROLMENT_FIELDS.ATTENDEES });
 
   const [participantAmount, setParticipantAmount] = useState(
-    Math.max(getEnrolmentReservationData(registration.id)?.participants ?? 0, 1)
+    Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)
   );
   const freeCapacity = getFreeAttendeeCapacity(registration);
 
@@ -63,27 +67,62 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     [registration]
   );
 
-  const updateParticipantAmount = () => {
-    /* istanbul ignore next */
-    if (participantAmount !== attendees.length) {
-      setSaving(true);
+  const updateReserveSeatsMutation = useUpdateReserveSeatsMutation({
+    onError: (error, variables) => {
+      showServerErrors(
+        { error: JSON.parse(error.message) },
+        'seatsReservation'
+      );
 
+      reportError({
+        data: {
+          error: JSON.parse(error.message),
+          payload: variables,
+          payloadAsString: JSON.stringify(variables),
+        },
+        message: 'Failed to update reserve seats',
+      });
+
+      setSaving(false);
+      closeModal();
+    },
+    onSuccess: (data) => {
+      const seats = data.seats;
       const filledAttendees = attendees.filter(
         (a) => !isEqual(a, attendeeInitialValues)
       );
       const newAttendees = [
         ...filledAttendees,
-        ...Array(Math.max(participantAmount - filledAttendees.length, 0)).fill(
+        ...Array(Math.max(seats - filledAttendees.length, 0)).fill(
           attendeeInitialValues
         ),
-      ].slice(0, participantAmount);
+      ].slice(0, seats);
 
       setAttendees(newAttendees);
       // TODO: Update reservation from API when BE is ready
-      updateEnrolmentReservationData(registration, newAttendees.length);
+      setSeatsReservationData(registration.id, data);
 
       setSaving(false);
       closeModal();
+    },
+  });
+
+  const updateParticipantAmount = () => {
+    /* istanbul ignore next */
+    if (participantAmount !== attendees.length) {
+      setSaving(true);
+
+      const data = getSeatsReservationData(registration.id);
+
+      // Clear server errors
+      setServerErrorItems([]);
+
+      updateReserveSeatsMutation.mutate({
+        code: data?.code as string,
+        registration: registration.id,
+        seats: participantAmount,
+        waitlist: false,
+      });
     }
   };
 

@@ -21,13 +21,12 @@ const getTimeStr = (timeLeft: number) => {
 
 const ReservationTimer: React.FC<ReservationTimerCallbacks> = ({
   onDataNotFound,
-  onExpired,
 }) => {
   const { t } = useTranslation('enrolment');
   const { registration, timeLeft } = useReservationTimer();
 
-  // Handle reservation missing or expired expections
-  useReservationTimerCallbacks({ onDataNotFound, onExpired, registration });
+  // Handle reservation missing callback
+  useReservationTimerCallbacks({ onDataNotFound, registration });
 
   return (
     <div>

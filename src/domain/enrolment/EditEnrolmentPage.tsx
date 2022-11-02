@@ -12,9 +12,8 @@ import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
 import EditEnrolmentPageMeta from './editEnrolmentPageMeta/EditEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
-import EnrolmentPageContext, {
-  useEnrolmentPageContextValue,
-} from './enrolmentPageContext/EnrolmentPageContext';
+import { EnrolmentPageProvider } from './enrolmentPageContext/EnrolmentPageContext';
+import { EnrolmentServerErrorsProvider } from './enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';
 import { useEnrolmentQuery } from './query';
@@ -83,9 +82,6 @@ const EditEnrolmentPageWrapper: React.FC = () => {
     cancellationCode: query.accessCode as string,
   });
 
-  const { openParticipant, setOpenParticipant, toggleOpenParticipant } =
-    useEnrolmentPageContextValue();
-
   return (
     <LoadingSpinner
       isLoading={
@@ -96,16 +92,16 @@ const EditEnrolmentPageWrapper: React.FC = () => {
       }
     >
       {enrolment && event && registration ? (
-        <EnrolmentPageContext.Provider
-          value={{ openParticipant, setOpenParticipant, toggleOpenParticipant }}
-        >
-          <EditEnrolmentPage
-            cancellationCode={query.accessCode as string}
-            enrolment={enrolment}
-            event={event}
-            registration={registration}
-          />
-        </EnrolmentPageContext.Provider>
+        <EnrolmentPageProvider>
+          <EnrolmentServerErrorsProvider>
+            <EditEnrolmentPage
+              cancellationCode={query.accessCode as string}
+              enrolment={enrolment}
+              event={event}
+              registration={registration}
+            />
+          </EnrolmentServerErrorsProvider>
+        </EnrolmentPageProvider>
       ) : (
         <NotFound />
       )}

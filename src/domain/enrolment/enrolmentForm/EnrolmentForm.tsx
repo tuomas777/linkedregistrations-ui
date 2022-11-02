@@ -1,10 +1,9 @@
-import isPast from 'date-fns/isPast';
 import { Field, FieldAttributes, Form, Formik } from 'formik';
 import { IconCross, SingleSelectProps } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -27,6 +26,10 @@ import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
+import {
+  getSeatsReservationData,
+  isSeatsReservationExpired,
+} from '../../reserveSeats/utils';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   ENROLMENT_FIELDS,
@@ -34,8 +37,8 @@ import {
   NOTIFICATIONS,
 } from '../constants';
 import Divider from '../divider/Divider';
-import EnrolmentPageContext from '../enrolmentPageContext/EnrolmentPageContext';
-import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
+import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
+import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
@@ -45,7 +48,6 @@ import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
 import { EnrolmentFormFields } from '../types';
-import { getEnrolmentReservationData } from '../utils';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
@@ -87,7 +89,7 @@ const EnrolmentForm: React.FC<Props> = ({
 
   const formSavingDisabled = React.useRef(!!readOnly);
 
-  const { setOpenParticipant } = useContext(EnrolmentPageContext);
+  const { setOpenParticipant } = useEnrolmentPageContext();
   const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
     null
   );
@@ -109,7 +111,7 @@ const EnrolmentForm: React.FC<Props> = ({
   const { query } = router;
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrors();
+    useEnrolmentServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
@@ -142,7 +144,7 @@ const EnrolmentForm: React.FC<Props> = ({
     onError: (error, variables) => {
       closeModal();
 
-      showServerErrors({ error: JSON.parse(error.message) });
+      showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
       // Report error to Sentry
       reportError({
         data: {
@@ -163,8 +165,8 @@ const EnrolmentForm: React.FC<Props> = ({
   };
 
   const isRestoringDisabled = () => {
-    const data = getEnrolmentReservationData(registration.id);
-    return !readOnly && (!data || isPast(data.expires * 1000));
+    const data = getSeatsReservationData(registration.id);
+    return !readOnly && (!data || isSeatsReservationExpired(data));
   };
 
   return (

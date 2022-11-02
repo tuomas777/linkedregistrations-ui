@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import addSeconds from 'date-fns/addSeconds';
+import subSeconds from 'date-fns/subSeconds';
 import subYears from 'date-fns/subYears';
 import { FormikState } from 'formik';
 import { rest } from 'msw';
@@ -8,8 +10,10 @@ import React from 'react';
 
 import { FORM_NAMES, RESERVATION_NAMES } from '../../../../constants';
 import formatDate from '../../../../utils/formatDate';
-import getUnixTime from '../../../../utils/getUnixTime';
-import { fakeEnrolment } from '../../../../utils/mockDataUtils';
+import {
+  fakeEnrolment,
+  fakeSeatsReservation,
+} from '../../../../utils/mockDataUtils';
 import {
   loadingSpinnerIsNotInDocument,
   render,
@@ -26,8 +30,9 @@ import { place } from '../../../place/__mocks__/place';
 import { TEST_PLACE_ID } from '../../../place/constants';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
+import { SeatsReservation } from '../../../reserveSeats/types';
 import { ENROLMENT_INITIAL_VALUES, NOTIFICATIONS } from '../../constants';
-import { EnrolmentFormFields, EnrolmentReservation } from '../../types';
+import { EnrolmentFormFields } from '../../types';
 import SummaryPage from '../SummaryPage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -43,7 +48,7 @@ const enrolment = fakeEnrolment();
 
 const setFormValues = (
   values: Partial<EnrolmentFormFields>,
-  reservation?: EnrolmentReservation
+  reservation?: SeatsReservation
 ) => {
   const state: FormikState<EnrolmentFormFields> = {
     errors: {},
@@ -69,15 +74,17 @@ const setFormValues = (
   });
 };
 
-const getReservationData = (expiresOffset: number) => {
-  const started = getUnixTime(new Date());
+const getReservationData = (expirationOffset: number) => {
+  const now = new Date();
+  let expiration = '';
 
-  const reservation: EnrolmentReservation = {
-    expires: started + expiresOffset,
-    participants: 1,
-    session: '',
-    started,
-  };
+  if (expirationOffset) {
+    expiration = addSeconds(now, expirationOffset).toISOString();
+  } else {
+    expiration = subSeconds(now, expirationOffset).toISOString();
+  }
+
+  const reservation = fakeSeatsReservation({ expiration });
 
   return reservation;
 };
@@ -133,25 +140,6 @@ test('should route back to enrolment form if reservation data is missing', async
   setQueryMocks(...defaultMocks);
 
   setFormValues(enrolmentValues);
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
-    query: { registrationId: registration.id },
-  });
-  renderComponent();
-
-  await loadingSpinnerIsNotInDocument();
-
-  await waitFor(() =>
-    expect(mockRouter.asPath).toBe(
-      `/registration/${registration.id}/enrolment/create`
-    )
-  );
-});
-
-test('should route back to enrolment form if reservation is expired', async () => {
-  setQueryMocks(...defaultMocks);
-
-  setFormValues(enrolmentValues, getReservationData(-1000));
   singletonRouter.push({
     pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
     query: { registrationId: registration.id },

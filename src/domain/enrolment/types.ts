@@ -67,10 +67,3 @@ export type Enrolment = {
 export type EnrolmentQueryVariables = {
   cancellationCode: string;
 };
-
-export type EnrolmentReservation = {
-  expires: number;
-  participants: number;
-  started: number;
-  session: string;
-};
