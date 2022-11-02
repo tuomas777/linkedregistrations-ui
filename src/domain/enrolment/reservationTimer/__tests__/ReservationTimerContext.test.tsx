@@ -5,7 +5,6 @@ import { rest } from 'msw';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
-import { toast } from 'react-toastify';
 
 import { RESERVATION_NAMES } from '../../../../constants';
 import { fakeSeatsReservation } from '../../../../utils/mockDataUtils';
@@ -21,16 +20,32 @@ import { ROUTES } from '../../../app/routes/constants';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { SeatsReservation } from '../../../reserveSeats/types';
+import {
+  EnrolmentServerErrorsContext,
+  EnrolmentServerErrorsContextProps,
+} from '../../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import { ReservationTimerProvider } from '../ReservationTimerContext';
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
-const renderComponent = () =>
+const defaultServerErrorsProps: EnrolmentServerErrorsContextProps = {
+  serverErrorItems: [],
+  setServerErrorItems: jest.fn(),
+  showServerErrors: jest.fn(),
+};
+
+const renderComponent = (
+  serverErrorProps?: Partial<EnrolmentServerErrorsContextProps>
+) =>
   render(
-    <ReservationTimerProvider
-      initializeReservationData={true}
-      registration={registration}
-    />
+    <EnrolmentServerErrorsContext.Provider
+      value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
+    >
+      <ReservationTimerProvider
+        initializeReservationData={true}
+        registration={registration}
+      />
+    </EnrolmentServerErrorsContext.Provider>
   );
 
 beforeEach(() => {
@@ -65,8 +80,8 @@ const getReservationData = (expirationOffset: number) => {
   return reservation;
 };
 
-test('should show toast message when creating seats reservation fails', async () => {
-  toast.error = jest.fn();
+test('should show server errors when creating seats reservation fails', async () => {
+  const showServerErrors = jest.fn();
 
   setQueryMocks(
     rest.post(`*/reserve_seats/`, (req, res, ctx) =>
@@ -77,10 +92,10 @@ test('should show toast message when creating seats reservation fails', async ()
     pathname: ROUTES.CREATE_ENROLMENT,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
-  renderComponent();
+  renderComponent({ showServerErrors });
 
   await waitFor(() =>
-    expect(toast.error).toBeCalledWith('Failed to reserve seats')
+    expect(showServerErrors).toBeCalledWith({ error: {} }, 'seatsReservation')
   );
 });
 

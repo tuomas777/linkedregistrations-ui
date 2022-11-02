@@ -12,9 +12,8 @@ import { useRegistrationQuery } from '../registration/query';
 import { Registration } from '../registration/types';
 import CreateEnrolmentPageMeta from './createEnrolmentPageMeta/CreateEnrolmentPageMeta';
 import EnrolmentForm from './enrolmentForm/EnrolmentForm';
-import EnrolmentPageContext, {
-  useEnrolmentPageContextValue,
-} from './enrolmentPageContext/EnrolmentPageContext';
+import { EnrolmentPageProvider } from './enrolmentPageContext/EnrolmentPageContext';
+import { EnrolmentServerErrorsProvider } from './enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';
 import { getEnrolmentDefaultInitialValues } from './utils';
@@ -69,9 +68,6 @@ const CreateEnrolmentPageWrapper: React.FC = () => {
     { enabled: !!registration?.event }
   );
 
-  const { openParticipant, setOpenParticipant, toggleOpenParticipant } =
-    useEnrolmentPageContextValue();
-
   return (
     <LoadingSpinner
       isLoading={
@@ -80,11 +76,11 @@ const CreateEnrolmentPageWrapper: React.FC = () => {
       }
     >
       {registration && event ? (
-        <EnrolmentPageContext.Provider
-          value={{ openParticipant, setOpenParticipant, toggleOpenParticipant }}
-        >
-          <CreateEnrolmentPage event={event} registration={registration} />
-        </EnrolmentPageContext.Provider>
+        <EnrolmentPageProvider>
+          <EnrolmentServerErrorsProvider>
+            <CreateEnrolmentPage event={event} registration={registration} />
+          </EnrolmentServerErrorsProvider>
+        </EnrolmentPageProvider>
       ) : (
         <NotFound />
       )}

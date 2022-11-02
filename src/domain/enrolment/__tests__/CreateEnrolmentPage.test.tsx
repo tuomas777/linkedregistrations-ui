@@ -5,7 +5,6 @@ import { rest } from 'msw';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
-import { toast } from 'react-toastify';
 
 import formatDate from '../../../utils/formatDate';
 import { fakeSeatsReservation } from '../../../utils/mockDataUtils';
@@ -328,15 +327,14 @@ test('should add and delete participants', async () => {
   );
 });
 
-test('should show toast message when updating seats reservation fails', async () => {
-  toast.error = jest.fn();
+test('should show server errors when updating seats reservation fails', async () => {
   const user = userEvent.setup();
 
   setQueryMocks(
     ...defaultMocks,
     rest.post(`*/reserve_seats/`, (req, res, ctx) =>
       seats === 2
-        ? res(ctx.status(400), ctx.json({}))
+        ? res(ctx.status(400), ctx.json('Not enough seats available.'))
         : res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
     )
   );
@@ -362,9 +360,7 @@ test('should show toast message when updating seats reservation fails', async ()
   seats = 2;
   await user.click(updateParticipantAmountButton);
 
-  await waitFor(() =>
-    expect(toast.error).toBeCalledWith('Failed to update seats reservation')
-  );
+  await screen.findByText('Paikkoja ei ole riittävästi jäljellä.');
 });
 
 test('should show and hide participant specific fields', async () => {
@@ -448,15 +444,14 @@ test('should delete participants by clicking delete participant button', async (
   );
 });
 
-test('should show toast message when updating seats reservation fails', async () => {
-  toast.error = jest.fn();
+test('should show server errors when updating seats reservation fails', async () => {
   const user = userEvent.setup();
 
   setQueryMocks(
     ...defaultMocks,
     rest.post(`*/reserve_seats/`, (req, res, ctx) =>
       seats === 2
-        ? res(ctx.status(400), ctx.json({}))
+        ? res(ctx.status(400), ctx.json('Not enough seats available.'))
         : res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
     )
   );
@@ -498,7 +493,5 @@ test('should show toast message when updating seats reservation fails', async ()
   seats = 2;
   await user.click(deleteParticipantButton);
 
-  await waitFor(() =>
-    expect(toast.error).toBeCalledWith('Failed to update seats reservation')
-  );
+  await screen.findByText('Paikkoja ei ole riittävästi jäljellä.');
 });

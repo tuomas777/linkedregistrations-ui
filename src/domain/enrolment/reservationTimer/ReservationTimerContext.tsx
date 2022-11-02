@@ -7,7 +7,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { toast } from 'react-toastify';
 
 import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
@@ -20,6 +19,7 @@ import {
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
+import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
 import {
   clearCreateEnrolmentFormData,
@@ -48,6 +48,8 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   initializeReservationData,
   registration,
 }) => {
+  const { setServerErrorItems, showServerErrors } =
+    useEnrolmentServerErrorsContext();
   const router = useRouter();
   const callbacksDisabled = useRef(false);
   const timerEnabled = useRef(false);
@@ -60,7 +62,10 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
 
   const reserveSeatsMutation = useReserveSeatsMutation({
     onError: (error, variables) => {
-      toast.error('Failed to reserve seats');
+      showServerErrors(
+        { error: JSON.parse(error.message) },
+        'seatsReservation'
+      );
 
       reportError({
         data: {
@@ -109,6 +114,9 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
     const data = getSeatsReservationData(registration.id);
 
     if (initializeReservationData && !data) {
+      // Clear server errors
+      setServerErrorItems([]);
+
       reserveSeatsMutation.mutate({
         registration: registration.id,
         seats: 1,

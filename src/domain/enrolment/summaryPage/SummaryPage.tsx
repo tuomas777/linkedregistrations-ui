@@ -23,8 +23,9 @@ import { Registration } from '../../registration/types';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import Divider from '../divider/Divider';
+import { EnrolmentServerErrorsProvider } from '../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
+import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import FormContainer from '../formContainer/FormContainer';
-import useEnrolmentServerErrors from '../hooks/useEnrolmentServerErrors';
 import { useCreateEnrolmentMutation } from '../mutation';
 import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
@@ -82,7 +83,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const initialValues = getEnrolmentDefaultInitialValues(registration);
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrors();
+    useEnrolmentServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
@@ -96,7 +97,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
   const createEnrolmentMutation = useCreateEnrolmentMutation({
     onError: (error, variables) => {
-      showServerErrors({ error: JSON.parse(error.message) });
+      showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
       reportError({
         data: {
           error: JSON.parse(error.message),
@@ -204,12 +205,14 @@ const SummaryPageWrapper: React.FC = () => {
       }
     >
       {event && registration ? (
-        <ReservationTimerProvider
-          initializeReservationData={false}
-          registration={registration}
-        >
-          <SummaryPage event={event} registration={registration} />
-        </ReservationTimerProvider>
+        <EnrolmentServerErrorsProvider>
+          <ReservationTimerProvider
+            initializeReservationData={false}
+            registration={registration}
+          >
+            <SummaryPage event={event} registration={registration} />
+          </ReservationTimerProvider>
+        </EnrolmentServerErrorsProvider>
       ) : (
         <NotFound />
       )}

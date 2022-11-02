@@ -2,7 +2,6 @@ import { useField } from 'formik';
 import isEqual from 'lodash/isEqual';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
 
 import Button from '../../../common/components/button/Button';
 import NumberInput from '../../../common/components/numberInput/NumberInput';
@@ -18,6 +17,7 @@ import {
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
 import { ENROLMENT_FIELDS } from '../constants';
+import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
 import { getAttendeeDefaultInitialValues } from '../utils';
@@ -33,6 +33,9 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   registration,
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
+
+  const { setServerErrorItems, showServerErrors } =
+    useEnrolmentServerErrorsContext();
 
   const [openModal, setOpenModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -66,7 +69,10 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
   const updateReserveSeatsMutation = useUpdateReserveSeatsMutation({
     onError: (error, variables) => {
-      toast.error('Failed to update seats reservation');
+      showServerErrors(
+        { error: JSON.parse(error.message) },
+        'seatsReservation'
+      );
 
       reportError({
         data: {
@@ -107,6 +113,9 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       setSaving(true);
 
       const data = getSeatsReservationData(registration.id);
+
+      // Clear server errors
+      setServerErrorItems([]);
 
       updateReserveSeatsMutation.mutate({
         code: data?.code as string,

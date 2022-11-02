@@ -1,8 +1,8 @@
+/* eslint-disable max-len */
 import { FieldArray, useField } from 'formik';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import { reportError } from '../../../app/sentry/utils';
 
+import { reportError } from '../../../app/sentry/utils';
 import { Registration } from '../../../registration/types';
 import { useUpdateReserveSeatsMutation } from '../../../reserveSeats/mutation';
 import {
@@ -10,6 +10,7 @@ import {
   setSeatsReservationData,
 } from '../../../reserveSeats/utils';
 import { ENROLMENT_FIELDS } from '../../constants';
+import { useEnrolmentServerErrorsContext } from '../../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../../types';
 import Attendee from './attendee/Attendee';
@@ -32,6 +33,9 @@ const Attendees: React.FC<Props> = ({
   const [openModalIndex, setOpenModalIndex] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const { setServerErrorItems, showServerErrors } =
+    useEnrolmentServerErrorsContext();
+
   const [{ value: attendees }] = useField<AttendeeFields[]>({
     name: ENROLMENT_FIELDS.ATTENDEES,
   });
@@ -42,7 +46,10 @@ const Attendees: React.FC<Props> = ({
 
   const updateReserveSeatsMutation = useUpdateReserveSeatsMutation({
     onError: (error, variables) => {
-      toast.error('Failed to update seats reservation');
+      showServerErrors(
+        { error: JSON.parse(error.message) },
+        'seatsReservation'
+      );
 
       reportError({
         data: {
@@ -80,6 +87,9 @@ const Attendees: React.FC<Props> = ({
                 setSaving(true);
 
                 const data = getSeatsReservationData(registration.id);
+
+                // Clear server errors
+                setServerErrorItems([]);
 
                 await updateReserveSeatsMutation.mutate({
                   code: data?.code as string,

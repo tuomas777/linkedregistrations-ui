@@ -1,29 +1,31 @@
-import { createContext, useState } from 'react';
+import React, { createContext, FC, PropsWithChildren, useState } from 'react';
 
-type EnrolmentPageContext = {
+export type EnrolmentPageContextProps = {
   openParticipant: number | null;
   setOpenParticipant: (index: number | null) => void;
   toggleOpenParticipant: (index: number) => void;
 };
 
-export const enrolmentPageContextDefaultValue: EnrolmentPageContext = {
-  openParticipant: 0,
-  setOpenParticipant:
-    /* istanbul ignore next */
-    () => undefined,
-  toggleOpenParticipant:
-    /* istanbul ignore next */
-    () => undefined,
-};
+export const EnrolmentPageContext = createContext<
+  EnrolmentPageContextProps | undefined
+>(undefined);
 
-export const useEnrolmentPageContextValue = (): EnrolmentPageContext => {
+export const EnrolmentPageProvider: FC<PropsWithChildren> = ({ children }) => {
   const [openParticipant, setOpenParticipant] = useState<number | null>(0);
 
   const toggleOpenParticipant = (newIndex: number) => {
     setOpenParticipant(openParticipant === newIndex ? null : newIndex);
   };
 
-  return { openParticipant, setOpenParticipant, toggleOpenParticipant };
+  return (
+    <EnrolmentPageContext.Provider
+      value={{
+        openParticipant,
+        setOpenParticipant,
+        toggleOpenParticipant,
+      }}
+    >
+      {children}
+    </EnrolmentPageContext.Provider>
+  );
 };
-
-export default createContext(enrolmentPageContextDefaultValue);

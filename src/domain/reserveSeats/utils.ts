@@ -4,7 +4,6 @@ import isPast from 'date-fns/isPast';
 import { RESERVATION_NAMES } from '../../constants';
 import getUnixTime from '../../utils/getUnixTime';
 import { callPost } from '../app/axios/axiosClient';
-import { Registration } from '../registration/types';
 import {
   ReserveSeatsInput,
   SeatsReservation,

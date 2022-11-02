@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { FastField as Field } from 'formik';
 import { Fieldset, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React, { useContext } from 'react';
+import React from 'react';
 
 import Accordion from '../../../../../common/components/accordion/Accordion';
 import DateInputField from '../../../../../common/components/formFields/DateInputField';
@@ -11,7 +11,7 @@ import TextInputField from '../../../../../common/components/formFields/TextInpu
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
 import { ATTENDEE_FIELDS } from '../../../constants';
-import EnrolmentPageContext from '../../../enrolmentPageContext/EnrolmentPageContext';
+import { useEnrolmentPageContext } from '../../../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { AttendeeFields } from '../../../types';
 import styles from './attendee.module.scss';
 
@@ -39,8 +39,7 @@ const Attendee: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment']);
   const locale = useLocale();
-  const { openParticipant, toggleOpenParticipant } =
-    useContext(EnrolmentPageContext);
+  const { openParticipant, toggleOpenParticipant } = useEnrolmentPageContext();
 
   return (
     <Accordion

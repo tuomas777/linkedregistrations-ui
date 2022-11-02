@@ -45,22 +45,61 @@ export const parseEnrolmentServerErrors = ({
     error: LEServerError;
     key: string;
   }) {
-    switch (key) {
-      case 'detail':
-      case 'non_field_errors':
-        return [{ label: '', message: parseServerErrorMessage({ error, t }) }];
-      default:
-        return [
-          {
-            label: parseEnrolmentServerErrorLabel({ key }),
-            message: parseServerErrorMessage({ error, t }),
-          },
-        ];
-    }
+    return [
+      {
+        label: parseEnrolmentServerErrorLabel({ key }),
+        message: parseServerErrorMessage({ error, t }),
+      },
+    ];
   }
 
   // Get correct field name for an error item
   function parseEnrolmentServerErrorLabel({ key }: { key: string }): string {
-    return t(`enrolment:label${pascalCase(key)}`);
+    switch (key) {
+      case 'detail':
+      case 'non_field_errors':
+        return '';
+      default:
+        return t(`enrolment:label${pascalCase(key)}`);
+    }
+  }
+};
+
+export const parseSeatsReservationServerErrors = ({
+  error,
+  t,
+}: {
+  error: ErrorType;
+  t: TFunction;
+}): ServerErrorItem[] => {
+  if (Array.isArray(error)) {
+    return (error as ErrorObject[]).reduce(
+      (previous: ServerErrorItem[], r: ErrorType) => [
+        ...previous,
+        ...parseSeatsReservationServerErrors({ error: r, t }),
+      ],
+      []
+    );
+  }
+
+  return typeof error === 'string'
+    ? [{ label: '', message: parseServerErrorMessage({ error: [error], t }) }]
+    : Object.entries(error).reduce(
+        (previous: ServerErrorItem[], [key, error]) => [
+          ...previous,
+          ...parseSeatsReservationServerError({ error, key }),
+        ],
+        []
+      );
+
+  // Get error item for an single error.
+  function parseSeatsReservationServerError({
+    error,
+    key,
+  }: {
+    error: LEServerError;
+    key: string;
+  }) {
+    return [{ label: key, message: parseServerErrorMessage({ error, t }) }];
   }
 };
