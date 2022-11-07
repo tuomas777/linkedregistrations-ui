@@ -25,6 +25,7 @@ const customJestConfig = {
     '<rootDir>/src/utils/mockSession.ts',
     '<rootDir>/src/utils/testUtils.ts',
     'constants.ts',
+    'query.ts',
     'types.ts',
   ],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
@@ -40,7 +41,14 @@ module.exports = async () => {
     transform: {
       /* Use babel-jest to transpile tests with the next/babel preset
         https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object */
-      '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+      '^.+\\.(t|j)sx?$': [
+        '@swc/jest',
+        {
+          jsc: {
+            preserveAllComments: true,
+          },
+        },
+      ],
     },
   };
 };

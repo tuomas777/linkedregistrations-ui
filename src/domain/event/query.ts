@@ -9,7 +9,6 @@ import { NextPageContext } from 'next';
 import { Event, EventQueryVariables } from './types';
 import { fetchEvent } from './utils';
 
-/* istanbul ignore next */
 export const fetchEventQuery = (
   queryClient: QueryClient,
   args: EventQueryVariables,
@@ -20,7 +19,6 @@ export const fetchEventQuery = (
   );
 };
 
-/* istanbul ignore next */
 export const prefetchEventQuery = (
   queryClient: QueryClient,
   args: EventQueryVariables,

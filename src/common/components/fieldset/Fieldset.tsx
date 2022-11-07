@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { Fieldset as BaseFieldSet, FieldsetProps } from 'hds-react';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import styles from './fieldset.module.scss';
 

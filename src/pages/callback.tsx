@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import LoadingSpinner from '../common/components/loadingSpinner/LoadingSpinner';
 import { ROUTES } from '../domain/app/routes/constants';

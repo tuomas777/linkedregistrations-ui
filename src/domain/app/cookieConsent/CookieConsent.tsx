@@ -1,5 +1,5 @@
 import { CookieModal } from 'hds-react';
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import { PAGE_HEADER_ID } from '../../../constants';
 import i18n from '../../../tests/initI18n';

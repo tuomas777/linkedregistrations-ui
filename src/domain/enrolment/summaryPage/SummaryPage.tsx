@@ -3,7 +3,7 @@ import { Notification } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import Button from '../../../common/components/button/Button';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';

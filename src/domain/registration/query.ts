@@ -9,7 +9,6 @@ import { NextPageContext } from 'next';
 import { Registration, RegistrationQueryVariables } from './types';
 import { fetchRegistration } from './utils';
 
-/* istanbul ignore next */
 export const fetchRegistrationQuery = (
   queryClient: QueryClient,
   args: RegistrationQueryVariables,
@@ -20,7 +19,6 @@ export const fetchRegistrationQuery = (
   );
 };
 
-/* istanbul ignore next */
 export const prefetchRegistrationQuery = (
   queryClient: QueryClient,
   args: RegistrationQueryVariables,
