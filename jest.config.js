@@ -30,6 +30,10 @@ const customJestConfig = {
   ],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   testEnvironment: 'jest-environment-jsdom',
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
 };
 
 // createJestConfig is exported in this way to ensure that next/jest can load the Next.js configuration, which is async
