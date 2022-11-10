@@ -1,4 +1,5 @@
 import { IconLocation, IconTicket, IconUser } from 'hds-react';
+import React from 'react';
 
 import TextWithIcon from '../../../../common/components/textWithIcon/TextWithIcon';
 import useLocale from '../../../../hooks/useLocale';

@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import Fieldset from '../../../../common/components/fieldset/Fieldset';
 import FormGroup from '../../../../common/components/formGroup/FormGroup';

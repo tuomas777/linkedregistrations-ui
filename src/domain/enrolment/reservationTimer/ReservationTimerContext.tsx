@@ -51,6 +51,7 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
   const router = useRouter();
+  const creatingReservationStarted = useRef(false);
   const callbacksDisabled = useRef(false);
   const timerEnabled = useRef(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
@@ -113,16 +114,23 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   React.useEffect(() => {
     const data = getSeatsReservationData(registration.id);
 
-    if (initializeReservationData && !data) {
+    if (
+      initializeReservationData &&
+      !creatingReservationStarted.current &&
+      !data
+    ) {
+      creatingReservationStarted.current = true;
       // Clear server errors
       setServerErrorItems([]);
 
+      // useEffect runs twice in React v18.0, so start creatin nre seats reservation
+      // only if creatingReservationStarted is false
       reserveSeatsMutation.mutate({
         registration: registration.id,
         seats: 1,
         waitlist: true,
       });
-    } else {
+    } else if (data) {
       enableTimer();
       setTimeLeft(getRegistrationTimeLeft(data));
     }

@@ -5,13 +5,25 @@ import {
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
 } from '../constants';
+import { EnrolmentQueryVariables } from '../types';
 import {
+  enrolmentPathBuilder,
   getEnrolmentDefaultInitialValues,
   getEnrolmentInitialValues,
   getEnrolmentNotificationsCode,
   getEnrolmentNotificationTypes,
   getEnrolmentPayload,
 } from '../utils';
+
+describe('enrolmentPathBuilder function', () => {
+  const cases: [EnrolmentQueryVariables, string][] = [
+    [{ cancellationCode: 'hel:123' }, '/signup/?cancellation_code=hel:123'],
+  ];
+
+  it.each(cases)('should build correct path', (variables, expectedPath) =>
+    expect(enrolmentPathBuilder(variables)).toBe(expectedPath)
+  );
+});
 
 describe('getEnrolmentNotificationsCode function', () => {
   it('should return correct notification core', () => {

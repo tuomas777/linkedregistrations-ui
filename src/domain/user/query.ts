@@ -9,7 +9,6 @@ import { NextPageContext } from 'next';
 import { User, UserQueryVariables } from './types';
 import { fetchUser } from './utils';
 
-/* istanbul ignore next */
 export const fetchUserQuery = (
   queryClient: QueryClient,
   args: UserQueryVariables,

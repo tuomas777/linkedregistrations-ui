@@ -108,7 +108,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   });
 
   const updateParticipantAmount = () => {
-    /* istanbul ignore next */
+    /* istanbul ignore else */
     if (participantAmount !== attendees.length) {
       setSaving(true);
 
