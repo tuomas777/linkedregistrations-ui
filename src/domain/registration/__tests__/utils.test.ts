@@ -10,7 +10,7 @@ import {
   getFreeAttendeeCapacity,
   getFreeWaitingAttendeeCapacity,
   getRegistrationWarning,
-  isAttenceeCapacityUsed,
+  isAttendeeCapacityUsed,
   isRegistrationOpen,
   isWaitingCapacityUsed,
   registrationPathBuilder,
@@ -89,10 +89,10 @@ describe('getAttendeeCapacityError', () => {
   });
 });
 
-describe('isAttenceeCapacityUsed', () => {
+describe('isAttendeeCapacityUsed', () => {
   it('should return false if maximum_attendee_capacity is not defined', () => {
     expect(
-      isAttenceeCapacityUsed(
+      isAttendeeCapacityUsed(
         fakeRegistration({ maximum_attendee_capacity: null })
       )
     ).toBe(false);
@@ -100,7 +100,7 @@ describe('isAttenceeCapacityUsed', () => {
 
   it('should return correct false if current attendee count is less than maximum attendee capacity', () => {
     expect(
-      isAttenceeCapacityUsed(
+      isAttendeeCapacityUsed(
         fakeRegistration({
           current_attendee_count: 4,
           maximum_attendee_capacity: 40,
@@ -111,7 +111,7 @@ describe('isAttenceeCapacityUsed', () => {
 
   it('should return correct true if current attendee count equals maximum attendee capacity', () => {
     expect(
-      isAttenceeCapacityUsed(
+      isAttendeeCapacityUsed(
         fakeRegistration({
           current_attendee_count: 40,
           maximum_attendee_capacity: 40,
@@ -122,7 +122,7 @@ describe('isAttenceeCapacityUsed', () => {
 
   it('should return correct true if current attendee count is greater than maximum attendee capacity', () => {
     expect(
-      isAttenceeCapacityUsed(
+      isAttendeeCapacityUsed(
         fakeRegistration({
           current_attendee_count: 41,
           maximum_attendee_capacity: 40,
@@ -214,8 +214,6 @@ describe('isWaitingCapacityUsed', () => {
     ).toBe(false);
   });
 });
-
-isRegistrationOpen;
 
 describe('isRegistrationOpen', () => {
   it('should return false if enrolment_start_time is not defined', () => {

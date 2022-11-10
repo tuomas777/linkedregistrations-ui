@@ -43,7 +43,7 @@ export const registrationPathBuilder = (
   return `/registration/${id}/${query}`;
 };
 
-export const isAttenceeCapacityUsed = (registration: Registration): boolean => {
+export const isAttendeeCapacityUsed = (registration: Registration): boolean => {
   // If there are seats in the event
   if (!registration.maximum_attendee_capacity) {
     return false;
@@ -114,7 +114,7 @@ export const isRegistrationOpen = (registration: Registration): boolean => {
 export const isRegistrationPossible = (registration: Registration): boolean => {
   return (
     isRegistrationOpen(registration) &&
-    (!isAttenceeCapacityUsed(registration) ||
+    (!isAttendeeCapacityUsed(registration) ||
       !isWaitingCapacityUsed(registration))
   );
 };
@@ -135,7 +135,7 @@ export const getRegistrationWarning = (
   if (!isRegistrationPossible(registration)) {
     return t('enrolment:warnings.closed');
   } else if (
-    isAttenceeCapacityUsed(registration) &&
+    isAttendeeCapacityUsed(registration) &&
     !isWaitingCapacityUsed(registration)
   ) {
     return t('enrolment:warnings.capacityInWaitingList', {

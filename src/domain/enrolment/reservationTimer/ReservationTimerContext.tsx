@@ -130,7 +130,7 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
         seats: 1,
         waitlist: true,
       });
-    } else {
+    } else if (data) {
       enableTimer();
       setTimeLeft(getRegistrationTimeLeft(data));
     }
