@@ -296,6 +296,8 @@ export const fakeSeatsReservation = (
       registration: TEST_REGISTRATION_ID,
       seats: 1,
       timestamp: new Date().toISOString(),
+      seats_at_event: 1,
+      waitlist_spots: 0,
     },
     overrides
   );

@@ -4,6 +4,8 @@ export type SeatsReservation = {
   registration: string;
   seats: number;
   timestamp: string;
+  seats_at_event: number;
+  waitlist_spots: number;
 };
 
 export type ReserveSeatsInput = {
