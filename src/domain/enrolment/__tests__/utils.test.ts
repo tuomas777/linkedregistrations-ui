@@ -1,6 +1,7 @@
 import { fakeEnrolment, fakeRegistration } from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import {
+  ATTENDEE_INITIAL_VALUES,
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
@@ -43,24 +44,35 @@ describe('getEnrolmentNotificationsCode function', () => {
 });
 
 describe('getEnrolmentPayload function', () => {
+  const reservationCode = 'code';
   it('should return single enrolment as payload', () => {
-    expect(getEnrolmentPayload(ENROLMENT_INITIAL_VALUES, registration)).toEqual(
-      {
-        city: null,
-        date_of_birth: null,
-        email: null,
-        extra_info: '',
-        membership_number: '',
-        name: null,
-        native_language: null,
-        notifications: NOTIFICATION_TYPE.NO_NOTIFICATION,
-        phone_number: null,
-        registration: registration.id,
-        service_language: null,
-        street_address: null,
-        zipcode: null,
-      }
-    );
+    expect(
+      getEnrolmentPayload({
+        formValues: {
+          ...ENROLMENT_INITIAL_VALUES,
+          attendees: [ATTENDEE_INITIAL_VALUES],
+        },
+        reservationCode,
+      })
+    ).toEqual({
+      reservation_code: 'code',
+      signups: [
+        {
+          city: null,
+          date_of_birth: null,
+          email: null,
+          extra_info: '',
+          membership_number: '',
+          name: null,
+          native_language: null,
+          notifications: 'none',
+          phone_number: null,
+          service_language: null,
+          street_address: null,
+          zipcode: null,
+        },
+      ],
+    });
 
     const city = 'City',
       dateOfBirth = '10.10.1999',
@@ -74,8 +86,8 @@ describe('getEnrolmentPayload function', () => {
       serviceLanguage = 'sv',
       streetAddress = 'Street address',
       zipcode = '00100';
-    const payload = getEnrolmentPayload(
-      {
+    const payload = getEnrolmentPayload({
+      formValues: {
         ...ENROLMENT_INITIAL_VALUES,
         attendees: [
           {
@@ -97,23 +109,27 @@ describe('getEnrolmentPayload function', () => {
         phoneNumber,
         serviceLanguage,
       },
-      registration
-    );
+      reservationCode,
+    });
 
     expect(payload).toEqual({
-      city,
-      date_of_birth: '1999-10-10',
-      email,
-      extra_info: extraInfo,
-      membership_number: membershipNumber,
-      name,
-      native_language: nativeLanguage,
-      notifications: NOTIFICATION_TYPE.EMAIL,
-      phone_number: phoneNumber,
-      registration: registration.id,
-      service_language: serviceLanguage,
-      street_address: streetAddress,
-      zipcode,
+      reservation_code: reservationCode,
+      signups: [
+        {
+          city,
+          date_of_birth: '1999-10-10',
+          email,
+          extra_info: extraInfo,
+          membership_number: membershipNumber,
+          name,
+          native_language: nativeLanguage,
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          phone_number: phoneNumber,
+          service_language: serviceLanguage,
+          street_address: streetAddress,
+          zipcode,
+        },
+      ],
     });
   });
 });

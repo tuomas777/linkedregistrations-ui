@@ -29,7 +29,7 @@ export type EnrolmentFormFields = {
   [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: string;
 };
 
-export type CreateEnrolmentMutationInput = {
+export type SignupInput = {
   city?: stringOrNull;
   date_of_birth?: stringOrNull;
   email?: stringOrNull;
@@ -39,7 +39,6 @@ export type CreateEnrolmentMutationInput = {
   native_language?: stringOrNull;
   notifications?: NOTIFICATION_TYPE;
   phone_number?: stringOrNull;
-  registration: string;
   service_language?: stringOrNull;
   street_address?: stringOrNull;
   zipcode?: stringOrNull;
@@ -62,6 +61,26 @@ export type Enrolment = {
   service_language?: stringOrNull;
   street_address?: stringOrNull;
   zipcode?: stringOrNull;
+};
+
+export type CreateEnrolmentMutationInput = {
+  reservation_code: string;
+  signups: SignupInput[];
+};
+
+export type Person = {
+  id: number;
+  name: string;
+};
+
+export type PeopleResponse = {
+  count: number;
+  people: Person[];
+};
+
+export type CreateEnrolmentResponse = {
+  attending: PeopleResponse;
+  waitlisted: PeopleResponse;
 };
 
 export type EnrolmentQueryVariables = {
