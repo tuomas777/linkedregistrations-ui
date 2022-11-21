@@ -20,7 +20,6 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
-import useMountedState from '../../../hooks/useMountedState';
 import { OptionType } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
@@ -33,6 +32,7 @@ import {
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   ENROLMENT_FIELDS,
+  ENROLMENT_MODALS,
   ENROLMENT_QUERY_PARAMS,
   NOTIFICATIONS,
 } from '../constants';
@@ -51,10 +51,6 @@ import { EnrolmentFormFields } from '../types';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
-
-export enum ENROLMENT_MODALS {
-  CANCEL = 'cancel',
-}
 
 interface Callbacks {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,10 +85,8 @@ const EnrolmentForm: React.FC<Props> = ({
 
   const formSavingDisabled = React.useRef(!!readOnly);
 
-  const { setOpenParticipant } = useEnrolmentPageContext();
-  const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
-    null
-  );
+  const { openModal, setOpenModal, setOpenParticipant } =
+    useEnrolmentPageContext();
 
   const closeModal = () => {
     setOpenModal(null);

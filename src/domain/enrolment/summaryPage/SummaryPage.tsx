@@ -24,6 +24,7 @@ import { getSeatsReservationData } from '../../reserveSeats/utils';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import Divider from '../divider/Divider';
+import { EnrolmentPageProvider } from '../enrolmentPageContext/EnrolmentPageContext';
 import { EnrolmentServerErrorsProvider } from '../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import FormContainer from '../formContainer/FormContainer';
@@ -210,14 +211,16 @@ const SummaryPageWrapper: React.FC = () => {
       }
     >
       {event && registration ? (
-        <EnrolmentServerErrorsProvider>
-          <ReservationTimerProvider
-            initializeReservationData={false}
-            registration={registration}
-          >
-            <SummaryPage event={event} registration={registration} />
-          </ReservationTimerProvider>
-        </EnrolmentServerErrorsProvider>
+        <EnrolmentPageProvider>
+          <EnrolmentServerErrorsProvider>
+            <ReservationTimerProvider
+              initializeReservationData={false}
+              registration={registration}
+            >
+              <SummaryPage event={event} registration={registration} />
+            </ReservationTimerProvider>
+          </EnrolmentServerErrorsProvider>
+        </EnrolmentPageProvider>
       ) : (
         <NotFound />
       )}

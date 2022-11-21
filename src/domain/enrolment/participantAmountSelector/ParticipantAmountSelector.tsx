@@ -9,14 +9,15 @@ import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import {
   getAttendeeCapacityError,
-  getFreeAttendeeCapacity,
+  getTotalAttendeeCapacity,
 } from '../../registration/utils';
 import { useUpdateReserveSeatsMutation } from '../../reserveSeats/mutation';
 import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
-import { ENROLMENT_FIELDS } from '../constants';
+import { ENROLMENT_FIELDS, ENROLMENT_MODALS } from '../constants';
+import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
@@ -34,10 +35,10 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
+  const { openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
 
-  const [openModal, setOpenModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [participantsToDelete, setParticipantsToDelete] = useState(0);
 
@@ -48,7 +49,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   const [participantAmount, setParticipantAmount] = useState(
     Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)
   );
-  const freeCapacity = getFreeAttendeeCapacity(registration);
+  const freeCapacity = getTotalAttendeeCapacity(registration);
 
   const handleParticipantAmountChange: React.ChangeEventHandler<
     HTMLInputElement
@@ -103,7 +104,13 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       setSeatsReservationData(registration.id, data);
 
       setSaving(false);
-      closeModal();
+
+      // Show modal to inform that some of the persons will be added to the waiting list
+      if (data.waitlist_spots) {
+        setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
+      } else {
+        closeModal();
+      }
     },
   });
 
@@ -121,23 +128,23 @@ const ParticipantAmountSelector: React.FC<Props> = ({
         code: data?.code as string,
         registration: registration.id,
         seats: participantAmount,
-        waitlist: false,
+        waitlist: true,
       });
     }
   };
 
   const closeModal = () => {
-    setOpenModal(false);
+    setOpenModal(null);
   };
 
-  const openParticipantModal = () => {
-    setOpenModal(true);
+  const openDeleteParticipantModal = () => {
+    setOpenModal(ENROLMENT_MODALS.DELETE);
   };
 
   const handleUpdateClick = () => {
     if (participantAmount < attendees.length) {
       setParticipantsToDelete(attendees.length - participantAmount);
-      openParticipantModal();
+      openDeleteParticipantModal();
     } else {
       updateParticipantAmount();
     }
@@ -146,7 +153,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   return (
     <>
       <ConfirmDeleteParticipantModal
-        isOpen={openModal}
+        isOpen={openModal === ENROLMENT_MODALS.DELETE}
         isSaving={saving}
         onClose={closeModal}
         onDelete={updateParticipantAmount}

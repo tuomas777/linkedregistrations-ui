@@ -82,3 +82,10 @@ export const TEST_ENROLMENT_CANCELLATION_CODE =
 
 export const ENROLMENT_TIME_IN_MINUTES = 30;
 export const ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES = 1;
+
+export enum ENROLMENT_MODALS {
+  CANCEL = 'cancel',
+  DELETE = 'delete',
+  PERSONS_ADDED_TO_WAITLIST = 'personsAddedToWaitList',
+  RESERVATION_TIME_EXPIRED = 'reservationTimeExpired',
+}

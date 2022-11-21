@@ -20,6 +20,7 @@ import { ROUTES } from '../../../app/routes/constants';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { SeatsReservation } from '../../../reserveSeats/types';
+import { EnrolmentPageProvider } from '../../enrolmentPageContext/EnrolmentPageContext';
 import {
   EnrolmentServerErrorsContext,
   EnrolmentServerErrorsContextProps,
@@ -38,14 +39,16 @@ const renderComponent = (
   serverErrorProps?: Partial<EnrolmentServerErrorsContextProps>
 ) =>
   render(
-    <EnrolmentServerErrorsContext.Provider
-      value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
-    >
-      <ReservationTimerProvider
-        initializeReservationData={true}
-        registration={registration}
-      />
-    </EnrolmentServerErrorsContext.Provider>
+    <EnrolmentPageProvider>
+      <EnrolmentServerErrorsContext.Provider
+        value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
+      >
+        <ReservationTimerProvider
+          initializeReservationData={true}
+          registration={registration}
+        />
+      </EnrolmentServerErrorsContext.Provider>
+    </EnrolmentPageProvider>
   );
 
 beforeEach(() => {
@@ -97,6 +100,37 @@ test('should show server errors when creating seats reservation fails', async ()
   await waitFor(() =>
     expect(showServerErrors).toBeCalledWith({ error: {} }, 'seatsReservation')
   );
+});
+
+test('should show modal if any of the reserved seats is in waiting list', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(
+    rest.post(`*/reserve_seats/`, (req, res, ctx) =>
+      res(
+        ctx.status(201),
+        ctx.json(
+          fakeSeatsReservation({
+            seats: 1,
+            waitlist_spots: 1,
+            seats_at_event: 0,
+          })
+        )
+      )
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  const modal = await screen.findByRole('dialog', {
+    name: 'Ilmoittautujia on lisätty varausjonoon',
+  });
+
+  await user.click(within(modal).getByRole('button', { name: 'Sulje' }));
+
+  await waitFor(() => expect(modal).not.toBeInTheDocument());
 });
 
 test('should route to create enrolment page if reservation is expired', async () => {

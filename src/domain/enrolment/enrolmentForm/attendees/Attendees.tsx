@@ -95,7 +95,7 @@ const Attendees: React.FC<Props> = ({
                   code: data?.code as string,
                   registration: registration.id,
                   seats: attendees.length - 1,
-                  waitlist: false,
+                  waitlist: true,
                 });
                 arrayHelpers.remove(index);
               };
