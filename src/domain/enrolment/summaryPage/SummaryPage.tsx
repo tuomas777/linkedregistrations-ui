@@ -141,7 +141,6 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                   );
                   const payload = getEnrolmentPayload({
                     formValues: values,
-                    registration,
                     reservationCode: reservationData?.code as string,
                   });
 
