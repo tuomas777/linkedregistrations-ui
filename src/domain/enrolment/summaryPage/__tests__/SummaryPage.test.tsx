@@ -202,7 +202,7 @@ test('should route to enrolment completed page', async () => {
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/registration/${registration.id}/enrolment/${enrolment.cancellation_code}/completed`
+      `/registration/${registration.id}/enrolment/completed`
     )
   );
 });

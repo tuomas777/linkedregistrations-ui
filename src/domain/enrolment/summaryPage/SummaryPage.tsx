@@ -20,6 +20,7 @@ import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
 import { useRegistrationQuery } from '../../registration/query';
 import { Registration } from '../../registration/types';
+import { getSeatsReservationData } from '../../reserveSeats/utils';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import Divider from '../divider/Divider';
@@ -30,7 +31,6 @@ import { useCreateEnrolmentMutation } from '../mutation';
 import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
-import { Enrolment } from '../types';
 import {
   clearCreateEnrolmentFormData,
   clearEnrolmentReservationData,
@@ -55,7 +55,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
-  const goToEnrolmentCompletedPage = (enrolment: Enrolment) => {
+  const goToEnrolmentCompletedPage = () => {
     // Disable reservation timer callbacks
     // so user is not redirected to create enrolment page
     disableReservationTimerCallbacks();
@@ -64,10 +64,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     clearEnrolmentReservationData(registration.id);
 
     goToPage(
-      ROUTES.ENROLMENT_COMPLETED.replace(
-        '[registrationId]',
-        registration.id
-      ).replace('[accessCode]', enrolment.cancellation_code as string)
+      ROUTES.ENROLMENT_COMPLETED.replace('[registrationId]', registration.id)
     );
   };
 
@@ -95,22 +92,23 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     });
   };
 
-  const createEnrolmentMutation = useCreateEnrolmentMutation({
-    onError: (error, variables) => {
-      showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
-      reportError({
-        data: {
-          error: JSON.parse(error.message),
-          payload: variables,
-          payloadAsString: JSON.stringify(variables),
-        },
-        message: 'Failed to create enrolment',
-      });
-    },
-    onSuccess: (data) => {
-      goToEnrolmentCompletedPage(data);
-    },
-  });
+  const createEnrolmentMutation = useCreateEnrolmentMutation(
+    registration.id as string,
+    {
+      onError: (error, variables) => {
+        showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
+        reportError({
+          data: {
+            error: JSON.parse(error.message),
+            payload: variables,
+            payloadAsString: JSON.stringify(variables),
+          },
+          message: 'Failed to create enrolment',
+        });
+      },
+      onSuccess: goToEnrolmentCompletedPage,
+    }
+  );
 
   return (
     <MainContent className={styles.summaryPage}>
@@ -137,7 +135,14 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                   setServerErrorItems([]);
 
                   await enrolmentSchema.validate(values, { abortEarly: true });
-                  const payload = getEnrolmentPayload(values, registration);
+
+                  const reservationData = getSeatsReservationData(
+                    registration.id
+                  );
+                  const payload = getEnrolmentPayload({
+                    formValues: values,
+                    reservationCode: reservationData?.code as string,
+                  });
 
                   createEnrolmentMutation.mutate(payload);
                 } catch (e) {

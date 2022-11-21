@@ -16,9 +16,11 @@ import {
 import {
   AttendeeFields,
   CreateEnrolmentMutationInput,
+  CreateEnrolmentResponse,
   Enrolment,
   EnrolmentFormFields,
   EnrolmentQueryVariables,
+  SignupInput,
 } from './types';
 
 export const fetchEnrolment = async (
@@ -46,12 +48,13 @@ export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
 };
 
 export const createEnrolment = async (
+  registrationId: string,
   input: CreateEnrolmentMutationInput,
   ctx?: Pick<NextPageContext, 'req' | 'res'>
-): Promise<Enrolment> => {
+): Promise<CreateEnrolmentResponse> => {
   try {
     const { data } = await callPost(
-      '/signup/',
+      `/registration/${registrationId}/signup/`,
       JSON.stringify(input),
       undefined,
       ctx
@@ -110,10 +113,13 @@ export const getEnrolmentNotificationTypes = (
   }
 };
 
-export const getEnrolmentPayload = (
-  formValues: EnrolmentFormFields,
-  registration: Registration
-): CreateEnrolmentMutationInput => {
+export const getEnrolmentPayload = ({
+  formValues,
+  reservationCode,
+}: {
+  formValues: EnrolmentFormFields;
+  reservationCode: string;
+}): CreateEnrolmentMutationInput => {
   const {
     attendees,
     email,
@@ -124,24 +130,30 @@ export const getEnrolmentPayload = (
     phoneNumber,
     serviceLanguage,
   } = formValues;
-  const { city, dateOfBirth, name, streetAddress, zip } = attendees[0] || {};
+
+  const signups: SignupInput[] = attendees.map((attendee) => {
+    const { city, dateOfBirth, name, streetAddress, zip } = attendee;
+    return {
+      city: city || null,
+      date_of_birth: dateOfBirth
+        ? formatDate(stringToDate(dateOfBirth), 'yyyy-MM-dd')
+        : null,
+      email: email || null,
+      extra_info: extraInfo,
+      membership_number: membershipNumber,
+      name: name || null,
+      native_language: nativeLanguage || null,
+      notifications: getEnrolmentNotificationsCode(notifications),
+      phone_number: phoneNumber || null,
+      service_language: serviceLanguage || null,
+      street_address: streetAddress || null,
+      zipcode: zip || null,
+    };
+  });
 
   return {
-    city: city || null,
-    date_of_birth: dateOfBirth
-      ? formatDate(stringToDate(dateOfBirth), 'yyyy-MM-dd')
-      : null,
-    email: email || null,
-    extra_info: extraInfo,
-    membership_number: membershipNumber,
-    name: name || null,
-    native_language: nativeLanguage || null,
-    notifications: getEnrolmentNotificationsCode(notifications),
-    phone_number: phoneNumber || null,
-    registration: registration.id as string,
-    service_language: serviceLanguage || null,
-    street_address: streetAddress || null,
-    zipcode: zip || null,
+    reservation_code: reservationCode,
+    signups,
   };
 };
 
