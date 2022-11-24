@@ -47,7 +47,7 @@ import ParticipantAmountSelector from '../participantAmountSelector/ParticipantA
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
-import { EnrolmentFormFields } from '../types';
+import { AttendeeFields, EnrolmentFormFields } from '../types';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
@@ -169,8 +169,12 @@ const EnrolmentForm: React.FC<Props> = ({
       onSubmit={/* istanbul ignore next */ () => undefined}
       validationSchema={readOnly ? undefined : enrolmentSchema}
     >
-      {({ setErrors, setTouched, values }) => {
+      {({ setErrors, setFieldValue, setTouched, values }) => {
         const clearErrors = () => setErrors({});
+
+        const setAttendees = (attendees: AttendeeFields[]) => {
+          setFieldValue(ENROLMENT_FIELDS.ATTENDEES, attendees);
+        };
 
         const handleSubmit = async () => {
           try {
@@ -214,8 +218,10 @@ const EnrolmentForm: React.FC<Props> = ({
 
               {!readOnly && (
                 <ReservationTimerProvider
+                  attendees={values.attendees}
                   initializeReservationData={true}
                   registration={registration}
+                  setAttendees={setAttendees}
                 >
                   <Divider />
                   <ReservationTimer />

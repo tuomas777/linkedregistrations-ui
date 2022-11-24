@@ -37,3 +37,14 @@
     font-weight: 700;
   }
 }
+
+.iconRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-s);
+  font-size: var(--fontsize-body-l);
+
+  .icon {
+    margin-right: var(--spacing-2-xs);
+  }
+}

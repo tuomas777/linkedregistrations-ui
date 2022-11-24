@@ -9,6 +9,7 @@ import {
 import { EnrolmentQueryVariables } from '../types';
 import {
   enrolmentPathBuilder,
+  getAttendeeDefaultInitialValues,
   getEnrolmentDefaultInitialValues,
   getEnrolmentInitialValues,
   getEnrolmentNotificationsCode,
@@ -96,6 +97,7 @@ describe('getEnrolmentPayload function', () => {
             city,
             dateOfBirth,
             extraInfo: '',
+            inWaitingList: false,
             name,
             streetAddress,
             zip: zipcode,
@@ -134,6 +136,48 @@ describe('getEnrolmentPayload function', () => {
   });
 });
 
+describe('getAttendeeDefaultInitialValues function', () => {
+  it('should return attendee initial values', () => {
+    expect(
+      getAttendeeDefaultInitialValues(
+        fakeRegistration({
+          audience_max_age: 18,
+          audience_min_age: 8,
+        })
+      )
+    ).toEqual({
+      audienceMaxAge: 18,
+      audienceMinAge: 8,
+      city: '',
+      dateOfBirth: '',
+      extraInfo: '',
+      inWaitingList: false,
+      name: '',
+      streetAddress: '',
+      zip: '',
+    });
+
+    expect(
+      getAttendeeDefaultInitialValues(
+        fakeRegistration({
+          audience_max_age: null,
+          audience_min_age: null,
+        })
+      )
+    ).toEqual({
+      audienceMaxAge: null,
+      audienceMinAge: null,
+      city: '',
+      dateOfBirth: '',
+      extraInfo: '',
+      inWaitingList: false,
+      name: '',
+      streetAddress: '',
+      zip: '',
+    });
+  });
+});
+
 describe('getEnrolmentDefaultInitialValues function', () => {
   it('should return enrolment initial values', () => {
     expect(
@@ -152,6 +196,7 @@ describe('getEnrolmentDefaultInitialValues function', () => {
           city: '',
           dateOfBirth: '',
           extraInfo: '',
+          inWaitingList: false,
           name: '',
           streetAddress: '',
           zip: '',
@@ -182,6 +227,7 @@ describe('getEnrolmentDefaultInitialValues function', () => {
           city: '',
           dateOfBirth: '',
           extraInfo: '',
+          inWaitingList: false,
           name: '',
           streetAddress: '',
           zip: '',
@@ -235,6 +281,7 @@ describe('getEnrolmentInitialValues function', () => {
         city: '-',
         dateOfBirth: '',
         extraInfo: '',
+        inWaitingList: false,
         name: '-',
         streetAddress: '-',
         zip: '-',
@@ -297,6 +344,7 @@ describe('getEnrolmentInitialValues function', () => {
         city: expectedCity,
         dateOfBirth: expectedDateOfBirth,
         extraInfo: '',
+        inWaitingList: false,
         name: expectedName,
         streetAddress: expectedStreetAddress,
         zip: expectedZip,

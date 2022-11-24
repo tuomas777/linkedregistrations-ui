@@ -1,5 +1,4 @@
 import { useField } from 'formik';
-import isEqual from 'lodash/isEqual';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
 
@@ -21,7 +20,7 @@ import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolm
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../types';
-import { getAttendeeDefaultInitialValues } from '../utils';
+import { getNewAttendees } from '../utils';
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {
@@ -63,11 +62,6 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     t
   );
 
-  const attendeeInitialValues = React.useMemo(
-    () => getAttendeeDefaultInitialValues(registration),
-    [registration]
-  );
-
   const updateReserveSeatsMutation = useUpdateReserveSeatsMutation({
     onError: (error, variables) => {
       showServerErrors(
@@ -87,26 +81,20 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       setSaving(false);
       closeModal();
     },
-    onSuccess: (data) => {
-      const seats = data.seats;
-      const filledAttendees = attendees.filter(
-        (a) => !isEqual(a, attendeeInitialValues)
-      );
-      const newAttendees = [
-        ...filledAttendees,
-        ...Array(Math.max(seats - filledAttendees.length, 0)).fill(
-          attendeeInitialValues
-        ),
-      ].slice(0, seats);
+    onSuccess: (seatsReservation) => {
+      const newAttendees = getNewAttendees({
+        attendees: attendees,
+        registration,
+        seatsReservation,
+      });
 
       setAttendees(newAttendees);
-      // TODO: Update reservation from API when BE is ready
-      setSeatsReservationData(registration.id, data);
+      setSeatsReservationData(registration.id, seatsReservation);
 
       setSaving(false);
 
       // Show modal to inform that some of the persons will be added to the waiting list
-      if (data.waitlist_spots) {
+      if (seatsReservation.waitlist_spots) {
         setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
       } else {
         closeModal();

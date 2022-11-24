@@ -22,9 +22,11 @@ import { ENROLMENT_MODALS, ENROLMENT_QUERY_PARAMS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
+import { AttendeeFields } from '../types';
 import {
   clearCreateEnrolmentFormData,
   clearEnrolmentReservationData,
+  getNewAttendees,
 } from '../utils';
 
 export type ReservationTimerContextProps = {
@@ -38,14 +40,18 @@ export const ReservationTimerContext = React.createContext<
 >(undefined);
 
 interface Props {
+  attendees?: AttendeeFields[];
   initializeReservationData: boolean;
   registration: Registration;
+  setAttendees?: (value: AttendeeFields[]) => void;
 }
 
 export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
+  attendees,
   children,
   initializeReservationData,
   registration,
+  setAttendees,
 }) => {
   const { openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
@@ -76,12 +82,22 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
         message: 'Failed to reserve seats',
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (seatsReservation) => {
       enableTimer();
-      setSeatsReservationData(registration.id, data);
-      setTimeLeft(getRegistrationTimeLeft(data));
+      setSeatsReservationData(registration.id, seatsReservation);
+      setTimeLeft(getRegistrationTimeLeft(seatsReservation));
 
-      if (data.waitlist_spots) {
+      if (setAttendees) {
+        const newAttendees = getNewAttendees({
+          attendees: attendees || /* istanbul ignore next */ [],
+          registration,
+          seatsReservation,
+        });
+
+        setAttendees(newAttendees);
+      }
+
+      if (seatsReservation.waitlist_spots) {
         setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
       }
     },

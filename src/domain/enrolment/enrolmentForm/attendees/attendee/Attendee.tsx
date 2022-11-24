@@ -12,6 +12,7 @@ import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
 import { ATTENDEE_FIELDS } from '../../../constants';
 import { useEnrolmentPageContext } from '../../../enrolmentPageContext/hooks/useEnrolmentPageContext';
+import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
 import { AttendeeFields } from '../../../types';
 import styles from './attendee.module.scss';
 
@@ -57,6 +58,9 @@ const Attendee: React.FC<Props> = ({
       }
       onClick={() => toggleOpenParticipant(index)}
       open={openParticipant === index}
+      toggleButtonIcon={
+        attendee.inWaitingList ? <InWaitingListInfo /> : undefined
+      }
       toggleButtonLabel={
         attendee.name || t('attendeeDefaultTitle', { index: index + 1 })
       }
