@@ -37,6 +37,7 @@
     },
     "freeEvent": "Maksuton"
   },
+  "freeCapacity": "Saatavilla olevia paikkoja",
   "inWaitingList": {
     "text": "Varasija",
     "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon varasijalla. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
@@ -81,6 +82,7 @@
   "titleAdditionalInfo": "Lisätiedot",
   "titleBasicInfo": "Ilmoittautujan perustiedot",
   "titleContactInfo": "Yhteystiedot",
+  "titleInformantInfo": "Ilmoittajan tiedot",
   "titleNotifications": "Tapahtumaa koskevat ilmoitukset",
   "titleRegistration": "Ilmoittautuminen",
   "warnings": {

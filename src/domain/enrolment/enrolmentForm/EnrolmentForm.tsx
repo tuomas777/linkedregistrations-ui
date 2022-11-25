@@ -24,7 +24,10 @@ import { OptionType } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
-import { isRegistrationPossible } from '../../registration/utils';
+import {
+  getFreeAttendeeCapacity,
+  isRegistrationPossible,
+} from '../../registration/utils';
 import {
   getSeatsReservationData,
   isSeatsReservationExpired,
@@ -98,6 +101,7 @@ const EnrolmentForm: React.FC<Props> = ({
     await (callbacks?.onSuccess && callbacks.onSuccess());
   };
 
+  const freeCapacity = getFreeAttendeeCapacity(registration);
   const notificationOptions = useNotificationOptions();
   const formDisabled = !isRegistrationPossible(registration);
   const locale = useLocale();
@@ -231,6 +235,11 @@ const EnrolmentForm: React.FC<Props> = ({
               <Divider />
               <h2>{t('titleRegistration')}</h2>
 
+              {typeof freeCapacity === 'number' && (
+                <p>
+                  {t('freeCapacity')} <strong>{freeCapacity}</strong>
+                </p>
+              )}
               <ParticipantAmountSelector
                 disabled={formDisabled || !!readOnly}
                 registration={registration}
@@ -241,6 +250,9 @@ const EnrolmentForm: React.FC<Props> = ({
                 readOnly={readOnly}
                 registration={registration}
               />
+
+              <h2 className={styles.sectionTitle}>{t('titleInformantInfo')}</h2>
+              <Divider />
 
               <Fieldset heading={t(`titleContactInfo`)}>
                 <FormGroup>

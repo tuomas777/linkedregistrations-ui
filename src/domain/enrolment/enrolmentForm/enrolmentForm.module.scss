@@ -13,6 +13,10 @@
   }
 }
 
+.sectionTitle {
+  margin-bottom: calc(0px - var(--spacing-xs));
+}
+
 .notifications {
   margin-top: var(--spacing-m);
 }
