@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import isEqual from 'lodash/isEqual';
 import { NextPageContext } from 'next';
 
 import { FORM_NAMES, RESERVATION_NAMES } from '../../constants';
@@ -7,6 +8,7 @@ import queryBuilder from '../../utils/queryBuilder';
 import stringToDate from '../../utils/stringToDate';
 import { callDelete, callGet, callPost } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
+import { SeatsReservation } from '../reserveSeats/types';
 import {
   ATTENDEE_INITIAL_VALUES,
   ENROLMENT_INITIAL_VALUES,
@@ -188,6 +190,7 @@ export const getEnrolmentInitialValues = (
           ? formatDate(new Date(enrolment.date_of_birth))
           : '',
         extraInfo: '',
+        inWaitingList: false,
         name: enrolment.name || '-',
         streetAddress: enrolment.street_address || '-',
         zip: enrolment.zipcode || '-',
@@ -215,4 +218,31 @@ export const clearEnrolmentReservationData = (registrationId: string): void => {
   sessionStorage?.removeItem(
     `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`
   );
+};
+
+export const getNewAttendees = ({
+  attendees,
+  registration,
+  seatsReservation,
+}: {
+  attendees: AttendeeFields[];
+  registration: Registration;
+  seatsReservation: SeatsReservation;
+}) => {
+  const { seats, seats_at_event } = seatsReservation;
+  const attendeeInitialValues = getAttendeeDefaultInitialValues(registration);
+  const filledAttendees = attendees.filter(
+    (a) => !isEqual(a, attendeeInitialValues)
+  );
+  return [
+    ...filledAttendees,
+    ...Array(Math.max(seats - filledAttendees.length, 0)).fill(
+      attendeeInitialValues
+    ),
+  ]
+    .slice(0, seats)
+    .map((attendee, index) => ({
+      ...attendee,
+      inWaitingList: index + 1 > seats_at_event,
+    }));
 };

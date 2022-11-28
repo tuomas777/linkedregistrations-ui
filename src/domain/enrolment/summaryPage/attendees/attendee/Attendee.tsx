@@ -6,16 +6,17 @@ import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../../common/components/textArea/TextArea';
 import { ATTENDEE_FIELDS } from '../../../constants';
 import Divider from '../../../divider/Divider';
+import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
 import { AttendeeFields } from '../../../types';
 import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
 import styles from './attendee.module.scss';
 
-type Props = {
+export type AttendeeProps = {
   attendee: AttendeeFields;
   attendeePath: string;
 };
 
-const Attendee: React.FC<Props> = ({ attendee, attendeePath }) => {
+const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
   const { t } = useTranslation('summary');
 
   const getFieldId = (field: string) => `${attendeePath}.${field}`;
@@ -25,7 +26,10 @@ const Attendee: React.FC<Props> = ({ attendee, attendeePath }) => {
   return (
     <div>
       <Divider />
-      <IconUser aria-hidden size="m" />
+      <div className={styles.iconRow}>
+        <IconUser aria-hidden className={styles.icon} size="m" />
+        {attendee.inWaitingList && <InWaitingListInfo />}
+      </div>
       <FormGroup>
         <ReadOnlyTextInput
           id={getFieldId(ATTENDEE_FIELDS.NAME)}

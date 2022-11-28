@@ -8,7 +8,7 @@ import { RegistrationQueryVariables } from '../types';
 import {
   getAttendeeCapacityError,
   getFreeAttendeeCapacity,
-  getFreeWaitingAttendeeCapacity,
+  getFreeWaitlistCapacity,
   getRegistrationWarning,
   isAttendeeCapacityUsed,
   isRegistrationOpen,
@@ -153,18 +153,16 @@ describe('getFreeAttendeeCapacity', () => {
   });
 });
 
-describe('getFreeWaitingAttendeeCapacity', () => {
+describe('getFreeWaitlistCapacity', () => {
   it('should return 0 if waiting_list_capacity is not defined', () => {
     expect(
-      getFreeWaitingAttendeeCapacity(
-        fakeRegistration({ waiting_list_capacity: null })
-      )
+      getFreeWaitlistCapacity(fakeRegistration({ waiting_list_capacity: null }))
     ).toBe(0);
   });
 
   it('should return correct amount if waiting_list_capacity is defined', () => {
     expect(
-      getFreeWaitingAttendeeCapacity(
+      getFreeWaitlistCapacity(
         fakeRegistration({
           current_waiting_list_count: 4,
           waiting_list_capacity: 40,

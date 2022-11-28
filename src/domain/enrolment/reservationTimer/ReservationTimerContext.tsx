@@ -18,19 +18,20 @@ import {
   isSeatsReservationExpired,
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
-import { ENROLMENT_QUERY_PARAMS } from '../constants';
+import { ENROLMENT_MODALS, ENROLMENT_QUERY_PARAMS } from '../constants';
+import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
+import { AttendeeFields } from '../types';
 import {
   clearCreateEnrolmentFormData,
   clearEnrolmentReservationData,
+  getNewAttendees,
 } from '../utils';
 
 export type ReservationTimerContextProps = {
   disableCallbacks: () => void;
-  isModalOpen: boolean;
   registration: Registration;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   timeLeft: number | null;
 };
 
@@ -39,15 +40,20 @@ export const ReservationTimerContext = React.createContext<
 >(undefined);
 
 interface Props {
+  attendees?: AttendeeFields[];
   initializeReservationData: boolean;
   registration: Registration;
+  setAttendees?: (value: AttendeeFields[]) => void;
 }
 
 export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
+  attendees,
   children,
   initializeReservationData,
   registration,
+  setAttendees,
 }) => {
+  const { openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
   const router = useRouter();
@@ -55,7 +61,6 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   const callbacksDisabled = useRef(false);
   const timerEnabled = useRef(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const enableTimer = useCallback(() => {
     timerEnabled.current = true;
@@ -77,10 +82,24 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
         message: 'Failed to reserve seats',
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (seatsReservation) => {
       enableTimer();
-      setSeatsReservationData(registration.id, data);
-      setTimeLeft(getRegistrationTimeLeft(data));
+      setSeatsReservationData(registration.id, seatsReservation);
+      setTimeLeft(getRegistrationTimeLeft(seatsReservation));
+
+      if (setAttendees) {
+        const newAttendees = getNewAttendees({
+          attendees: attendees || /* istanbul ignore next */ [],
+          registration,
+          seatsReservation,
+        });
+
+        setAttendees(newAttendees);
+      }
+
+      if (seatsReservation.waitlist_spots) {
+        setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
+      }
     },
   });
 
@@ -153,27 +172,25 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
             clearCreateEnrolmentFormData(registration.id);
             clearEnrolmentReservationData(registration.id);
 
-            setIsModalOpen(true);
+            setOpenModal(ENROLMENT_MODALS.RESERVATION_TIME_EXPIRED);
           }
         }
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [disableCallbacks, registration, setTimeLeft, timeLeft]);
+  }, [disableCallbacks, registration, setOpenModal, setTimeLeft, timeLeft]);
 
   return (
     <ReservationTimerContext.Provider
       value={{
         disableCallbacks,
-        isModalOpen,
         registration,
-        setIsModalOpen,
         timeLeft,
       }}
     >
       <ReservationTimeExpiredModal
-        isOpen={isModalOpen}
+        isOpen={openModal === ENROLMENT_MODALS.RESERVATION_TIME_EXPIRED}
         onTryAgain={handleTryAgain}
       />
       {children}

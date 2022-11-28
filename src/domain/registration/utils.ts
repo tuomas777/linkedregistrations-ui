@@ -56,6 +56,17 @@ export const isAttendeeCapacityUsed = (registration: Registration): boolean => {
   }
 };
 
+export const getTotalAttendeeCapacity = (
+  registration: Registration
+): number | undefined => {
+  const attendeeCapacity = getFreeAttendeeCapacity(registration);
+  // If there are seats in the event
+  if (attendeeCapacity === undefined) {
+    return undefined;
+  }
+  return attendeeCapacity + getFreeWaitlistCapacity(registration);
+};
+
 export const getFreeAttendeeCapacity = (
   registration: Registration
 ): number | undefined => {
@@ -70,6 +81,19 @@ export const getFreeAttendeeCapacity = (
   );
 };
 
+export const getFreeWaitlistCapacity = (registration: Registration): number => {
+  // If there are seats in the event
+  if (!registration.waiting_list_capacity) {
+    return 0;
+  }
+
+  return Math.max(
+    registration.waiting_list_capacity -
+      registration.current_waiting_list_count,
+    0
+  );
+};
+
 export const getAttendeeCapacityError = (
   registration: Registration,
   participantAmount: number,
@@ -79,7 +103,7 @@ export const getAttendeeCapacityError = (
     return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MIN}`, { min: 1 });
   }
 
-  const freeCapacity = getFreeAttendeeCapacity(registration);
+  const freeCapacity = getTotalAttendeeCapacity(registration);
 
   if (freeCapacity && participantAmount > freeCapacity) {
     return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MAX}`, {
@@ -119,15 +143,6 @@ export const isRegistrationPossible = (registration: Registration): boolean => {
   );
 };
 
-export const getFreeWaitingAttendeeCapacity = (
-  registration: Registration
-): number => {
-  return (
-    (registration.waiting_list_capacity ?? /* istanbul ignore next */ 0) -
-    registration.current_waiting_list_count
-  );
-};
-
 export const getRegistrationWarning = (
   registration: Registration,
   t: TFunction
@@ -139,7 +154,7 @@ export const getRegistrationWarning = (
     !isWaitingCapacityUsed(registration)
   ) {
     return t('enrolment:warnings.capacityInWaitingList', {
-      count: getFreeWaitingAttendeeCapacity(registration),
+      count: getFreeWaitlistCapacity(registration),
     });
   }
   return '';

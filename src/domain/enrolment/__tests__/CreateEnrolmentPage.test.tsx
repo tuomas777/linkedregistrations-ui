@@ -9,6 +9,7 @@ import React from 'react';
 import formatDate from '../../../utils/formatDate';
 import { fakeSeatsReservation } from '../../../utils/mockDataUtils';
 import {
+  actWait,
   configure,
   loadingSpinnerIsNotInDocument,
   render,
@@ -320,6 +321,7 @@ test('should add and delete participants', async () => {
   });
   await user.click(deleteParticipantButton);
 
+  await actWait(10);
   await waitFor(() =>
     expect(
       screen.queryByRole('button', { name: 'Osallistuja 2' })
@@ -437,6 +439,7 @@ test('should delete participants by clicking delete participant button', async (
   seats = 1;
   await user.click(deleteParticipantButton);
 
+  await actWait(10);
   await waitFor(() =>
     expect(
       screen.queryByRole('button', { name: 'Osallistuja 2' })

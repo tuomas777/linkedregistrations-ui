@@ -20,12 +20,14 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
-import useMountedState from '../../../hooks/useMountedState';
 import { OptionType } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
-import { isRegistrationPossible } from '../../registration/utils';
+import {
+  getFreeAttendeeCapacity,
+  isRegistrationPossible,
+} from '../../registration/utils';
 import {
   getSeatsReservationData,
   isSeatsReservationExpired,
@@ -33,6 +35,7 @@ import {
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   ENROLMENT_FIELDS,
+  ENROLMENT_MODALS,
   ENROLMENT_QUERY_PARAMS,
   NOTIFICATIONS,
 } from '../constants';
@@ -47,14 +50,10 @@ import ParticipantAmountSelector from '../participantAmountSelector/ParticipantA
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
-import { EnrolmentFormFields } from '../types';
+import { AttendeeFields, EnrolmentFormFields } from '../types';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
-
-export enum ENROLMENT_MODALS {
-  CANCEL = 'cancel',
-}
 
 interface Callbacks {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,10 +88,8 @@ const EnrolmentForm: React.FC<Props> = ({
 
   const formSavingDisabled = React.useRef(!!readOnly);
 
-  const { setOpenParticipant } = useEnrolmentPageContext();
-  const [openModal, setOpenModal] = useMountedState<ENROLMENT_MODALS | null>(
-    null
-  );
+  const { openModal, setOpenModal, setOpenParticipant } =
+    useEnrolmentPageContext();
 
   const closeModal = () => {
     setOpenModal(null);
@@ -104,6 +101,7 @@ const EnrolmentForm: React.FC<Props> = ({
     await (callbacks?.onSuccess && callbacks.onSuccess());
   };
 
+  const freeCapacity = getFreeAttendeeCapacity(registration);
   const notificationOptions = useNotificationOptions();
   const formDisabled = !isRegistrationPossible(registration);
   const locale = useLocale();
@@ -175,8 +173,12 @@ const EnrolmentForm: React.FC<Props> = ({
       onSubmit={/* istanbul ignore next */ () => undefined}
       validationSchema={readOnly ? undefined : enrolmentSchema}
     >
-      {({ setErrors, setTouched, values }) => {
+      {({ setErrors, setFieldValue, setTouched, values }) => {
         const clearErrors = () => setErrors({});
+
+        const setAttendees = (attendees: AttendeeFields[]) => {
+          setFieldValue(ENROLMENT_FIELDS.ATTENDEES, attendees);
+        };
 
         const handleSubmit = async () => {
           try {
@@ -220,8 +222,10 @@ const EnrolmentForm: React.FC<Props> = ({
 
               {!readOnly && (
                 <ReservationTimerProvider
+                  attendees={values.attendees}
                   initializeReservationData={true}
                   registration={registration}
+                  setAttendees={setAttendees}
                 >
                   <Divider />
                   <ReservationTimer />
@@ -231,6 +235,11 @@ const EnrolmentForm: React.FC<Props> = ({
               <Divider />
               <h2>{t('titleRegistration')}</h2>
 
+              {typeof freeCapacity === 'number' && (
+                <p>
+                  {t('freeCapacity')} <strong>{freeCapacity}</strong>
+                </p>
+              )}
               <ParticipantAmountSelector
                 disabled={formDisabled || !!readOnly}
                 registration={registration}
@@ -241,6 +250,9 @@ const EnrolmentForm: React.FC<Props> = ({
                 readOnly={readOnly}
                 registration={registration}
               />
+
+              <h2 className={styles.sectionTitle}>{t('titleInformantInfo')}</h2>
+              <Divider />
 
               <Fieldset heading={t(`titleContactInfo`)}>
                 <FormGroup>

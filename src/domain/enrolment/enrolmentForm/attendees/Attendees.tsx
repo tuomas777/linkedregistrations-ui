@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { FieldArray, useField } from 'formik';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { reportError } from '../../../app/sentry/utils';
 import { Registration } from '../../../registration/types';
@@ -13,6 +13,7 @@ import { ENROLMENT_FIELDS } from '../../constants';
 import { useEnrolmentServerErrorsContext } from '../../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { AttendeeFields } from '../../types';
+import { getNewAttendees } from '../../utils';
 import Attendee from './attendee/Attendee';
 import styles from './attendees.module.scss';
 
@@ -30,15 +31,16 @@ const Attendees: React.FC<Props> = ({
   readOnly,
   registration,
 }) => {
+  const indexToRemove = useRef(-1);
   const [openModalIndex, setOpenModalIndex] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
 
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
 
-  const [{ value: attendees }] = useField<AttendeeFields[]>({
-    name: ENROLMENT_FIELDS.ATTENDEES,
-  });
+  const [{ value: attendees }, , { setValue: setAttendees }] = useField<
+    AttendeeFields[]
+  >({ name: ENROLMENT_FIELDS.ATTENDEES });
 
   const closeModal = () => {
     setOpenModalIndex(null);
@@ -63,9 +65,18 @@ const Attendees: React.FC<Props> = ({
       setSaving(false);
       closeModal();
     },
-    onSuccess: (data) => {
-      // TODO: Update reservation from API when BE is ready
-      setSeatsReservationData(registration.id, data);
+    onSuccess: (seatsReservation) => {
+      const newAttendees = getNewAttendees({
+        attendees: attendees.filter(
+          (_, index) => index !== indexToRemove.current
+        ),
+        registration,
+        seatsReservation,
+      });
+
+      setAttendees(newAttendees);
+
+      setSeatsReservationData(registration.id, seatsReservation);
 
       setSaving(false);
       closeModal();
@@ -76,7 +87,7 @@ const Attendees: React.FC<Props> = ({
     <div className={styles.accordions}>
       <FieldArray
         name={ENROLMENT_FIELDS.ATTENDEES}
-        render={(arrayHelpers) => (
+        render={() => (
           <div>
             {attendees.map((attendee, index: number) => {
               const openModal = () => {
@@ -91,13 +102,14 @@ const Attendees: React.FC<Props> = ({
                 // Clear server errors
                 setServerErrorItems([]);
 
+                indexToRemove.current = index;
+
                 await updateReserveSeatsMutation.mutate({
                   code: data?.code as string,
                   registration: registration.id,
                   seats: attendees.length - 1,
-                  waitlist: false,
+                  waitlist: true,
                 });
-                arrayHelpers.remove(index);
               };
 
               return (

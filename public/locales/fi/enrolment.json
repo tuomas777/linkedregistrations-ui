@@ -37,6 +37,11 @@
     },
     "freeEvent": "Maksuton"
   },
+  "freeCapacity": "Saatavilla olevia paikkoja",
+  "inWaitingList": {
+    "text": "Varasija",
+    "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon varasijalla. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
+  },
   "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Rekisteriseloste {{openInNewTab}}\">Rekisteriseloste</a>",
   "labelAttendeeExtraInfo": "Lisätietoa (valinnainen)",
   "labelCity": "Kaupunki",
@@ -56,6 +61,11 @@
     "email": "Sähköpostilla",
     "sms": "Tekstiviestillä"
   },
+  "personsAddedToWaitingListModal": {
+    "buttonClose": "Sulje",
+    "text": "Huomioi, että kaikki ilmoittautujien paikat eivät ole varmistettuja. Varasijalla olevat ilmoittautujat varmistuvat vain, jos jonosta vapautuu lisää paikkoja. Varmistuneesta ilmoittautumisesta saat erillisen sähköpostin.",
+    "title": "Ilmoittautujia on lisätty varausjonoon"
+  },
   "placeholderAttendeeExtraInfo": "Syötä mahdollinen lisätieto tai toive",
   "placeholderCity": "Syötä kaupunki",
   "placeholderDateOfBirth": "P.K.VVVV",
@@ -72,6 +82,7 @@
   "titleAdditionalInfo": "Lisätiedot",
   "titleBasicInfo": "Ilmoittautujan perustiedot",
   "titleContactInfo": "Yhteystiedot",
+  "titleInformantInfo": "Ilmoittajan tiedot",
   "titleNotifications": "Tapahtumaa koskevat ilmoitukset",
   "titleRegistration": "Ilmoittautuminen",
   "warnings": {

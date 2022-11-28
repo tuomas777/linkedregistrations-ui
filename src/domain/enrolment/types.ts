@@ -12,6 +12,7 @@ export type AttendeeFields = {
   [ATTENDEE_FIELDS.CITY]: string;
   [ATTENDEE_FIELDS.DATE_OF_BIRTH]: string;
   [ATTENDEE_FIELDS.EXTRA_INFO]: string;
+  [ATTENDEE_FIELDS.IN_WAITING_LIST]: boolean;
   [ATTENDEE_FIELDS.NAME]: string;
   [ATTENDEE_FIELDS.STREET_ADDRESS]: string;
   [ATTENDEE_FIELDS.ZIP]: string;
