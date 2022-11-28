@@ -318,7 +318,9 @@ const EnrolmentForm: React.FC<Props> = ({
                       disabled={formDisabled || readOnly}
                       label={t(`labelNativeLanguage`)}
                       placeholder={
-                        readOnly ? '' : t(`placeholderNativeLanguage`)
+                        readOnly
+                          ? ''
+                          : (t(`placeholderNativeLanguage`) as string)
                       }
                       readOnly={readOnly}
                       required
@@ -328,7 +330,9 @@ const EnrolmentForm: React.FC<Props> = ({
                       disabled={formDisabled || readOnly}
                       label={t(`labelServiceLanguage`)}
                       placeholder={
-                        readOnly ? '' : t(`placeholderServiceLanguage`)
+                        readOnly
+                          ? ''
+                          : (t(`placeholderServiceLanguage`) as string)
                       }
                       required
                     />

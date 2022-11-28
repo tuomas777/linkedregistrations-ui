@@ -1,13 +1,14 @@
 import classNames from 'classnames';
 import { IconArrowLeft, IconSignout, Navigation } from 'hds-react';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { MAIN_CONTENT_ID, PAGE_HEADER_ID } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import useSelectLanguage from '../../../hooks/useSelectLanguage';
+import { ExtendedSession } from '../../../types';
 import skipFalsyType from '../../../utils/skipFalsyType';
 import { useUserQuery } from '../../user/query';
 import { ROUTES } from '../routes/constants';
@@ -20,7 +21,8 @@ interface NavigationItem {
 }
 
 const Header: React.FC = () => {
-  const { data: session } = useSession();
+  const { data } = useSession();
+  const session = data as ExtendedSession;
 
   const { data: user } = useUserQuery(
     { username: session?.sub as string },
@@ -114,7 +116,7 @@ const Header: React.FC = () => {
           />
         </Navigation.User>
         <Navigation.LanguageSelector
-          buttonAriaLabel={t('navigation.languageSelectorAriaLabel')}
+          buttonAriaLabel={t('navigation.languageSelectorAriaLabel') as string}
           className={classNames(styles.languageSelector)}
           label={t(`navigation.languages.${locale}`)}
         >

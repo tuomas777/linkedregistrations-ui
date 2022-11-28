@@ -100,7 +100,9 @@ export const getAttendeeCapacityError = (
   t: TFunction
 ): string | undefined => {
   if (participantAmount < 1) {
-    return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MIN}`, { min: 1 });
+    return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MIN}`, {
+      min: 1,
+    }) as string;
   }
 
   const freeCapacity = getTotalAttendeeCapacity(registration);
@@ -108,7 +110,7 @@ export const getAttendeeCapacityError = (
   if (freeCapacity && participantAmount > freeCapacity) {
     return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MAX}`, {
       max: freeCapacity,
-    });
+    }) as string;
   }
 
   return undefined;

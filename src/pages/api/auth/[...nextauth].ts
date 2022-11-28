@@ -8,6 +8,7 @@ import {
   getApiTokenExpirationTime,
   isApiTokenExpiring,
 } from '../../../domain/auth/utils';
+import { ExtendedJWT, ExtendedSession } from '../../../types';
 
 type User = {
   iss: string;
@@ -64,41 +65,52 @@ export const getNextAuthOptions = (req: NextApiRequest) => {
     ],
     callbacks: {
       async jwt({ token, account }) {
+        const extendedToken = token as ExtendedJWT;
+
         if (account) {
-          token.accessToken = account.access_token;
-          token.accessTokenExpiresAt = account.expires_at;
+          extendedToken.accessToken = account.access_token ?? null;
+          extendedToken.accessTokenExpiresAt = account.expires_at ?? null;
         }
 
-        if (token.accessToken) {
+        if (extendedToken.accessToken) {
           if (
-            !token.apiTokenExpiresAt ||
-            isApiTokenExpiring(token.apiTokenExpiresAt as number)
+            !extendedToken.apiTokenExpiresAt ||
+            isApiTokenExpiring(extendedToken.apiTokenExpiresAt)
           ) {
             try {
               const apiToken = await fetchApiToken({
-                accessToken: token.accessToken as string,
+                accessToken: extendedToken.accessToken,
               });
 
-              token.apiToken = apiToken;
-              token.apiTokenExpiresAt = getApiTokenExpirationTime();
+              extendedToken.apiToken = apiToken;
+              extendedToken.apiTokenExpiresAt = getApiTokenExpirationTime();
             } catch (e) {
-              token.apiToken = null;
-              token.apiTokenExpiresAt = null;
+              extendedToken.apiToken = null;
+              extendedToken.apiTokenExpiresAt = null;
             }
           }
         } else {
-          token.apiToken = null;
-          token.apiTokenExpiresAt = null;
+          extendedToken.apiToken = null;
+          extendedToken.apiTokenExpiresAt = null;
         }
 
-        return token;
+        return extendedToken;
       },
       async session({ session, token }) {
-        session.accessToken = token.accessToken || null;
-        session.accessTokenExpiresAt = token.accessTokenExpiresAt || null;
-        session.apiToken = token.apiToken || null;
-        session.apiTokenExpiresAt = token.apiTokenExpiresAt || null;
-        session.sub = token.sub || null;
+        const extendedSession = session as ExtendedSession;
+        const {
+          accessToken,
+          accessTokenExpiresAt,
+          apiToken,
+          apiTokenExpiresAt,
+          sub,
+        } = token as ExtendedJWT;
+
+        extendedSession.accessToken = accessToken;
+        extendedSession.accessTokenExpiresAt = accessTokenExpiresAt;
+        extendedSession.apiToken = apiToken;
+        extendedSession.apiTokenExpiresAt = apiTokenExpiresAt;
+        extendedSession.sub = sub ?? null;
 
         if (session.user && !session.user?.image) {
           session.user.image = null;

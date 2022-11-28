@@ -6,6 +6,7 @@ import { Session } from 'next-auth';
 
 import { TEST_ACCESS_TOKEN, TEST_API_TOKEN } from '../domain/auth/constants';
 import { TEST_USER_ID } from '../domain/user/constants';
+import { ExtendedSession } from '../types';
 
 type SessionUser = {
   name?: string | null;
@@ -25,7 +26,7 @@ export const fakeSessionUser = (
     overrides
   );
 
-export const sessionDefaultValue: Session = {
+export const sessionDefaultValue: ExtendedSession = {
   user: fakeSessionUser(),
   expires: '2022-11-02T13:10:14.577Z',
   accessToken: TEST_ACCESS_TOKEN,
