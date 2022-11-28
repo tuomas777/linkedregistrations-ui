@@ -1,6 +1,16 @@
 {
   "appName": "Linked Registrations",
   "cancel": "Peruuta",
+  "cookieConsent": {
+    "enrolmentForm": {
+      "description": "Osallistumislomakkeen tietojen säilymiseksi vaadittu eväste",
+      "name": "Osallistumislomakkeen eväste"
+    },
+    "expiration": {
+      "session": "Istunto"
+    },
+    "siteName": "Linked Registrations"
+  },
   "dropdownSelect": {
     "accessibility": {
       "noResults": "Ei vaihtoehtoja",
