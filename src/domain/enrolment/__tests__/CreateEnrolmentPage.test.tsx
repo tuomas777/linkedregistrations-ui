@@ -9,7 +9,6 @@ import React from 'react';
 import formatDate from '../../../utils/formatDate';
 import { fakeSeatsReservation } from '../../../utils/mockDataUtils';
 import {
-  act,
   actWait,
   configure,
   loadingSpinnerIsNotInDocument,
