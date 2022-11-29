@@ -1,4 +1,9 @@
+/* eslint-disable import/no-named-as-default-member */
+/* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable max-len */
+import i18n from 'i18next';
+import mockRouter from 'next-router-mock';
+import singletonRouter from 'next/router';
 import React from 'react';
 
 import {
@@ -10,6 +15,8 @@ import {
   within,
 } from '../../../../utils/testUtils';
 import CookieConsent from '../CookieConsent';
+
+jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
 configure({ defaultHidden: true });
 
@@ -27,6 +34,7 @@ beforeEach(() => {
     disconnect: jest.fn(),
   }));
   clearAllCookies();
+  i18n.changeLanguage('fi');
 });
 
 const renderApp = async () => render(<CookieConsent />);
@@ -64,6 +72,7 @@ const findCookieConsentModalElement = async (
     | 'acceptAllButton'
     | 'acceptOnlyNecessaryButton'
     | 'enOption'
+    | 'fiOption'
     | 'languageSelector'
     | 'svOption'
 ) => {
@@ -79,6 +88,10 @@ const findCookieConsentModalElement = async (
     case 'enOption':
       return within(cookieConsentModal).findByRole('link', {
         name: 'English (EN)',
+      });
+    case 'fiOption':
+      return within(cookieConsentModal).findByRole('link', {
+        name: 'Suomeksi (FI)',
       });
     case 'languageSelector':
       return within(cookieConsentModal).findByRole('button', {
@@ -99,6 +112,8 @@ it('should show cookie consent modal if consent is not saved to cookie', async (
 
 it('should change cookie consent modal language', async () => {
   const user = userEvent.setup();
+
+  singletonRouter.push({ pathname: '/registrations' });
   await renderApp();
 
   const cookieConsentModal = await waitCookieConsentModalToBeVisible();
@@ -108,17 +123,15 @@ it('should change cookie consent modal language', async () => {
   );
 
   const languageElements: {
-    optionKey: 'enOption' | 'svOption';
-    headingText: string;
+    locale: 'en' | 'fi' | 'sv';
+    optionKey: 'enOption' | 'fiOption' | 'svOption';
   }[] = [
-    { optionKey: 'enOption', headingText: 'Linked Registrations uses cookies' },
-    {
-      optionKey: 'svOption',
-      headingText: 'Linked Registrations använder kakor',
-    },
+    { locale: 'en', optionKey: 'enOption' },
+    { locale: 'fi', optionKey: 'fiOption' },
+    { locale: 'sv', optionKey: 'svOption' },
   ];
 
-  for (const { optionKey, headingText } of languageElements) {
+  for (const { locale, optionKey } of languageElements) {
     await user.click(languageSelector);
     const languageOption = await findCookieConsentModalElement(
       cookieConsentModal,
@@ -126,9 +139,7 @@ it('should change cookie consent modal language', async () => {
     );
     await user.click(languageOption);
 
-    await within(cookieConsentModal).findByRole('heading', {
-      name: headingText,
-    });
+    expect(mockRouter.locale).toBe(locale);
   }
 });
 

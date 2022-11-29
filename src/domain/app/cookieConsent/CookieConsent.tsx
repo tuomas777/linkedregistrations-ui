@@ -1,54 +1,42 @@
 import { CookieModal } from 'hds-react';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PAGE_HEADER_ID } from '../../../constants';
-import i18n from '../../../tests/initI18n';
+import useLocale from '../../../hooks/useLocale';
+import useSelectLanguage from '../../../hooks/useSelectLanguage';
 
 type SupportedLanguage = 'en' | 'fi' | 'sv';
-
-const translations = {
-  enrolmentForm: {
-    description: {
-      en: 'The cookie required to save the enrolment form data',
-      fi: 'Osallistumislomakkeen tietojen säilymiseksi vaadittu eväste',
-      sv: 'Cookien som krävs för att spara deltagande formulär data',
-    },
-    name: {
-      en: 'Enrolment form cookie',
-      fi: 'Osallistumislomakkeen eväste',
-      sv: 'Cookie för deltagande formulär',
-    },
-  },
-  expiration: {
-    session: {
-      en: 'Session',
-      fi: 'Istunto',
-      sv: 'Session',
-    },
-  },
-  siteName: {
-    en: 'Linked Registrations',
-    fi: 'Linked Registrations',
-    sv: 'Linked Registrations',
-  },
-};
 
 /* istanbul ignore next */
 const origin = typeof window !== 'undefined' ? window.location.origin : '';
 
 const CookieConsent: FC = () => {
-  const [language, setLanguage] = useState<SupportedLanguage>(
-    i18n.language as SupportedLanguage
-  );
+  const { t } = useTranslation('common');
+  const locale = useLocale();
 
-  const onLanguageChange = async (newLang: string) =>
-    setLanguage(newLang as SupportedLanguage);
+  const [showCookieConsentModal, setShowCookieConsentModal] =
+    React.useState(true);
+
+  const { languageOptions, changeLanguage } = useSelectLanguage();
+
+  const onLanguageChange = async (lang: string) => {
+    const langOption = languageOptions.find(
+      (l) => l.value === (lang as SupportedLanguage)
+    );
+
+    if (langOption) {
+      changeLanguage(langOption)();
+    }
+  };
+
+  if (!showCookieConsentModal) return null;
 
   return (
     <CookieModal
       contentSource={{
-        siteName: translations.siteName[language],
-        currentLanguage: language,
+        siteName: t('cookieConsent.siteName') as string,
+        currentLanguage: locale,
         requiredCookies: {
           groups: [
             {
@@ -61,9 +49,11 @@ const CookieConsent: FC = () => {
                 {
                   id: 'enrolmentForm',
                   hostName: origin,
-                  name: translations.enrolmentForm.name[language],
-                  description: translations.enrolmentForm.description[language],
-                  expiration: translations.expiration.session[language],
+                  name: t('cookieConsent.enrolmentForm.name') as string,
+                  description: t(
+                    'cookieConsent.enrolmentForm.description'
+                  ) as string,
+                  expiration: t('cookieConsent.expiration.session') as string,
                 },
               ],
             },
@@ -79,6 +69,7 @@ const CookieConsent: FC = () => {
         },
         language: { onLanguageChange },
         onAllConsentsGiven: (consents) => {
+          setShowCookieConsentModal(false);
           if (consents.matomo) {
             //  start tracking
             // window._paq.push(['setConsentGiven']);

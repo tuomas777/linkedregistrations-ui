@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
+import { ExtendedSession } from '../../../types';
 import {
   clearApiTokenFromCookie,
   getApiTokenFromCookie,
@@ -8,7 +9,8 @@ import {
 } from '../utils';
 
 const useApiTokenUpdater = () => {
-  const { data: session } = useSession();
+  const { data } = useSession();
+  const session = data as ExtendedSession;
 
   useEffect(() => {
     if (session?.apiToken && session?.apiToken !== getApiTokenFromCookie()) {

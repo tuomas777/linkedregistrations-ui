@@ -1,6 +1,16 @@
 {
   "appName": "Linked Registrations",
   "cancel": "Undo",
+  "cookieConsent": {
+    "enrolmentForm": {
+      "description": "The cookie required to save the enrolment form data",
+      "name": "Enrolment form cookie"
+    },
+    "expiration": {
+      "session": "Session"
+    },
+    "siteName": "Linked Registrations"
+  },
   "dropdownSelect": {
     "accessibility": {
       "noResults": "No options",

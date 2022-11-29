@@ -150,12 +150,12 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       <div className={styles.participantAmountSelector}>
         <NumberInput
           id="participant-amount-field"
-          minusStepButtonAriaLabel={t(
-            'common:numberInput.minusStepButtonAriaLabel'
-          )}
-          plusStepButtonAriaLabel={t(
-            'common:numberInput.plusStepButtonAriaLabel'
-          )}
+          minusStepButtonAriaLabel={
+            t('common:numberInput.minusStepButtonAriaLabel') as string
+          }
+          plusStepButtonAriaLabel={
+            t('common:numberInput.plusStepButtonAriaLabel') as string
+          }
           disabled={disabled}
           errorText={attendeeCapacityError}
           invalid={!!attendeeCapacityError}

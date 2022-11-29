@@ -1,6 +1,16 @@
 {
   "appName": "Linked Registrations",
   "cancel": "Ångra",
+  "cookieConsent": {
+    "enrolmentForm": {
+      "description": "Cookien som krävs för att spara deltagande formulär data",
+      "name": "Cookie för deltagande formulär"
+    },
+    "expiration": {
+      "session": "Session"
+    },
+    "siteName": "Linked Registrations"
+  },
   "dropdownSelect": {
     "accessibility": {
       "noResults": "Inga alternativ",
