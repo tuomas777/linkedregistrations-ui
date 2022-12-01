@@ -83,7 +83,7 @@ const findCookieConsentModalElement = async (
       });
     case 'acceptOnlyNecessaryButton':
       return within(cookieConsentModal).findByRole('button', {
-        name: 'Hyväksy vain pakolliset evästeet',
+        name: 'Hyväksy vain välttämättömät evästeet',
       });
     case 'enOption':
       return within(cookieConsentModal).findByRole('link', {
@@ -143,7 +143,7 @@ it('should change cookie consent modal language', async () => {
   }
 });
 
-it('should store consent to cookie when clicing accept all button', async () => {
+it('should store consent to cookie when clicking accept all button', async () => {
   const user = userEvent.setup();
 
   await renderApp();
@@ -159,7 +159,7 @@ it('should store consent to cookie when clicing accept all button', async () => 
   await waitCookieConsentModalToBeHidden();
 });
 
-it('should store consent to cookie when clicing accept only necessary button', async () => {
+it('should store consent to cookie when clicking accept only necessary button', async () => {
   const user = userEvent.setup();
 
   await renderApp();
