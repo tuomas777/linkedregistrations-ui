@@ -49,3 +49,19 @@ test('should toggle visible options', async () => {
     expect(screen.queryByLabelText(label)).toBeInTheDocument();
   });
 });
+
+test('should show label with required indicator', async () => {
+  const label = 'Label';
+  renderComponent({ label, required: true });
+
+  screen.getByRole('group', { name: label });
+  screen.getByText('*');
+});
+
+test('should show label without required indicator', async () => {
+  const label = 'Label';
+  renderComponent({ label, required: false });
+
+  screen.getByRole('group', { name: label });
+  expect(screen.queryByText('*')).not.toBeInTheDocument();
+});
