@@ -98,6 +98,7 @@ const enrolmentValues: EnrolmentFormFields = {
       city: 'City',
       dateOfBirth: formatDate(subYears(new Date(), 9)),
       extraInfo: '',
+      inWaitingList: false,
       name: 'Participan name',
       streetAddress: 'Street address',
       zip: '00100',
