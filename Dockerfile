@@ -19,7 +19,7 @@ USER default
 RUN yarn && yarn cache clean --force
 
 # Copy all files
-COPY --chown=default:default . .
+COPY . /opt/app-root/src/
 
 # =============================
 FROM appbase as development
