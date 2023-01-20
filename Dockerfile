@@ -19,6 +19,17 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Set environmental variables (when building image on Azure) 
+# specified in pipelines/library files
+ARG NEXT_PUBLIC_LINKED_EVENTS_URL
+ARG NEXT_PUBLIC_SENTRY_DSN
+ARG NEXT_PUBLIC_ENVIRONMENT
+ARG SENTRY_AUTH_TOKEN
+ARG NEXT_PUBLIC_OIDC_AUTHORITY
+ARG NEXT_PUBLIC_OIDC_CLIENT_ID
+ARG NEXT_PUBLIC_OIDC_API_SCOPE
+ARG NEXTAUTH_URL
+
 RUN yarn build
 
 # Production image, copy all the files and run next
@@ -41,8 +52,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3000
-
-ENV PORT 3000
+# Expose port
+EXPOSE $PORT
 
 CMD ["node", "server.js"]
