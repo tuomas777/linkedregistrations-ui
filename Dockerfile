@@ -12,11 +12,12 @@ ENV YARN_VERSION 1.22.4
 RUN yarn policies set-version $YARN_VERSION
 
 # Install dependencies
+COPY package.json yarn.lock /app/
+RUN chown -R default:root /app
+
 USER default
 
-COPY package.json yarn.lock* ./
 RUN yarn --frozen-lockfile
-
 
 # =============================
 FROM dependencies as development
