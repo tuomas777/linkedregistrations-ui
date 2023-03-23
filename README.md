@@ -82,6 +82,41 @@ and execute the following commands inside your docker container:
 ./manage.py add_oidc_client_to_api_scope -asi https://api.hel.fi/auth/linkedevents -c linkedregistrations-ui
 ```
 
+### Install local Linked Events API
+
+Clone the repository (https://github.com/City-of-Helsinki/linkedevents). Follow the instructions for running linkedevents with docker. Before running `docker-compose up` set the following variables in `/docker/django/.env`:
+
+- ALLOWED_HOSTS=\*
+- APPLY_MIGRATIONS=false
+- CREATE_SUPERUSER=true
+- DATABASE_URL=postgres://linkedevents:linkedevents@linkedevents-db/linkedevents
+- DEBUG=true
+- DEV_SERVER=true
+- MEMCACHED_URL=linkedevents-memcached:11211
+- RUNSERVER_ADDRESS=0.0.0.0:8080
+- SEAT_RESERVATION_DURATION=15
+- WAIT_FOR_IT_ADDRESS=linkedevents-db:5432
+- TOKEN_AUTH_AUTHSERVER_URL=http://tunnistamo-backend:8000/openid
+- TOKEN_AUTH_ACCEPTED_AUDIENCE=https://api.hel.fi/auth/linkedevents
+- TOKEN_AUTH_REQUIRE_SCOPE_PREFIX=False
+- SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT=http://tunnistamo-backend:8000/openid
+- SOCIAL_AUTH_TUNNISTAMO_KEY=linkedevents
+- SOCIAL_AUTH_TUNNISTAMO_SECRET<linkedevents client secret>
+
+### Linked Registrations UI
+
+Set the following variables in `.env.local`:
+
+- OIDC_ISSUER=http://tunnistamo-backend:8000/openid
+- OIDC_API_TOKENS_URL=http://tunnistamo-backend:8000/api-tokens/
+- OIDC_CLIENT_ID=linkedregistrations-ui
+- OIDC_CLIENT_SECRET=<linkedregistrations-ui client secret>
+- OIDC_LINKED_EVENTS_API_SCOPE=https://api.hel.fi/auth/linkedevents
+- OIDC_TOKEN_URL=http://tunnistamo-backend:8000/openid/token/
+- NEXT_PUBLIC_LINKED_EVENTS_URL=http://linkedevents-backend:8080/v1
+
+Run `yarn && yarn dev`
+
 ## Running development environment locally without docker
 
 Run `yarn && yarn start`
