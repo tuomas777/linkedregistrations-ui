@@ -174,8 +174,10 @@ const SummaryPageWrapper: React.FC = () => {
         <EnrolmentPageProvider>
           <EnrolmentServerErrorsProvider>
             <ReservationTimerProvider
+              attendees={[]}
               initializeReservationData={false}
               registration={registration}
+              setAttendees={() => undefined}
             >
               <SummaryPage event={event} registration={registration} />
             </ReservationTimerProvider>

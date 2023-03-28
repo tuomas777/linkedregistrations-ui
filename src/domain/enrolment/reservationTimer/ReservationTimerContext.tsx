@@ -1,5 +1,4 @@
 import pick from 'lodash/pick';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, {
   FC,
@@ -10,26 +9,22 @@ import React, {
   useState,
 } from 'react';
 
-import { ExtendedSession } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
-import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
-import { useReserveSeatsMutation } from '../../reserveSeats/mutation';
 import {
   getRegistrationTimeLeft,
   getSeatsReservationData,
   isSeatsReservationExpired,
-  setSeatsReservationData,
 } from '../../reserveSeats/utils';
 import { ENROLMENT_MODALS, ENROLMENT_QUERY_PARAMS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
+import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
 import { AttendeeFields } from '../types';
 import {
   clearCreateEnrolmentFormData,
   clearEnrolmentReservationData,
-  getNewAttendees,
 } from '../utils';
 
 export type ReservationTimerContextProps = {
@@ -43,10 +38,10 @@ export const ReservationTimerContext = React.createContext<
 >(undefined);
 
 interface Props {
-  attendees?: AttendeeFields[];
+  attendees: AttendeeFields[];
   initializeReservationData: boolean;
   registration: Registration;
-  setAttendees?: (value: AttendeeFields[]) => void;
+  setAttendees: (value: AttendeeFields[]) => void;
 }
 
 export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
@@ -56,8 +51,6 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   registration,
   setAttendees,
 }) => {
-  const { data: session } = useSession() as { data: ExtendedSession | null };
-
   const { openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
@@ -70,45 +63,10 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
   const enableTimer = useCallback(() => {
     timerEnabled.current = true;
   }, []);
-
-  const reserveSeatsMutation = useReserveSeatsMutation({
-    options: {
-      onError: (error, variables) => {
-        showServerErrors(
-          { error: JSON.parse(error.message) },
-          'seatsReservation'
-        );
-
-        reportError({
-          data: {
-            error: JSON.parse(error.message),
-            payload: variables,
-            payloadAsString: JSON.stringify(variables),
-          },
-          message: 'Failed to reserve seats',
-        });
-      },
-      onSuccess: (seatsReservation) => {
-        enableTimer();
-        setSeatsReservationData(registration.id, seatsReservation);
-        setTimeLeft(getRegistrationTimeLeft(seatsReservation));
-
-        if (setAttendees) {
-          const newAttendees = getNewAttendees({
-            attendees: attendees || /* istanbul ignore next */ [],
-            registration,
-            seatsReservation,
-          });
-
-          setAttendees(newAttendees);
-        }
-
-        if (seatsReservation.waitlist_spots) {
-          setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
-        }
-      },
-    },
-    session,
+  const { createSeatsReservation } = useSeatsReservationActions({
+    attendees,
+    registration,
+    setAttendees,
   });
 
   const disableCallbacks = useCallback(() => {
@@ -150,13 +108,21 @@ export const ReservationTimerProvider: FC<PropsWithChildren<Props>> = ({
       // Clear server errors
       setServerErrorItems([]);
 
+      createSeatsReservation({
+        onError: (error) =>
+          showServerErrors(
+            { error: JSON.parse(error.message) },
+            'seatsReservation'
+          ),
+        onSuccess: (seatsReservation) => {
+          enableTimer();
+          if (seatsReservation) {
+            setTimeLeft(getRegistrationTimeLeft(seatsReservation));
+          }
+        },
+      });
       // useEffect runs twice in React v18.0, so start creatin nre seats reservation
       // only if creatingReservationStarted is false
-      reserveSeatsMutation.mutate({
-        registration: registration.id,
-        seats: 1,
-        waitlist: true,
-      });
     } else if (data) {
       enableTimer();
       setTimeLeft(getRegistrationTimeLeft(data));
