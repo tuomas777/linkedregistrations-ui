@@ -89,6 +89,7 @@ const useEnrolmentActions = ({
     payload: CreateEnrolmentMutationInput,
     callbacks?: MutationCallbacks
   ) => {
+    setSaving(ENROLMENT_ACTIONS.CREATE);
     await createEnrolmentMutation.mutate(payload, {
       onError: (error, variables) => {
         handleError({
@@ -108,6 +109,7 @@ const useEnrolmentActions = ({
     cancellationCode: string,
     callbacks?: MutationCallbacks
   ) => {
+    setSaving(ENROLMENT_ACTIONS.CANCEL);
     await deleteEnrolmentMutation.mutate(cancellationCode, {
       onError: (error, variables) => {
         handleError({

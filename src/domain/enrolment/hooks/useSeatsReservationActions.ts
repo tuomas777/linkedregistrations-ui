@@ -60,6 +60,34 @@ const useSeatsReservationActions = ({
     setSaving(false);
   };
 
+  const cleanAfterUpdate = async (
+    seatsReservation: SeatsReservation,
+    callbacks?: MutationCallbacks<SeatsReservation>
+  ) => {
+    /* istanbul ignore else */
+    if (setAttendees) {
+      const newAttendees = getNewAttendees({
+        attendees: attendees || /* istanbul ignore next */ [],
+        registration,
+        seatsReservation,
+      });
+
+      setAttendees(newAttendees);
+    }
+    setSeatsReservationData(registrationId, seatsReservation);
+
+    // Show modal to inform that some of the persons will be added to the waiting list
+    if (seatsReservation.waitlist_spots) {
+      setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
+    } else {
+      closeModal();
+    }
+    savingFinished();
+
+    // Call callback function if defined
+    await (callbacks?.onSuccess && callbacks.onSuccess(seatsReservation));
+  };
+
   const handleError = ({
     callbacks,
     error,
@@ -104,23 +132,7 @@ const useSeatsReservationActions = ({
         });
       },
       onSuccess: (seatsReservation) => {
-        setSeatsReservationData(registrationId, seatsReservation);
-
-        /* istanbul ignore else */
-        if (setAttendees) {
-          const newAttendees = getNewAttendees({
-            attendees: attendees || /* istanbul ignore next */ [],
-            registration,
-            seatsReservation,
-          });
-
-          setAttendees(newAttendees);
-        }
-
-        if (seatsReservation.waitlist_spots) {
-          setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
-        }
-        callbacks?.onSuccess?.(seatsReservation);
+        cleanAfterUpdate(seatsReservation, callbacks);
       },
     });
   };
@@ -149,22 +161,7 @@ const useSeatsReservationActions = ({
         });
       },
       onSuccess: (seatsReservation) => {
-        const newAttendees = getNewAttendees({
-          attendees,
-          registration,
-          seatsReservation,
-        });
-
-        setAttendees(newAttendees);
-        setSeatsReservationData(registrationId, seatsReservation);
-
-        setSaving(false);
-        // Show modal to inform that some of the persons will be added to the waiting list
-        if (seatsReservation.waitlist_spots) {
-          setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
-        } else {
-          closeModal();
-        }
+        cleanAfterUpdate(seatsReservation, callbacks);
       },
     });
   };

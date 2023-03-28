@@ -45,8 +45,10 @@ const renderComponent = (
         value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
       >
         <ReservationTimerProvider
+          attendees={[]}
           initializeReservationData={true}
           registration={registration}
+          setAttendees={jest.fn()}
         />
       </EnrolmentServerErrorsContext.Provider>
     </EnrolmentPageProvider>,

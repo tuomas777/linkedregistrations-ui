@@ -29,7 +29,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
-  const { openModal, setOpenModal } = useEnrolmentPageContext();
+  const { closeModal, openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
 
@@ -76,10 +76,6 @@ const ParticipantAmountSelector: React.FC<Props> = ({
         },
       });
     }
-  };
-
-  const closeModal = () => {
-    setOpenModal(null);
   };
 
   const openDeleteParticipantModal = () => {
