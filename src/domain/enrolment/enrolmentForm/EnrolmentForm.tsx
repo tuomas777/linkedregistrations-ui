@@ -1,7 +1,6 @@
 import { Field, FieldAttributes, Form, Formik } from 'formik';
 import { IconCross, SingleSelectProps } from 'hds-react';
 import pick from 'lodash/pick';
-import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -21,9 +20,8 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
-import { ExtendedSession, OptionType } from '../../../types';
+import { OptionType } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
-import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import {
   getFreeAttendeeCapacity,
@@ -43,10 +41,10 @@ import {
 import Divider from '../divider/Divider';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
+import useEnrolmentActions from '../hooks/useEnrolmentActions';
 import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
-import { useDeleteEnrolmentMutation } from '../mutation';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
@@ -55,12 +53,6 @@ import { AttendeeFields, EnrolmentFormFields } from '../types';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
 import styles from './enrolmentForm.module.scss';
-
-interface Callbacks {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onError?: (error: any) => void;
-  onSuccess?: () => void;
-}
 
 const LanguageField = (
   props: FieldAttributes<Omit<SingleSelectProps<OptionType>, 'options'>>
@@ -86,22 +78,11 @@ const EnrolmentForm: React.FC<Props> = ({
   registration,
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
-  const { data: session } = useSession() as { data: ExtendedSession | null };
-
+  const { cancelEnrolment } = useEnrolmentActions({ registration });
   const formSavingDisabled = React.useRef(!!readOnly);
 
-  const { openModal, setOpenModal, setOpenParticipant } =
+  const { closeModal, openModal, setOpenModal, setOpenParticipant } =
     useEnrolmentPageContext();
-
-  const closeModal = () => {
-    setOpenModal(null);
-  };
-
-  const cleanAfterUpdate = async (callbacks?: Callbacks) => {
-    closeModal();
-    // Call callback function if defined
-    await (callbacks?.onSuccess && callbacks.onSuccess());
-  };
 
   const freeCapacity = getFreeAttendeeCapacity(registration);
   const notificationOptions = useNotificationOptions();
@@ -140,31 +121,13 @@ const EnrolmentForm: React.FC<Props> = ({
     );
   };
 
-  const deleteEnrolmentMutation = useDeleteEnrolmentMutation({
-    options: {
-      onError: (error, variables) => {
-        closeModal();
-
-        showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
-        // Report error to Sentry
-        reportError({
-          data: {
-            error: JSON.parse(error.message),
-            cancellationCode: variables,
-          },
-          message: 'Failed to cancel enrolment',
-        });
-      },
-      onSuccess: () => {
-        cleanAfterUpdate({ onSuccess: () => goToEnrolmentCancelledPage() });
-      },
-    },
-    session,
-  });
-
   const handleCancel = () => {
     setServerErrorItems([]);
-    deleteEnrolmentMutation.mutate(cancellationCode as string);
+    cancelEnrolment(cancellationCode as string, {
+      onError: (error) =>
+        showServerErrors({ error: JSON.parse(error.message) }, 'enrolment'),
+      onSuccess: goToEnrolmentCancelledPage,
+    });
   };
 
   const isRestoringDisabled = () => {

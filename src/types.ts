@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Session, User as NextAuthUser } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 
@@ -84,4 +85,9 @@ export type RefreshTokenResponse = {
   token_type: string;
   expires_in: number;
   id_token: string;
+};
+
+export type MutationCallbacks<SuccessResponseType = string> = {
+  onError?: (error: any) => void;
+  onSuccess?: (data?: SuccessResponseType) => void;
 };

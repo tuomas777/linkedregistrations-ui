@@ -75,8 +75,9 @@ export enum NOTIFICATION_TYPE {
   SMS_EMAIL = 'sms and email',
 }
 
-export enum ENROLMENT_EDIT_ACTIONS {
+export enum ENROLMENT_ACTIONS {
   CANCEL = 'cancel',
+  CREATE = 'create',
 }
 
 export const TEST_ENROLMENT_CANCELLATION_CODE =
