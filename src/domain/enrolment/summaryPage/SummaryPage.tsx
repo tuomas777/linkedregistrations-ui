@@ -1,7 +1,6 @@
 import { Form, Formik } from 'formik';
 import { Notification } from 'hds-react';
 import pick from 'lodash/pick';
-import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
@@ -11,11 +10,9 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
-import { ExtendedSession } from '../../../types';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
-import { reportError } from '../../app/sentry/utils';
 import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
 import { Registration } from '../../registration/types';
@@ -27,8 +24,8 @@ import { EnrolmentPageProvider } from '../enrolmentPageContext/EnrolmentPageCont
 import { EnrolmentServerErrorsProvider } from '../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import FormContainer from '../formContainer/FormContainer';
+import useEnrolmentActions from '../hooks/useEnrolmentActions';
 import useEventAndRegistrationData from '../hooks/useEventAndRegistrationData';
-import { useCreateEnrolmentMutation } from '../mutation';
 import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
@@ -51,11 +48,11 @@ type SummaryPageProps = {
 };
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
+  const { createEnrolment } = useEnrolmentActions({ registration });
   const { disableCallbacks: disableReservationTimerCallbacks } =
     useReservationTimer();
   const { t } = useTranslation(['summary']);
   const router = useRouter();
-  const { data: session } = useSession() as { data: ExtendedSession | null };
 
   const goToEnrolmentCompletedPage = () => {
     // Disable reservation timer callbacks
@@ -94,25 +91,6 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     });
   };
 
-  const createEnrolmentMutation = useCreateEnrolmentMutation({
-    registrationId: registration.id as string,
-    options: {
-      onError: (error, variables) => {
-        showServerErrors({ error: JSON.parse(error.message) }, 'enrolment');
-        reportError({
-          data: {
-            error: JSON.parse(error.message),
-            payload: variables,
-            payloadAsString: JSON.stringify(variables),
-          },
-          message: 'Failed to create enrolment',
-        });
-      },
-      onSuccess: goToEnrolmentCompletedPage,
-    },
-    session,
-  });
-
   return (
     <MainContent className={styles.summaryPage}>
       <SummaryPageMeta event={event} />
@@ -147,7 +125,14 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                     reservationCode: reservationData?.code as string,
                   });
 
-                  createEnrolmentMutation.mutate(payload);
+                  createEnrolment(payload, {
+                    onError: (error) =>
+                      showServerErrors(
+                        { error: JSON.parse(error.message) },
+                        'enrolment'
+                      ),
+                    onSuccess: goToEnrolmentCompletedPage,
+                  });
                 } catch (e) {
                   goToCreateEnrolmentPage();
                 }

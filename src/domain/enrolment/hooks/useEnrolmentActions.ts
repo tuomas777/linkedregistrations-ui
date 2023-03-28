@@ -6,7 +6,10 @@ import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import { ENROLMENT_ACTIONS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { useDeleteEnrolmentMutation } from '../mutation';
+import {
+  useCreateEnrolmentMutation,
+  useDeleteEnrolmentMutation,
+} from '../mutation';
 import { CreateEnrolmentMutationInput, Enrolment } from '../types';
 
 interface Props {
@@ -17,6 +20,10 @@ interface Props {
 type UseEnrolmentActionsState = {
   cancelEnrolment: (
     cancellationCode: string,
+    callbacks?: MutationCallbacks
+  ) => Promise<void>;
+  createEnrolment: (
+    payload: CreateEnrolmentMutationInput,
     callbacks?: MutationCallbacks
   ) => Promise<void>;
   saving: ENROLMENT_ACTIONS | null;
@@ -73,6 +80,29 @@ const useEnrolmentActions = ({
   const deleteEnrolmentMutation = useDeleteEnrolmentMutation({
     session,
   });
+  const createEnrolmentMutation = useCreateEnrolmentMutation({
+    registrationId: registration.id as string,
+    session,
+  });
+
+  const createEnrolment = async (
+    payload: CreateEnrolmentMutationInput,
+    callbacks?: MutationCallbacks
+  ) => {
+    await createEnrolmentMutation.mutate(payload, {
+      onError: (error, variables) => {
+        handleError({
+          callbacks,
+          error,
+          message: 'Failed to create enrolment',
+          payload: variables,
+        });
+      },
+      onSuccess: () => {
+        cleanAfterUpdate(callbacks);
+      },
+    });
+  };
 
   const cancelEnrolment = async (
     cancellationCode: string,
@@ -94,6 +124,7 @@ const useEnrolmentActions = ({
   };
   return {
     cancelEnrolment,
+    createEnrolment,
     saving,
   };
 };
