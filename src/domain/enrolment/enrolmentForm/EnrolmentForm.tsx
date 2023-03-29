@@ -48,7 +48,6 @@ import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal'
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
-import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
 import { AttendeeFields, EnrolmentFormFields } from '../types';
 import { enrolmentSchema, scrollToFirstError, showErrors } from '../validation';
 import Attendees from './attendees/Attendees';
@@ -80,6 +79,11 @@ const EnrolmentForm: React.FC<Props> = ({
   const { t } = useTranslation(['enrolment', 'common']);
   const { cancelEnrolment } = useEnrolmentActions({ registration });
   const formSavingDisabled = React.useRef(!!readOnly);
+
+  const reservationTimerCallbacksDisabled = React.useRef(false);
+  const disableReservationTimerCallbacks = React.useCallback(() => {
+    reservationTimerCallbacksDisabled.current = true;
+  }, []);
 
   const { closeModal, openModal, setOpenModal, setOpenParticipant } =
     useEnrolmentPageContext();
@@ -189,15 +193,19 @@ const EnrolmentForm: React.FC<Props> = ({
               <RegistrationWarning registration={registration} />
 
               {!readOnly && (
-                <ReservationTimerProvider
-                  attendees={values.attendees}
-                  initializeReservationData={true}
-                  registration={registration}
-                  setAttendees={setAttendees}
-                >
+                <>
                   <Divider />
-                  <ReservationTimer />
-                </ReservationTimerProvider>
+                  <ReservationTimer
+                    attendees={values.attendees}
+                    callbacksDisabled={
+                      reservationTimerCallbacksDisabled.current
+                    }
+                    disableCallbacks={disableReservationTimerCallbacks}
+                    initReservationData={true}
+                    registration={registration}
+                    setAttendees={setAttendees}
+                  />
+                </>
               )}
 
               <Divider />

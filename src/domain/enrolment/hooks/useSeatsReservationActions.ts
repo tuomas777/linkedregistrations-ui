@@ -23,9 +23,9 @@ import { AttendeeFields } from '../types';
 import { getNewAttendees } from '../utils';
 
 type UseSeatsReservationActionsProps = {
-  attendees: AttendeeFields[];
+  attendees?: AttendeeFields[];
   registration: Registration;
-  setAttendees: (value: AttendeeFields[]) => void;
+  setAttendees?: (value: AttendeeFields[]) => void;
 };
 
 type UseSeatsReservationActionsState = {

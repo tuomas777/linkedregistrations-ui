@@ -3,7 +3,7 @@ import { Notification } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { FC, useCallback, useRef } from 'react';
 
 import Button from '../../../common/components/button/Button';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
@@ -16,7 +16,10 @@ import { ROUTES } from '../../app/routes/constants';
 import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
 import { Registration } from '../../registration/types';
-import { getSeatsReservationData } from '../../reserveSeats/utils';
+import {
+  clearSeatsReservationData,
+  getSeatsReservationData,
+} from '../../reserveSeats/utils';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import Divider from '../divider/Divider';
@@ -26,12 +29,9 @@ import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext
 import FormContainer from '../formContainer/FormContainer';
 import useEnrolmentActions from '../hooks/useEnrolmentActions';
 import useEventAndRegistrationData from '../hooks/useEventAndRegistrationData';
-import { useReservationTimer } from '../reservationTimer/hooks/useReservationTimer';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
-import { ReservationTimerProvider } from '../reservationTimer/ReservationTimerContext';
 import {
   clearCreateEnrolmentFormData,
-  clearEnrolmentReservationData,
   getEnrolmentDefaultInitialValues,
   getEnrolmentPayload,
 } from '../utils';
@@ -49,8 +49,12 @@ type SummaryPageProps = {
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const { createEnrolment } = useEnrolmentActions({ registration });
-  const { disableCallbacks: disableReservationTimerCallbacks } =
-    useReservationTimer();
+
+  const reservationTimerCallbacksDisabled = useRef(false);
+  const disableReservationTimerCallbacks = useCallback(() => {
+    reservationTimerCallbacksDisabled.current = true;
+  }, []);
+
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
@@ -60,7 +64,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     disableReservationTimerCallbacks();
 
     clearCreateEnrolmentFormData(registration.id);
-    clearEnrolmentReservationData(registration.id);
+    clearSeatsReservationData(registration.id);
 
     goToPage(
       ROUTES.ENROLMENT_COMPLETED.replace('[registrationId]', registration.id)
@@ -148,7 +152,15 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
                   <Divider />
 
-                  <ReservationTimer onDataNotFound={goToCreateEnrolmentPage} />
+                  <ReservationTimer
+                    callbacksDisabled={
+                      reservationTimerCallbacksDisabled.current
+                    }
+                    disableCallbacks={disableReservationTimerCallbacks}
+                    initReservationData={false}
+                    onDataNotFound={goToCreateEnrolmentPage}
+                    registration={registration}
+                  />
                   <Divider />
                   <Attendees />
                   <InformantInfo values={values} />
@@ -173,14 +185,7 @@ const SummaryPageWrapper: React.FC = () => {
       {event && registration ? (
         <EnrolmentPageProvider>
           <EnrolmentServerErrorsProvider>
-            <ReservationTimerProvider
-              attendees={[]}
-              initializeReservationData={false}
-              registration={registration}
-              setAttendees={() => undefined}
-            >
-              <SummaryPage event={event} registration={registration} />
-            </ReservationTimerProvider>
+            <SummaryPage event={event} registration={registration} />
           </EnrolmentServerErrorsProvider>
         </EnrolmentPageProvider>
       ) : (

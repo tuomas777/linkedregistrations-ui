@@ -26,7 +26,7 @@ import {
   EnrolmentServerErrorsContext,
   EnrolmentServerErrorsContextProps,
 } from '../../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
-import { ReservationTimerProvider } from '../ReservationTimerContext';
+import ReservationTimer from '../ReservationTimer';
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
@@ -44,9 +44,11 @@ const renderComponent = (
       <EnrolmentServerErrorsContext.Provider
         value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
       >
-        <ReservationTimerProvider
+        <ReservationTimer
           attendees={[]}
-          initializeReservationData={true}
+          callbacksDisabled={false}
+          disableCallbacks={jest.fn()}
+          initReservationData={true}
           registration={registration}
           setAttendees={jest.fn()}
         />
@@ -56,6 +58,7 @@ const renderComponent = (
   );
 
 beforeEach(() => {
+  jest.resetAllMocks();
   // values stored in tests will also be available in other tests unless you run
   localStorage.clear();
   sessionStorage.clear();
