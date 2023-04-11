@@ -7,7 +7,11 @@ import singletonRouter from 'next/router';
 import React from 'react';
 
 import formatDate from '../../../utils/formatDate';
-import { fakeSeatsReservation } from '../../../utils/mockDataUtils';
+import {
+  fakeSeatsReservation,
+  getMockedSeatsReservationData,
+  setEnrolmentFormSessionStorageValues,
+} from '../../../utils/mockDataUtils';
 import {
   actWait,
   configure,
@@ -497,4 +501,33 @@ test('should show server errors when updating seats reservation fails', async ()
   await user.click(deleteParticipantButton);
 
   await screen.findByText('Paikkoja ei ole riittävästi jäljellä.');
+});
+
+test('should reload page if reservation is expired and route is create enrolment page', async () => {
+  mockRouter.reload = jest.fn();
+  const user = userEvent.setup();
+
+  setQueryMocks(...defaultMocks);
+  setEnrolmentFormSessionStorageValues({
+    registrationId: registration.id,
+    seatsReservation: getMockedSeatsReservationData(-1000),
+  });
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: registration.id },
+  });
+
+  renderComponent();
+
+  const modal = await screen.findByRole(
+    'dialog',
+    { name: 'Varausaika on täynnä.' },
+    { timeout: 5000 }
+  );
+  const tryAgainButton = within(modal).getByRole('button', {
+    name: 'Yritä uudelleen',
+  });
+
+  user.click(tryAgainButton);
+  await waitFor(() => expect(mockRouter.reload).toBeCalled());
 });

@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import isEqual from 'lodash/isEqual';
 
-import { FORM_NAMES, RESERVATION_NAMES } from '../../constants';
+import { FORM_NAMES } from '../../constants';
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
 import queryBuilder from '../../utils/queryBuilder';
@@ -220,12 +220,6 @@ export const getEnrolmentInitialValues = (
 export const clearCreateEnrolmentFormData = (registrationId: string): void => {
   sessionStorage?.removeItem(
     `${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registrationId}`
-  );
-};
-
-export const clearEnrolmentReservationData = (registrationId: string): void => {
-  sessionStorage?.removeItem(
-    `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`
   );
 };
 

@@ -74,6 +74,12 @@ export const setSeatsReservationData = (
   );
 };
 
+export const clearSeatsReservationData = (registrationId: string): void => {
+  sessionStorage?.removeItem(
+    `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`
+  );
+};
+
 export const isSeatsReservationExpired = (data: SeatsReservation) => {
   return isPast(new Date(data.expiration));
 };

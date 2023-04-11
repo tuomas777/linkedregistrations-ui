@@ -12,6 +12,7 @@ import { ENROLMENT_MODALS } from '../constants';
 import PersonsAddedToWaitingListModal from '../modals/personsAddedToWaitingListModal/PersonsAddedToWaitingListModal';
 
 export type EnrolmentPageContextProps = {
+  closeModal: () => void;
   openModal: ENROLMENT_MODALS | null;
   openParticipant: number | null;
   setOpenModal: (state: ENROLMENT_MODALS | null) => void;
@@ -39,6 +40,7 @@ export const EnrolmentPageProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const value = useMemo(
     () => ({
+      closeModal: () => setOpenModal(null),
       openModal,
       openParticipant,
       setOpenModal,
