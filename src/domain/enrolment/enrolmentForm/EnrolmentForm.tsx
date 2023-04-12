@@ -201,7 +201,7 @@ const EnrolmentForm: React.FC<Props> = ({
                       reservationTimerCallbacksDisabled.current
                     }
                     disableCallbacks={disableReservationTimerCallbacks}
-                    initReservationData={true}
+                    initReservationData={!cancellationCode}
                     registration={registration}
                     setAttendees={setAttendees}
                   />
