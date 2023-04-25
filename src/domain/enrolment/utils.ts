@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import isEqual from 'lodash/isEqual';
+import snakeCase from 'lodash/snakeCase';
 
 import { FORM_NAMES } from '../../constants';
 import { ExtendedSession } from '../../types';
@@ -10,7 +11,9 @@ import { callDelete, callGet, callPost } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import {
+  ATTENDEE_FIELDS,
   ATTENDEE_INITIAL_VALUES,
+  ENROLMENT_FIELDS,
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
@@ -143,22 +146,22 @@ export const getEnrolmentPayload = ({
   } = formValues;
 
   const signups: SignupInput[] = attendees.map((attendee) => {
-    const { city, dateOfBirth, name, streetAddress, zip } = attendee;
+    const { city, dateOfBirth, name, streetAddress, zipcode } = attendee;
     return {
-      city: city || null,
+      city: city || '',
       date_of_birth: dateOfBirth
         ? formatDate(stringToDate(dateOfBirth), 'yyyy-MM-dd')
         : null,
       email: email || null,
       extra_info: extraInfo,
       membership_number: membershipNumber,
-      name: name || null,
+      name: name || '',
       native_language: nativeLanguage || null,
       notifications: getEnrolmentNotificationsCode(notifications),
       phone_number: phoneNumber || null,
       service_language: serviceLanguage || null,
       street_address: streetAddress || null,
-      zipcode: zip || null,
+      zipcode: zipcode || null,
     };
   });
 
@@ -168,32 +171,23 @@ export const getEnrolmentPayload = ({
   };
 };
 
-export const getAttendeeDefaultInitialValues = (
-  registration: Registration
-): AttendeeFields => ({
+export const getAttendeeDefaultInitialValues = (): AttendeeFields => ({
   ...ATTENDEE_INITIAL_VALUES,
-  audienceMaxAge: registration.audience_max_age ?? null,
-  audienceMinAge: registration.audience_min_age ?? null,
 });
 
-export const getEnrolmentDefaultInitialValues = (
-  registration: Registration
-): EnrolmentFormFields => ({
+export const getEnrolmentDefaultInitialValues = (): EnrolmentFormFields => ({
   ...ENROLMENT_INITIAL_VALUES,
-  attendees: [getAttendeeDefaultInitialValues(registration)],
+  attendees: [getAttendeeDefaultInitialValues()],
 });
 
 export const getEnrolmentInitialValues = (
-  enrolment: Enrolment,
-  registration: Registration
+  enrolment: Enrolment
 ): EnrolmentFormFields => {
   return {
-    ...getEnrolmentDefaultInitialValues(registration),
+    ...getEnrolmentDefaultInitialValues(),
     accepted: true,
     attendees: [
       {
-        audienceMaxAge: registration.audience_max_age ?? null,
-        audienceMinAge: registration.audience_min_age ?? null,
         city: enrolment.city || '-',
         dateOfBirth: enrolment.date_of_birth
           ? formatDate(new Date(enrolment.date_of_birth))
@@ -202,7 +196,7 @@ export const getEnrolmentInitialValues = (
         inWaitingList: false,
         name: enrolment.name || '-',
         streetAddress: enrolment.street_address || '-',
-        zip: enrolment.zipcode || '-',
+        zipcode: enrolment.zipcode || '-',
       },
     ],
     email: enrolment.email || '-',
@@ -225,15 +219,13 @@ export const clearCreateEnrolmentFormData = (registrationId: string): void => {
 
 export const getNewAttendees = ({
   attendees,
-  registration,
   seatsReservation,
 }: {
   attendees: AttendeeFields[];
-  registration: Registration;
   seatsReservation: SeatsReservation;
 }) => {
   const { seats, seats_at_event } = seatsReservation;
-  const attendeeInitialValues = getAttendeeDefaultInitialValues(registration);
+  const attendeeInitialValues = getAttendeeDefaultInitialValues();
   const filledAttendees = attendees.filter(
     (a) => !isEqual(a, attendeeInitialValues)
   );
@@ -249,3 +241,13 @@ export const getNewAttendees = ({
       inWaitingList: index + 1 > seats_at_event,
     }));
 };
+
+export const isEnrolmentFieldRequired = (
+  registration: Registration,
+  fieldId: ATTENDEE_FIELDS | ENROLMENT_FIELDS
+): boolean => registration.mandatory_fields.includes(snakeCase(fieldId));
+
+export const isDateOfBirthFieldRequired = (
+  registration: Registration
+): boolean =>
+  Boolean(registration.audience_max_age || registration.audience_min_age);
