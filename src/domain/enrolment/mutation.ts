@@ -5,12 +5,15 @@ import {
 } from '@tanstack/react-query';
 
 import { ExtendedSession } from '../../types';
-import { CreateEnrolmentMutationInput, CreateEnrolmentResponse } from './types';
+import {
+  CreateEnrolmentMutationInput,
+  CreateEnrolmentResponse,
+  DeleteEnrolmentMutationInput,
+} from './types';
 import { createEnrolment, deleteEnrolment } from './utils';
 
 export const useCreateEnrolmentMutation = ({
   options,
-  registrationId,
   session,
 }: {
   options?: UseMutationOptions<
@@ -18,28 +21,29 @@ export const useCreateEnrolmentMutation = ({
     Error,
     CreateEnrolmentMutationInput
   >;
-  registrationId: string;
   session: ExtendedSession | null;
 }): UseMutationResult<
   CreateEnrolmentResponse,
   Error,
   CreateEnrolmentMutationInput
 > => {
-  return useMutation(
-    (input) => createEnrolment({ input, registrationId, session }),
-    options
-  );
+  return useMutation((input) => createEnrolment({ input, session }), options);
 };
 
 export const useDeleteEnrolmentMutation = ({
   options,
   session,
 }: {
-  options?: UseMutationOptions<null, Error, string>;
+  options?: UseMutationOptions<null, Error, DeleteEnrolmentMutationInput>;
   session: ExtendedSession | null;
-}): UseMutationResult<null, Error, string> => {
+}): UseMutationResult<null, Error, DeleteEnrolmentMutationInput> => {
   return useMutation(
-    (cancellationCode) => deleteEnrolment({ cancellationCode, session }),
+    ({ cancellationCode, enrolmentId }) =>
+      deleteEnrolment({
+        cancellationCode,
+        enrolmentId,
+        session,
+      }),
     options
   );
 };

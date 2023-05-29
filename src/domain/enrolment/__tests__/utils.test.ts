@@ -1,4 +1,5 @@
 import { fakeEnrolment, fakeRegistration } from '../../../utils/mockDataUtils';
+import { registration } from '../../registration/__mocks__/registration';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import {
   ATTENDEE_INITIAL_VALUES,
@@ -21,7 +22,13 @@ import {
 
 describe('enrolmentPathBuilder function', () => {
   const cases: [EnrolmentQueryVariables, string][] = [
-    [{ cancellationCode: 'hel:123' }, '/signup/?cancellation_code=hel:123'],
+    [
+      {
+        cancellationCode: 'hel:123',
+        enrolmentId: 'enrolment:1',
+      },
+      '/signup/enrolment:1/?cancellation_code=hel:123',
+    ],
   ];
 
   it.each(cases)('should build correct path', (variables, expectedPath) =>
@@ -55,9 +62,11 @@ describe('getEnrolmentPayload function', () => {
           ...ENROLMENT_INITIAL_VALUES,
           attendees: [ATTENDEE_INITIAL_VALUES],
         },
+        registration,
         reservationCode,
       })
     ).toEqual({
+      registration: registration.id,
       reservation_code: 'code',
       signups: [
         {
@@ -111,10 +120,12 @@ describe('getEnrolmentPayload function', () => {
         phoneNumber,
         serviceLanguage,
       },
+      registration,
       reservationCode,
     });
 
     expect(payload).toEqual({
+      registration: registration.id,
       reservation_code: reservationCode,
       signups: [
         {

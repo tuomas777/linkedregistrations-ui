@@ -45,30 +45,28 @@ export const fetchEnrolment = async (
 };
 
 export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
-  const { cancellationCode } = args;
+  const { cancellationCode, enrolmentId } = args;
   const variableToKeyItems = [
     { key: 'cancellation_code', value: cancellationCode },
   ];
 
   const query = queryBuilder(variableToKeyItems);
 
-  return `/signup/${query}`;
+  return `/signup/${enrolmentId}/${query}`;
 };
 
 export const createEnrolment = async ({
   input,
-  registrationId,
   session,
 }: {
   input: CreateEnrolmentMutationInput;
-  registrationId: string;
   session: ExtendedSession | null;
 }): Promise<CreateEnrolmentResponse> => {
   try {
     const { data } = await callPost({
       data: JSON.stringify(input),
       session,
-      url: `/registration/${registrationId}/signup/`,
+      url: `/signup/`,
     });
     return data;
   } catch (error) {
@@ -78,16 +76,22 @@ export const createEnrolment = async ({
 
 export const deleteEnrolment = async ({
   cancellationCode,
+  enrolmentId,
   session,
 }: {
   cancellationCode: string;
+  enrolmentId: string;
   session: ExtendedSession | null;
 }): Promise<null> => {
   try {
+    const variableToKeyItems = [
+      { key: 'cancellation_code', value: cancellationCode },
+    ];
+    const query = queryBuilder(variableToKeyItems);
+
     const { data } = await callDelete({
-      config: { data: JSON.stringify({ cancellation_code: cancellationCode }) },
       session,
-      url: '/signup/',
+      url: `/signup/${enrolmentId}/${query}`,
     });
     return data;
   } catch (error) {
@@ -129,9 +133,11 @@ export const getEnrolmentNotificationTypes = (
 
 export const getEnrolmentPayload = ({
   formValues,
+  registration,
   reservationCode,
 }: {
   formValues: EnrolmentFormFields;
+  registration: Registration;
   reservationCode: string;
 }): CreateEnrolmentMutationInput => {
   const {
@@ -166,6 +172,7 @@ export const getEnrolmentPayload = ({
   });
 
   return {
+    registration: registration.id,
     reservation_code: reservationCode,
     signups,
   };

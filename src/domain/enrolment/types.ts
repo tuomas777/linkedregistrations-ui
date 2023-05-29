@@ -63,6 +63,7 @@ export type Enrolment = {
 };
 
 export type CreateEnrolmentMutationInput = {
+  registration: string;
   reservation_code: string;
   signups: SignupInput[];
 };
@@ -82,6 +83,13 @@ export type CreateEnrolmentResponse = {
   waitlisted: PeopleResponse;
 };
 
+export type DeleteEnrolmentMutationInput = {
+  cancellationCode: string;
+  enrolmentId: string;
+  registrationId: string;
+};
+
 export type EnrolmentQueryVariables = {
   cancellationCode: string;
+  enrolmentId: string;
 };

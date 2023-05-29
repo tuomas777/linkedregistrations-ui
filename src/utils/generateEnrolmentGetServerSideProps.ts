@@ -44,9 +44,16 @@ const generateEnrolmentGetServerSideProps = ({
     });
 
     try {
-      if (shouldPrefetchEnrolment && typeof query?.accessCode === 'string') {
+      if (
+        shouldPrefetchEnrolment &&
+        typeof query?.accessCode === 'string' &&
+        typeof query?.enrolmentId === 'string'
+      ) {
         await prefetchEnrolmentQuery({
-          args: { cancellationCode: query.accessCode },
+          args: {
+            cancellationCode: query.accessCode,
+            enrolmentId: query.enrolmentId,
+          },
           queryClient,
           session,
         });
