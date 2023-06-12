@@ -23,8 +23,10 @@ const EventInfo: React.FC<EventInfoProps> = ({ registration }) => {
     event,
     locale
   );
-  const { audienceMaxAge, audienceMinAge } =
-    getRegistrationFields(registration);
+  const { audienceMaxAge, audienceMinAge } = getRegistrationFields(
+    registration,
+    locale
+  );
 
   const locationText = useEventLocationText(event);
 

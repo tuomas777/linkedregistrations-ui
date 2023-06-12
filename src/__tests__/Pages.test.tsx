@@ -113,7 +113,7 @@ describe('CreateEnrolmentPage', () => {
 
     render(<CreateEnrolmentPage />);
 
-    await isHeadingRendered(event.name.fi as string);
+    await isHeadingRendered(event.name?.fi as string);
   });
 
   it('should prefetch data', async () => {
@@ -153,7 +153,7 @@ describe('SummaryPage', () => {
 
     render(<SummaryPage />);
 
-    await isHeadingRendered(event.name.fi as string);
+    await isHeadingRendered(event.name?.fi as string);
   });
 
   it('should prefetch data', async () => {
@@ -225,7 +225,7 @@ describe('EditEnrolmentPage', () => {
 
     render(<EditEnrolmentPage />);
 
-    await isHeadingRendered(event.name.fi as string);
+    await isHeadingRendered(event.name?.fi as string);
   });
 
   it('should prefetch data', async () => {

@@ -39,6 +39,7 @@
   },
   "freeAttendeeCapacity": "Saatavilla olevia paikkoja",
   "freeWaitingListCapacity": "Saatavilla olevia jonopaikkoja",
+  "instructions": "Ilmoittautumisohjeet",
   "inWaitingList": {
     "text": "Varasija",
     "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon varasijalla. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."

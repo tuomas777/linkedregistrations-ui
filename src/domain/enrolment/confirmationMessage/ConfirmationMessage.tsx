@@ -1,5 +1,6 @@
 import React from 'react';
 
+import useLocale from '../../../hooks/useLocale';
 import { Registration } from '../../registration/types';
 import { getRegistrationFields } from '../../registration/utils';
 
@@ -8,7 +9,8 @@ type Props = {
 };
 
 const ConfirmationMessage: React.FC<Props> = ({ registration }) => {
-  const { confirmationMessage } = getRegistrationFields(registration);
+  const locale = useLocale();
+  const { confirmationMessage } = getRegistrationFields(registration, locale);
   const confirmationMessageParts = confirmationMessage.split('\n');
 
   return (

@@ -10,6 +10,7 @@ import { Event } from '../../event/types';
 import { getEventFields } from '../../event/utils';
 import { Registration } from '../../registration/types';
 import { getRegistrationFields } from '../../registration/utils';
+import Instructions from '../instructions/Instructions';
 import AudienceAgeText from './AudienceAgeText';
 import DateText from './DateText';
 import styles from './eventInfo.module.scss';
@@ -32,8 +33,10 @@ const EventInfo: React.FC<EventInfoProps> = ({ event, registration }) => {
     offers,
     startTime,
   } = getEventFields(event, locale);
-  const { audienceMaxAge, audienceMinAge } =
-    getRegistrationFields(registration);
+  const { audienceMaxAge, audienceMinAge } = getRegistrationFields(
+    registration,
+    locale
+  );
 
   const locationText = useEventLocationText(event);
 
@@ -53,6 +56,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ event, registration }) => {
         </div>
         <div className={styles.descriptionRow}>
           <div dangerouslySetInnerHTML={{ __html: description }}></div>
+          <Instructions registration={registration} />
         </div>
         <div className={styles.keywordsRow}>
           {keywords.map((keyword) => (

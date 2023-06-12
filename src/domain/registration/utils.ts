@@ -5,7 +5,8 @@ import isNil from 'lodash/isNil';
 import { TFunction } from 'next-i18next';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../constants';
-import { ExtendedSession } from '../../types';
+import { ExtendedSession, Language } from '../../types';
+import getLocalisedString from '../../utils/getLocalisedString';
 import queryBuilder from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
 import {
@@ -198,12 +199,17 @@ export const getRegistrationWarning = (
 };
 
 export const getRegistrationFields = (
-  registration: Registration
+  registration: Registration,
+  locale: Language
 ): RegistrationFields => {
   return {
     audienceMaxAge: registration.audience_max_age ?? null,
     audienceMinAge: registration.audience_min_age ?? null,
-    confirmationMessage: registration.confirmation_message,
+    confirmationMessage: getLocalisedString(
+      registration.confirmation_message,
+      locale
+    ),
+    instructions: getLocalisedString(registration.instructions, locale),
     mandatoryFields: registration.mandatory_fields,
   };
 };

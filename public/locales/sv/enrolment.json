@@ -39,6 +39,7 @@
   },
   "freeAttendeeCapacity": "Tillgängliga platser",
   "freeWaitingListCapacity": "Tillgängliga väntelistplatser",
+  "instructions": "Registreringsinstruktioner",
   "inWaitingList": {
     "text": "På väntelista",
     "tooltip": "Deltagare har lagts till i kön av anmälda med reservplats. Anmälan bekräftas först när en plats i kön blir ledig. Du får ett meddelande via e-post om att platsen är bekräftad."

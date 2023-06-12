@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import React from 'react';
 
+import { fakeLocalisedObject } from '../../../../utils/mockDataUtils';
 import {
   configure,
   render,
@@ -34,11 +35,11 @@ const getElement = (key: 'age' | 'date' | 'description' | 'name' | 'price') => {
     case 'date':
       return screen.getByText('10.07.2020 – 13.07.2020');
     case 'description':
-      return screen.getByText(eventOverrides.description.fi as string);
+      return screen.getByText(eventOverrides.description?.fi as string);
     case 'name':
-      return screen.getByText(eventOverrides.name.fi as string);
+      return screen.getByText(eventOverrides.name?.fi as string);
     case 'price':
-      return screen.getByText(eventOverrides.offers[0].price.fi as string);
+      return screen.getByText(eventOverrides.offers[0].price?.fi as string);
   }
 };
 
@@ -83,4 +84,30 @@ test('should show event time correctly if only end time is defined', async () =>
   );
 
   screen.getByText('– 13.7.2020, 15.00');
+});
+
+test('should not show registration instructions text', async () => {
+  render(
+    <EventInfo
+      event={event}
+      registration={{ ...registration, instructions: null }}
+    />
+  );
+
+  expect(screen.queryByText('Ilmoittautumisohjeet')).not.toBeInTheDocument();
+});
+
+test('should show registration instructions text', async () => {
+  render(
+    <EventInfo
+      event={event}
+      registration={{
+        ...registration,
+        instructions: fakeLocalisedObject('Ohjeet ilmoittautumiseen'),
+      }}
+    />
+  );
+
+  screen.getByText('Ilmoittautumisohjeet');
+  screen.getByText('Ohjeet ilmoittautumiseen');
 });
