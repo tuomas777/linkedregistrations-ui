@@ -9,6 +9,10 @@ import { ExtendedSession } from '../../types';
 import queryBuilder from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
 import {
+  getSeatsReservationData,
+  isSeatsReservationExpired,
+} from '../reserveSeats/utils';
+import {
   Registration,
   RegistrationFields,
   RegistrationQueryVariables,
@@ -80,12 +84,23 @@ export const getFreeAttendeeOrWaitingListCapacity = (
   return getFreeWaitingListCapacity(registration);
 };
 
+const getReservedSeats = (registration: Registration): number => {
+  const data = getSeatsReservationData(registration.id);
+  return data && !isSeatsReservationExpired(data) ? data.seats : 0;
+};
+
 export const getMaxSeatsAmount = (
   registration: Registration
 ): number | undefined => {
+  const reservedSeats = getReservedSeats(registration);
   const maximumGroupSize = registration.maximum_group_size;
   const freeCapacity = getFreeAttendeeOrWaitingListCapacity(registration);
-  const maxValues = [maximumGroupSize, freeCapacity].filter(
+  const maxSeatsAmount =
+    freeCapacity !== undefined
+      ? freeCapacity + reservedSeats
+      : /* istanbul ignore next */ undefined;
+
+  const maxValues = [maximumGroupSize, maxSeatsAmount].filter(
     (v) => !isNil(v)
   ) as number[];
 
@@ -115,34 +130,64 @@ export const getAttendeeCapacityError = (
 };
 
 export const isRegistrationOpen = (registration: Registration): boolean => {
-  return (
-    !!registration.enrolment_start_time &&
-    isPast(new Date(registration.enrolment_start_time)) &&
-    (!registration.enrolment_end_time ||
-      isFuture(new Date(registration.enrolment_end_time)))
-  );
+  const enrolmentStartTime = registration.enrolment_start_time;
+  const enrolmentEndTime = registration.enrolment_end_time;
+
+  // Registration is not open if enrolment start time is defined and in the future
+  if (enrolmentStartTime && isFuture(new Date(enrolmentStartTime))) {
+    return false;
+  }
+  // Registration is not open if enrolment end time is defined and in the past
+  if (enrolmentEndTime && isPast(new Date(enrolmentEndTime))) {
+    return false;
+  }
+
+  return true;
 };
 
 export const isRegistrationPossible = (registration: Registration): boolean => {
-  return (
-    isRegistrationOpen(registration) &&
-    (!isAttendeeCapacityUsed(registration) ||
-      !isWaitingListCapacityUsed(registration))
-  );
+  const registrationOpen = isRegistrationOpen(registration);
+  const attendeeCapacityUsed = isAttendeeCapacityUsed(registration);
+  const freeAttendeeCapacity = getFreeAttendeeCapacity(registration);
+  const waitingListCapacityUsed = isWaitingListCapacityUsed(registration);
+  const freeWaitingListCapacity = getFreeWaitingListCapacity(registration);
+
+  // Enrolment is not opened or is already closed
+  if (!registrationOpen) {
+    return false;
+  }
+  // Attendee capacity and waiting list capacity is used
+  if (attendeeCapacityUsed && waitingListCapacityUsed) {
+    return false;
+  }
+  // Attendee capacity is not used
+  if (!attendeeCapacityUsed) {
+    return freeAttendeeCapacity !== 0;
+  }
+
+  // Waiting list capacity is not used
+  return freeWaitingListCapacity !== 0;
 };
 
 export const getRegistrationWarning = (
   registration: Registration,
   t: TFunction
 ): string => {
-  if (!isRegistrationPossible(registration)) {
-    return t('enrolment:warnings.closed');
-  } else if (
-    isAttendeeCapacityUsed(registration) &&
-    !isWaitingListCapacityUsed(registration)
-  ) {
-    const freeWaitlistCapacity = getFreeWaitingListCapacity(registration);
+  const registrationOpen = isRegistrationOpen(registration);
+  const registrationPossible = isRegistrationPossible(registration);
+  const attendeeCapacityUsed = isAttendeeCapacityUsed(registration);
+  const waitingListCapacityUsed = isWaitingListCapacityUsed(registration);
+  const freeWaitlistCapacity = getFreeWaitingListCapacity(registration);
 
+  if (!registrationOpen) {
+    return t('enrolment:warnings.closed');
+  }
+
+  if (!registrationPossible) {
+    return t('enrolment:warnings.allSeatsReserved');
+  }
+
+  if (attendeeCapacityUsed && !waitingListCapacityUsed) {
     return isNil(freeWaitlistCapacity)
       ? t('enrolment:warnings.capacityInWaitingListNoLimit')
       : t('enrolment:warnings.capacityInWaitingList', {
@@ -156,8 +201,8 @@ export const getRegistrationFields = (
   registration: Registration
 ): RegistrationFields => {
   return {
-    audienceMaxAge: registration.audience_max_age || null,
-    audienceMinAge: registration.audience_min_age || null,
+    audienceMaxAge: registration.audience_max_age ?? null,
+    audienceMinAge: registration.audience_min_age ?? null,
     confirmationMessage: registration.confirmation_message,
     mandatoryFields: registration.mandatory_fields,
   };

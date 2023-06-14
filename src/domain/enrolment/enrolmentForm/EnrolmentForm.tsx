@@ -3,7 +3,7 @@ import { IconCross, SingleSelectProps } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -92,10 +92,18 @@ const EnrolmentForm: React.FC<Props> = ({
     useEnrolmentPageContext();
 
   const notificationOptions = useNotificationOptions();
-  const formDisabled = !isRegistrationPossible(registration);
   const locale = useLocale();
   const router = useRouter();
   const { query } = router;
+
+  const formDisabled = useMemo(() => {
+    const data = getSeatsReservationData(registration.id as string);
+    if (data && !isSeatsReservationExpired(data)) {
+      return false;
+    }
+
+    return !isRegistrationPossible(registration);
+  }, [registration]);
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
@@ -198,7 +206,7 @@ const EnrolmentForm: React.FC<Props> = ({
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
 
-              {!readOnly && (
+              {isRegistrationPossible(registration) && !readOnly && (
                 <>
                   <Divider />
                   <ReservationTimer
@@ -207,7 +215,7 @@ const EnrolmentForm: React.FC<Props> = ({
                       reservationTimerCallbacksDisabled.current
                     }
                     disableCallbacks={disableReservationTimerCallbacks}
-                    initReservationData={!enrolment}
+                    initReservationData={true}
                     registration={registration}
                     setAttendees={setAttendees}
                   />
