@@ -19,6 +19,7 @@ export type Registration = {
   last_modified_by: stringOrNull;
   mandatory_fields: string[];
   maximum_attendee_capacity: numberOrNull;
+  maximum_group_size: numberOrNull;
   minimum_attendee_capacity: numberOrNull;
   publisher: string;
   remaining_attendee_capacity: numberOrNull;

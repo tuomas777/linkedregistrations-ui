@@ -45,6 +45,7 @@
     "emailMustBeUnique": "Email already has registration.",
     "endTimeInPast": "End time cannot be in the past. Please set a future end time.",
     "invalidUrl": "Enter a valid URL.",
+    "maxGroupSize": "The maximum group size is {{maxGroupSize}}.",
     "maxLength255": "The value can be up to 255 characters long.",
     "min0": "This number must be at least 0.",
     "mustBeUnique": "The value must be unique.",
