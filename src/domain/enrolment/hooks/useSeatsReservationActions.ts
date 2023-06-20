@@ -49,7 +49,7 @@ const useSeatsReservationActions = ({
 
   const { closeModal, setOpenModal } = useEnrolmentPageContext();
 
-  const registrationId = registration.id as string;
+  const registrationId = registration.id;
 
   const createSeatsReservationMutation = useCreateSeatsReservationMutation({
     session,
@@ -69,7 +69,7 @@ const useSeatsReservationActions = ({
     /* istanbul ignore else */
     if (setAttendees) {
       const newAttendees = getNewAttendees({
-        attendees: attendees || /* istanbul ignore next */ [],
+        attendees: attendees ?? /* istanbul ignore next */ [],
         seatsReservation,
       });
 
@@ -162,7 +162,7 @@ const useSeatsReservationActions = ({
       seats,
     };
 
-    await updateSeatsReservationMutation.mutate(payload, {
+    updateSeatsReservationMutation.mutate(payload, {
       onError: (error) => {
         handleError({
           callbacks,

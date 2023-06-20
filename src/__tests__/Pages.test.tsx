@@ -15,8 +15,8 @@ import {
   TEST_ENROLMENT_ID,
 } from '../domain/enrolment/constants';
 import { EnrolmentFormFields } from '../domain/enrolment/types';
-import { event } from '../domain/event/__mocks__/event';
-import { languagesResponse } from '../domain/language/__mocks__/languages';
+import { eventName } from '../domain/event/__mocks__/event';
+import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages';
 import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import EditEnrolmentPage, {
@@ -85,9 +85,7 @@ const enrolmentValues: EnrolmentFormFields = {
 };
 
 const mocks = [
-  rest.get('*/language/', (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(languagesResponse))
-  ),
+  ...mockedLanguagesResponses,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),
@@ -113,7 +111,7 @@ describe('CreateEnrolmentPage', () => {
 
     render(<CreateEnrolmentPage />);
 
-    await isHeadingRendered(event.name?.fi as string);
+    await isHeadingRendered(eventName);
   });
 
   it('should prefetch data', async () => {
@@ -153,7 +151,7 @@ describe('SummaryPage', () => {
 
     render(<SummaryPage />);
 
-    await isHeadingRendered(event.name?.fi as string);
+    await isHeadingRendered(eventName);
   });
 
   it('should prefetch data', async () => {
@@ -225,7 +223,7 @@ describe('EditEnrolmentPage', () => {
 
     render(<EditEnrolmentPage />);
 
-    await isHeadingRendered(event.name?.fi as string);
+    await isHeadingRendered(eventName);
   });
 
   it('should prefetch data', async () => {

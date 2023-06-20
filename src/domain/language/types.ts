@@ -9,6 +9,10 @@ export type LELanguage = {
   '@type': string;
 };
 
+export type LanguagesQueryVariables = {
+  serviceLanguage?: boolean;
+};
+
 export type LanguagesResponse = {
   meta: Meta;
   data: LELanguage[];

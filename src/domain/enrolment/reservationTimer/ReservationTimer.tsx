@@ -58,10 +58,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   const timerEnabled = useRef(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
-  const registrationId = useMemo(
-    () => registration.id as string,
-    [registration]
-  );
+  const registrationId = useMemo(() => registration.id, [registration]);
 
   const { createSeatsReservation } = useSeatsReservationActions({
     attendees,

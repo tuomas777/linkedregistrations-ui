@@ -102,7 +102,7 @@ export const fakeEvent = (overrides?: Partial<Event>): Event => {
       type_id: EventTypeId.General,
       videos: [],
       '@id': generateAtId(id, 'event'),
-      '@context': 'http://schema.org',
+      '@context': 'https://schema.org',
       '@type': 'Event',
     },
     overrides
@@ -134,7 +134,7 @@ export const fakeImage = (overrides?: Partial<Image>): Image => {
       publisher: faker.datatype.uuid(),
       url: faker.internet.url(),
       '@id': generateAtId(id, 'image'),
-      '@context': 'http://schema.org',
+      '@context': 'https://schema.org',
       '@type': 'Image',
     },
     overrides
@@ -167,7 +167,7 @@ export const fakeKeyword = (overrides?: Partial<Keyword>): Keyword => {
       n_nvents: 0,
       publisher: faker.datatype.uuid(),
       '@id': generateAtId(id, 'keyword'),
-      '@context': 'http://schema.org',
+      '@context': 'https://schema.org',
       '@type': 'Keyword',
     },
     overrides
@@ -191,7 +191,7 @@ export const fakeLanguage = (overrides?: Partial<LELanguage>): LELanguage => {
       translation_available: false,
       name: fakeLocalisedObject(),
       '@id': generateAtId(id, 'language'),
-      '@context': 'http://schema.org',
+      '@context': 'https://schema.org',
       '@type': 'Language',
     },
     overrides
@@ -244,7 +244,7 @@ export const fakePlace = (overrides?: Partial<Place>): Place => {
       telephone: fakeLocalisedObject(),
       has_upcoming_events: true,
       '@id': generateAtId(id, 'place'),
-      '@context': 'http://schema.org',
+      '@context': 'https://schema.org',
       '@type': 'Place',
     },
     overrides
@@ -300,15 +300,17 @@ export const fakeSeatsReservation = (
 ): SeatsReservation => {
   const id = overrides?.id || faker.datatype.uuid();
 
+  const timestamp = new Date().toISOString();
+
   return merge<SeatsReservation, typeof overrides>(
     {
       id,
       code: faker.datatype.uuid(),
-      expiration: addMinutes(new Date(), 30).toISOString(),
+      expiration: addMinutes(new Date(timestamp), 30).toISOString(),
       in_waitlist: false,
       registration: TEST_REGISTRATION_ID,
       seats: 1,
-      timestamp: new Date().toISOString(),
+      timestamp,
     },
     overrides
   );
@@ -332,7 +334,7 @@ export const fakeUser = (overrides?: Partial<User>): User => {
       username: faker.datatype.uuid(),
       uuid,
       '@id': generateAtId(uuid, 'user'),
-      '@context': 'http://schema.org',
+      '@context': 'https://schema.org',
       '@type': 'User',
     },
     overrides

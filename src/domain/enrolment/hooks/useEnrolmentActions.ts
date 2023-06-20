@@ -90,7 +90,7 @@ const useEnrolmentActions = ({
     callbacks?: MutationCallbacks
   ) => {
     setSaving(ENROLMENT_ACTIONS.CREATE);
-    await createEnrolmentMutation.mutate(payload, {
+    createEnrolmentMutation.mutate(payload, {
       onError: (error, variables) => {
         handleError({
           callbacks,
@@ -108,7 +108,7 @@ const useEnrolmentActions = ({
   const cancelEnrolment = async (callbacks?: MutationCallbacks) => {
     setSaving(ENROLMENT_ACTIONS.CANCEL);
 
-    await deleteEnrolmentMutation.mutate(
+    deleteEnrolmentMutation.mutate(
       {
         cancellationCode: enrolment?.cancellation_code as string,
         enrolmentId: enrolment?.id as string,
