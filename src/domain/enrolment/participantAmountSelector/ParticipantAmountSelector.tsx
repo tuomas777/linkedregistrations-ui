@@ -7,7 +7,7 @@ import NumberInput from '../../../common/components/numberInput/NumberInput';
 import { Registration } from '../../registration/types';
 import {
   getAttendeeCapacityError,
-  getFreeAttendeeOrWaitingListCapacity,
+  getMaxSeatsAmount,
 } from '../../registration/utils';
 import { getSeatsReservationData } from '../../reserveSeats/utils';
 import { ENROLMENT_FIELDS, ENROLMENT_MODALS } from '../constants';
@@ -55,7 +55,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     t
   );
 
-  const maxSeatAmount = getFreeAttendeeOrWaitingListCapacity(registration);
+  const maxSeatAmount = getMaxSeatsAmount(registration);
 
   const { saving, updateSeatsReservation } = useSeatsReservationActions({
     attendees,

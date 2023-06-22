@@ -80,6 +80,18 @@ export const getFreeAttendeeOrWaitingListCapacity = (
   return getFreeWaitingListCapacity(registration);
 };
 
+export const getMaxSeatsAmount = (
+  registration: Registration
+): number | undefined => {
+  const maximumGroupSize = registration.maximum_group_size;
+  const freeCapacity = getFreeAttendeeOrWaitingListCapacity(registration);
+  const maxValues = [maximumGroupSize, freeCapacity].filter(
+    (v) => !isNil(v)
+  ) as number[];
+
+  return maxValues.length ? Math.min(...maxValues) : undefined;
+};
+
 export const getAttendeeCapacityError = (
   registration: Registration,
   participantAmount: number,

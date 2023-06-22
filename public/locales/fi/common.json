@@ -45,6 +45,7 @@
     "emailMustBeUnique": "Sähköpostiosoitteella on jo ilmoittautuminen.",
     "endTimeInPast": "Lopetusaika ei voi olla menneisyydessä. Määritä tuleva päättymisaika.",
     "invalidUrl": "Syötä oikea URL-osoite.",
+    "maxGroupSize": "Ryhmän enimmäiskoko on {{maxGroupSize}}.",
     "maxLength255": "Arvo saa olla enintään 255 merkkiä pitkä.",
     "min0": "Tämän luvun on oltava vähintään 0.",
     "mustBeUnique": "Arvon tulee olla uniikki.",

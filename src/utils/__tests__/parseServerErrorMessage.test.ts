@@ -25,6 +25,18 @@ const testCases: [LEServerError, string][] = [
     [{ error: ['Arvo saa olla enintään 255 merkkiä pitkä.'] }],
     'Arvo saa olla enintään 255 merkkiä pitkä.',
   ],
+  [
+    'Amount of seats is greater than maximum group size: 3',
+    'Ryhmän enimmäiskoko on 3.',
+  ],
+  [
+    'Not enough seats available. Capacity left: 4.',
+    'Paikkoja ei ole riittävästi jäljellä. Paikkoja jäljellä: 4.',
+  ],
+  [
+    'Not enough capacity in the waiting list. Capacity left: 1.',
+    'Jonopaikkoja ei ole riittävästi jäljellä. Paikkoja jäljellä: 1.',
+  ],
   ['Arvon tulee olla uniikki.', 'Arvon tulee olla uniikki.'],
   [
     'Could not find all objects to update.',

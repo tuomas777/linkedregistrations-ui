@@ -8,6 +8,7 @@ import {
   getAttendeeCapacityError,
   getFreeAttendeeOrWaitingListCapacity,
   getFreeWaitingListCapacity,
+  getMaxSeatsAmount,
   getRegistrationWarning,
   isAttendeeCapacityUsed,
   isRegistrationOpen,
@@ -352,6 +353,69 @@ describe('getFreeAttendeeOrWaitingListCapacity function', () => {
         })
       )
     ).toBe(7);
+  });
+});
+
+describe('getMaxSeatsAmount function', () => {
+  test('should return undefined if maximum attendee capacity maximum group size is not set', () => {
+    expect(
+      getMaxSeatsAmount(
+        fakeRegistration({
+          maximum_attendee_capacity: null,
+          maximum_group_size: null,
+        })
+      )
+    ).toBe(undefined);
+  });
+
+  test('should return maximum group size if maximum attendee capacity is not defined', () => {
+    expect(
+      getMaxSeatsAmount(
+        fakeRegistration({
+          maximum_attendee_capacity: null,
+          maximum_group_size: 4,
+        })
+      )
+    ).toBe(4);
+  });
+
+  test('should return free capacity if maximum group size is not defined', () => {
+    expect(
+      getMaxSeatsAmount(
+        fakeRegistration({
+          current_attendee_count: 3,
+          maximum_attendee_capacity: 10,
+          maximum_group_size: null,
+          remaining_attendee_capacity: 7,
+        })
+      )
+    ).toBe(7);
+  });
+
+  test('should return free capacity if maximum group size is greated than free capacity', () => {
+    expect(
+      getMaxSeatsAmount(
+        fakeRegistration({
+          current_attendee_count: 3,
+          maximum_attendee_capacity: 10,
+          maximum_group_size: 8,
+          remaining_attendee_capacity: 7,
+        })
+      )
+    ).toBe(7);
+  });
+
+  test('should return maximum group size if maximum group size is less that free capacity', () => {
+    expect(
+      getMaxSeatsAmount(
+        fakeRegistration({
+          current_attendee_count: 3,
+          maximum_attendee_capacity: 10,
+          maximum_group_size: 6,
+          remaining_attendee_capacity: 7,
+        })
+      )
+    ).toBe(6);
   });
 });
 
