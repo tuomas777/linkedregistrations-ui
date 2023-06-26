@@ -284,8 +284,11 @@ export const fakeRegistration = (
       last_modified_by: '',
       mandatory_fields: [],
       maximum_attendee_capacity: null,
+      maximum_group_size: null,
       minimum_attendee_capacity: null,
       publisher: event.publisher,
+      remaining_attendee_capacity: null,
+      remaining_waiting_list_capacity: null,
       waiting_list_capacity: null,
     },
     overrides
@@ -295,15 +298,17 @@ export const fakeRegistration = (
 export const fakeSeatsReservation = (
   overrides?: Partial<SeatsReservation>
 ): SeatsReservation => {
+  const id = overrides?.id || faker.datatype.uuid();
+
   return merge<SeatsReservation, typeof overrides>(
     {
+      id,
       code: faker.datatype.uuid(),
       expiration: addMinutes(new Date(), 30).toISOString(),
+      in_waitlist: false,
       registration: TEST_REGISTRATION_ID,
       seats: 1,
       timestamp: new Date().toISOString(),
-      seats_at_event: 1,
-      waitlist_spots: 0,
     },
     overrides
   );
@@ -398,4 +403,18 @@ export const getMockedSeatsReservationData = (expirationOffset: number) => {
   const expiration = addSeconds(now, expirationOffset).toISOString();
 
   return fakeSeatsReservation({ expiration });
+};
+
+export const setSessionStorageValues = (
+  reservation: SeatsReservation,
+  registration: Registration
+) => {
+  jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
+    const reservationKey = `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registration.id}`;
+
+    if (key === reservationKey) {
+      return reservation ? JSON.stringify(reservation) : '';
+    }
+    return '';
+  });
 };
