@@ -1,5 +1,5 @@
-import { Field, FieldAttributes, Form, Formik } from 'formik';
-import { IconCross, SingleSelectProps } from 'hds-react';
+import { Field, Form, Formik } from 'formik';
+import { IconCross } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -20,7 +20,6 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
-import { OptionType } from '../../../types';
 import { ROUTES } from '../../app/routes/constants';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
@@ -56,16 +55,6 @@ import Attendees from './attendees/Attendees';
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
 import styles from './enrolmentForm.module.scss';
 
-const LanguageField = (
-  props: FieldAttributes<Omit<SingleSelectProps<OptionType>, 'options'>>
-) => {
-  const languageOptions = useLanguageOptions();
-
-  return (
-    <Field {...props} component={SingleSelectField} options={languageOptions} />
-  );
-};
-
 type Props = {
   enrolment?: Enrolment;
   initialValues: EnrolmentFormFields;
@@ -92,6 +81,9 @@ const EnrolmentForm: React.FC<Props> = ({
     useEnrolmentPageContext();
 
   const notificationOptions = useNotificationOptions();
+  const languageOptions = useLanguageOptions();
+  const serviceLanguageOptions = useLanguageOptions({ serviceLanguage: true });
+
   const locale = useLocale();
   const router = useRouter();
   const { query } = router;
@@ -307,10 +299,12 @@ const EnrolmentForm: React.FC<Props> = ({
                 </FormGroup>
                 <FormGroup>
                   <div className={styles.nativeLanguageRow}>
-                    <LanguageField
+                    <Field
+                      component={SingleSelectField}
                       name={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
                       disabled={formDisabled || readOnly}
                       label={t(`labelNativeLanguage`)}
+                      options={languageOptions}
                       placeholder={
                         readOnly
                           ? ''
@@ -319,10 +313,12 @@ const EnrolmentForm: React.FC<Props> = ({
                       readOnly={readOnly}
                       required
                     />
-                    <LanguageField
+                    <Field
+                      component={SingleSelectField}
                       name={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
                       disabled={formDisabled || readOnly}
                       label={t(`labelServiceLanguage`)}
+                      options={serviceLanguageOptions}
                       placeholder={
                         readOnly
                           ? ''

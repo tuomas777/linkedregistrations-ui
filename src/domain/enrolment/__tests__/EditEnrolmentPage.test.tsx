@@ -17,7 +17,7 @@ import {
   within,
 } from '../../../utils/testUtils';
 import { ROUTES } from '../../app/routes/constants';
-import { languagesResponse } from '../../language/__mocks__/languages';
+import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import { enrolment } from '../__mocks__/enrolment';
@@ -31,11 +31,8 @@ configure({ defaultHidden: true });
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
-const findElement = (key: 'nameInput') => {
-  switch (key) {
-    case 'nameInput':
-      return screen.findByRole('textbox', { name: /nimi/i });
-  }
+const findNameInput = () => {
+  return screen.findByRole('textbox', { name: /nimi/i });
 };
 
 const getElement = (
@@ -86,14 +83,12 @@ const renderComponent = () => render(<EditEnrolmentPage />);
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
 
-  await findElement('nameInput');
+  await findNameInput();
   expect(await axe(container)).toHaveNoViolations();
 });
 
 const defaultMocks = [
-  rest.get('*/language/', (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(languagesResponse))
-  ),
+  ...mockedLanguagesResponses,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),
@@ -102,19 +97,38 @@ const defaultMocks = [
   ),
 ];
 
-test('should edit enrolment page field', async () => {
-  setQueryMocks(...defaultMocks);
+const pushEditEnrolmentRoute = (registrationId: string) => {
   singletonRouter.push({
     pathname: ROUTES.EDIT_ENROLMENT,
     query: {
       accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
       enrolmentId: TEST_ENROLMENT_ID,
-      registrationId: TEST_REGISTRATION_ID,
+      registrationId: registrationId,
     },
   });
+};
+
+const tryToCancel = async () => {
+  const user = userEvent.setup();
+  const cancelButton = getElement('cancelButton');
+  await user.click(cancelButton);
+
+  const modal = await screen.findByRole('dialog', {
+    name: 'Haluatko varmasti poistaa ilmoittautumisen?',
+  });
+  const withinModal = within(modal);
+  const cancelEnrolmentButton = withinModal.getByRole('button', {
+    name: 'Peruuta ilmoittautuminen',
+  });
+  await user.click(cancelEnrolmentButton);
+};
+
+test('should edit enrolment page field', async () => {
+  setQueryMocks(...defaultMocks);
+  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  const nameInput = await findElement('nameInput');
+  const nameInput = await findNameInput();
   const streetAddressInput = getElement('streetAddressInput');
   const dateOfBirthInput = getElement('dateOfBirthInput');
   const zipInput = getElement('zipInput');
@@ -141,36 +155,17 @@ test('should edit enrolment page field', async () => {
 });
 
 test('should cancel enrolment', async () => {
-  const user = userEvent.setup();
-
   setQueryMocks(
     ...defaultMocks,
     rest.delete(`*/signup/${TEST_ENROLMENT_ID}`, (req, res, ctx) =>
       res(ctx.status(201), ctx.json(null))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.EDIT_ENROLMENT,
-    query: {
-      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
-      enrolmentId: TEST_ENROLMENT_ID,
-      registrationId: TEST_REGISTRATION_ID,
-    },
-  });
+  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findElement('nameInput');
-
-  const cancelButton = getElement('cancelButton');
-  await user.click(cancelButton);
-  const modal = await screen.findByRole('dialog', {
-    name: 'Haluatko varmasti poistaa ilmoittautumisen?',
-  });
-  const withinModal = within(modal);
-  const cancelEnrolmentButton = withinModal.getByRole('button', {
-    name: 'Peruuta ilmoittautuminen',
-  });
-  await user.click(cancelEnrolmentButton);
+  await findNameInput();
+  await tryToCancel();
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
@@ -180,36 +175,17 @@ test('should cancel enrolment', async () => {
 });
 
 test('should show error message when cancelling enrolment fails', async () => {
-  const user = userEvent.setup();
-
   setQueryMocks(
     ...defaultMocks,
     rest.delete(`*/signup/${TEST_ENROLMENT_ID}`, (req, res, ctx) =>
       res(ctx.status(403), ctx.json({ detail: 'Malformed UUID.' }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.EDIT_ENROLMENT,
-    query: {
-      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
-      enrolmentId: TEST_ENROLMENT_ID,
-      registrationId: TEST_REGISTRATION_ID,
-    },
-  });
+  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findElement('nameInput');
-
-  const cancelButton = getElement('cancelButton');
-  await user.click(cancelButton);
-  const modal = await screen.findByRole('dialog', {
-    name: 'Haluatko varmasti poistaa ilmoittautumisen?',
-  });
-  const withinModal = within(modal);
-  const cancelEnrolmentButton = withinModal.getByRole('button', {
-    name: 'Peruuta ilmoittautuminen',
-  });
-  await user.click(cancelEnrolmentButton);
+  await findNameInput();
+  await tryToCancel();
 
   await screen.findByRole(
     'heading',
@@ -227,15 +203,7 @@ test('should show not found page if registration does not exist', async () => {
       res(ctx.status(200), ctx.json(enrolment))
     )
   );
-
-  singletonRouter.push({
-    pathname: ROUTES.EDIT_ENROLMENT,
-    query: {
-      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
-      enrolmentId: TEST_ENROLMENT_ID,
-      registrationId: 'not-found',
-    },
-  });
+  pushEditEnrolmentRoute('not-found');
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();

@@ -1,3 +1,5 @@
+import { rest } from 'msw';
+
 import {
   fakeLanguages,
   fakeLocalisedObject,
@@ -56,4 +58,24 @@ const languages = [
 
 const languagesResponse = fakeLanguages(languages.length, languages);
 
-export { languages, languagesResponse };
+const serviceLanguages = languages.filter((l) =>
+  ['en', 'fi', 'sv'].includes(l.id)
+);
+const serviceLanguagesResponse = fakeLanguages(
+  serviceLanguages.length,
+  serviceLanguages
+);
+
+const mockedLanguagesResponses = [
+  rest.get('*/language/', (req, res, ctx) => {
+    if (req.url.searchParams.get('service_language')) {
+      return res(ctx.status(200), ctx.json(serviceLanguagesResponse));
+    }
+    return res(ctx.status(200), ctx.json(languagesResponse));
+  }),
+];
+export {
+  languagesResponse,
+  mockedLanguagesResponses,
+  serviceLanguagesResponse,
+};

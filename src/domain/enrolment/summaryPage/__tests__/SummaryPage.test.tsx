@@ -20,7 +20,7 @@ import {
   waitFor,
 } from '../../../../utils/testUtils';
 import { ROUTES } from '../../../app/routes/constants';
-import { languagesResponse } from '../../../language/__mocks__/languages';
+import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { NOTIFICATIONS } from '../../constants';
@@ -42,15 +42,13 @@ const enrolmentValues: EnrolmentFormFields = {
   accepted: true,
   attendees: [
     {
-      audienceMaxAge: null,
-      audienceMinAge: null,
       city: 'City',
       dateOfBirth: formatDate(subYears(new Date(), 9)),
       extraInfo: '',
       inWaitingList: false,
       name: 'Participan name',
       streetAddress: 'Street address',
-      zip: '00100',
+      zipcode: '00100',
     },
   ],
   email: 'participant@email.com',
@@ -63,9 +61,7 @@ const enrolmentValues: EnrolmentFormFields = {
 };
 
 const defaultMocks = [
-  rest.get('*/language/', (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(languagesResponse))
-  ),
+  ...mockedLanguagesResponses,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),
@@ -73,11 +69,8 @@ const defaultMocks = [
 
 const renderComponent = () => render(<SummaryPage />);
 
-const getElement = (key: 'submitButton') => {
-  switch (key) {
-    case 'submitButton':
-      return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
-  }
+const getSubmitButton = () => {
+  return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
 };
 
 test('should route back to enrolment form if reservation data is missing', async () => {
@@ -121,7 +114,7 @@ test('should route back to enrolment form after clicking submit button if there 
 
   await loadingSpinnerIsNotInDocument();
 
-  const submitButton = getElement('submitButton');
+  const submitButton = getSubmitButton();
   await user.click(submitButton);
 
   await waitFor(() =>
@@ -154,7 +147,7 @@ test('should route to enrolment completed page', async () => {
 
   await loadingSpinnerIsNotInDocument();
 
-  const submitButton = getElement('submitButton');
+  const submitButton = getSubmitButton();
   await user.click(submitButton);
 
   await waitFor(() =>
@@ -198,7 +191,7 @@ test('should show server errors when post request fails', async () => {
 
   await loadingSpinnerIsNotInDocument();
 
-  const submitButton = getElement('submitButton');
+  const submitButton = getSubmitButton();
   await user.click(submitButton);
 
   await screen.findByText(/lomakkeella on seuraavat virheet/i);

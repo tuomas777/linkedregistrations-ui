@@ -3,19 +3,39 @@ import { capitalize } from 'lodash';
 
 import { OptionType, Language, ExtendedSession } from '../../types';
 import getLocalisedString from '../../utils/getLocalisedString';
+import queryBuilder from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
-import { LanguagesResponse, LELanguage } from './types';
+import {
+  LanguagesQueryVariables,
+  LanguagesResponse,
+  LELanguage,
+} from './types';
 
 export const fetchLanguages = async (
+  args: LanguagesQueryVariables,
   session: ExtendedSession | null
 ): Promise<LanguagesResponse> => {
   try {
-    const { data } = await callGet({ session, url: '/language/' });
+    const { data } = await callGet({
+      session,
+      url: languagesPathBuilder(args),
+    });
     return data;
   } catch (error) {
     /* istanbul ignore next */
     throw Error(JSON.stringify((error as AxiosError).response?.data));
   }
+};
+
+export const languagesPathBuilder = (args: LanguagesQueryVariables): string => {
+  const { serviceLanguage } = args;
+  const variableToKeyItems = [
+    { key: 'service_language', value: serviceLanguage },
+  ];
+
+  const query = queryBuilder(variableToKeyItems);
+
+  return `/language/${query}`;
 };
 
 export const getLanguageOption = (

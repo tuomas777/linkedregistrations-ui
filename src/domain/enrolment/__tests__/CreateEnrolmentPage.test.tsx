@@ -24,7 +24,7 @@ import {
   within,
 } from '../../../utils/testUtils';
 import { ROUTES } from '../../app/routes/constants';
-import { languagesResponse } from '../../language/__mocks__/languages';
+import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import CreateEnrolmentPage from '../CreateEnrolmentPage';
@@ -46,11 +46,8 @@ const enrolmentValues = {
 let seats = 1;
 const seatsReservation = fakeSeatsReservation();
 
-const findElement = (key: 'nameInput') => {
-  switch (key) {
-    case 'nameInput':
-      return screen.findByRole('textbox', { name: /nimi/i });
-  }
+const findNameInput = () => {
+  return screen.findByRole('textbox', { name: /nimi/i });
 };
 
 const getElement = (
@@ -119,9 +116,7 @@ beforeEach(() => {
 });
 
 const defaultMocks = [
-  rest.get('*/language/', (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(languagesResponse))
-  ),
+  ...mockedLanguagesResponses,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),
@@ -135,7 +130,7 @@ test.skip('page is accessible', async () => {
   });
   const { container } = renderComponent();
 
-  await findElement('nameInput');
+  await findNameInput();
   expect(await axe(container)).toHaveNoViolations();
 });
 
@@ -154,7 +149,7 @@ test('should validate enrolment form and focus invalid field', async () => {
   });
   renderComponent();
 
-  const nameInput = await findElement('nameInput');
+  const nameInput = await findNameInput();
   const dateOfBirthInput = getElement('dateOfBirthInput');
   const emailInput = getElement('emailInput');
   const phoneInput = getElement('phoneInput');

@@ -1,5 +1,4 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { rest } from 'msw';
 
 import {
   fakeLocalisedObject,
@@ -7,6 +6,7 @@ import {
 } from '../../../../utils/mockDataUtils';
 import { getQueryWrapper, setQueryMocks } from '../../../../utils/testUtils';
 import { event } from '../../../event/__mocks__/event';
+import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import useEventLocationText from '../useEventLocationText';
 
 test('should return language options', async () => {
@@ -33,11 +33,7 @@ test('should return language options', async () => {
 });
 
 test('should return default value if place is missing', async () => {
-  setQueryMocks(
-    rest.get('*/language/', (req, res, ctx) =>
-      res(ctx.status(200), ctx.json({}))
-    )
-  );
+  setQueryMocks(...mockedLanguagesResponses);
   const wrapper = getQueryWrapper();
 
   const { result } = renderHook(

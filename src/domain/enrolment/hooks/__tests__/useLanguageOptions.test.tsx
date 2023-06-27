@@ -2,20 +2,14 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 
 import { getQueryWrapper, setQueryMocks } from '../../../../utils/testUtils';
-import { languagesResponse } from '../../../language/__mocks__/languages';
+import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import useLanguageOptions from '../useLanguageOptions';
 
 test('should return language options', async () => {
-  setQueryMocks(
-    rest.get('*/language/', (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(languagesResponse))
-    )
-  );
+  setQueryMocks(...mockedLanguagesResponses);
   const wrapper = getQueryWrapper();
 
-  const { result } = renderHook(() => useLanguageOptions(), {
-    wrapper,
-  });
+  const { result } = renderHook(() => useLanguageOptions(), { wrapper });
 
   await waitFor(() => expect(result.current.length).toBeTruthy());
 
@@ -32,6 +26,24 @@ test('should return language options', async () => {
     { label: 'Turkki', value: 'tr' },
     { label: 'Venäjä', value: 'ru' },
     { label: 'Viro', value: 'et' },
+  ]);
+});
+
+test('should return service language options', async () => {
+  setQueryMocks(...mockedLanguagesResponses);
+  const wrapper = getQueryWrapper();
+
+  const { result } = renderHook(
+    () => useLanguageOptions({ serviceLanguage: true }),
+    { wrapper }
+  );
+
+  await waitFor(() => expect(result.current.length).toBeTruthy());
+
+  expect(result.current).toEqual([
+    { label: 'Englanti', value: 'en' },
+    { label: 'Ruotsi', value: 'sv' },
+    { label: 'Suomi', value: 'fi' },
   ]);
 });
 
