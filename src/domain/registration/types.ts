@@ -1,4 +1,9 @@
-import { Meta, numberOrNull, stringOrNull } from '../api/types';
+import {
+  LocalisedObject,
+  Meta,
+  numberOrNull,
+  stringOrNull,
+} from '../api/types';
 import { Event } from '../event/types';
 
 export type Registration = {
@@ -6,7 +11,7 @@ export type Registration = {
   attendee_registration: boolean;
   audience_max_age: numberOrNull;
   audience_min_age: numberOrNull;
-  confirmation_message: string;
+  confirmation_message: LocalisedObject;
   created_at: stringOrNull;
   created_by: stringOrNull;
   current_attendee_count: number;
@@ -14,7 +19,7 @@ export type Registration = {
   enrolment_end_time: string;
   enrolment_start_time: string;
   event: Event;
-  instructions: stringOrNull;
+  instructions: LocalisedObject;
   last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
   mandatory_fields: string[];
@@ -41,5 +46,6 @@ export type RegistrationFields = {
   audienceMaxAge: numberOrNull;
   audienceMinAge: numberOrNull;
   confirmationMessage: string;
+  instructions: string;
   mandatoryFields: string[];
 };

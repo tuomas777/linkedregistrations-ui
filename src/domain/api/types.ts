@@ -9,7 +9,7 @@ export type LocalisedObject = {
   ru?: stringOrNull;
   sv?: stringOrNull;
   zh_hans?: stringOrNull;
-};
+} | null;
 
 export type Meta = {
   count: number;

@@ -27,7 +27,7 @@ const renderComponent = (query?: {
 const registrationWithoutConfirmationMessage = fakeRegistration({
   id: TEST_REGISTRATION_ID,
   event,
-  confirmation_message: '',
+  confirmation_message: null,
 });
 const mockedRegistrationWithoutConfirmationMessageResponse = rest.get(
   `*/registration/${TEST_REGISTRATION_ID}`,
@@ -40,7 +40,7 @@ const confirmationMessage = 'Custom confirmation message';
 const registrationWithConfirmationMessage = fakeRegistration({
   id: TEST_REGISTRATION_ID,
   event,
-  confirmation_message: confirmationMessage,
+  confirmation_message: { fi: confirmationMessage },
 });
 const mockedRegistrationWithConfirmationMessageResponse = rest.get(
   `*/registration/${TEST_REGISTRATION_ID}`,
@@ -67,7 +67,7 @@ test('should show default enrolment completed text', async () => {
 
   await screen.findByRole('heading', { name: 'Kiitos ilmoittautumisestasi!' });
   screen.getByText(
-    `Olet ilmoittanut tapahtumaamme ${eventOverrides.name.fi} – sydämellisesti tervetuloa!`
+    `Olet ilmoittanut tapahtumaamme ${eventOverrides.name?.fi} – sydämellisesti tervetuloa!`
   );
 });
 

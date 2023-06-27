@@ -28,7 +28,7 @@ const EnrolmentCompletedPage: React.FC<Props> = ({ event, registration }) => {
   const locale = useLocale();
 
   const { name } = getEventFields(event, locale);
-  const { confirmationMessage } = getRegistrationFields(registration);
+  const { confirmationMessage } = getRegistrationFields(registration, locale);
 
   React.useEffect(() => {
     if (typeof redirectUrl === 'string') {
