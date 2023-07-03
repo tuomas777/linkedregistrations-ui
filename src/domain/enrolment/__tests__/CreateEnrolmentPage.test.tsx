@@ -153,8 +153,6 @@ test('should validate enrolment form and focus invalid field', async () => {
   const dateOfBirthInput = getElement('dateOfBirthInput');
   const emailInput = getElement('emailInput');
   const phoneInput = getElement('phoneInput');
-  const emailCheckbox = getElement('emailCheckbox');
-  const phoneCheckbox = getElement('phoneCheckbox');
   const nativeLanguageButton = getElement('nativeLanguageButton');
   const serviceLanguageButton = getElement('serviceLanguageButton');
   const acceptCheckbox = getElement('acceptCheckbox');
@@ -176,15 +174,6 @@ test('should validate enrolment form and focus invalid field', async () => {
   expect(phoneInput).not.toBeRequired();
 
   await user.type(emailInput, enrolmentValues.email);
-  await user.click(submitButton);
-  await waitFor(() => expect(emailCheckbox).toHaveFocus());
-
-  await user.click(emailCheckbox);
-  await user.click(phoneCheckbox);
-  await user.click(submitButton);
-  await waitFor(() => expect(phoneInput).toHaveFocus());
-  expect(phoneInput).toBeRequired();
-
   await user.type(phoneInput, enrolmentValues.phoneNumber);
   await user.click(submitButton);
   await waitFor(() => expect(nativeLanguageButton).toHaveFocus());

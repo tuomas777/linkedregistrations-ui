@@ -77,7 +77,7 @@ describe('getEnrolmentPayload function', () => {
           membership_number: '',
           name: '',
           native_language: null,
-          notifications: 'none',
+          notifications: NOTIFICATION_TYPE.EMAIL,
           phone_number: null,
           service_language: null,
           street_address: null,
@@ -180,7 +180,7 @@ describe('getEnrolmentDefaultInitialValues function', () => {
       extraInfo: '',
       membershipNumber: '',
       nativeLanguage: '',
-      notifications: [],
+      notifications: [NOTIFICATIONS.EMAIL],
       phoneNumber: '',
       serviceLanguage: '',
     });
@@ -207,7 +207,7 @@ describe('getEnrolmentInitialValues function', () => {
         membership_number: null,
         name: null,
         native_language: null,
-        notifications: NOTIFICATION_TYPE.NO_NOTIFICATION,
+        notifications: NOTIFICATION_TYPE.EMAIL,
         phone_number: null,
         service_language: null,
         street_address: null,
@@ -230,7 +230,7 @@ describe('getEnrolmentInitialValues function', () => {
     expect(extraInfo).toBe('-');
     expect(membershipNumber).toBe('-');
     expect(nativeLanguage).toBe('');
-    expect(notifications).toEqual([]);
+    expect(notifications).toEqual([NOTIFICATIONS.EMAIL]);
     expect(phoneNumber).toBe('-');
     expect(serviceLanguage).toBe('');
   });
@@ -243,7 +243,7 @@ describe('getEnrolmentInitialValues function', () => {
     const expectedMembershipNumber = 'XXX-XXX-XXX';
     const expectedName = 'Name';
     const expectedNativeLanguage = 'fi';
-    const expectedNotifications = [NOTIFICATIONS.EMAIL, NOTIFICATIONS.SMS];
+    const expectedNotifications = [NOTIFICATIONS.EMAIL];
     const expectedPhoneNumber = '+358 44 123 4567';
     const expectedServiceLanguage = 'sv';
     const expectedStreetAddress = 'Test address';
@@ -267,7 +267,7 @@ describe('getEnrolmentInitialValues function', () => {
         membership_number: expectedMembershipNumber,
         name: expectedName,
         native_language: expectedNativeLanguage,
-        notifications: NOTIFICATION_TYPE.SMS_EMAIL,
+        notifications: NOTIFICATION_TYPE.EMAIL,
         phone_number: expectedPhoneNumber,
         service_language: expectedServiceLanguage,
         street_address: expectedStreetAddress,
