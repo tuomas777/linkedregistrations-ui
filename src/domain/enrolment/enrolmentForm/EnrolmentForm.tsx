@@ -89,7 +89,7 @@ const EnrolmentForm: React.FC<Props> = ({
   const { query } = router;
 
   const formDisabled = useMemo(() => {
-    const data = getSeatsReservationData(registration.id as string);
+    const data = getSeatsReservationData(registration.id);
     if (data && !isSeatsReservationExpired(data)) {
       return false;
     }
@@ -270,7 +270,9 @@ const EnrolmentForm: React.FC<Props> = ({
                     name={ENROLMENT_FIELDS.NOTIFICATIONS}
                     className={styles.notifications}
                     component={CheckboxGroupField}
-                    disabled={formDisabled || readOnly}
+                    // TODO: At the moment only email notifications are supported
+                    disabled={true}
+                    // disabled={formDisabled || readOnly}
                     label={t(`titleNotifications`)}
                     options={notificationOptions}
                     required
@@ -306,9 +308,7 @@ const EnrolmentForm: React.FC<Props> = ({
                       label={t(`labelNativeLanguage`)}
                       options={languageOptions}
                       placeholder={
-                        readOnly
-                          ? ''
-                          : (t(`placeholderNativeLanguage`) as string)
+                        readOnly ? '' : t(`placeholderNativeLanguage`)
                       }
                       readOnly={readOnly}
                       required
@@ -320,9 +320,7 @@ const EnrolmentForm: React.FC<Props> = ({
                       label={t(`labelServiceLanguage`)}
                       options={serviceLanguageOptions}
                       placeholder={
-                        readOnly
-                          ? ''
-                          : (t(`placeholderServiceLanguage`) as string)
+                        readOnly ? '' : t(`placeholderServiceLanguage`)
                       }
                       required
                     />
