@@ -153,8 +153,9 @@ describe('getAttendeeDefaultInitialValues function', () => {
       city: '',
       dateOfBirth: '',
       extraInfo: '',
+      firstName: '',
       inWaitingList: false,
-      name: '',
+      lastName: '',
       streetAddress: '',
       zipcode: '',
     });
@@ -170,8 +171,9 @@ describe('getEnrolmentDefaultInitialValues function', () => {
           city: '',
           dateOfBirth: '',
           extraInfo: '',
+          firstName: '',
           inWaitingList: false,
-          name: '',
+          lastName: '',
           streetAddress: '',
           zipcode: '',
         },
@@ -204,8 +206,9 @@ describe('getEnrolmentInitialValues function', () => {
         date_of_birth: null,
         email: null,
         extra_info: null,
+        first_name: null,
+        last_name: null,
         membership_number: null,
-        name: null,
         native_language: null,
         notifications: NOTIFICATION_TYPE.EMAIL,
         phone_number: null,
@@ -220,8 +223,9 @@ describe('getEnrolmentInitialValues function', () => {
         city: '-',
         dateOfBirth: '',
         extraInfo: '',
+        firstName: '-',
         inWaitingList: false,
-        name: '-',
+        lastName: '-',
         streetAddress: '-',
         zipcode: '-',
       },
@@ -240,8 +244,9 @@ describe('getEnrolmentInitialValues function', () => {
     const expectedDateOfBirth = '10.10.2021';
     const expectedEmail = 'user@email.com';
     const expectedExtraInfo = 'Extra info';
+    const expectedFirstName = 'First name';
+    const expectedLastName = 'Last name';
     const expectedMembershipNumber = 'XXX-XXX-XXX';
-    const expectedName = 'Name';
     const expectedNativeLanguage = 'fi';
     const expectedNotifications = [NOTIFICATIONS.EMAIL];
     const expectedPhoneNumber = '+358 44 123 4567';
@@ -264,8 +269,9 @@ describe('getEnrolmentInitialValues function', () => {
         date_of_birth: '2021-10-10',
         email: expectedEmail,
         extra_info: expectedExtraInfo,
+        first_name: expectedFirstName,
+        last_name: expectedLastName,
         membership_number: expectedMembershipNumber,
-        name: expectedName,
         native_language: expectedNativeLanguage,
         notifications: NOTIFICATION_TYPE.EMAIL,
         phone_number: expectedPhoneNumber,
@@ -280,8 +286,9 @@ describe('getEnrolmentInitialValues function', () => {
         city: expectedCity,
         dateOfBirth: expectedDateOfBirth,
         extraInfo: '',
+        firstName: expectedFirstName,
         inWaitingList: false,
-        name: expectedName,
+        lastName: expectedLastName,
         streetAddress: expectedStreetAddress,
         zipcode: expectedZip,
       },

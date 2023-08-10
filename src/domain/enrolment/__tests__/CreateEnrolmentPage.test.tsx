@@ -37,7 +37,8 @@ const enrolmentValues = {
   city: 'City',
   dateOfBirth: formatDate(subYears(new Date(), 9)),
   email: 'participant@email.com',
-  name: 'Participan name',
+  firstName: 'First name',
+  lastName: 'Last name',
   phoneNumber: '+358 44 123 4567',
   streetAddress: 'Street address',
   zip: '00100',
@@ -46,8 +47,8 @@ const enrolmentValues = {
 let seats = 1;
 const seatsReservation = fakeSeatsReservation();
 
-const findNameInput = () => {
-  return screen.findByRole('textbox', { name: /nimi/i });
+const findFirstNameInput = () => {
+  return screen.findByRole('textbox', { name: /etunimi/i });
 };
 
 const getElement = (
@@ -57,7 +58,8 @@ const getElement = (
     | 'dateOfBirthInput'
     | 'emailCheckbox'
     | 'emailInput'
-    | 'nameInput'
+    | 'firstNameInput'
+    | 'lastNameInput'
     | 'nativeLanguageButton'
     | 'participantAmountInput'
     | 'phoneCheckbox'
@@ -81,8 +83,10 @@ const getElement = (
       return screen.getByLabelText(/sähköpostilla/i);
     case 'emailInput':
       return screen.getByLabelText(/sähköpostiosoite/i);
-    case 'nameInput':
-      return screen.getByLabelText(/nimi/i);
+    case 'firstNameInput':
+      return screen.getByLabelText(/etunimi/i);
+    case 'lastNameInput':
+      return screen.getByLabelText(/sukunimi/i);
     case 'nativeLanguageButton':
       return screen.getByRole('button', { name: /äidinkieli/i });
     case 'participantAmountInput':
@@ -130,7 +134,7 @@ test.skip('page is accessible', async () => {
   });
   const { container } = renderComponent();
 
-  await findNameInput();
+  await findFirstNameInput();
   expect(await axe(container)).toHaveNoViolations();
 });
 
@@ -149,7 +153,8 @@ test('should validate enrolment form and focus invalid field', async () => {
   });
   renderComponent();
 
-  const nameInput = await findNameInput();
+  const firstNameInput = await findFirstNameInput();
+  const lastNameInput = await getElement('lastNameInput');
   const dateOfBirthInput = getElement('dateOfBirthInput');
   const emailInput = getElement('emailInput');
   const phoneInput = getElement('phoneInput');
@@ -158,12 +163,16 @@ test('should validate enrolment form and focus invalid field', async () => {
   const acceptCheckbox = getElement('acceptCheckbox');
   const submitButton = getElement('submitButton');
 
-  expect(nameInput).not.toHaveFocus();
+  expect(firstNameInput).not.toHaveFocus();
 
   await user.click(submitButton);
-  await waitFor(() => expect(nameInput).toHaveFocus());
+  await waitFor(() => expect(firstNameInput).toHaveFocus());
 
-  await user.type(nameInput, enrolmentValues.name);
+  await user.type(firstNameInput, enrolmentValues.firstName);
+  await user.click(submitButton);
+  await waitFor(() => expect(lastNameInput).toHaveFocus());
+
+  await user.type(lastNameInput, enrolmentValues.lastName);
   await user.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
@@ -348,14 +357,14 @@ test('should show and hide participant specific fields', async () => {
 
   await loadingSpinnerIsNotInDocument();
 
-  const nameInput = getElement('nameInput');
+  const firstNameInput = getElement('firstNameInput');
   const toggleButton = screen.getByRole('button', { name: 'Osallistuja 1' });
 
   await user.click(toggleButton);
-  expect(nameInput).not.toBeInTheDocument();
+  expect(firstNameInput).not.toBeInTheDocument();
 
   await user.click(toggleButton);
-  getElement('nameInput');
+  getElement('firstNameInput');
 });
 
 test('should delete participants by clicking delete participant button', async () => {

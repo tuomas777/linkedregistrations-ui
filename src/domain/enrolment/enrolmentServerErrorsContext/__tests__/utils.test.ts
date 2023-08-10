@@ -10,7 +10,7 @@ import {
 describe('parseEnrolmentServerErrors', () => {
   it('should set server error items', async () => {
     const error = {
-      name: ['The name must be specified.'],
+      firstName: ['The name must be specified.'],
       signups: [
         {
           non_field_errors: [
@@ -22,7 +22,7 @@ describe('parseEnrolmentServerErrors', () => {
 
     expect(parseEnrolmentServerErrors({ error, t: i18n.t.bind(i18n) })).toEqual(
       [
-        { label: 'Nimi', message: 'Nimi on pakollinen.' },
+        { label: 'Etunimi', message: 'Nimi on pakollinen.' },
         {
           label: '',
           message: 'Sähköpostiosoitteella on jo ilmoittautuminen.',
@@ -33,14 +33,14 @@ describe('parseEnrolmentServerErrors', () => {
 
   it('should return server error items when result is array', () => {
     const error = [
-      { name: ['The name must be specified.'] },
-      { name: ['The name must be specified.'] },
+      { firstName: ['The name must be specified.'] },
+      { lastName: ['The name must be specified.'] },
     ];
 
     expect(parseEnrolmentServerErrors({ error, t: i18n.t.bind(i18n) })).toEqual(
       [
-        { label: 'Nimi', message: 'Nimi on pakollinen.' },
-        { label: 'Nimi', message: 'Nimi on pakollinen.' },
+        { label: 'Etunimi', message: 'Nimi on pakollinen.' },
+        { label: 'Sukunimi', message: 'Nimi on pakollinen.' },
       ]
     );
   });
