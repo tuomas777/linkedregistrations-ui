@@ -133,6 +133,9 @@ Use .env.local for development.
 | NEXT_PUBLIC_LINKED_EVENTS_URL | linkedevents api base url                                                   |
 | NEXT_PUBLIC_ENVIRONMENT       | Environment used in Sentry. Use local for development                       |
 | NEXT_PUBLIC_SENTRY_DSN        | Sentry DSN.                                                                 |
+| SENTRY_URL                    | Url of Sentry instance. Default is https://sentry.test.hel.ninja            |
+| SENTRY_ORG                    | Sentry organization. Default is city-of-helsinki                            |
+| SENTRY_PROJECT                | Sentry project. Default is linkedregistrations-ui                           |
 | SENTRY_AUTH_TOKEN             | Sentry authentication token.                                                |
 | OIDC_ISSUER                   | Tunnistamo SSO service base url. Default is https://api.hel.fi/sso          |
 | OIDC_API_TOKENS_URL           | Tunnistamo api tokens url. Default is https://api.hel.fi/sso/api-tokens/    |
