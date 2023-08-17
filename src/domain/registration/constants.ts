@@ -1,6 +1,7 @@
 export enum REGISTRATION_MANDATORY_FIELDS {
   CITY = 'city',
-  NAME = 'name',
+  FIRST_NAME = 'first_name',
+  LAST_NAME = 'last_name',
   PHONE_NUMBER = 'phone_number',
   STREET_ADDRESS = 'street_address',
   ZIPCODE = 'zipcode',

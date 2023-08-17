@@ -31,11 +31,18 @@ const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
         {attendee.inWaitingList && <InWaitingListInfo />}
       </div>
       <FormGroup>
-        <ReadOnlyTextInput
-          id={getFieldId(ATTENDEE_FIELDS.NAME)}
-          label={t(`labelName`)}
-          value={getFieldText(attendee.name)}
-        />
+        <div className={styles.nameRow}>
+          <ReadOnlyTextInput
+            id={getFieldId(ATTENDEE_FIELDS.FIRST_NAME)}
+            label={t(`labelFirstName`)}
+            value={getFieldText(attendee.firstName)}
+          />
+          <ReadOnlyTextInput
+            id={getFieldId(ATTENDEE_FIELDS.LAST_NAME)}
+            label={t(`labelLastName`)}
+            value={getFieldText(attendee.lastName)}
+          />
+        </div>
       </FormGroup>
       <FormGroup>
         <div className={styles.streetAddressRow}>

@@ -56,8 +56,11 @@ export const getAttendeeSchema = (registration: Registration) => {
   const { audience_max_age, audience_min_age } = registration;
 
   return Yup.object().shape({
-    [ATTENDEE_FIELDS.NAME]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.NAME)
+    [ATTENDEE_FIELDS.FIRST_NAME]: getStringSchema(
+      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.FIRST_NAME)
+    ),
+    [ATTENDEE_FIELDS.LAST_NAME]: getStringSchema(
+      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.LAST_NAME)
     ),
     [ATTENDEE_FIELDS.STREET_ADDRESS]: getStringSchema(
       isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.STREET_ADDRESS)

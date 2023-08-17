@@ -10,6 +10,7 @@ import TextAreaField from '../../../../../common/components/formFields/TextAreaF
 import TextInputField from '../../../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
+import skipFalsyType from '../../../../../utils/skipFalsyType';
 import { Registration } from '../../../../registration/types';
 import { ATTENDEE_FIELDS } from '../../../constants';
 import { useEnrolmentPageContext } from '../../../enrolmentPageContext/hooks/useEnrolmentPageContext';
@@ -69,23 +70,39 @@ const Attendee: React.FC<Props> = ({
         attendee.inWaitingList ? <InWaitingListInfo /> : undefined
       }
       toggleButtonLabel={
-        attendee.name || t('attendeeDefaultTitle', { index: index + 1 })
+        [attendee.firstName, attendee.lastName]
+          .filter(skipFalsyType)
+          .join(' ') || t('attendeeDefaultTitle', { index: index + 1 })
       }
     >
       <Fieldset heading={t(`titleBasicInfo`)}>
         <FormGroup>
-          <Field
-            name={getFieldName(attendeePath, ATTENDEE_FIELDS.NAME)}
-            component={TextInputField}
-            disabled={formDisabled}
-            label={t(`labelName`)}
-            placeholder={readOnly ? '' : t(`placeholderName`)}
-            readOnly={readOnly}
-            required={isEnrolmentFieldRequired(
-              registration,
-              ATTENDEE_FIELDS.NAME
-            )}
-          />
+          <div className={styles.nameRow}>
+            <Field
+              name={getFieldName(attendeePath, ATTENDEE_FIELDS.FIRST_NAME)}
+              component={TextInputField}
+              disabled={formDisabled}
+              label={t(`labelFirstName`)}
+              placeholder={readOnly ? '' : t(`placeholderFirstName`)}
+              readOnly={readOnly}
+              required={isEnrolmentFieldRequired(
+                registration,
+                ATTENDEE_FIELDS.FIRST_NAME
+              )}
+            />
+            <Field
+              name={getFieldName(attendeePath, ATTENDEE_FIELDS.LAST_NAME)}
+              component={TextInputField}
+              disabled={formDisabled}
+              label={t(`labelLastName`)}
+              placeholder={readOnly ? '' : t(`placeholderLastName`)}
+              readOnly={readOnly}
+              required={isEnrolmentFieldRequired(
+                registration,
+                ATTENDEE_FIELDS.LAST_NAME
+              )}
+            />
+          </div>
         </FormGroup>
         <FormGroup>
           <div
