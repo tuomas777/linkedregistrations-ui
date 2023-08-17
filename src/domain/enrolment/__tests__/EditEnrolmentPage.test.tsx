@@ -6,7 +6,10 @@ import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
 
+import { fakeAuthenticatedSession } from '../../../utils/mockSession';
 import {
+  act,
+  actWait,
   configure,
   loadingSpinnerIsNotInDocument,
   render,
@@ -21,10 +24,7 @@ import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import { enrolment } from '../__mocks__/enrolment';
-import {
-  TEST_ENROLMENT_CANCELLATION_CODE,
-  TEST_ENROLMENT_ID,
-} from '../constants';
+import { TEST_ENROLMENT_ID } from '../constants';
 import EditEnrolmentPage from '../EditEnrolmentPage';
 
 configure({ defaultHidden: true });
@@ -81,7 +81,8 @@ const getElement = (
   }
 };
 
-const renderComponent = () => render(<EditEnrolmentPage />);
+const renderComponent = () =>
+  render(<EditEnrolmentPage />, { session: fakeAuthenticatedSession() });
 
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
@@ -104,7 +105,6 @@ const pushEditEnrolmentRoute = (registrationId: string) => {
   singletonRouter.push({
     pathname: ROUTES.EDIT_ENROLMENT,
     query: {
-      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
       enrolmentId: TEST_ENROLMENT_ID,
       registrationId: registrationId,
     },
@@ -130,6 +130,8 @@ test('should edit enrolment page field', async () => {
   setQueryMocks(...defaultMocks);
   pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
+
+  await actWait(100);
 
   const firstNameInput = await findFirstNameInput();
   const lastNameInput = getElement('lastNameInput');

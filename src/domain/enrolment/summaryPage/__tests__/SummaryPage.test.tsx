@@ -11,6 +11,7 @@ import {
   getMockedSeatsReservationData,
   setEnrolmentFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
+import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
 import {
   loadingSpinnerIsNotInDocument,
   render,
@@ -68,7 +69,8 @@ const defaultMocks = [
   ),
 ];
 
-const renderComponent = () => render(<SummaryPage />);
+const renderComponent = () =>
+  render(<SummaryPage />, { session: fakeAuthenticatedSession() });
 
 const getSubmitButton = () => {
   return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });

@@ -65,6 +65,11 @@
   "showLess": "Visa mindre",
   "showMore": "Visa mer",
   "signIn": "Logga in",
+  "signInRequired": {
+    "text": "Du måste vara inloggad för att se registreringsinformation.",
+    "title": "Inloggning krävs"
+  },
+  "signInToEnrol": "Du måste vara inloggad för att registrera dig för detta evenemang.",
   "signOut": "Logga ut",
   "titleServerErrorSummary": "Formuläret innehåller följande fel",
   "validation": {

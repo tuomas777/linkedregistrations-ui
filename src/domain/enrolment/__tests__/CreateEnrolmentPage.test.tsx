@@ -12,6 +12,7 @@ import {
   getMockedSeatsReservationData,
   setEnrolmentFormSessionStorageValues,
 } from '../../../utils/mockDataUtils';
+import { fakeAuthenticatedSession } from '../../../utils/mockSession';
 import {
   actWait,
   configure,
@@ -110,7 +111,8 @@ const getElement = (
   }
 };
 
-const renderComponent = () => render(<CreateEnrolmentPage />);
+const renderComponent = () =>
+  render(<CreateEnrolmentPage />, { session: fakeAuthenticatedSession() });
 
 beforeEach(() => {
   seats = 1;

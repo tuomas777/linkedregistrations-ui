@@ -48,7 +48,6 @@ export type SignupInput = {
 export type Enrolment = {
   id: string;
   attendee_status?: ATTENDEE_STATUS;
-  cancellation_code?: string;
   city?: stringOrNull;
   date_of_birth?: stringOrNull;
   email?: stringOrNull;
@@ -82,12 +81,10 @@ export type CreateEnrolmentResponse = {
 };
 
 export type DeleteEnrolmentMutationInput = {
-  cancellationCode: string;
   enrolmentId: string;
   registrationId: string;
 };
 
 export type EnrolmentQueryVariables = {
-  cancellationCode: string;
   enrolmentId: string;
 };

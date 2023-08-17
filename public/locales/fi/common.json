@@ -65,6 +65,11 @@
   "showLess": "Näytä vähemmän",
   "showMore": "Näytä lisää",
   "signIn": "Kirjaudu sisään",
+  "signInRequired": {
+    "text": "Sinun tulee olla kirjautunut tarkastellaksesi ilmoittautumisen tietoja.",
+    "title": "Kirjautuminen vaaditaan"
+  },
+  "signInToEnrol": "Sinun täytyy kirjautua sisään ilmoittautuaksesi tähän tapahtumaan.",
   "signOut": "Kirjaudu ulos",
   "titleServerErrorSummary": "Lomakkeella on seuraavat virheet",
   "validation": {

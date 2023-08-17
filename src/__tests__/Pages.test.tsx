@@ -21,7 +21,7 @@ import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import EditEnrolmentPage, {
   getServerSideProps as getEditEnrolmentPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/[enrolmentId]/[accessCode]/edit/index';
+} from '../pages/registration/[registrationId]/enrolment/[enrolmentId]/edit/index';
 import EnrolmentCancelledPage, {
   getServerSideProps as getEnrolmentCancelledPageServerSideProps,
 } from '../pages/registration/[registrationId]/enrolment/cancelled/index';
@@ -69,8 +69,9 @@ const enrolmentValues: EnrolmentFormFields = {
       city: 'City',
       dateOfBirth: formatDate(subYears(new Date(), 9)),
       extraInfo: '',
+      firstName: 'First name',
       inWaitingList: false,
-      name: 'Participan name',
+      lastName: 'Last name',
       streetAddress: 'Street address',
       zipcode: '00100',
     },
@@ -215,7 +216,6 @@ describe('EditEnrolmentPage', () => {
     singletonRouter.push({
       pathname: ROUTES.EDIT_ENROLMENT,
       query: {
-        accessCode: enrolment.cancellation_code,
         enrolmentId: enrolment.id,
         registrationId: registration.id,
       },
@@ -232,7 +232,6 @@ describe('EditEnrolmentPage', () => {
     const { props } = (await getEditEnrolmentPageServerSideProps({
       locale: 'fi',
       query: {
-        accessCode: enrolment.cancellation_code,
         enrolmentId: enrolment.id,
         registrationId: registration.id,
       },
