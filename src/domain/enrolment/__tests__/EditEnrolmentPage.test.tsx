@@ -31,8 +31,8 @@ configure({ defaultHidden: true });
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
-const findNameInput = () => {
-  return screen.findByRole('textbox', { name: /nimi/i });
+const findFirstNameInput = () => {
+  return screen.findByRole('textbox', { name: /etunimi/i });
 };
 
 const getElement = (
@@ -42,7 +42,8 @@ const getElement = (
     | 'dateOfBirthInput'
     | 'emailCheckbox'
     | 'emailInput'
-    | 'nameInput'
+    | 'firstNameInput'
+    | 'lastNameInput'
     | 'nativeLanguageButton'
     | 'phoneCheckbox'
     | 'phoneInput'
@@ -61,8 +62,10 @@ const getElement = (
       return screen.getByLabelText(/sähköpostilla/i);
     case 'emailInput':
       return screen.getByLabelText(/sähköpostiosoite/i);
-    case 'nameInput':
-      return screen.getByLabelText(/nimi/i);
+    case 'firstNameInput':
+      return screen.getByLabelText(/etunimi/i);
+    case 'lastNameInput':
+      return screen.getByLabelText(/sukunimi/i);
     case 'nativeLanguageButton':
       return screen.getByRole('button', { name: /äidinkieli/i });
     case 'phoneCheckbox':
@@ -83,7 +86,7 @@ const renderComponent = () => render(<EditEnrolmentPage />);
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
 
-  await findNameInput();
+  await findFirstNameInput();
   expect(await axe(container)).toHaveNoViolations();
 });
 
@@ -128,7 +131,8 @@ test('should edit enrolment page field', async () => {
   pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  const nameInput = await findNameInput();
+  const firstNameInput = await findFirstNameInput();
+  const lastNameInput = getElement('lastNameInput');
   const streetAddressInput = getElement('streetAddressInput');
   const dateOfBirthInput = getElement('dateOfBirthInput');
   const zipInput = getElement('zipInput');
@@ -141,7 +145,8 @@ test('should edit enrolment page field', async () => {
   const serviceLanguageButton = getElement('serviceLanguageButton');
   getElement('cancelButton');
 
-  expect(nameInput.hasAttribute('readonly')).toBeTruthy();
+  expect(firstNameInput.hasAttribute('readonly')).toBeTruthy();
+  expect(lastNameInput.hasAttribute('readonly')).toBeTruthy();
   expect(streetAddressInput.hasAttribute('readonly')).toBeTruthy();
   expect(dateOfBirthInput.hasAttribute('readonly')).toBeTruthy();
   expect(zipInput.hasAttribute('readonly')).toBeTruthy();
@@ -164,7 +169,7 @@ test('should cancel enrolment', async () => {
   pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findNameInput();
+  await findFirstNameInput();
   await tryToCancel();
 
   await waitFor(() =>
@@ -184,7 +189,7 @@ test('should show error message when cancelling enrolment fails', async () => {
   pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findNameInput();
+  await findFirstNameInput();
   await tryToCancel();
 
   await screen.findByRole(

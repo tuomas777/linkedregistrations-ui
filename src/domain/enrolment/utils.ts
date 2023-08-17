@@ -201,8 +201,9 @@ export const getEnrolmentInitialValues = (
           ? formatDate(new Date(enrolment.date_of_birth))
           : '',
         extraInfo: '',
+        firstName: enrolment.first_name || '-',
         inWaitingList: false,
-        name: enrolment.name || '-',
+        lastName: enrolment.last_name || '-',
         streetAddress: enrolment.street_address || '-',
         zipcode: enrolment.zipcode || '-',
       },

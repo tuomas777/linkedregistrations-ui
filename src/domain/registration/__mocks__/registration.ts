@@ -26,7 +26,10 @@ const registration = fakeRegistration({
   event,
   audience_max_age: 18,
   audience_min_age: 8,
-  mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.NAME],
+  mandatory_fields: [
+    REGISTRATION_MANDATORY_FIELDS.FIRST_NAME,
+    REGISTRATION_MANDATORY_FIELDS.LAST_NAME,
+  ],
 });
 
 export { registration };

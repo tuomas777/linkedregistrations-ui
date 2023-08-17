@@ -10,8 +10,9 @@ export type AttendeeFields = {
   [ATTENDEE_FIELDS.CITY]: string;
   [ATTENDEE_FIELDS.DATE_OF_BIRTH]: string;
   [ATTENDEE_FIELDS.EXTRA_INFO]: string;
+  [ATTENDEE_FIELDS.FIRST_NAME]: string;
   [ATTENDEE_FIELDS.IN_WAITING_LIST]: boolean;
-  [ATTENDEE_FIELDS.NAME]: string;
+  [ATTENDEE_FIELDS.LAST_NAME]: string;
   [ATTENDEE_FIELDS.STREET_ADDRESS]: string;
   [ATTENDEE_FIELDS.ZIPCODE]: string;
 };
@@ -33,8 +34,9 @@ export type SignupInput = {
   date_of_birth?: stringOrNull;
   email?: stringOrNull;
   extra_info?: stringOrNull;
+  first_name?: stringOrNull;
+  last_name?: stringOrNull;
   membership_number?: stringOrNull;
-  name?: stringOrNull;
   native_language?: stringOrNull;
   notifications?: NOTIFICATION_TYPE;
   phone_number?: stringOrNull;
@@ -51,8 +53,9 @@ export type Enrolment = {
   date_of_birth?: stringOrNull;
   email?: stringOrNull;
   extra_info?: stringOrNull;
+  first_name?: stringOrNull;
+  last_name?: stringOrNull;
   membership_number?: stringOrNull;
-  name?: stringOrNull;
   native_language?: stringOrNull;
   notifications?: NOTIFICATION_TYPE;
   phone_number?: stringOrNull;
@@ -68,14 +71,9 @@ export type CreateEnrolmentMutationInput = {
   signups: SignupInput[];
 };
 
-export type Person = {
-  id: number;
-  name: string;
-};
-
 export type PeopleResponse = {
   count: number;
-  people: Person[];
+  people: Enrolment[];
 };
 
 export type CreateEnrolmentResponse = {
