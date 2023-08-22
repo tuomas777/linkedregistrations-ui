@@ -1,4 +1,5 @@
 import pick from 'lodash/pick';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -132,7 +133,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   }, []);
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
+    const clearDataIfReservationExpired = async () => {
       /* istanbul ignore else */
       if (timerEnabled.current) {
         const data = getSeatsReservationData(registrationId);
@@ -145,11 +146,18 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
 
             clearCreateEnrolmentFormData(registrationId);
             clearSeatsReservationData(registrationId);
+            const session = await getSession();
 
-            setOpenModal(ENROLMENT_MODALS.RESERVATION_TIME_EXPIRED);
+            // Show modal only if user is authenticated
+            if (session) {
+              setOpenModal(ENROLMENT_MODALS.RESERVATION_TIME_EXPIRED);
+            }
           }
         }
       }
+    };
+    const interval = setInterval(() => {
+      clearDataIfReservationExpired();
     }, 1000);
 
     return () => clearInterval(interval);
