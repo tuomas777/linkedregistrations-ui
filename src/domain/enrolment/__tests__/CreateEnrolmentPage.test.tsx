@@ -1,17 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import subYears from 'date-fns/subYears';
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
+import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
 
+import { ExtendedSession } from '../../../types';
 import formatDate from '../../../utils/formatDate';
 import {
   fakeSeatsReservation,
   getMockedSeatsReservationData,
   setEnrolmentFormSessionStorageValues,
 } from '../../../utils/mockDataUtils';
+import { fakeAuthenticatedSession } from '../../../utils/mockSession';
 import {
   actWait,
   configure,
@@ -109,10 +113,13 @@ const getElement = (
       return screen.getByLabelText(/postinumero/i);
   }
 };
-
-const renderComponent = () => render(<CreateEnrolmentPage />);
+const defaultSession = fakeAuthenticatedSession();
+const renderComponent = (session: ExtendedSession | null = defaultSession) =>
+  render(<CreateEnrolmentPage />, { session });
 
 beforeEach(() => {
+  // Mock getSession return value
+  (nextAuth as any).getSession = jest.fn().mockReturnValue(defaultSession);
   seats = 1;
   // values stored in tests will also be available in other tests unless you run
   localStorage.clear();
@@ -512,4 +519,21 @@ test('should reload page if reservation is expired and route is create enrolment
 
   user.click(tryAgainButton);
   await waitFor(() => expect(mockRouter.reload).toBeCalled());
+});
+
+test('should show authentication required notification', async () => {
+  setQueryMocks(...defaultMocks);
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT,
+    query: { registrationId: registration.id },
+  });
+
+  renderComponent(null);
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', { name: 'Kirjaudu sisään' });
+  screen.getByText(
+    'Sinun täytyy kirjautua sisään ilmoittautuaksesi tähän tapahtumaan.'
+  );
 });

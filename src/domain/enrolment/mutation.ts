@@ -38,9 +38,8 @@ export const useDeleteEnrolmentMutation = ({
   session: ExtendedSession | null;
 }): UseMutationResult<null, Error, DeleteEnrolmentMutationInput> => {
   return useMutation(
-    ({ cancellationCode, enrolmentId }) =>
+    ({ enrolmentId }) =>
       deleteEnrolment({
-        cancellationCode,
         enrolmentId,
         session,
       }),

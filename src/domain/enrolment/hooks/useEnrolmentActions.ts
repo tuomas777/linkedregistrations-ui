@@ -110,7 +110,6 @@ const useEnrolmentActions = ({
 
     deleteEnrolmentMutation.mutate(
       {
-        cancellationCode: enrolment?.cancellation_code as string,
         enrolmentId: enrolment?.id as string,
         registrationId: registration.id,
       },

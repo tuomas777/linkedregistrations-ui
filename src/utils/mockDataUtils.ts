@@ -39,7 +39,6 @@ export const fakeEnrolment = (overrides?: Partial<Enrolment>): Enrolment => {
     {
       id,
       attendee_status: ATTENDEE_STATUS.Attending,
-      cancellation_code: faker.datatype.uuid(),
       city: faker.address.city(),
       date_of_birth: '1990-10-10',
       email: faker.internet.email(),

@@ -76,6 +76,11 @@ const Header: React.FC = () => {
     setMenuOpen(!menuOpen);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    sessionStorage.clear();
+  };
+
   return (
     <Navigation
       id={PAGE_HEADER_ID}
@@ -115,7 +120,7 @@ const Header: React.FC = () => {
             href="#"
             icon={<IconSignout aria-hidden />}
             variant="supplementary"
-            onClick={() => signOut()}
+            onClick={handleSignOut}
           />
         </Navigation.User>
         <Navigation.LanguageSelector

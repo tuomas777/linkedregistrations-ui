@@ -1,6 +1,7 @@
 import { Form, Formik } from 'formik';
 import { Notification } from 'hds-react';
 import pick from 'lodash/pick';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback, useRef } from 'react';
@@ -10,6 +11,7 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
+import { ExtendedSession } from '../../../types';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
@@ -20,12 +22,15 @@ import {
   clearSeatsReservationData,
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
+// eslint-disable-next-line max-len
+import AuthenticationRequiredNotification from '../authenticationRequiredNotification/AuthenticationRequiredNotification';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import Divider from '../divider/Divider';
 import { EnrolmentPageProvider } from '../enrolmentPageContext/EnrolmentPageContext';
 import { EnrolmentServerErrorsProvider } from '../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
+import EventInfo from '../eventInfo/EventInfo';
 import FormContainer from '../formContainer/FormContainer';
 import useEnrolmentActions from '../hooks/useEnrolmentActions';
 import useEventAndRegistrationData from '../hooks/useEventAndRegistrationData';
@@ -48,6 +53,10 @@ type SummaryPageProps = {
 };
 
 const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
+  const { data: session } = useSession() as {
+    data: ExtendedSession | null;
+  };
+
   const { createEnrolment } = useEnrolmentActions({ registration });
 
   const reservationTimerCallbacksDisabled = useRef(false);
@@ -101,79 +110,91 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
       <Container>
         <FormContainer>
           <ServerErrorSummary errors={serverErrorItems} />
-          <Notification
-            className={styles.notification}
-            label={t('notificationTitle')}
-          >
-            {t('notificationLabel')}
-          </Notification>
-          <SummaryEventInfo registration={registration} />
 
-          <Formik
-            initialValues={initialValues}
-            onSubmit={/* istanbul ignore next */ () => undefined}
-            validationSchema={() => getEnrolmentSchema(registration)}
-          >
-            {({ values }) => {
-              const handleSubmit = async () => {
-                try {
-                  setServerErrorItems([]);
+          {!session && (
+            <>
+              <AuthenticationRequiredNotification />
+              <EventInfo event={event} registration={registration} />
+            </>
+          )}
+          {session && (
+            <>
+              <Notification
+                className={styles.notification}
+                label={t('notificationTitle')}
+              >
+                {t('notificationLabel')}
+              </Notification>
+              <SummaryEventInfo registration={registration} />
+              <Formik
+                initialValues={initialValues}
+                onSubmit={/* istanbul ignore next */ () => undefined}
+                validationSchema={() => getEnrolmentSchema(registration)}
+              >
+                {({ values }) => {
+                  const handleSubmit = async () => {
+                    try {
+                      setServerErrorItems([]);
 
-                  await getEnrolmentSchema(registration).validate(values, {
-                    abortEarly: true,
-                  });
+                      await getEnrolmentSchema(registration).validate(values, {
+                        abortEarly: true,
+                      });
 
-                  const reservationData = getSeatsReservationData(
-                    registration.id
-                  );
-                  const payload = getEnrolmentPayload({
-                    formValues: values,
-                    registration,
-                    reservationCode: reservationData?.code as string,
-                  });
+                      const reservationData = getSeatsReservationData(
+                        registration.id
+                      );
+                      const payload = getEnrolmentPayload({
+                        formValues: values,
+                        registration,
+                        reservationCode: reservationData?.code as string,
+                      });
 
-                  createEnrolment(payload, {
-                    onError: (error) =>
-                      showServerErrors(
-                        { error: JSON.parse(error.message) },
-                        'enrolment'
-                      ),
-                    onSuccess: goToEnrolmentCompletedPage,
-                  });
-                } catch (e) {
-                  goToCreateEnrolmentPage();
-                }
-              };
-
-              return (
-                <Form noValidate>
-                  <FormikPersist
-                    isSessionStorage={true}
-                    name={`${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registration.id}`}
-                    savingDisabled={true}
-                  />
-
-                  <Divider />
-
-                  <ReservationTimer
-                    callbacksDisabled={
-                      reservationTimerCallbacksDisabled.current
+                      createEnrolment(payload, {
+                        onError: (error) =>
+                          showServerErrors(
+                            { error: JSON.parse(error.message) },
+                            'enrolment'
+                          ),
+                        onSuccess: goToEnrolmentCompletedPage,
+                      });
+                    } catch (e) {
+                      goToCreateEnrolmentPage();
                     }
-                    disableCallbacks={disableReservationTimerCallbacks}
-                    initReservationData={false}
-                    onDataNotFound={goToCreateEnrolmentPage}
-                    registration={registration}
-                  />
-                  <Divider />
-                  <Attendees />
-                  <InformantInfo values={values} />
-                  <ButtonWrapper>
-                    <Button onClick={handleSubmit}>{t('buttonSend')}</Button>
-                  </ButtonWrapper>
-                </Form>
-              );
-            }}
-          </Formik>
+                  };
+
+                  return (
+                    <Form noValidate>
+                      <FormikPersist
+                        isSessionStorage={true}
+                        name={`${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registration.id}`}
+                        savingDisabled={true}
+                      />
+
+                      <Divider />
+
+                      <ReservationTimer
+                        callbacksDisabled={
+                          reservationTimerCallbacksDisabled.current
+                        }
+                        disableCallbacks={disableReservationTimerCallbacks}
+                        initReservationData={false}
+                        onDataNotFound={goToCreateEnrolmentPage}
+                        registration={registration}
+                      />
+                      <Divider />
+                      <Attendees />
+                      <InformantInfo values={values} />
+                      <ButtonWrapper>
+                        <Button onClick={handleSubmit}>
+                          {t('buttonSend')}
+                        </Button>
+                      </ButtonWrapper>
+                    </Form>
+                  );
+                }}
+              </Formik>
+            </>
+          )}
         </FormContainer>
       </Container>
     </MainContent>

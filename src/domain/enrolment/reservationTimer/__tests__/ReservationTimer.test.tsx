@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { rest } from 'msw';
+import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
@@ -36,6 +38,8 @@ const defaultServerErrorsProps: EnrolmentServerErrorsContextProps = {
   showServerErrors: jest.fn(),
 };
 
+const session = fakeAuthenticatedSession();
+
 const renderComponent = (
   serverErrorProps?: Partial<EnrolmentServerErrorsContextProps>
 ) =>
@@ -54,11 +58,13 @@ const renderComponent = (
         />
       </EnrolmentServerErrorsContext.Provider>
     </EnrolmentPageProvider>,
-    { session: fakeAuthenticatedSession() }
+    { session }
   );
 
 beforeEach(() => {
   jest.resetAllMocks();
+  // Mock getSession return value
+  (nextAuth as any).getSession = jest.fn().mockReturnValue(session);
   // values stored in tests will also be available in other tests unless you run
   localStorage.clear();
   sessionStorage.clear();

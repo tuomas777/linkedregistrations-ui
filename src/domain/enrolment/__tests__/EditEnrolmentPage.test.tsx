@@ -2,11 +2,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
+import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
 
+import { ExtendedSession } from '../../../types';
+import { fakeAuthenticatedSession } from '../../../utils/mockSession';
 import {
+  actWait,
   configure,
   loadingSpinnerIsNotInDocument,
   render,
@@ -21,10 +25,7 @@ import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import { enrolment } from '../__mocks__/enrolment';
-import {
-  TEST_ENROLMENT_CANCELLATION_CODE,
-  TEST_ENROLMENT_ID,
-} from '../constants';
+import { TEST_ENROLMENT_ID } from '../constants';
 import EditEnrolmentPage from '../EditEnrolmentPage';
 
 configure({ defaultHidden: true });
@@ -81,7 +82,12 @@ const getElement = (
   }
 };
 
-const renderComponent = () => render(<EditEnrolmentPage />);
+const defaultSession = fakeAuthenticatedSession();
+const renderComponent = (session: ExtendedSession | null = defaultSession) =>
+  render(<EditEnrolmentPage />, { session });
+
+// Mock getSession return value
+(nextAuth as any).getSession = jest.fn().mockReturnValue(defaultSession);
 
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
@@ -104,7 +110,6 @@ const pushEditEnrolmentRoute = (registrationId: string) => {
   singletonRouter.push({
     pathname: ROUTES.EDIT_ENROLMENT,
     query: {
-      accessCode: TEST_ENROLMENT_CANCELLATION_CODE,
       enrolmentId: TEST_ENROLMENT_ID,
       registrationId: registrationId,
     },
@@ -130,6 +135,8 @@ test('should edit enrolment page field', async () => {
   setQueryMocks(...defaultMocks);
   pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
   renderComponent();
+
+  await actWait(100);
 
   const firstNameInput = await findFirstNameInput();
   const lastNameInput = getElement('lastNameInput');
@@ -219,5 +226,19 @@ test('should show not found page if registration does not exist', async () => {
 
   screen.getByText(
     'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
+  );
+});
+
+test('should show authentication required page if user is not authenticated', async () => {
+  setQueryMocks(...defaultMocks);
+  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
+  renderComponent(null);
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', { name: 'Kirjautuminen vaaditaan' });
+
+  screen.getByText(
+    'Sinun tulee olla kirjautunut tarkastellaksesi ilmoittautumisen tietoja.'
   );
 });

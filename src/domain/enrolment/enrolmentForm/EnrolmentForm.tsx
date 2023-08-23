@@ -2,6 +2,7 @@ import { Field, Form, Formik } from 'formik';
 import { IconCross } from 'hds-react';
 import pick from 'lodash/pick';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useMemo } from 'react';
 import { ValidationError } from 'yup';
@@ -42,7 +43,6 @@ import useLanguageOptions from '../hooks/useLanguageOptions';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
-import RegistrationWarning from '../registrationWarning/RegistrationWarning';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { AttendeeFields, Enrolment, EnrolmentFormFields } from '../types';
 import { isEnrolmentFieldRequired } from '../utils';
@@ -54,6 +54,11 @@ import {
 import Attendees from './attendees/Attendees';
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
 import styles from './enrolmentForm.module.scss';
+
+const RegistrationWarning = dynamic(
+  () => import('../registrationWarning/RegistrationWarning'),
+  { ssr: false }
+);
 
 type Props = {
   enrolment?: Enrolment;

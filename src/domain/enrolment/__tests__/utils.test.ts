@@ -22,13 +22,7 @@ import {
 
 describe('enrolmentPathBuilder function', () => {
   const cases: [EnrolmentQueryVariables, string][] = [
-    [
-      {
-        cancellationCode: 'hel:123',
-        enrolmentId: 'enrolment:1',
-      },
-      '/signup/enrolment:1/?cancellation_code=hel:123',
-    ],
+    [{ enrolmentId: 'enrolment:1' }, '/signup/enrolment:1/'],
   ];
 
   it.each(cases)('should build correct path', (variables, expectedPath) =>
@@ -74,8 +68,9 @@ describe('getEnrolmentPayload function', () => {
           date_of_birth: null,
           email: null,
           extra_info: '',
+          first_name: '',
+          last_name: '',
           membership_number: '',
-          name: '',
           native_language: null,
           notifications: NOTIFICATION_TYPE.EMAIL,
           phone_number: null,
@@ -90,8 +85,9 @@ describe('getEnrolmentPayload function', () => {
       dateOfBirth = '10.10.1999',
       email = 'Email',
       extraInfo = 'Extra info',
+      firstName = 'First name',
+      lastName = 'Last name',
       membershipNumber = 'XXX-123',
-      name = 'Name',
       nativeLanguage = 'fi',
       notifications = [NOTIFICATIONS.EMAIL],
       phoneNumber = '0441234567',
@@ -106,8 +102,9 @@ describe('getEnrolmentPayload function', () => {
             city,
             dateOfBirth,
             extraInfo: '',
+            firstName,
             inWaitingList: false,
-            name,
+            lastName,
             streetAddress,
             zipcode,
           },
@@ -133,8 +130,9 @@ describe('getEnrolmentPayload function', () => {
           date_of_birth: '1999-10-10',
           email,
           extra_info: extraInfo,
+          first_name: firstName,
+          last_name: lastName,
           membership_number: membershipNumber,
-          name,
           native_language: nativeLanguage,
           notifications: NOTIFICATION_TYPE.EMAIL,
           phone_number: phoneNumber,

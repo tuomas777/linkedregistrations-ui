@@ -21,7 +21,6 @@ const useEnrolmentData = (): UseEnrolmentDataState => {
     status,
   } = useEnrolmentQuery({
     args: {
-      cancellationCode: query.accessCode as string,
       enrolmentId: query.enrolmentId as string,
     },
     session,

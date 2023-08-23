@@ -5,7 +5,6 @@ import snakeCase from 'lodash/snakeCase';
 import { FORM_NAMES } from '../../constants';
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
-import queryBuilder from '../../utils/queryBuilder';
 import stringToDate from '../../utils/stringToDate';
 import { callDelete, callGet, callPost } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
@@ -45,14 +44,8 @@ export const fetchEnrolment = async (
 };
 
 export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
-  const { cancellationCode, enrolmentId } = args;
-  const variableToKeyItems = [
-    { key: 'cancellation_code', value: cancellationCode },
-  ];
-
-  const query = queryBuilder(variableToKeyItems);
-
-  return `/signup/${enrolmentId}/${query}`;
+  const { enrolmentId } = args;
+  return `/signup/${enrolmentId}/`;
 };
 
 export const createEnrolment = async ({
@@ -75,23 +68,16 @@ export const createEnrolment = async ({
 };
 
 export const deleteEnrolment = async ({
-  cancellationCode,
   enrolmentId,
   session,
 }: {
-  cancellationCode: string;
   enrolmentId: string;
   session: ExtendedSession | null;
 }): Promise<null> => {
   try {
-    const variableToKeyItems = [
-      { key: 'cancellation_code', value: cancellationCode },
-    ];
-    const query = queryBuilder(variableToKeyItems);
-
     const { data } = await callDelete({
       session,
-      url: `/signup/${enrolmentId}/${query}`,
+      url: `/signup/${enrolmentId}/`,
     });
     return data;
   } catch (error) {
@@ -151,7 +137,8 @@ export const getEnrolmentPayload = ({
   } = formValues;
 
   const signups: SignupInput[] = attendees.map((attendee) => {
-    const { city, dateOfBirth, name, streetAddress, zipcode } = attendee;
+    const { city, dateOfBirth, firstName, lastName, streetAddress, zipcode } =
+      attendee;
     return {
       city: city || '',
       date_of_birth: dateOfBirth
@@ -159,8 +146,9 @@ export const getEnrolmentPayload = ({
         : null,
       email: email || null,
       extra_info: extraInfo,
+      first_name: firstName || '',
+      last_name: lastName || '',
       membership_number: membershipNumber,
-      name: name || '',
       native_language: nativeLanguage || null,
       // TODO: At the moment only email notifications are supported
       notifications: NOTIFICATION_TYPE.EMAIL,
