@@ -3,12 +3,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import i18n from 'i18next';
 import { rest } from 'msw';
-import { Session } from 'next-auth';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
 
+import { ExtendedSession } from '../../../../types';
 import { fakeUser } from '../../../../utils/mockDataUtils';
 import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
 import {
@@ -34,7 +34,8 @@ beforeEach(() => {
   i18n.changeLanguage('fi');
 });
 
-const renderComponent = (session?: Session) => render(<Header />, { session });
+const renderComponent = (session?: ExtendedSession) =>
+  render(<Header />, { session });
 
 const getElement = (key: 'enOption' | 'menuButton' | 'svOption') => {
   switch (key) {

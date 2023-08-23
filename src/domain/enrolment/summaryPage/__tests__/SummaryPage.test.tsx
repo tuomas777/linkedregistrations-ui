@@ -5,6 +5,7 @@ import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
 
+import { ExtendedSession } from '../../../../types';
 import formatDate from '../../../../utils/formatDate';
 import {
   fakeEnrolment,
@@ -69,8 +70,9 @@ const defaultMocks = [
   ),
 ];
 
-const renderComponent = () =>
-  render(<SummaryPage />, { session: fakeAuthenticatedSession() });
+const renderComponent = (
+  session: ExtendedSession | null = fakeAuthenticatedSession()
+) => render(<SummaryPage />, { session });
 
 const getSubmitButton = () => {
   return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
@@ -221,5 +223,22 @@ test('should show not found page if registration does not exist', async () => {
 
   screen.getByText(
     'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
+  );
+});
+
+test('should show authentication required notification', async () => {
+  setQueryMocks(...defaultMocks);
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    query: { registrationId: registration.id },
+  });
+
+  renderComponent(null);
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', { name: 'Kirjaudu sisään' });
+  screen.getByText(
+    'Sinun täytyy kirjautua sisään ilmoittautuaksesi tähän tapahtumaan.'
   );
 });

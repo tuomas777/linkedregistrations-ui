@@ -1,11 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { act, render, waitFor } from '@testing-library/react';
 import { Formik, FormikProps } from 'formik';
+import * as nextAuth from 'next-auth/react';
 import * as React from 'react';
 
+import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
 import Persist from '../FormikPersist';
 
+const session = fakeAuthenticatedSession();
+
 beforeEach(() => {
+  // Mock getSession return value
+  (nextAuth as any).getSession = jest.fn().mockReturnValue(session);
   // values stored in tests will also be available in other tests unless you run
   localStorage.clear();
   sessionStorage.clear();
@@ -59,7 +66,7 @@ test('attempts to rehydrate on mount', async () => {
   expect(injected.values?.name).toEqual('Name from local storage');
 
   await act(() => {
-    injected.setValues && injected.setValues({ name: 'changed value' });
+    injected.setValues?.({ name: 'changed value' });
   });
 
   expect(injected.values?.name).toEqual('changed value');
@@ -100,7 +107,7 @@ test('attempts to rehydrate on mount if session storage is true on props', async
   expect(injected.values?.name).toEqual('Name from session storage');
 
   await act(() => {
-    injected.setValues && injected.setValues({ name: 'changed value' });
+    injected.setValues?.({ name: 'changed value' });
   });
 
   expect(injected?.values?.name).toEqual('changed value');

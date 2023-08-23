@@ -2,13 +2,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
+import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
 
+import { ExtendedSession } from '../../../types';
 import { fakeAuthenticatedSession } from '../../../utils/mockSession';
 import {
-  act,
   actWait,
   configure,
   loadingSpinnerIsNotInDocument,
@@ -81,8 +82,12 @@ const getElement = (
   }
 };
 
-const renderComponent = () =>
-  render(<EditEnrolmentPage />, { session: fakeAuthenticatedSession() });
+const defaultSession = fakeAuthenticatedSession();
+const renderComponent = (session: ExtendedSession | null = defaultSession) =>
+  render(<EditEnrolmentPage />, { session });
+
+// Mock getSession return value
+(nextAuth as any).getSession = jest.fn().mockReturnValue(defaultSession);
 
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
@@ -221,5 +226,19 @@ test('should show not found page if registration does not exist', async () => {
 
   screen.getByText(
     'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
+  );
+});
+
+test('should show authentication required page if user is not authenticated', async () => {
+  setQueryMocks(...defaultMocks);
+  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
+  renderComponent(null);
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', { name: 'Kirjautuminen vaaditaan' });
+
+  screen.getByText(
+    'Sinun tulee olla kirjautunut tarkastellaksesi ilmoittautumisen tietoja.'
   );
 });
