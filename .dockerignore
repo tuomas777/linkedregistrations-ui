@@ -7,8 +7,9 @@
 !next-i18next.config.js
 !next.config.js
 !package.json
-!sentry.client.config.js
+!sentry.client.config.ts
+!sentry.edge.config.ts
 !sentry.properties
-!sentry.server.config.js
+!sentry.server.config.ts
 !tsconfig.json
 !yarn.lock
