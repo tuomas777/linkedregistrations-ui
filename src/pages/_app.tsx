@@ -30,7 +30,7 @@ const MyApp = ({
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
-    <SessionProvider session={session} refetchInterval={10}>
+    <SessionProvider session={session} refetchInterval={/* 5 minutes */ 5 * 60}>
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <CookieConsent />
