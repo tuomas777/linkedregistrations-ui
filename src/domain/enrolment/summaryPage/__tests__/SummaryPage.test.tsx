@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import subYears from 'date-fns/subYears';
 import { rest } from 'msw';
+import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
 import React from 'react';
@@ -9,6 +11,7 @@ import { ExtendedSession } from '../../../../types';
 import formatDate from '../../../../utils/formatDate';
 import {
   fakeEnrolment,
+  fakeSignupGroup,
   getMockedSeatsReservationData,
   setEnrolmentFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
@@ -32,13 +35,19 @@ import SummaryPage from '../SummaryPage';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
+const defaultSession = fakeAuthenticatedSession();
+
 beforeEach(() => {
+  // Mock getSession return value
+  (nextAuth as any).getSession = jest.fn().mockReturnValue(defaultSession);
   // values stored in tests will also be available in other tests unless you run
   localStorage.clear();
   sessionStorage.clear();
 });
 
-const enrolment = fakeEnrolment();
+const signup = fakeEnrolment();
+
+const signupGroup = fakeSignupGroup({ signups: [signup] });
 
 const enrolmentValues: EnrolmentFormFields = {
   accepted: true,
@@ -70,9 +79,8 @@ const defaultMocks = [
   ),
 ];
 
-const renderComponent = (
-  session: ExtendedSession | null = fakeAuthenticatedSession()
-) => render(<SummaryPage />, { session });
+const renderComponent = (session: ExtendedSession | null = defaultSession) =>
+  render(<SummaryPage />, { session });
 
 const getSubmitButton = () => {
   return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
@@ -133,8 +141,8 @@ test('should route to enrolment completed page', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,
-    rest.post(`*/signup/`, (req, res, ctx) =>
-      res(ctx.status(201), ctx.json(enrolment))
+    rest.post(`*/signup_group/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json(signupGroup))
     )
   );
 
@@ -166,7 +174,7 @@ test('should show server errors when post request fails', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,
-    rest.post(`*/signup/`, (req, res, ctx) =>
+    rest.post(`*/signup_group/`, (req, res, ctx) =>
       res(
         ctx.status(400),
         ctx.json({

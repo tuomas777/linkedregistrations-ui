@@ -7,24 +7,24 @@ import { Registration } from '../../registration/types';
 import { ENROLMENT_ACTIONS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import {
-  useCreateEnrolmentMutation,
+  useCreateSignupGroupMutation,
   useDeleteEnrolmentMutation,
 } from '../mutation';
 import {
-  CreateEnrolmentMutationInput,
+  CreateSignupGroupMutationInput,
   DeleteEnrolmentMutationInput,
-  Enrolment,
+  Signup,
 } from '../types';
 
 interface Props {
-  enrolment?: Enrolment;
+  enrolment?: Signup;
   registration: Registration;
 }
 
 type UseEnrolmentActionsState = {
   cancelEnrolment: (callbacks?: MutationCallbacks) => Promise<void>;
-  createEnrolment: (
-    payload: CreateEnrolmentMutationInput,
+  createSignupGroup: (
+    payload: CreateSignupGroupMutationInput,
     callbacks?: MutationCallbacks
   ) => Promise<void>;
   saving: ENROLMENT_ACTIONS | null;
@@ -59,7 +59,7 @@ const useEnrolmentActions = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     error: any;
     message: string;
-    payload?: CreateEnrolmentMutationInput | DeleteEnrolmentMutationInput;
+    payload?: CreateSignupGroupMutationInput | DeleteEnrolmentMutationInput;
   }) => {
     closeModal();
     savingFinished();
@@ -81,21 +81,21 @@ const useEnrolmentActions = ({
   const deleteEnrolmentMutation = useDeleteEnrolmentMutation({
     session,
   });
-  const createEnrolmentMutation = useCreateEnrolmentMutation({
+  const createSignupGroupMutation = useCreateSignupGroupMutation({
     session,
   });
 
-  const createEnrolment = async (
-    payload: CreateEnrolmentMutationInput,
+  const createSignupGroup = async (
+    payload: CreateSignupGroupMutationInput,
     callbacks?: MutationCallbacks
   ) => {
     setSaving(ENROLMENT_ACTIONS.CREATE);
-    createEnrolmentMutation.mutate(payload, {
+    createSignupGroupMutation.mutate(payload, {
       onError: (error, variables) => {
         handleError({
           callbacks,
           error,
-          message: 'Failed to create enrolment',
+          message: 'Failed to create signup group',
           payload: variables,
         });
       },
@@ -130,7 +130,7 @@ const useEnrolmentActions = ({
   };
   return {
     cancelEnrolment,
-    createEnrolment,
+    createSignupGroup,
     saving,
   };
 };

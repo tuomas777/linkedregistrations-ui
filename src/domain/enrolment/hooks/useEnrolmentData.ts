@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 
 import { ExtendedSession } from '../../../types';
 import { useEnrolmentQuery } from '../query';
-import { Enrolment } from '../types';
+import { Signup } from '../types';
 
 type UseEnrolmentDataState = {
-  enrolment: Enrolment | undefined;
+  enrolment: Signup | undefined;
   isLoading: boolean;
 };
 

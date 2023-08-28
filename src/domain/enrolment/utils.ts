@@ -19,18 +19,18 @@ import {
 } from './constants';
 import {
   AttendeeFields,
-  CreateEnrolmentMutationInput,
-  CreateEnrolmentResponse,
-  Enrolment,
+  CreateSignupGroupMutationInput,
+  CreateSignupGroupResponse,
   EnrolmentFormFields,
   EnrolmentQueryVariables,
+  Signup,
   SignupInput,
 } from './types';
 
 export const fetchEnrolment = async (
   args: EnrolmentQueryVariables,
   session: ExtendedSession | null
-): Promise<Enrolment> => {
+): Promise<Signup> => {
   try {
     const { data } = await callGet({
       session,
@@ -48,18 +48,18 @@ export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
   return `/signup/${enrolmentId}/`;
 };
 
-export const createEnrolment = async ({
+export const createSignupGroup = async ({
   input,
   session,
 }: {
-  input: CreateEnrolmentMutationInput;
+  input: CreateSignupGroupMutationInput;
   session: ExtendedSession | null;
-}): Promise<CreateEnrolmentResponse> => {
+}): Promise<CreateSignupGroupResponse> => {
   try {
     const { data } = await callPost({
       data: JSON.stringify(input),
       session,
-      url: `/signup/`,
+      url: `/signup_group/`,
     });
     return data;
   } catch (error) {
@@ -125,20 +125,27 @@ export const getEnrolmentPayload = ({
   formValues: EnrolmentFormFields;
   registration: Registration;
   reservationCode: string;
-}): CreateEnrolmentMutationInput => {
+}): CreateSignupGroupMutationInput => {
   const {
     attendees,
     email,
-    extraInfo,
+    extraInfo: groupExtraInfo,
     membershipNumber,
     nativeLanguage,
     phoneNumber,
     serviceLanguage,
   } = formValues;
 
-  const signups: SignupInput[] = attendees.map((attendee) => {
-    const { city, dateOfBirth, firstName, lastName, streetAddress, zipcode } =
-      attendee;
+  const signups: SignupInput[] = attendees.map((attendee, index) => {
+    const {
+      city,
+      dateOfBirth,
+      extraInfo,
+      firstName,
+      lastName,
+      streetAddress,
+      zipcode,
+    } = attendee;
     return {
       city: city || '',
       date_of_birth: dateOfBirth
@@ -154,6 +161,7 @@ export const getEnrolmentPayload = ({
       notifications: NOTIFICATION_TYPE.EMAIL,
       // notifications: getEnrolmentNotificationsCode(notifications),
       phone_number: phoneNumber || null,
+      responsible_for_group: index == 0,
       service_language: serviceLanguage || null,
       street_address: streetAddress || null,
       zipcode: zipcode || null,
@@ -161,6 +169,7 @@ export const getEnrolmentPayload = ({
   });
 
   return {
+    extra_info: groupExtraInfo,
     registration: registration.id,
     reservation_code: reservationCode,
     signups,
@@ -177,7 +186,7 @@ export const getEnrolmentDefaultInitialValues = (): EnrolmentFormFields => ({
 });
 
 export const getEnrolmentInitialValues = (
-  enrolment: Enrolment
+  enrolment: Signup
 ): EnrolmentFormFields => {
   return {
     ...getEnrolmentDefaultInitialValues(),

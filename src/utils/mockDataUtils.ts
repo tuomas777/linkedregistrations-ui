@@ -12,7 +12,11 @@ import {
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATION_TYPE,
 } from '../domain/enrolment/constants';
-import { Enrolment, EnrolmentFormFields } from '../domain/enrolment/types';
+import {
+  EnrolmentFormFields,
+  Signup,
+  SignupGroup,
+} from '../domain/enrolment/types';
 import {
   EventStatus,
   EventTypeId,
@@ -32,24 +36,29 @@ import { SeatsReservation } from '../domain/reserveSeats/types';
 import { User } from '../domain/user/types';
 import generateAtId from './generateAtId';
 
-export const fakeEnrolment = (overrides?: Partial<Enrolment>): Enrolment => {
+export const fakeEnrolment = (overrides?: Partial<Signup>): Signup => {
   const id = overrides?.id || faker.datatype.uuid();
 
-  return merge<Enrolment, typeof overrides>(
+  return merge<Signup, typeof overrides>(
     {
       id,
       attendee_status: ATTENDEE_STATUS.Attending,
       city: faker.address.city(),
+      created_at: null,
+      created_by: null,
       date_of_birth: '1990-10-10',
       email: faker.internet.email(),
       extra_info: faker.lorem.paragraph(),
       first_name: faker.name.firstName(),
+      last_modified_at: null,
+      last_modified_by: null,
       last_name: faker.name.lastName(),
       membership_number: faker.datatype.uuid(),
       native_language: 'fi',
       notifications: NOTIFICATION_TYPE.SMS_EMAIL,
       phone_number: faker.phone.number(),
       registration: TEST_REGISTRATION_ID,
+      responsible_for_group: false,
       service_language: 'fi',
       street_address: faker.address.streetAddress(),
       zipcode: faker.address.zipCode('#####'),
@@ -311,6 +320,26 @@ export const fakeSeatsReservation = (
       registration: TEST_REGISTRATION_ID,
       seats: 1,
       timestamp,
+    },
+    overrides
+  );
+};
+
+export const fakeSignupGroup = (
+  overrides?: Partial<SignupGroup>
+): SignupGroup => {
+  const id = overrides?.id || faker.datatype.number();
+
+  return merge<SignupGroup, typeof overrides>(
+    {
+      id,
+      created_at: null,
+      created_by: null,
+      extra_info: '',
+      last_modified_at: null,
+      last_modified_by: null,
+      registration: TEST_REGISTRATION_ID,
+      signups: [],
     },
     overrides
   );

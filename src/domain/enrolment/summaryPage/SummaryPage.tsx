@@ -57,7 +57,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     data: ExtendedSession | null;
   };
 
-  const { createEnrolment } = useEnrolmentActions({ registration });
+  const { createSignupGroup } = useEnrolmentActions({ registration });
 
   const reservationTimerCallbacksDisabled = useRef(false);
   const disableReservationTimerCallbacks = useCallback(() => {
@@ -149,7 +149,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                         reservationCode: reservationData?.code as string,
                       });
 
-                      createEnrolment(payload, {
+                      createSignupGroup(payload, {
                         onError: (error) =>
                           showServerErrors(
                             { error: JSON.parse(error.message) },

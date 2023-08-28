@@ -60,6 +60,7 @@ describe('getEnrolmentPayload function', () => {
         reservationCode,
       })
     ).toEqual({
+      extra_info: '',
       registration: registration.id,
       reservation_code: 'code',
       signups: [
@@ -74,6 +75,7 @@ describe('getEnrolmentPayload function', () => {
           native_language: null,
           notifications: NOTIFICATION_TYPE.EMAIL,
           phone_number: null,
+          responsible_for_group: true,
           service_language: null,
           street_address: null,
           zipcode: null,
@@ -86,6 +88,7 @@ describe('getEnrolmentPayload function', () => {
       email = 'Email',
       extraInfo = 'Extra info',
       firstName = 'First name',
+      groupExtraInfo = 'Group extra info',
       lastName = 'Last name',
       membershipNumber = 'XXX-123',
       nativeLanguage = 'fi',
@@ -101,7 +104,7 @@ describe('getEnrolmentPayload function', () => {
           {
             city,
             dateOfBirth,
-            extraInfo: '',
+            extraInfo,
             firstName,
             inWaitingList: false,
             lastName,
@@ -110,7 +113,7 @@ describe('getEnrolmentPayload function', () => {
           },
         ],
         email,
-        extraInfo,
+        extraInfo: groupExtraInfo,
         membershipNumber,
         nativeLanguage,
         notifications,
@@ -122,6 +125,7 @@ describe('getEnrolmentPayload function', () => {
     });
 
     expect(payload).toEqual({
+      extra_info: groupExtraInfo,
       registration: registration.id,
       reservation_code: reservationCode,
       signups: [
@@ -136,6 +140,7 @@ describe('getEnrolmentPayload function', () => {
           native_language: nativeLanguage,
           notifications: NOTIFICATION_TYPE.EMAIL,
           phone_number: phoneNumber,
+          responsible_for_group: true,
           service_language: serviceLanguage,
           street_address: streetAddress,
           zipcode,

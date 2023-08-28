@@ -44,7 +44,7 @@ import useNotificationOptions from '../hooks/useNotificationOptions';
 import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
-import { AttendeeFields, Enrolment, EnrolmentFormFields } from '../types';
+import { AttendeeFields, EnrolmentFormFields, Signup } from '../types';
 import { isEnrolmentFieldRequired } from '../utils';
 import {
   getEnrolmentSchema,
@@ -61,7 +61,7 @@ const RegistrationWarning = dynamic(
 );
 
 type Props = {
-  enrolment?: Enrolment;
+  enrolment?: Signup;
   initialValues: EnrolmentFormFields;
   readOnly?: boolean;
   registration: Registration;

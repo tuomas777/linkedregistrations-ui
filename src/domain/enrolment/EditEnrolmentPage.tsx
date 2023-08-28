@@ -17,11 +17,11 @@ import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';
 import useEnrolmentData from './hooks/useEnrolmentData';
 import useEventAndRegistrationData from './hooks/useEventAndRegistrationData';
-import { Enrolment } from './types';
+import { Signup } from './types';
 import { getEnrolmentInitialValues } from './utils';
 
 type Props = {
-  enrolment: Enrolment;
+  enrolment: Signup;
   event: Event;
   registration: Registration;
 };
