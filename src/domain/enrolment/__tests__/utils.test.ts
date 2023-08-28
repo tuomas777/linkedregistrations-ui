@@ -1,4 +1,4 @@
-import { fakeEnrolment, fakeRegistration } from '../../../utils/mockDataUtils';
+import { fakeRegistration, fakeSignup } from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import {
@@ -204,7 +204,7 @@ describe('getEnrolmentInitialValues function', () => {
       phoneNumber,
       serviceLanguage,
     } = getEnrolmentInitialValues(
-      fakeEnrolment({
+      fakeSignup({
         city: null,
         date_of_birth: null,
         email: null,
@@ -267,7 +267,7 @@ describe('getEnrolmentInitialValues function', () => {
       phoneNumber,
       serviceLanguage,
     } = getEnrolmentInitialValues(
-      fakeEnrolment({
+      fakeSignup({
         city: expectedCity,
         date_of_birth: '2021-10-10',
         email: expectedEmail,

@@ -10,7 +10,7 @@ import React from 'react';
 import { ExtendedSession } from '../../../../types';
 import formatDate from '../../../../utils/formatDate';
 import {
-  fakeEnrolment,
+  fakeSignup,
   fakeSignupGroup,
   getMockedSeatsReservationData,
   setEnrolmentFormSessionStorageValues,
@@ -45,7 +45,7 @@ beforeEach(() => {
   sessionStorage.clear();
 });
 
-const signup = fakeEnrolment();
+const signup = fakeSignup();
 
 const signupGroup = fakeSignupGroup({ signups: [signup] });
 
