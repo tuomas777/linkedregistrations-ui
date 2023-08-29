@@ -25,9 +25,9 @@ import EditEnrolmentPage, {
 import EnrolmentCancelledPage, {
   getServerSideProps as getEnrolmentCancelledPageServerSideProps,
 } from '../pages/registration/[registrationId]/enrolment/cancelled/index';
-import EnrolmentCompletedPage, {
-  getServerSideProps as getEnrolmentCompletedPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/completed/index';
+import SignupGroupCompletedPage, {
+  getServerSideProps as getSignupGroupCompletedPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/completed/index';
 import CreateSignupGroupPage, {
   getServerSideProps as getCreateSignupGroupPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/create/index';
@@ -175,16 +175,16 @@ describe('SummaryPage', () => {
   });
 });
 
-describe('EnrolmentCompletedPage', () => {
+describe('SignupGroupCompletedPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
     singletonRouter.push({
-      pathname: ROUTES.ENROLMENT_COMPLETED,
+      pathname: ROUTES.SIGNUP_GROUP_COMPLETED,
       query: { enrolmentId: enrolment.id, registrationId: registration.id },
     });
 
-    render(<EnrolmentCompletedPage />);
+    render(<SignupGroupCompletedPage />);
 
     await isHeadingRendered('Kiitos ilmoittautumisestasi!');
   });
@@ -192,7 +192,7 @@ describe('EnrolmentCompletedPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getEnrolmentCompletedPageServerSideProps({
+    const { props } = (await getSignupGroupCompletedPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {

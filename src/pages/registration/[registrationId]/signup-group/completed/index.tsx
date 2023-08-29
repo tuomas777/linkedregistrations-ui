@@ -1,9 +1,9 @@
 import { NextPage } from 'next';
 
-import EnrolmentCompletedPage from '../../../../../domain/enrolment/EnrolmentCompletedPage';
+import SignupGroupCompletedPage from '../../../../../domain/signupGroup/SignupGroupCompletedPage';
 import generateEnrolmentGetServerSideProps from '../../../../../utils/generateEnrolmentGetServerSideProps';
 
-const EnrolmentCompleted: NextPage = () => <EnrolmentCompletedPage />;
+const SignupGroupCompleted: NextPage = () => <SignupGroupCompletedPage />;
 
 export const getServerSideProps = generateEnrolmentGetServerSideProps({
   shouldPrefetchEnrolment: false,
@@ -11,4 +11,4 @@ export const getServerSideProps = generateEnrolmentGetServerSideProps({
   translationNamespaces: ['common', 'enrolment'],
 });
 
-export default EnrolmentCompleted;
+export default SignupGroupCompleted;

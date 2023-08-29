@@ -9,15 +9,15 @@ import {
   setQueryMocks,
   waitFor,
 } from '../../../utils/testUtils';
+import { ENROLMENT_QUERY_PARAMS } from '../../enrolment/constants';
 import { event, eventOverrides } from '../../event/__mocks__/event';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import { ENROLMENT_QUERY_PARAMS } from '../constants';
-import EnrolmentCompletedPage from '../EnrolmentCompletedPage';
+import SignupGroupCompletedPage from '../SignupGroupCompletedPage';
 
 const renderComponent = (query?: {
   [ENROLMENT_QUERY_PARAMS.REDIRECT_URL]: string;
 }) =>
-  render(<EnrolmentCompletedPage />, {
+  render(<SignupGroupCompletedPage />, {
     query: {
       registrationId: TEST_REGISTRATION_ID,
       ...query,
@@ -61,7 +61,7 @@ afterAll((): void => {
   window.location = location;
 });
 
-test('should show default enrolment completed text', async () => {
+test('should show default signup completed text', async () => {
   setQueryMocks(mockedRegistrationWithoutConfirmationMessageResponse);
   renderComponent();
 

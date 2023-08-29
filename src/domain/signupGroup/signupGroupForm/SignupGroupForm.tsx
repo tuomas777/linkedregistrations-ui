@@ -50,6 +50,7 @@ import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
+import { isSignupFieldRequired } from '../utils';
 import {
   getSignupGroupSchema,
   scrollToFirstError,
@@ -58,7 +59,6 @@ import {
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
 import styles from './signupGroupForm.module.scss';
 import Signups from './signups/Signups';
-import { isSignupFieldRequired } from '../utils';
 
 const RegistrationWarning = dynamic(
   () => import('../../enrolment/registrationWarning/RegistrationWarning'),

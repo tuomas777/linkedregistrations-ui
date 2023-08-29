@@ -76,7 +76,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     clearSeatsReservationData(registration.id);
 
     goToPage(
-      ROUTES.ENROLMENT_COMPLETED.replace('[registrationId]', registration.id)
+      ROUTES.SIGNUP_GROUP_COMPLETED.replace('[registrationId]', registration.id)
     );
   };
 
