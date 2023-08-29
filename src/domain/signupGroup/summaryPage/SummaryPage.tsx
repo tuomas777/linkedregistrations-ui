@@ -150,13 +150,11 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                       });
 
                       createSignupGroup(payload, {
-                        onError: (error) => {
-                          console.log('SHOW', error);
+                        onError: (error) =>
                           showServerErrors(
                             { error: JSON.parse(error.message) },
                             'enrolment'
-                          );
-                        },
+                          ),
                         onSuccess: goToSignupGroupCompletedPage,
                       });
                     } catch (e) {

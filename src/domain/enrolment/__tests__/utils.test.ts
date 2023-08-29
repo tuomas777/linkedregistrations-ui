@@ -8,10 +8,10 @@ import {
 import { EnrolmentQueryVariables } from '../types';
 import {
   enrolmentPathBuilder,
-  getAttendeeDefaultInitialValues,
   getEnrolmentDefaultInitialValues,
   getEnrolmentInitialValues,
   getEnrolmentNotificationsCode,
+  getSignupDefaultInitialValues,
   isEnrolmentFieldRequired,
 } from '../utils';
 
@@ -42,9 +42,9 @@ describe('getEnrolmentNotificationsCode function', () => {
   });
 });
 
-describe('getAttendeeDefaultInitialValues function', () => {
-  it('should return attendee initial values', () => {
-    expect(getAttendeeDefaultInitialValues()).toEqual({
+describe('getSignupDefaultInitialValues function', () => {
+  it('should return signup initial values', () => {
+    expect(getSignupDefaultInitialValues()).toEqual({
       city: '',
       dateOfBirth: '',
       extraInfo: '',
@@ -61,7 +61,14 @@ describe('getEnrolmentDefaultInitialValues function', () => {
   it('should return enrolment initial values', () => {
     expect(getEnrolmentDefaultInitialValues()).toEqual({
       accepted: false,
-      attendees: [
+      email: '',
+      extraInfo: '',
+      membershipNumber: '',
+      nativeLanguage: '',
+      notifications: [NOTIFICATIONS.EMAIL],
+      phoneNumber: '',
+      serviceLanguage: '',
+      signups: [
         {
           city: '',
           dateOfBirth: '',
@@ -73,13 +80,6 @@ describe('getEnrolmentDefaultInitialValues function', () => {
           zipcode: '',
         },
       ],
-      email: '',
-      extraInfo: '',
-      membershipNumber: '',
-      nativeLanguage: '',
-      notifications: [NOTIFICATIONS.EMAIL],
-      phoneNumber: '',
-      serviceLanguage: '',
     });
   });
 });
@@ -87,7 +87,6 @@ describe('getEnrolmentDefaultInitialValues function', () => {
 describe('getEnrolmentInitialValues function', () => {
   it('should return default values if value is not set', () => {
     const {
-      attendees,
       email,
       extraInfo,
       membershipNumber,
@@ -95,6 +94,7 @@ describe('getEnrolmentInitialValues function', () => {
       notifications,
       phoneNumber,
       serviceLanguage,
+      signups,
     } = getEnrolmentInitialValues(
       fakeSignup({
         city: null,
@@ -113,7 +113,7 @@ describe('getEnrolmentInitialValues function', () => {
       })
     );
 
-    expect(attendees).toEqual([
+    expect(signups).toEqual([
       {
         city: '-',
         dateOfBirth: '',
@@ -150,7 +150,6 @@ describe('getEnrolmentInitialValues function', () => {
     const expectedZip = '12345';
 
     const {
-      attendees,
       email,
       extraInfo,
       membershipNumber,
@@ -158,6 +157,7 @@ describe('getEnrolmentInitialValues function', () => {
       notifications,
       phoneNumber,
       serviceLanguage,
+      signups,
     } = getEnrolmentInitialValues(
       fakeSignup({
         city: expectedCity,
@@ -176,7 +176,7 @@ describe('getEnrolmentInitialValues function', () => {
       })
     );
 
-    expect(attendees).toEqual([
+    expect(signups).toEqual([
       {
         city: expectedCity,
         dateOfBirth: expectedDateOfBirth,

@@ -4,15 +4,15 @@ import React from 'react';
 
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../../common/components/textArea/TextArea';
-import { ATTENDEE_FIELDS } from '../../../../enrolment/constants';
+import { SIGNUP_FIELDS } from '../../../../enrolment/constants';
 import Divider from '../../../../enrolment/divider/Divider';
 import InWaitingListInfo from '../../../../enrolment/inWaitingListInfo/InWaitingListInfo';
-import { AttendeeFields } from '../../../../enrolment/types';
+import { SignupFields } from '../../../../enrolment/types';
 import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
 import styles from './signup.module.scss';
 
 export type SignupProps = {
-  signup: AttendeeFields;
+  signup: SignupFields;
   signupPath: string;
 };
 
@@ -33,12 +33,12 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
       <FormGroup>
         <div className={styles.nameRow}>
           <ReadOnlyTextInput
-            id={getFieldId(ATTENDEE_FIELDS.FIRST_NAME)}
+            id={getFieldId(SIGNUP_FIELDS.FIRST_NAME)}
             label={t(`labelFirstName`)}
             value={getFieldText(signup.firstName)}
           />
           <ReadOnlyTextInput
-            id={getFieldId(ATTENDEE_FIELDS.LAST_NAME)}
+            id={getFieldId(SIGNUP_FIELDS.LAST_NAME)}
             label={t(`labelLastName`)}
             value={getFieldText(signup.lastName)}
           />
@@ -47,12 +47,12 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
       <FormGroup>
         <div className={styles.streetAddressRow}>
           <ReadOnlyTextInput
-            id={getFieldId(ATTENDEE_FIELDS.DATE_OF_BIRTH)}
+            id={getFieldId(SIGNUP_FIELDS.DATE_OF_BIRTH)}
             label={t(`labelDateOfBirth`)}
             value={getFieldText(signup.dateOfBirth)}
           />
           <ReadOnlyTextInput
-            id={getFieldId(ATTENDEE_FIELDS.STREET_ADDRESS)}
+            id={getFieldId(SIGNUP_FIELDS.STREET_ADDRESS)}
             label={t(`labelStreetAddress`)}
             value={getFieldText(signup.streetAddress)}
           />
@@ -61,22 +61,22 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
       <FormGroup>
         <div className={styles.zipRow}>
           <ReadOnlyTextInput
-            id={getFieldId(ATTENDEE_FIELDS.ZIPCODE)}
+            id={getFieldId(SIGNUP_FIELDS.ZIPCODE)}
             label={t(`labelZipcode`)}
             value={getFieldText(signup.zipcode)}
           />
           <ReadOnlyTextInput
-            id={getFieldId(ATTENDEE_FIELDS.CITY)}
+            id={getFieldId(SIGNUP_FIELDS.CITY)}
             label={t(`labelCity`)}
             value={getFieldText(signup.city)}
           />
         </div>
       </FormGroup>
       <TextArea
-        id={getFieldId(ATTENDEE_FIELDS.EXTRA_INFO)}
+        id={getFieldId(SIGNUP_FIELDS.EXTRA_INFO)}
         className={styles.textArea}
         readOnly
-        label={t(`labelAttendeeExtraInfo`)}
+        label={t(`labelSignupExtraInfo`)}
         value={getFieldText(signup.extraInfo)}
       />
     </div>

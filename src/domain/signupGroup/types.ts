@@ -11,7 +11,7 @@ export type CreateSignupGroupMutationInput = {
 export type CreateSignupGroupResponse = {
   extra_info: string;
   id: number;
-  registration: number;
+  registration: string;
   signups: Signup[];
 };
 
@@ -22,6 +22,6 @@ export type SignupGroup = {
   id: number;
   last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
-  registration: number;
+  registration: string;
   signups: Signup[];
 };

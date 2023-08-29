@@ -6,10 +6,10 @@ import { fakeRegistration } from '../../../utils/mockDataUtils';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import { Registration } from '../../registration/types';
 import { NOTIFICATIONS } from '../constants';
-import { AttendeeFields, EnrolmentFormFields } from '../types';
+import { EnrolmentFormFields, SignupFields } from '../types';
 import {
-  getAttendeeSchema,
   getEnrolmentSchema,
+  getSignupSchema,
   isAboveMinAge,
   isBelowMaxAge,
 } from '../validation';
@@ -54,12 +54,12 @@ const testBelowMaxAge = async (maxAge: number, date: string) => {
   }
 };
 
-const testAttendeeSchema = async (
+const testSignupSchema = async (
   registration: Registration,
-  attendee: AttendeeFields
+  signup: SignupFields
 ) => {
   try {
-    await getAttendeeSchema(registration).validate(attendee);
+    await getSignupSchema(registration).validate(signup);
     return true;
   } catch (e) {
     return false;
@@ -130,9 +130,9 @@ describe('isBelowMaxAge function', () => {
   });
 });
 
-describe('attendeeSchema function', () => {
+describe('signupSchema function', () => {
   const registration = fakeRegistration();
-  const validAttendee: AttendeeFields = {
+  const validSignup: SignupFields = {
     city: 'City',
     dateOfBirth: '1.1.2000',
     extraInfo: '',
@@ -143,54 +143,54 @@ describe('attendeeSchema function', () => {
     zipcode: '00100',
   };
 
-  test('should return true if attendee is valid', async () => {
-    expect(await testAttendeeSchema(registration, validAttendee)).toBe(true);
+  test('should return true if signup is valid', async () => {
+    expect(await testSignupSchema(registration, validSignup)).toBe(true);
   });
 
   test('should return false if first name is missing', async () => {
     expect(
-      await testAttendeeSchema(
+      await testSignupSchema(
         fakeRegistration({
           mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.FIRST_NAME],
         }),
-        { ...validAttendee, firstName: '' }
+        { ...validSignup, firstName: '' }
       )
     ).toBe(false);
   });
 
   test('should return false if last name is missing', async () => {
     expect(
-      await testAttendeeSchema(
+      await testSignupSchema(
         fakeRegistration({
           mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.LAST_NAME],
         }),
-        { ...validAttendee, lastName: '' }
+        { ...validSignup, lastName: '' }
       )
     ).toBe(false);
   });
 
   test('should return false if street address is missing', async () => {
     expect(
-      await testAttendeeSchema(
+      await testSignupSchema(
         fakeRegistration({
           mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.STREET_ADDRESS],
         }),
-        { ...validAttendee, streetAddress: '' }
+        { ...validSignup, streetAddress: '' }
       )
     ).toBe(false);
   });
 
   test('should return false if date of birth is missing', async () => {
     expect(
-      await testAttendeeSchema(fakeRegistration({ audience_min_age: 8 }), {
-        ...validAttendee,
+      await testSignupSchema(fakeRegistration({ audience_min_age: 8 }), {
+        ...validSignup,
         dateOfBirth: '',
       })
     ).toBe(false);
 
     expect(
-      await testAttendeeSchema(fakeRegistration({ audience_max_age: 12 }), {
-        ...validAttendee,
+      await testSignupSchema(fakeRegistration({ audience_max_age: 12 }), {
+        ...validSignup,
         dateOfBirth: '',
       })
     ).toBe(false);
@@ -200,8 +200,8 @@ describe('attendeeSchema function', () => {
     advanceTo('2022-10-10');
 
     expect(
-      await testAttendeeSchema(fakeRegistration({ audience_max_age: 8 }), {
-        ...validAttendee,
+      await testSignupSchema(fakeRegistration({ audience_max_age: 8 }), {
+        ...validSignup,
         dateOfBirth: '1.1.2012',
       })
     ).toBe(false);
@@ -211,8 +211,8 @@ describe('attendeeSchema function', () => {
     advanceTo('2022-10-10');
 
     expect(
-      await testAttendeeSchema(fakeRegistration({ audience_min_age: 5 }), {
-        ...validAttendee,
+      await testSignupSchema(fakeRegistration({ audience_min_age: 5 }), {
+        ...validSignup,
         dateOfBirth: '1.1.2022',
       })
     ).toBe(false);
@@ -231,30 +231,30 @@ describe('attendeeSchema function', () => {
 
   test('should return false if city is missing', async () => {
     expect(
-      await testAttendeeSchema(
+      await testSignupSchema(
         fakeRegistration({
           mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.CITY],
         }),
-        { ...validAttendee, city: '' }
+        { ...validSignup, city: '' }
       )
     ).toBe(false);
   });
 
   test('should return false if zip is missing', async () => {
     expect(
-      await testAttendeeSchema(
+      await testSignupSchema(
         fakeRegistration({
           mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.ZIPCODE],
         }),
-        { ...validAttendee, zipcode: '' }
+        { ...validSignup, zipcode: '' }
       )
     ).toBe(false);
   });
 
   test('should return false if zip is invalid', async () => {
     expect(
-      await testAttendeeSchema(registration, {
-        ...validAttendee,
+      await testSignupSchema(registration, {
+        ...validSignup,
         zipcode: '123456',
       })
     ).toBe(false);
@@ -265,7 +265,6 @@ describe('testEnrolmentSchema function', () => {
   const registration = fakeRegistration();
   const validEnrolment: EnrolmentFormFields = {
     accepted: true,
-    attendees: [],
     email: 'user@email.com',
     extraInfo: '',
     membershipNumber: '',
@@ -273,6 +272,7 @@ describe('testEnrolmentSchema function', () => {
     notifications: [NOTIFICATIONS.EMAIL],
     phoneNumber: '',
     serviceLanguage: 'fi',
+    signups: [],
   };
 
   test('should return true if enrolment data is valid', async () => {

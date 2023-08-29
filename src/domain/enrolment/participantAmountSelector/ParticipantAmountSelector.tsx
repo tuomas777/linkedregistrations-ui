@@ -15,7 +15,7 @@ import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolm
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
-import { AttendeeFields } from '../types';
+import { SignupFields } from '../types';
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {
@@ -35,9 +35,9 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
   const [participantsToDelete, setParticipantsToDelete] = useState(0);
 
-  const [{ value: attendees }, , { setValue: setAttendees }] = useField<
-    AttendeeFields[]
-  >({ name: ENROLMENT_FIELDS.ATTENDEES });
+  const [{ value: signups }, , { setValue: setSignups }] = useField<
+    SignupFields[]
+  >({ name: ENROLMENT_FIELDS.SIGNUPS });
 
   const [participantAmount, setParticipantAmount] = useState(
     Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)
@@ -58,14 +58,14 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   const maxSeatAmount = getMaxSeatsAmount(registration);
 
   const { saving, updateSeatsReservation } = useSeatsReservationActions({
-    attendees,
     registration,
-    setAttendees,
+    setSignups,
+    signups,
   });
 
   const updateParticipantAmount = () => {
     /* istanbul ignore else */
-    if (participantAmount !== attendees.length) {
+    if (participantAmount !== signups.length) {
       setServerErrorItems([]);
 
       updateSeatsReservation(participantAmount, {
@@ -84,8 +84,8 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   };
 
   const handleUpdateClick = () => {
-    if (participantAmount < attendees.length) {
-      setParticipantsToDelete(attendees.length - participantAmount);
+    if (participantAmount < signups.length) {
+      setParticipantsToDelete(signups.length - participantAmount);
       openDeleteParticipantModal();
     } else {
       updateParticipantAmount();

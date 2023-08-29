@@ -20,10 +20,10 @@ import wait from '../../utils/wait';
 import { numberOrNull, stringOrNull } from '../api/types';
 import { Registration } from '../registration/types';
 import {
-  ATTENDEE_FIELDS,
   ENROLMENT_FIELDS,
   ENROLMENT_FORM_SELECT_FIELDS,
   NOTIFICATIONS,
+  SIGNUP_FIELDS,
 } from './constants';
 import { EnrolmentFormFields } from './types';
 import { isDateOfBirthFieldRequired, isEnrolmentFieldRequired } from './utils';
@@ -52,20 +52,20 @@ const getStringSchema = (required: boolean) =>
     ? Yup.string().required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
     : Yup.string();
 
-export const getAttendeeSchema = (registration: Registration) => {
+export const getSignupSchema = (registration: Registration) => {
   const { audience_max_age, audience_min_age } = registration;
 
   return Yup.object().shape({
-    [ATTENDEE_FIELDS.FIRST_NAME]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.FIRST_NAME)
+    [SIGNUP_FIELDS.FIRST_NAME]: getStringSchema(
+      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.FIRST_NAME)
     ),
-    [ATTENDEE_FIELDS.LAST_NAME]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.LAST_NAME)
+    [SIGNUP_FIELDS.LAST_NAME]: getStringSchema(
+      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.LAST_NAME)
     ),
-    [ATTENDEE_FIELDS.STREET_ADDRESS]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.STREET_ADDRESS)
+    [SIGNUP_FIELDS.STREET_ADDRESS]: getStringSchema(
+      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.STREET_ADDRESS)
     ),
-    [ATTENDEE_FIELDS.DATE_OF_BIRTH]: getStringSchema(
+    [SIGNUP_FIELDS.DATE_OF_BIRTH]: getStringSchema(
       isDateOfBirthFieldRequired(registration)
     )
       .test(
@@ -89,27 +89,25 @@ export const getAttendeeSchema = (registration: Registration) => {
         }),
         (date) => isBelowMaxAge(date, audience_max_age)
       ),
-    [ATTENDEE_FIELDS.ZIPCODE]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.ZIPCODE)
+    [SIGNUP_FIELDS.ZIPCODE]: getStringSchema(
+      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.ZIPCODE)
     ).test(
       'isValidZip',
       VALIDATION_MESSAGE_KEYS.ZIP,
       (value) => !value || isValidZip(value)
     ),
-    [ATTENDEE_FIELDS.CITY]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.CITY)
+    [SIGNUP_FIELDS.CITY]: getStringSchema(
+      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.CITY)
     ),
-    [ATTENDEE_FIELDS.EXTRA_INFO]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ATTENDEE_FIELDS.EXTRA_INFO)
+    [SIGNUP_FIELDS.EXTRA_INFO]: getStringSchema(
+      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.EXTRA_INFO)
     ),
   });
 };
 
 export const getEnrolmentSchema = (registration: Registration) => {
   return Yup.object().shape({
-    [ENROLMENT_FIELDS.ATTENDEES]: Yup.array().of(
-      getAttendeeSchema(registration)
-    ),
+    [ENROLMENT_FIELDS.SIGNUPS]: Yup.array().of(getSignupSchema(registration)),
     [ENROLMENT_FIELDS.EMAIL]: Yup.string()
       .email(VALIDATION_MESSAGE_KEYS.EMAIL)
       .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED),
@@ -210,9 +208,9 @@ export const scrollToFirstError = async ({
   for (const e of error.inner) {
     const path = e.path ?? /* istanbul ignore next */ '';
 
-    if (/^attendees\[\d*\]\./.test(path)) {
-      const attendeeIndex = Number(path.match(/(?<=\[)[[\d]{1,4}(?=\])/)?.[0]);
-      setOpenAccordion(attendeeIndex);
+    if (/^signups\[\d*\]\./.test(path)) {
+      const signupIndex = Number(path.match(/(?<=\[)[[\d]{1,4}(?=\])/)?.[0]);
+      setOpenAccordion(signupIndex);
 
       await wait(100);
     }

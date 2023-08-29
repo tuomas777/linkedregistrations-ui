@@ -51,7 +51,14 @@ const signupGroup = fakeSignupGroup({ signups: [signup] });
 
 const enrolmentValues: EnrolmentFormFields = {
   accepted: true,
-  attendees: [
+  email: 'participant@email.com',
+  extraInfo: '',
+  membershipNumber: '',
+  nativeLanguage: 'fi',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: '+358 44 123 4567',
+  serviceLanguage: 'fi',
+  signups: [
     {
       city: 'City',
       dateOfBirth: formatDate(subYears(new Date(), 9)),
@@ -63,13 +70,6 @@ const enrolmentValues: EnrolmentFormFields = {
       zipcode: '00100',
     },
   ],
-  email: 'participant@email.com',
-  extraInfo: '',
-  membershipNumber: '',
-  nativeLanguage: 'fi',
-  notifications: [NOTIFICATIONS.EMAIL],
-  phoneNumber: '+358 44 123 4567',
-  serviceLanguage: 'fi',
 };
 
 const defaultMocks = [

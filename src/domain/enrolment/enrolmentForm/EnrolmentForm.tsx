@@ -44,16 +44,16 @@ import useNotificationOptions from '../hooks/useNotificationOptions';
 import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
-import { AttendeeFields, EnrolmentFormFields, Signup } from '../types';
+import { SignupFields, EnrolmentFormFields, Signup } from '../types';
 import { isEnrolmentFieldRequired } from '../utils';
 import {
   getEnrolmentSchema,
   scrollToFirstError,
   showErrors,
 } from '../validation';
-import Attendees from './attendees/Attendees';
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
 import styles from './enrolmentForm.module.scss';
+import Signups from './signups/Signups';
 
 const RegistrationWarning = dynamic(
   () => import('../registrationWarning/RegistrationWarning'),
@@ -157,8 +157,8 @@ const EnrolmentForm: React.FC<Props> = ({
       {({ setErrors, setFieldValue, setTouched, values }) => {
         const clearErrors = () => setErrors({});
 
-        const setAttendees = (attendees: AttendeeFields[]) => {
-          setFieldValue(ENROLMENT_FIELDS.ATTENDEES, attendees);
+        const setSignups = (signups: SignupFields[]) => {
+          setFieldValue(ENROLMENT_FIELDS.SIGNUPS, signups);
         };
 
         const handleSubmit = async () => {
@@ -207,14 +207,14 @@ const EnrolmentForm: React.FC<Props> = ({
                 <>
                   <Divider />
                   <ReservationTimer
-                    attendees={values.attendees}
                     callbacksDisabled={
                       reservationTimerCallbacksDisabled.current
                     }
                     disableCallbacks={disableReservationTimerCallbacks}
                     initReservationData={true}
                     registration={registration}
-                    setAttendees={setAttendees}
+                    setSignups={setSignups}
+                    signups={values.signups}
                   />
                 </>
               )}
@@ -228,7 +228,7 @@ const EnrolmentForm: React.FC<Props> = ({
                 registration={registration}
               />
 
-              <Attendees
+              <Signups
                 formDisabled={formDisabled}
                 readOnly={readOnly}
                 registration={registration}

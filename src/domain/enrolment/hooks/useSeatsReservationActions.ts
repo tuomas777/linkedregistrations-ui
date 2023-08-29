@@ -19,13 +19,13 @@ import {
 } from '../../reserveSeats/utils';
 import { ENROLMENT_MODALS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { AttendeeFields } from '../types';
-import { getNewAttendees } from '../utils';
+import { SignupFields } from '../types';
+import { getNewSignups } from '../utils';
 
 type UseSeatsReservationActionsProps = {
-  attendees?: AttendeeFields[];
   registration: Registration;
-  setAttendees?: (value: AttendeeFields[]) => void;
+  setSignups?: (value: SignupFields[]) => void;
+  signups?: SignupFields[];
 };
 
 type UseSeatsReservationActionsState = {
@@ -40,9 +40,9 @@ type UseSeatsReservationActionsState = {
 };
 
 const useSeatsReservationActions = ({
-  attendees,
   registration,
-  setAttendees,
+  setSignups,
+  signups,
 }: UseSeatsReservationActionsProps): UseSeatsReservationActionsState => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
   const [saving, setSaving] = useMountedState(false);
@@ -67,13 +67,13 @@ const useSeatsReservationActions = ({
     callbacks?: MutationCallbacks<SeatsReservation>
   ) => {
     /* istanbul ignore else */
-    if (setAttendees) {
-      const newAttendees = getNewAttendees({
-        attendees: attendees ?? /* istanbul ignore next */ [],
+    if (setSignups) {
+      const newSignups = getNewSignups({
+        signups: signups ?? /* istanbul ignore next */ [],
         seatsReservation,
       });
 
-      setAttendees(newAttendees);
+      setSignups(newSignups);
     }
     setSeatsReservationData(registrationId, seatsReservation);
 

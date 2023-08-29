@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { configure, render, screen } from '../../../../../../utils/testUtils';
-import { ATTENDEE_INITIAL_VALUES } from '../../../../../enrolment/constants';
+import { SIGNUP_INITIAL_VALUES } from '../../../../../enrolment/constants';
 import Signup, { SignupProps } from '../Signup';
 
 configure({ defaultHidden: true });
 
-const signup = ATTENDEE_INITIAL_VALUES;
+const signup = SIGNUP_INITIAL_VALUES;
 
 const defaultProps: SignupProps = {
   signup,

@@ -1,8 +1,8 @@
 import {
-  ATTENDEE_INITIAL_VALUES,
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
+  SIGNUP_INITIAL_VALUES,
 } from '../../enrolment/constants';
 import { registration } from '../../registration/__mocks__/registration';
 import { getSignupGroupPayload, getSignupNotificationTypes } from '../utils';
@@ -15,7 +15,7 @@ describe('getSignupGroupPayload function', () => {
       getSignupGroupPayload({
         formValues: {
           ...ENROLMENT_INITIAL_VALUES,
-          attendees: [ATTENDEE_INITIAL_VALUES],
+          signups: [SIGNUP_INITIAL_VALUES],
         },
         registration,
         reservationCode,
@@ -61,7 +61,7 @@ describe('getSignupGroupPayload function', () => {
     const payload = getSignupGroupPayload({
       formValues: {
         ...ENROLMENT_INITIAL_VALUES,
-        attendees: [
+        signups: [
           {
             city,
             dateOfBirth,

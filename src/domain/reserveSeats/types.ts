@@ -3,7 +3,7 @@ export type SeatsReservation = {
   code: string;
   expiration: string;
   in_waitlist: boolean;
-  registration: number;
+  registration: string;
   seats: number;
   timestamp: string;
 };

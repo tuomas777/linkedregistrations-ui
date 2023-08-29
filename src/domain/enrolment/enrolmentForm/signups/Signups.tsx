@@ -14,13 +14,13 @@ import {
 import { ENROLMENT_FIELDS } from '../../constants';
 import { useEnrolmentServerErrorsContext } from '../../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
-import { AttendeeFields } from '../../types';
-import { getNewAttendees } from '../../utils';
-import Attendee from './attendee/Attendee';
-import styles from './attendees.module.scss';
+import { SignupFields } from '../../types';
+import { getNewSignups } from '../../utils';
+import Signup from './signup/Signup';
+import styles from './signups.module.scss';
 
-const getAttendeePath = (index: number) =>
-  `${ENROLMENT_FIELDS.ATTENDEES}[${index}]`;
+const getSignupPath = (index: number) =>
+  `${ENROLMENT_FIELDS.SIGNUPS}[${index}]`;
 
 interface Props {
   formDisabled: boolean;
@@ -28,11 +28,7 @@ interface Props {
   registration: Registration;
 }
 
-const Attendees: React.FC<Props> = ({
-  formDisabled,
-  readOnly,
-  registration,
-}) => {
+const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
 
   const indexToRemove = useRef(-1);
@@ -42,9 +38,9 @@ const Attendees: React.FC<Props> = ({
   const { setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
 
-  const [{ value: attendees }, , { setValue: setAttendees }] = useField<
-    AttendeeFields[]
-  >({ name: ENROLMENT_FIELDS.ATTENDEES });
+  const [{ value: signups }, , { setValue: setSingups }] = useField<
+    SignupFields[]
+  >({ name: ENROLMENT_FIELDS.SIGNUPS });
 
   const closeModal = () => {
     setOpenModalIndex(null);
@@ -71,14 +67,14 @@ const Attendees: React.FC<Props> = ({
         closeModal();
       },
       onSuccess: (seatsReservation) => {
-        const newAttendees = getNewAttendees({
-          attendees: attendees.filter(
+        const newSignups = getNewSignups({
+          signups: signups.filter(
             (_, index) => index !== indexToRemove.current
           ),
           seatsReservation,
         });
 
-        setAttendees(newAttendees);
+        setSingups(newSignups);
 
         setSeatsReservationData(registration.id, seatsReservation);
 
@@ -92,10 +88,10 @@ const Attendees: React.FC<Props> = ({
   return (
     <div className={styles.accordions}>
       <FieldArray
-        name={ENROLMENT_FIELDS.ATTENDEES}
+        name={ENROLMENT_FIELDS.SIGNUPS}
         render={() => (
           <div>
-            {attendees.map((attendee, index: number) => {
+            {signups.map((signup, index: number) => {
               const openModal = () => {
                 setOpenModalIndex(index);
               };
@@ -119,11 +115,11 @@ const Attendees: React.FC<Props> = ({
 
                 indexToRemove.current = index;
 
-                await updateSeatsReservationMutation.mutate({
+                updateSeatsReservationMutation.mutate({
                   code: reservationData.code,
                   id: reservationData.id,
                   registration: registration.id,
-                  seats: attendees.length - 1,
+                  seats: signups.length - 1,
                 });
               };
 
@@ -136,15 +132,15 @@ const Attendees: React.FC<Props> = ({
                     onDelete={deleteParticipant}
                     participantCount={1}
                   />
-                  <Attendee
-                    attendee={attendee}
-                    attendeePath={getAttendeePath(index)}
+                  <Signup
                     formDisabled={formDisabled}
                     index={index}
                     onDelete={openModal}
                     readOnly={readOnly}
                     registration={registration}
-                    showDelete={attendees.length > 1}
+                    showDelete={signups.length > 1}
+                    signup={signup}
+                    signupPath={getSignupPath(index)}
                   />
                 </React.Fragment>
               );
@@ -156,4 +152,4 @@ const Attendees: React.FC<Props> = ({
   );
 };
 
-export default Attendees;
+export default Signups;

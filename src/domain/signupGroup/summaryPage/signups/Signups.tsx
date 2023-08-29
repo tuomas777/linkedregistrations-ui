@@ -3,28 +3,28 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import { ENROLMENT_FIELDS } from '../../../enrolment/constants';
-import { AttendeeFields } from '../../../enrolment/types';
-import Attendee from './signup/Signup';
+import { SignupFields } from '../../../enrolment/types';
+import Signup from './signup/Signup';
 import styles from './signups.module.scss';
 
 const getSignupPath = (index: number) =>
-  `${ENROLMENT_FIELDS.ATTENDEES}[${index}]`;
+  `${ENROLMENT_FIELDS.SIGNUPS}[${index}]`;
 
 const Signups: React.FC = () => {
   const { t } = useTranslation('summary');
 
-  const [{ value: signups }] = useField<AttendeeFields[]>({
-    name: ENROLMENT_FIELDS.ATTENDEES,
+  const [{ value: signups }] = useField<SignupFields[]>({
+    name: ENROLMENT_FIELDS.SIGNUPS,
   });
 
   return (
     <div className={styles.signups}>
-      <h2>{t('titleAttendeesInfo')}</h2>
-      {signups.map((attendee, index) => {
+      <h2>{t('titleSignupsInfo')}</h2>
+      {signups.map((signup, index) => {
         return (
-          <Attendee
+          <Signup
             key={index}
-            signup={attendee}
+            signup={signup}
             signupPath={getSignupPath(index)}
           />
         );

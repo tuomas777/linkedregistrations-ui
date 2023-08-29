@@ -9,18 +9,18 @@ import { callDelete, callGet } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import {
-  ATTENDEE_FIELDS,
-  ATTENDEE_INITIAL_VALUES,
   ENROLMENT_FIELDS,
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATIONS,
   NOTIFICATION_TYPE,
+  SIGNUP_FIELDS,
+  SIGNUP_INITIAL_VALUES,
 } from './constants';
 import {
-  AttendeeFields,
   EnrolmentFormFields,
   EnrolmentQueryVariables,
   Signup,
+  SignupFields,
 } from './types';
 
 export const fetchEnrolment = async (
@@ -79,13 +79,13 @@ export const getEnrolmentNotificationsCode = (
   }
 };
 
-export const getAttendeeDefaultInitialValues = (): AttendeeFields => ({
-  ...ATTENDEE_INITIAL_VALUES,
+export const getSignupDefaultInitialValues = (): SignupFields => ({
+  ...SIGNUP_INITIAL_VALUES,
 });
 
 export const getEnrolmentDefaultInitialValues = (): EnrolmentFormFields => ({
   ...ENROLMENT_INITIAL_VALUES,
-  attendees: [getAttendeeDefaultInitialValues()],
+  signups: [getSignupDefaultInitialValues()],
 });
 
 export const getEnrolmentInitialValues = (
@@ -94,7 +94,18 @@ export const getEnrolmentInitialValues = (
   return {
     ...getEnrolmentDefaultInitialValues(),
     accepted: true,
-    attendees: [
+    email: enrolment.email || '-',
+    extraInfo: enrolment.extra_info || '-',
+    membershipNumber: enrolment.membership_number || '-',
+    nativeLanguage: enrolment.native_language ?? '',
+    // TODO: At the moment only email notifications are supported
+    notifications: [NOTIFICATIONS.EMAIL],
+    // notifications: getEnrolmentNotificationTypes(
+    //   enrolment.notifications as string
+    // ),
+    phoneNumber: enrolment.phone_number || '-',
+    serviceLanguage: enrolment.service_language ?? '',
+    signups: [
       {
         city: enrolment.city || '-',
         dateOfBirth: enrolment.date_of_birth
@@ -108,17 +119,6 @@ export const getEnrolmentInitialValues = (
         zipcode: enrolment.zipcode || '-',
       },
     ],
-    email: enrolment.email || '-',
-    extraInfo: enrolment.extra_info || '-',
-    membershipNumber: enrolment.membership_number || '-',
-    nativeLanguage: enrolment.native_language ?? '',
-    // TODO: At the moment only email notifications are supported
-    notifications: [NOTIFICATIONS.EMAIL],
-    // notifications: getEnrolmentNotificationTypes(
-    //   enrolment.notifications as string
-    // ),
-    phoneNumber: enrolment.phone_number || '-',
-    serviceLanguage: enrolment.service_language ?? '',
   };
 };
 
@@ -128,31 +128,29 @@ export const clearCreateEnrolmentFormData = (registrationId: string): void => {
   );
 };
 
-export const getNewAttendees = ({
-  attendees,
+export const getNewSignups = ({
   seatsReservation,
+  signups,
 }: {
-  attendees: AttendeeFields[];
   seatsReservation: SeatsReservation;
+  signups: SignupFields[];
 }) => {
   const { in_waitlist, seats } = seatsReservation;
-  const attendeeInitialValues = getAttendeeDefaultInitialValues();
-  const filledAttendees = attendees.filter(
-    (a) => !isEqual(a, attendeeInitialValues)
-  );
+  const signupInitialValues = getSignupDefaultInitialValues();
+  const filledSignups = signups.filter((a) => !isEqual(a, signupInitialValues));
   return [
-    ...filledAttendees,
-    ...Array(Math.max(seats - filledAttendees.length, 0)).fill(
-      attendeeInitialValues
+    ...filledSignups,
+    ...Array(Math.max(seats - filledSignups.length, 0)).fill(
+      signupInitialValues
     ),
   ]
     .slice(0, seats)
-    .map((attendee) => ({ ...attendee, inWaitingList: in_waitlist }));
+    .map((signup) => ({ ...signup, inWaitingList: in_waitlist }));
 };
 
 export const isEnrolmentFieldRequired = (
   registration: Registration,
-  fieldId: ATTENDEE_FIELDS | ENROLMENT_FIELDS
+  fieldId: SIGNUP_FIELDS | ENROLMENT_FIELDS
 ): boolean => registration.mandatory_fields.includes(snakeCase(fieldId));
 
 export const isDateOfBirthFieldRequired = (

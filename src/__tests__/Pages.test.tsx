@@ -64,7 +64,14 @@ const isHeadingRendered = async (heading: string | RegExp) => {
 
 const enrolmentValues: EnrolmentFormFields = {
   accepted: true,
-  attendees: [
+  email: 'participant@email.com',
+  extraInfo: '',
+  membershipNumber: '',
+  nativeLanguage: 'fi',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: '358 44 123 4567',
+  serviceLanguage: 'fi',
+  signups: [
     {
       city: 'City',
       dateOfBirth: formatDate(subYears(new Date(), 9)),
@@ -76,13 +83,6 @@ const enrolmentValues: EnrolmentFormFields = {
       zipcode: '00100',
     },
   ],
-  email: 'participant@email.com',
-  extraInfo: '',
-  membershipNumber: '',
-  nativeLanguage: 'fi',
-  notifications: [NOTIFICATIONS.EMAIL],
-  phoneNumber: '358 44 123 4567',
-  serviceLanguage: 'fi',
 };
 
 const mocks = [
@@ -127,7 +127,7 @@ describe('CreateSignupGroupPage', () => {
 
     expect(props.dehydratedState.queries).toEqual([
       {
-        queryHash: `["registration",${TEST_REGISTRATION_ID}]`,
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
         queryKey: ['registration', TEST_REGISTRATION_ID],
         state: expect.objectContaining({ data: registration }),
       },
@@ -167,7 +167,7 @@ describe('SummaryPage', () => {
 
     expect(props.dehydratedState.queries).toEqual([
       {
-        queryHash: `["registration",${TEST_REGISTRATION_ID}]`,
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
         queryKey: ['registration', TEST_REGISTRATION_ID],
         state: expect.objectContaining({ data: registration }),
       },
@@ -201,7 +201,7 @@ describe('EnrolmentCompletedPage', () => {
 
     expect(props.dehydratedState.queries).toEqual([
       {
-        queryHash: `["registration",${TEST_REGISTRATION_ID}]`,
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
         queryKey: ['registration', TEST_REGISTRATION_ID],
         state: expect.objectContaining({ data: registration }),
       },
@@ -241,7 +241,7 @@ describe('EditEnrolmentPage', () => {
 
     expect(props.dehydratedState.queries).toEqual([
       {
-        queryHash: `["registration",${TEST_REGISTRATION_ID}]`,
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
         queryKey: ['registration', TEST_REGISTRATION_ID],
         state: expect.objectContaining({ data: registration }),
       },
@@ -280,7 +280,7 @@ describe('EnrolmentCancelledPage', () => {
 
     expect(props.dehydratedState.queries).toEqual([
       {
-        queryHash: `["registration",${TEST_REGISTRATION_ID}]`,
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
         queryKey: ['registration', TEST_REGISTRATION_ID],
         state: expect.objectContaining({ data: registration }),
       },

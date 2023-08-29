@@ -56,16 +56,16 @@ export const getSignupGroupPayload = ({
   reservationCode: string;
 }): CreateSignupGroupMutationInput => {
   const {
-    attendees,
     email,
     extraInfo: groupExtraInfo,
     membershipNumber,
     nativeLanguage,
     phoneNumber,
     serviceLanguage,
+    signups: signupsValues,
   } = formValues;
 
-  const signups: SignupInput[] = attendees.map((attendee, index) => {
+  const signups: SignupInput[] = signupsValues.map((signup, index) => {
     const {
       city,
       dateOfBirth,
@@ -74,7 +74,7 @@ export const getSignupGroupPayload = ({
       lastName,
       streetAddress,
       zipcode,
-    } = attendee;
+    } = signup;
     return {
       city: city || '',
       date_of_birth: dateOfBirth

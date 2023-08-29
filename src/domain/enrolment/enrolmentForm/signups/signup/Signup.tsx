@@ -12,39 +12,39 @@ import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
 import skipFalsyType from '../../../../../utils/skipFalsyType';
 import { Registration } from '../../../../registration/types';
-import { ATTENDEE_FIELDS } from '../../../constants';
+import { SIGNUP_FIELDS } from '../../../constants';
 import { useEnrolmentPageContext } from '../../../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
-import { AttendeeFields } from '../../../types';
+import { SignupFields } from '../../../types';
 import {
   isDateOfBirthFieldRequired,
   isEnrolmentFieldRequired,
 } from '../../../utils';
-import styles from './attendee.module.scss';
+import styles from './signup.module.scss';
 
 type Props = {
-  attendee: AttendeeFields;
-  attendeePath: string;
   formDisabled: boolean;
   index: number;
   onDelete: () => void;
   readOnly?: boolean;
   registration: Registration;
   showDelete: boolean;
+  signup: SignupFields;
+  signupPath: string;
 };
 
-const getFieldName = (attendeePath: string, field: string) =>
-  `${attendeePath}.${field}`;
+const getFieldName = (signupPath: string, field: string) =>
+  `${signupPath}.${field}`;
 
-const Attendee: React.FC<Props> = ({
-  attendee,
-  attendeePath,
+const Signup: React.FC<Props> = ({
   formDisabled,
   index,
   onDelete,
   readOnly,
   registration,
   showDelete,
+  signup,
+  signupPath,
 }) => {
   const { t } = useTranslation(['enrolment']);
   const locale = useLocale();
@@ -55,7 +55,7 @@ const Attendee: React.FC<Props> = ({
       deleteButton={
         showDelete && !formDisabled ? (
           <button
-            aria-label={t('buttonDeleteAttendee') as string}
+            aria-label={t('buttonDeleteSignup') as string}
             className={styles.deleteButton}
             onClick={onDelete}
             type="button"
@@ -67,19 +67,18 @@ const Attendee: React.FC<Props> = ({
       onClick={() => toggleOpenParticipant(index)}
       open={openParticipant === index}
       toggleButtonIcon={
-        attendee.inWaitingList ? <InWaitingListInfo /> : undefined
+        signup.inWaitingList ? <InWaitingListInfo /> : undefined
       }
       toggleButtonLabel={
-        [attendee.firstName, attendee.lastName]
-          .filter(skipFalsyType)
-          .join(' ') || t('attendeeDefaultTitle', { index: index + 1 })
+        [signup.firstName, signup.lastName].filter(skipFalsyType).join(' ') ||
+        t('signupDefaultTitle', { index: index + 1 })
       }
     >
       <Fieldset heading={t(`titleBasicInfo`)}>
         <FormGroup>
           <div className={styles.nameRow}>
             <Field
-              name={getFieldName(attendeePath, ATTENDEE_FIELDS.FIRST_NAME)}
+              name={getFieldName(signupPath, SIGNUP_FIELDS.FIRST_NAME)}
               component={TextInputField}
               disabled={formDisabled}
               label={t(`labelFirstName`)}
@@ -87,11 +86,11 @@ const Attendee: React.FC<Props> = ({
               readOnly={readOnly}
               required={isEnrolmentFieldRequired(
                 registration,
-                ATTENDEE_FIELDS.FIRST_NAME
+                SIGNUP_FIELDS.FIRST_NAME
               )}
             />
             <Field
-              name={getFieldName(attendeePath, ATTENDEE_FIELDS.LAST_NAME)}
+              name={getFieldName(signupPath, SIGNUP_FIELDS.LAST_NAME)}
               component={TextInputField}
               disabled={formDisabled}
               label={t(`labelLastName`)}
@@ -99,7 +98,7 @@ const Attendee: React.FC<Props> = ({
               readOnly={readOnly}
               required={isEnrolmentFieldRequired(
                 registration,
-                ATTENDEE_FIELDS.LAST_NAME
+                SIGNUP_FIELDS.LAST_NAME
               )}
             />
           </div>
@@ -111,7 +110,7 @@ const Attendee: React.FC<Props> = ({
             })}
           >
             <Field
-              name={getFieldName(attendeePath, ATTENDEE_FIELDS.STREET_ADDRESS)}
+              name={getFieldName(signupPath, SIGNUP_FIELDS.STREET_ADDRESS)}
               component={TextInputField}
               disabled={formDisabled}
               label={t(`labelStreetAddress`)}
@@ -119,11 +118,11 @@ const Attendee: React.FC<Props> = ({
               readOnly={readOnly}
               required={isEnrolmentFieldRequired(
                 registration,
-                ATTENDEE_FIELDS.STREET_ADDRESS
+                SIGNUP_FIELDS.STREET_ADDRESS
               )}
             />
             <Field
-              name={getFieldName(attendeePath, ATTENDEE_FIELDS.DATE_OF_BIRTH)}
+              name={getFieldName(signupPath, SIGNUP_FIELDS.DATE_OF_BIRTH)}
               disabled={formDisabled}
               label={t(`labelDateOfBirth`)}
               language={locale}
@@ -149,7 +148,7 @@ const Attendee: React.FC<Props> = ({
             })}
           >
             <Field
-              name={getFieldName(attendeePath, ATTENDEE_FIELDS.ZIPCODE)}
+              name={getFieldName(signupPath, SIGNUP_FIELDS.ZIPCODE)}
               component={TextInputField}
               disabled={formDisabled}
               label={t(`labelZipcode`)}
@@ -157,11 +156,11 @@ const Attendee: React.FC<Props> = ({
               readOnly={readOnly}
               required={isEnrolmentFieldRequired(
                 registration,
-                ATTENDEE_FIELDS.ZIPCODE
+                SIGNUP_FIELDS.ZIPCODE
               )}
             />
             <Field
-              name={getFieldName(attendeePath, ATTENDEE_FIELDS.CITY)}
+              name={getFieldName(signupPath, SIGNUP_FIELDS.CITY)}
               component={TextInputField}
               disabled={formDisabled}
               label={t(`labelCity`)}
@@ -169,22 +168,22 @@ const Attendee: React.FC<Props> = ({
               readOnly={readOnly}
               required={isEnrolmentFieldRequired(
                 registration,
-                ATTENDEE_FIELDS.CITY
+                SIGNUP_FIELDS.CITY
               )}
             />
           </div>
         </FormGroup>
         <Field
-          name={getFieldName(attendeePath, ATTENDEE_FIELDS.EXTRA_INFO)}
+          name={getFieldName(signupPath, SIGNUP_FIELDS.EXTRA_INFO)}
           className={styles.extraInfoField}
           component={TextAreaField}
           disabled={formDisabled}
-          label={t(`labelAttendeeExtraInfo`)}
-          placeholder={readOnly ? '' : t(`placeholderAttendeeExtraInfo`)}
+          label={t(`labelSignupExtraInfo`)}
+          placeholder={readOnly ? '' : t(`placeholderSignupExtraInfo`)}
           readOnly={readOnly}
           required={isEnrolmentFieldRequired(
             registration,
-            ATTENDEE_FIELDS.EXTRA_INFO
+            SIGNUP_FIELDS.EXTRA_INFO
           )}
         />
       </Fieldset>
@@ -192,4 +191,4 @@ const Attendee: React.FC<Props> = ({
   );
 };
 
-export default Attendee;
+export default Signup;
