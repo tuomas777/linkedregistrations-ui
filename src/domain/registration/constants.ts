@@ -7,6 +7,6 @@ export enum REGISTRATION_MANDATORY_FIELDS {
   ZIPCODE = 'zipcode',
 }
 
-export const TEST_REGISTRATION_ID = '1';
+export const TEST_REGISTRATION_ID = 'registration:1';
 
 export const REGISTRATION_INCLUDES = ['event', 'keywords', 'location'];
