@@ -4,22 +4,22 @@ import React from 'react';
 
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../../common/components/textArea/TextArea';
-import { ATTENDEE_FIELDS } from '../../../constants';
-import Divider from '../../../divider/Divider';
-import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
-import { AttendeeFields } from '../../../types';
+import { ATTENDEE_FIELDS } from '../../../../enrolment/constants';
+import Divider from '../../../../enrolment/divider/Divider';
+import InWaitingListInfo from '../../../../enrolment/inWaitingListInfo/InWaitingListInfo';
+import { AttendeeFields } from '../../../../enrolment/types';
 import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
-import styles from './attendee.module.scss';
+import styles from './signup.module.scss';
 
-export type AttendeeProps = {
-  attendee: AttendeeFields;
-  attendeePath: string;
+export type SignupProps = {
+  signup: AttendeeFields;
+  signupPath: string;
 };
 
-const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
+const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
   const { t } = useTranslation('summary');
 
-  const getFieldId = (field: string) => `${attendeePath}.${field}`;
+  const getFieldId = (field: string) => `${signupPath}.${field}`;
 
   const getFieldText = (value: string) => value || '-';
 
@@ -28,19 +28,19 @@ const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
       <Divider />
       <div className={styles.iconRow}>
         <IconUser aria-hidden className={styles.icon} size="m" />
-        {attendee.inWaitingList && <InWaitingListInfo />}
+        {signup.inWaitingList && <InWaitingListInfo />}
       </div>
       <FormGroup>
         <div className={styles.nameRow}>
           <ReadOnlyTextInput
             id={getFieldId(ATTENDEE_FIELDS.FIRST_NAME)}
             label={t(`labelFirstName`)}
-            value={getFieldText(attendee.firstName)}
+            value={getFieldText(signup.firstName)}
           />
           <ReadOnlyTextInput
             id={getFieldId(ATTENDEE_FIELDS.LAST_NAME)}
             label={t(`labelLastName`)}
-            value={getFieldText(attendee.lastName)}
+            value={getFieldText(signup.lastName)}
           />
         </div>
       </FormGroup>
@@ -49,12 +49,12 @@ const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
           <ReadOnlyTextInput
             id={getFieldId(ATTENDEE_FIELDS.DATE_OF_BIRTH)}
             label={t(`labelDateOfBirth`)}
-            value={getFieldText(attendee.dateOfBirth)}
+            value={getFieldText(signup.dateOfBirth)}
           />
           <ReadOnlyTextInput
             id={getFieldId(ATTENDEE_FIELDS.STREET_ADDRESS)}
             label={t(`labelStreetAddress`)}
-            value={getFieldText(attendee.streetAddress)}
+            value={getFieldText(signup.streetAddress)}
           />
         </div>
       </FormGroup>
@@ -63,12 +63,12 @@ const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
           <ReadOnlyTextInput
             id={getFieldId(ATTENDEE_FIELDS.ZIPCODE)}
             label={t(`labelZipcode`)}
-            value={getFieldText(attendee.zipcode)}
+            value={getFieldText(signup.zipcode)}
           />
           <ReadOnlyTextInput
             id={getFieldId(ATTENDEE_FIELDS.CITY)}
             label={t(`labelCity`)}
-            value={getFieldText(attendee.city)}
+            value={getFieldText(signup.city)}
           />
         </div>
       </FormGroup>
@@ -77,10 +77,10 @@ const Attendee: React.FC<AttendeeProps> = ({ attendee, attendeePath }) => {
         className={styles.textArea}
         readOnly
         label={t(`labelAttendeeExtraInfo`)}
-        value={getFieldText(attendee.extraInfo)}
+        value={getFieldText(signup.extraInfo)}
       />
     </div>
   );
 };
 
-export default Attendee;
+export default Signup;

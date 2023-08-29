@@ -4,17 +4,14 @@ import useMountedState from '../../../hooks/useMountedState';
 import { ExtendedSession, MutationCallbacks } from '../../../types';
 import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
+import { CreateSignupGroupMutationInput } from '../../signupGroup/types';
 import { ENROLMENT_ACTIONS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import {
   useCreateSignupGroupMutation,
   useDeleteEnrolmentMutation,
 } from '../mutation';
-import {
-  CreateSignupGroupMutationInput,
-  DeleteEnrolmentMutationInput,
-  Signup,
-} from '../types';
+import { DeleteEnrolmentMutationInput, Signup } from '../types';
 
 interface Props {
   enrolment?: Signup;

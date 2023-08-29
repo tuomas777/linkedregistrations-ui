@@ -28,12 +28,12 @@ import EnrolmentCancelledPage, {
 import EnrolmentCompletedPage, {
   getServerSideProps as getEnrolmentCompletedPageServerSideProps,
 } from '../pages/registration/[registrationId]/enrolment/completed/index';
-import CreateEnrolmentPage, {
-  getServerSideProps as getCreateEnrolmentPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/create/index';
+import CreateSignupGroupPage, {
+  getServerSideProps as getCreateSignupGroupPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/create/index';
 import SummaryPage, {
   getServerSideProps as getSummaryPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/create/summary/index';
+} from '../pages/registration/[registrationId]/signup-group/create/summary/index';
 import formatDate from '../utils/formatDate';
 import { EnrolmentServerSideProps } from '../utils/generateEnrolmentGetServerSideProps';
 import {
@@ -95,7 +95,7 @@ const mocks = [
   ),
 ];
 
-describe('CreateEnrolmentPage', () => {
+describe('CreateSignupGroupPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
@@ -106,11 +106,11 @@ describe('CreateEnrolmentPage', () => {
     });
 
     singletonRouter.push({
-      pathname: ROUTES.CREATE_ENROLMENT,
+      pathname: ROUTES.CREATE_SIGNUP_GROUP,
       query: { registrationId: registration.id },
     });
 
-    render(<CreateEnrolmentPage />);
+    render(<CreateSignupGroupPage />);
 
     await isHeadingRendered(eventName);
   });
@@ -118,7 +118,7 @@ describe('CreateEnrolmentPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getCreateEnrolmentPageServerSideProps({
+    const { props } = (await getCreateSignupGroupPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {
@@ -146,7 +146,7 @@ describe('SummaryPage', () => {
     });
 
     singletonRouter.push({
-      pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+      pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
       query: { registrationId: registration.id },
     });
 

@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
+import EnrolmentPageMeta from '../../../enrolment/enrolmentPageMeta/EnrolmentPageMeta';
 import { Event } from '../../../event/types';
-import EnrolmentPageMeta from '../../enrolmentPageMeta/EnrolmentPageMeta';
 
 interface Props {
   event: Event;

@@ -85,11 +85,11 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   };
 
   const handleTryAgain = () => {
-    if (router.pathname === ROUTES.CREATE_ENROLMENT) {
+    if (router.pathname === ROUTES.CREATE_SIGNUP_GROUP) {
       router.reload();
     } else {
       goToPage(
-        ROUTES.CREATE_ENROLMENT.replace(
+        ROUTES.CREATE_SIGNUP_GROUP.replace(
           '[registrationId]',
           router.query.registrationId as string
         )

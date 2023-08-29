@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { NextPage } from 'next';
 
-import CreateEnrolmentSummaryPage from '../../../../../../domain/enrolment/summaryPage/SummaryPage';
+import CreateSignupGroupSummaryPage from '../../../../../../domain/signupGroup/summaryPage/SummaryPage';
 import generateEnrolmentGetServerSideProps from '../../../../../../utils/generateEnrolmentGetServerSideProps';
 
-const CreateEnrolment: NextPage = () => <CreateEnrolmentSummaryPage />;
+const SummaryPage: NextPage = () => <CreateSignupGroupSummaryPage />;
 
 export const getServerSideProps = generateEnrolmentGetServerSideProps({
   shouldPrefetchEnrolment: false,
@@ -12,4 +12,4 @@ export const getServerSideProps = generateEnrolmentGetServerSideProps({
   translationNamespaces: ['common', 'enrolment', 'reservation', 'summary'],
 });
 
-export default CreateEnrolment;
+export default SummaryPage;

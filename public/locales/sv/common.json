@@ -26,7 +26,7 @@
   "loading": "Laddar...",
   "loadingFinished": "Laddningen är klar",
   "navigation": {
-    "backToEnrolmentForm": "Återgå till registreringsformuläret",
+    "backToSignupGroupForm": "Återgå till registreringsformuläret",
     "languages": {
       "en": "In English",
       "fi": "Suomeksi",

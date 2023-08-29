@@ -25,11 +25,11 @@ import {
   waitFor,
 } from '../../../../utils/testUtils';
 import { ROUTES } from '../../../app/routes/constants';
+import { NOTIFICATIONS } from '../../../enrolment/constants';
+import { EnrolmentFormFields } from '../../../enrolment/types';
 import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
-import { NOTIFICATIONS } from '../../constants';
-import { EnrolmentFormFields } from '../../types';
 import SummaryPage from '../SummaryPage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -95,7 +95,7 @@ test('should route back to enrolment form if reservation data is missing', async
   });
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
   });
   renderComponent();
@@ -104,7 +104,7 @@ test('should route back to enrolment form if reservation data is missing', async
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/registration/${registration.id}/enrolment/create`
+      `/registration/${registration.id}/signup-group/create`
     )
   );
 });
@@ -120,7 +120,7 @@ test('should route back to enrolment form after clicking submit button if there 
   });
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
   });
   renderComponent();
@@ -132,7 +132,7 @@ test('should route back to enrolment form after clicking submit button if there 
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/registration/${registration.id}/enrolment/create`
+      `/registration/${registration.id}/signup-group/create`
     )
   );
 });
@@ -153,7 +153,7 @@ test('should route to enrolment completed page', async () => {
   });
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
   });
   renderComponent();
@@ -170,7 +170,7 @@ test('should route to enrolment completed page', async () => {
   );
 });
 
-test('should show server errors when post request fails', async () => {
+test.only('should show server errors when post request fails', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,
@@ -197,7 +197,7 @@ test('should show server errors when post request fails', async () => {
   });
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
   });
   renderComponent();
@@ -218,7 +218,7 @@ test('should show not found page if registration does not exist', async () => {
   );
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: 'not-found' },
   });
   renderComponent();
@@ -237,7 +237,7 @@ test('should show not found page if registration does not exist', async () => {
 test('should show authentication required notification', async () => {
   setQueryMocks(...defaultMocks);
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
   });
 

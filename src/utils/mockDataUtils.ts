@@ -12,11 +12,7 @@ import {
   ENROLMENT_INITIAL_VALUES,
   NOTIFICATION_TYPE,
 } from '../domain/enrolment/constants';
-import {
-  EnrolmentFormFields,
-  Signup,
-  SignupGroup,
-} from '../domain/enrolment/types';
+import { EnrolmentFormFields, Signup } from '../domain/enrolment/types';
 import {
   EventStatus,
   EventTypeId,
@@ -33,6 +29,7 @@ import {
   RegistrationsResponse,
 } from '../domain/registration/types';
 import { SeatsReservation } from '../domain/reserveSeats/types';
+import { SignupGroup } from '../domain/signupGroup/types';
 import { User } from '../domain/user/types';
 import generateAtId from './generateAtId';
 
@@ -407,7 +404,7 @@ export const setEnrolmentFormSessionStorageValues = ({
 }) => {
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
     switch (key) {
-      case `${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registrationId}`:
+      case `${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registrationId}`:
         const state: FormikState<EnrolmentFormFields> = {
           errors: {},
           isSubmitting: false,

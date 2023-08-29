@@ -31,7 +31,7 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import CreateEnrolmentPage from '../CreateEnrolmentPage';
+import CreateSignupGroupPage from '../CreateSignupGroupPage';
 
 configure({ defaultHidden: true });
 
@@ -114,8 +114,9 @@ const getElement = (
   }
 };
 const defaultSession = fakeAuthenticatedSession();
+
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
-  render(<CreateEnrolmentPage />, { session });
+  render(<CreateSignupGroupPage />, { session });
 
 beforeEach(() => {
   // Mock getSession return value
@@ -136,7 +137,7 @@ const defaultMocks = [
 test.skip('page is accessible', async () => {
   setQueryMocks(...defaultMocks);
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   const { container } = renderComponent();
@@ -155,7 +156,7 @@ test('should validate enrolment form and focus invalid field', async () => {
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -214,7 +215,7 @@ test('should validate enrolment form and focus invalid field', async () => {
   await user.click(submitButton);
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/fi/registration/${registration.id}/enrolment/create/summary`
+      `/fi/registration/${registration.id}/signup-group/create/summary`
     )
   );
 });
@@ -227,7 +228,7 @@ test('should show not found page if registration does not exist', async () => {
   );
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: 'not-found' },
   });
   renderComponent();
@@ -256,7 +257,7 @@ test('should add and delete participants', async () => {
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -318,7 +319,7 @@ test('should show server errors when updating seats reservation fails', async ()
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -357,7 +358,7 @@ test('should show and hide participant specific fields', async () => {
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -387,7 +388,7 @@ test('should delete participants by clicking delete participant button', async (
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -450,7 +451,7 @@ test('should show server errors when updating seats reservation fails', async ()
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -502,7 +503,7 @@ test('should reload page if reservation is expired and route is create enrolment
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: registration.id },
   });
 
@@ -524,7 +525,7 @@ test('should reload page if reservation is expired and route is create enrolment
 test('should show authentication required notification', async () => {
   setQueryMocks(...defaultMocks);
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: registration.id },
   });
 

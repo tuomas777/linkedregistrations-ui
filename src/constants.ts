@@ -31,5 +31,5 @@ export enum RESERVATION_NAMES {
 }
 
 export enum FORM_NAMES {
-  CREATE_ENROLMENT_FORM = 'create-enrolment-form',
+  CREATE_SIGNUP_GROUP_FORM = 'create-signup-group-form',
 }

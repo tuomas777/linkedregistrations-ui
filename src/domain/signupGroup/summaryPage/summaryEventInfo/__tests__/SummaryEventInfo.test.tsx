@@ -33,9 +33,9 @@ const getElement = (key: 'age' | 'date' | 'name' | 'price') => {
     case 'date':
       return screen.getByText('10.07.2020 – 13.07.2020');
     case 'name':
-      return screen.getByText(eventOverrides.name.fi as string);
+      return screen.getByText(eventOverrides.name?.fi as string);
     case 'price':
-      return screen.getByText(eventOverrides.offers[0].price.fi as string);
+      return screen.getByText(eventOverrides.offers[0].price?.fi as string);
   }
 };
 

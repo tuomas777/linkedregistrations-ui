@@ -8,9 +8,10 @@ import { ExtendedSession } from '../../types';
 import {
   CreateSignupGroupMutationInput,
   CreateSignupGroupResponse,
-  DeleteEnrolmentMutationInput,
-} from './types';
-import { createSignupGroup, deleteEnrolment } from './utils';
+} from '../signupGroup/types';
+import { createSignupGroup } from '../signupGroup/utils';
+import { DeleteEnrolmentMutationInput } from './types';
+import { deleteEnrolment } from './utils';
 
 export const useCreateSignupGroupMutation = ({
   options,

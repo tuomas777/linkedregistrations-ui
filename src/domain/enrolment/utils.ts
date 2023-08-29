@@ -5,8 +5,7 @@ import snakeCase from 'lodash/snakeCase';
 import { FORM_NAMES } from '../../constants';
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
-import stringToDate from '../../utils/stringToDate';
-import { callDelete, callGet, callPost } from '../app/axios/axiosClient';
+import { callDelete, callGet } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import {
@@ -19,12 +18,9 @@ import {
 } from './constants';
 import {
   AttendeeFields,
-  CreateSignupGroupMutationInput,
-  CreateSignupGroupResponse,
   EnrolmentFormFields,
   EnrolmentQueryVariables,
   Signup,
-  SignupInput,
 } from './types';
 
 export const fetchEnrolment = async (
@@ -46,25 +42,6 @@ export const fetchEnrolment = async (
 export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
   const { enrolmentId } = args;
   return `/signup/${enrolmentId}/`;
-};
-
-export const createSignupGroup = async ({
-  input,
-  session,
-}: {
-  input: CreateSignupGroupMutationInput;
-  session: ExtendedSession | null;
-}): Promise<CreateSignupGroupResponse> => {
-  try {
-    const { data } = await callPost({
-      data: JSON.stringify(input),
-      session,
-      url: `/signup_group/`,
-    });
-    return data;
-  } catch (error) {
-    throw Error(JSON.stringify((error as AxiosError).response?.data));
-  }
 };
 
 export const deleteEnrolment = async ({
@@ -100,80 +77,6 @@ export const getEnrolmentNotificationsCode = (
   } else {
     return NOTIFICATION_TYPE.NO_NOTIFICATION;
   }
-};
-
-export const getEnrolmentNotificationTypes = (
-  notifications: string
-): NOTIFICATIONS[] => {
-  switch (notifications) {
-    case NOTIFICATION_TYPE.SMS:
-      return [NOTIFICATIONS.SMS];
-    case NOTIFICATION_TYPE.EMAIL:
-      return [NOTIFICATIONS.EMAIL];
-    case NOTIFICATION_TYPE.SMS_EMAIL:
-      return [NOTIFICATIONS.EMAIL, NOTIFICATIONS.SMS];
-    default:
-      return [];
-  }
-};
-
-export const getEnrolmentPayload = ({
-  formValues,
-  registration,
-  reservationCode,
-}: {
-  formValues: EnrolmentFormFields;
-  registration: Registration;
-  reservationCode: string;
-}): CreateSignupGroupMutationInput => {
-  const {
-    attendees,
-    email,
-    extraInfo: groupExtraInfo,
-    membershipNumber,
-    nativeLanguage,
-    phoneNumber,
-    serviceLanguage,
-  } = formValues;
-
-  const signups: SignupInput[] = attendees.map((attendee, index) => {
-    const {
-      city,
-      dateOfBirth,
-      extraInfo,
-      firstName,
-      lastName,
-      streetAddress,
-      zipcode,
-    } = attendee;
-    return {
-      city: city || '',
-      date_of_birth: dateOfBirth
-        ? formatDate(stringToDate(dateOfBirth), 'yyyy-MM-dd')
-        : null,
-      email: email || null,
-      extra_info: extraInfo,
-      first_name: firstName || '',
-      last_name: lastName || '',
-      membership_number: membershipNumber,
-      native_language: nativeLanguage || null,
-      // TODO: At the moment only email notifications are supported
-      notifications: NOTIFICATION_TYPE.EMAIL,
-      // notifications: getEnrolmentNotificationsCode(notifications),
-      phone_number: phoneNumber || null,
-      responsible_for_group: index == 0,
-      service_language: serviceLanguage || null,
-      street_address: streetAddress || null,
-      zipcode: zipcode || null,
-    };
-  });
-
-  return {
-    extra_info: groupExtraInfo,
-    registration: registration.id,
-    reservation_code: reservationCode,
-    signups,
-  };
 };
 
 export const getAttendeeDefaultInitialValues = (): AttendeeFields => ({
@@ -221,7 +124,7 @@ export const getEnrolmentInitialValues = (
 
 export const clearCreateEnrolmentFormData = (registrationId: string): void => {
   sessionStorage?.removeItem(
-    `${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registrationId}`
+    `${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registrationId}`
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Form, Formik } from 'formik';
 import { Notification } from 'hds-react';
 import pick from 'lodash/pick';
@@ -15,6 +16,23 @@ import { ExtendedSession } from '../../../types';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
+import AuthenticationRequiredNotification from '../../enrolment/authenticationRequiredNotification/AuthenticationRequiredNotification';
+import ButtonWrapper from '../../enrolment/buttonWrapper/ButtonWrapper';
+import { ENROLMENT_QUERY_PARAMS } from '../../enrolment/constants';
+import Divider from '../../enrolment/divider/Divider';
+import { EnrolmentPageProvider } from '../../enrolment/enrolmentPageContext/EnrolmentPageContext';
+import { EnrolmentServerErrorsProvider } from '../../enrolment/enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
+import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
+import EventInfo from '../../enrolment/eventInfo/EventInfo';
+import FormContainer from '../../enrolment/formContainer/FormContainer';
+import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
+import useEventAndRegistrationData from '../../enrolment/hooks/useEventAndRegistrationData';
+import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
+import {
+  clearCreateEnrolmentFormData,
+  getEnrolmentDefaultInitialValues,
+} from '../../enrolment/utils';
+import { getEnrolmentSchema } from '../../enrolment/validation';
 import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
 import { Registration } from '../../registration/types';
@@ -22,27 +40,9 @@ import {
   clearSeatsReservationData,
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
-// eslint-disable-next-line max-len
-import AuthenticationRequiredNotification from '../authenticationRequiredNotification/AuthenticationRequiredNotification';
-import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
-import { ENROLMENT_QUERY_PARAMS } from '../constants';
-import Divider from '../divider/Divider';
-import { EnrolmentPageProvider } from '../enrolmentPageContext/EnrolmentPageContext';
-import { EnrolmentServerErrorsProvider } from '../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
-import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import EventInfo from '../eventInfo/EventInfo';
-import FormContainer from '../formContainer/FormContainer';
-import useEnrolmentActions from '../hooks/useEnrolmentActions';
-import useEventAndRegistrationData from '../hooks/useEventAndRegistrationData';
-import ReservationTimer from '../reservationTimer/ReservationTimer';
-import {
-  clearCreateEnrolmentFormData,
-  getEnrolmentDefaultInitialValues,
-  getEnrolmentPayload,
-} from '../utils';
-import { getEnrolmentSchema } from '../validation';
-import Attendees from './attendees/Attendees';
+import { getSignupGroupPayload } from '../utils';
 import InformantInfo from './informantInfo/InformantInfo';
+import Signups from './signups/Signups';
 import SummaryEventInfo from './summaryEventInfo/SummaryEventInfo';
 import styles from './summaryPage.module.scss';
 import SummaryPageMeta from './summaryPageMeta/SummaryPageMeta';
@@ -67,7 +67,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
-  const goToEnrolmentCompletedPage = () => {
+  const goToSignupGroupCompletedPage = () => {
     // Disable reservation timer callbacks
     // so user is not redirected to create enrolment page
     disableReservationTimerCallbacks();
@@ -80,9 +80,9 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     );
   };
 
-  const goToCreateEnrolmentPage = () => {
+  const goToCreateSignupGroupPage = () => {
     goToPage(
-      ROUTES.CREATE_ENROLMENT.replace(
+      ROUTES.CREATE_SIGNUP_GROUP.replace(
         '[registrationId]',
         router.query.registrationId as string
       )
@@ -143,22 +143,24 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                       const reservationData = getSeatsReservationData(
                         registration.id
                       );
-                      const payload = getEnrolmentPayload({
+                      const payload = getSignupGroupPayload({
                         formValues: values,
                         registration,
                         reservationCode: reservationData?.code as string,
                       });
 
                       createSignupGroup(payload, {
-                        onError: (error) =>
+                        onError: (error) => {
+                          console.log('SHOW', error);
                           showServerErrors(
                             { error: JSON.parse(error.message) },
                             'enrolment'
-                          ),
-                        onSuccess: goToEnrolmentCompletedPage,
+                          );
+                        },
+                        onSuccess: goToSignupGroupCompletedPage,
                       });
                     } catch (e) {
-                      goToCreateEnrolmentPage();
+                      goToCreateSignupGroupPage();
                     }
                   };
 
@@ -166,7 +168,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                     <Form noValidate>
                       <FormikPersist
                         isSessionStorage={true}
-                        name={`${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registration.id}`}
+                        name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
                         savingDisabled={true}
                       />
 
@@ -178,11 +180,11 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                         }
                         disableCallbacks={disableReservationTimerCallbacks}
                         initReservationData={false}
-                        onDataNotFound={goToCreateEnrolmentPage}
+                        onDataNotFound={goToCreateSignupGroupPage}
                         registration={registration}
                       />
                       <Divider />
-                      <Attendees />
+                      <Signups />
                       <InformantInfo values={values} />
                       <ButtonWrapper>
                         <Button onClick={handleSubmit}>

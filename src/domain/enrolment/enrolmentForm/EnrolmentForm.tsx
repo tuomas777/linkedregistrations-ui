@@ -116,7 +116,7 @@ const EnrolmentForm: React.FC<Props> = ({
   };
   const goToEnrolmentSummaryPage = () => {
     goToPage(
-      `/${locale}${ROUTES.CREATE_ENROLMENT_SUMMARY.replace(
+      `/${locale}${ROUTES.CREATE_SIGNUP_GROUP_SUMMARY.replace(
         '[registrationId]',
         registration.id
       )}`
@@ -195,7 +195,7 @@ const EnrolmentForm: React.FC<Props> = ({
             <Form noValidate>
               <FormikPersist
                 isSessionStorage={true}
-                name={`${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registration.id}`}
+                name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
                 restoringDisabled={isRestoringDisabled()}
                 savingDisabled={formSavingDisabled.current}
               />
