@@ -9,7 +9,8 @@ import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import { Registration } from '../registration/types';
 import SignInRequired from '../signInRequired/SignInRequired';
-import EnrolmentForm from './enrolmentForm/EnrolmentForm';
+import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
+import { getSignupGroupInitialValues } from '../signupGroup/utils';
 import { EnrolmentPageProvider } from './enrolmentPageContext/EnrolmentPageContext';
 import EnrolmentPageMeta from './enrolmentPageMeta/EnrolmentPageMeta';
 import { EnrolmentServerErrorsProvider } from './enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
@@ -18,7 +19,6 @@ import FormContainer from './formContainer/FormContainer';
 import useEnrolmentData from './hooks/useEnrolmentData';
 import useEventAndRegistrationData from './hooks/useEventAndRegistrationData';
 import { Signup } from './types';
-import { getEnrolmentInitialValues } from './utils';
 
 type Props = {
   enrolment: Signup;
@@ -31,7 +31,7 @@ const EditEnrolmentPage: React.FC<Props> = ({
   event,
   registration,
 }) => {
-  const initialValues = getEnrolmentInitialValues(enrolment);
+  const initialValues = getSignupGroupInitialValues(enrolment);
 
   return (
     <MainContent>
@@ -40,7 +40,7 @@ const EditEnrolmentPage: React.FC<Props> = ({
         <FormContainer>
           <EventInfo event={event} registration={registration} />
 
-          <EnrolmentForm
+          <SignupGroupForm
             enrolment={enrolment}
             initialValues={initialValues}
             readOnly={true}

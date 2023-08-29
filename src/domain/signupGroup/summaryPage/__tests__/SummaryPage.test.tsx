@@ -13,7 +13,7 @@ import {
   fakeSignup,
   fakeSignupGroup,
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
 import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
 import {
@@ -26,7 +26,7 @@ import {
 } from '../../../../utils/testUtils';
 import { ROUTES } from '../../../app/routes/constants';
 import { NOTIFICATIONS } from '../../../enrolment/constants';
-import { EnrolmentFormFields } from '../../../enrolment/types';
+import { SignupGroupFormFields } from '../../../enrolment/types';
 import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
@@ -49,7 +49,7 @@ const signup = fakeSignup();
 
 const signupGroup = fakeSignupGroup({ signups: [signup] });
 
-const enrolmentValues: EnrolmentFormFields = {
+const signupGroupValues: SignupGroupFormFields = {
   accepted: true,
   email: 'participant@email.com',
   extraInfo: '',
@@ -89,9 +89,9 @@ const getSubmitButton = () => {
 test('should route back to enrolment form if reservation data is missing', async () => {
   setQueryMocks(...defaultMocks);
 
-  setEnrolmentFormSessionStorageValues({
-    enrolmentFormValues: enrolmentValues,
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
+    signupGroupFormValues: signupGroupValues,
   });
 
   singletonRouter.push({
@@ -113,10 +113,10 @@ test('should route back to enrolment form after clicking submit button if there 
   const user = userEvent.setup();
   setQueryMocks(...defaultMocks);
 
-  setEnrolmentFormSessionStorageValues({
-    enrolmentFormValues: { ...enrolmentValues, email: '' },
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: { ...signupGroupValues, email: '' },
   });
 
   singletonRouter.push({
@@ -146,10 +146,10 @@ test('should route to enrolment completed page', async () => {
     )
   );
 
-  setEnrolmentFormSessionStorageValues({
-    enrolmentFormValues: enrolmentValues,
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: signupGroupValues,
   });
 
   singletonRouter.push({
@@ -170,7 +170,7 @@ test('should route to enrolment completed page', async () => {
   );
 });
 
-test.only('should show server errors when post request fails', async () => {
+test('should show server errors when post request fails', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,
@@ -190,10 +190,10 @@ test.only('should show server errors when post request fails', async () => {
     )
   );
 
-  setEnrolmentFormSessionStorageValues({
-    enrolmentFormValues: enrolmentValues,
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: signupGroupValues,
   });
 
   singletonRouter.push({

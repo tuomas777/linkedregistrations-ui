@@ -18,15 +18,15 @@ import {
 } from '../../utils/validationUtils';
 import wait from '../../utils/wait';
 import { numberOrNull, stringOrNull } from '../api/types';
-import { Registration } from '../registration/types';
 import {
-  ENROLMENT_FIELDS,
-  ENROLMENT_FORM_SELECT_FIELDS,
   NOTIFICATIONS,
   SIGNUP_FIELDS,
-} from './constants';
-import { EnrolmentFormFields } from './types';
-import { isDateOfBirthFieldRequired, isEnrolmentFieldRequired } from './utils';
+  SIGNUP_GROUP_FIELDS,
+  SIGNUP_GROUP_FORM_SELECT_FIELDS,
+} from '../enrolment/constants';
+import { SignupGroupFormFields } from '../enrolment/types';
+import { Registration } from '../registration/types';
+import { isDateOfBirthFieldRequired, isSignupFieldRequired } from './utils';
 
 export const isAboveMinAge = (
   dateStr: stringOrNull | undefined,
@@ -57,13 +57,13 @@ export const getSignupSchema = (registration: Registration) => {
 
   return Yup.object().shape({
     [SIGNUP_FIELDS.FIRST_NAME]: getStringSchema(
-      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.FIRST_NAME)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.FIRST_NAME)
     ),
     [SIGNUP_FIELDS.LAST_NAME]: getStringSchema(
-      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.LAST_NAME)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.LAST_NAME)
     ),
     [SIGNUP_FIELDS.STREET_ADDRESS]: getStringSchema(
-      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.STREET_ADDRESS)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.STREET_ADDRESS)
     ),
     [SIGNUP_FIELDS.DATE_OF_BIRTH]: getStringSchema(
       isDateOfBirthFieldRequired(registration)
@@ -90,29 +90,31 @@ export const getSignupSchema = (registration: Registration) => {
         (date) => isBelowMaxAge(date, audience_max_age)
       ),
     [SIGNUP_FIELDS.ZIPCODE]: getStringSchema(
-      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.ZIPCODE)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.ZIPCODE)
     ).test(
       'isValidZip',
       VALIDATION_MESSAGE_KEYS.ZIP,
       (value) => !value || isValidZip(value)
     ),
     [SIGNUP_FIELDS.CITY]: getStringSchema(
-      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.CITY)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.CITY)
     ),
     [SIGNUP_FIELDS.EXTRA_INFO]: getStringSchema(
-      isEnrolmentFieldRequired(registration, SIGNUP_FIELDS.EXTRA_INFO)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.EXTRA_INFO)
     ),
   });
 };
 
-export const getEnrolmentSchema = (registration: Registration) => {
+export const getSignupGroupSchema = (registration: Registration) => {
   return Yup.object().shape({
-    [ENROLMENT_FIELDS.SIGNUPS]: Yup.array().of(getSignupSchema(registration)),
-    [ENROLMENT_FIELDS.EMAIL]: Yup.string()
+    [SIGNUP_GROUP_FIELDS.SIGNUPS]: Yup.array().of(
+      getSignupSchema(registration)
+    ),
+    [SIGNUP_GROUP_FIELDS.EMAIL]: Yup.string()
       .email(VALIDATION_MESSAGE_KEYS.EMAIL)
       .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED),
-    [ENROLMENT_FIELDS.PHONE_NUMBER]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ENROLMENT_FIELDS.PHONE_NUMBER)
+    [SIGNUP_GROUP_FIELDS.PHONE_NUMBER]: getStringSchema(
+      isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.PHONE_NUMBER)
     )
       .test(
         'isValidPhoneNumber',
@@ -120,32 +122,32 @@ export const getEnrolmentSchema = (registration: Registration) => {
         (value) => !value || isValidPhoneNumber(value)
       )
       .when(
-        [ENROLMENT_FIELDS.NOTIFICATIONS],
+        [SIGNUP_GROUP_FIELDS.NOTIFICATIONS],
         (notifications: string[], schema) =>
           notifications.includes(NOTIFICATIONS.SMS)
             ? schema.required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
             : schema
       ),
-    [ENROLMENT_FIELDS.MEMBERSHIP_NUMBER]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ENROLMENT_FIELDS.MEMBERSHIP_NUMBER)
+    [SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER]: getStringSchema(
+      isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER)
     ),
-    [ENROLMENT_FIELDS.NOTIFICATIONS]: Yup.array()
+    [SIGNUP_GROUP_FIELDS.NOTIFICATIONS]: Yup.array()
       .required(VALIDATION_MESSAGE_KEYS.ARRAY_REQUIRED)
       .min(1, (param) =>
         createMinErrorMessage(param, VALIDATION_MESSAGE_KEYS.ARRAY_MIN)
       ),
-    [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: Yup.string().required(
+    [SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE]: Yup.string().required(
       VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
     ),
-    [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: Yup.string().required(
+    [SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE]: Yup.string().required(
       VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
     ),
-    [ENROLMENT_FIELDS.EXTRA_INFO]: getStringSchema(
-      isEnrolmentFieldRequired(registration, ENROLMENT_FIELDS.EXTRA_INFO)
+    [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: getStringSchema(
+      isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.EXTRA_INFO)
     ),
-    [ENROLMENT_FIELDS.ACCEPTED]: Yup.bool().oneOf(
+    [SIGNUP_GROUP_FIELDS.ACCEPTED]: Yup.bool().oneOf(
       [true],
-      VALIDATION_MESSAGE_KEYS.ENROLMENT_ACCEPTED
+      VALIDATION_MESSAGE_KEYS.SIGNUP_ACCEPTED
     ),
   });
 };
@@ -159,9 +161,9 @@ export const showErrors = ({
   setTouched,
 }: {
   error: Yup.ValidationError;
-  setErrors: (errors: FormikErrors<EnrolmentFormFields>) => void;
+  setErrors: (errors: FormikErrors<SignupGroupFormFields>) => void;
   setTouched: (
-    touched: FormikTouched<EnrolmentFormFields>,
+    touched: FormikTouched<SignupGroupFormFields>,
     shouldValidate?: boolean
   ) => void;
 }): void => {
@@ -190,9 +192,9 @@ const getFocusableFieldId = (
   fieldType: 'default' | 'checkboxGroup' | 'select';
 } => {
   // For the select elements, focus the toggle button
-  if (ENROLMENT_FORM_SELECT_FIELDS.find((item) => item === fieldName)) {
+  if (SIGNUP_GROUP_FORM_SELECT_FIELDS.find((item) => item === fieldName)) {
     return { fieldId: `${fieldName}-toggle-button`, fieldType: 'select' };
-  } else if (fieldName === ENROLMENT_FIELDS.NOTIFICATIONS) {
+  } else if (fieldName === SIGNUP_GROUP_FIELDS.NOTIFICATIONS) {
     return { fieldId: fieldName, fieldType: 'checkboxGroup' };
   }
   return { fieldId: fieldName, fieldType: 'default' };

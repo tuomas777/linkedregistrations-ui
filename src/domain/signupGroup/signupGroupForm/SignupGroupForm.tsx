@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Field, Form, Formik } from 'formik';
 import { IconCross } from 'hds-react';
 import pick from 'lodash/pick';
@@ -22,52 +23,56 @@ import ServerErrorSummary from '../../../common/components/serverErrorSummary/Se
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import { ROUTES } from '../../app/routes/constants';
+import ButtonWrapper from '../../enrolment/buttonWrapper/ButtonWrapper';
+import {
+  ENROLMENT_MODALS,
+  ENROLMENT_QUERY_PARAMS,
+  NOTIFICATIONS,
+  SIGNUP_GROUP_FIELDS,
+} from '../../enrolment/constants';
+import Divider from '../../enrolment/divider/Divider';
+import { useEnrolmentPageContext } from '../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
+import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
+import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
+import useLanguageOptions from '../../enrolment/hooks/useLanguageOptions';
+import useNotificationOptions from '../../enrolment/hooks/useNotificationOptions';
+import ConfirmCancelModal from '../../enrolment/modals/confirmCancelModal/ConfirmCancelModal';
+import ParticipantAmountSelector from '../../enrolment/participantAmountSelector/ParticipantAmountSelector';
+import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
+import {
+  Signup,
+  SignupFields,
+  SignupGroupFormFields,
+} from '../../enrolment/types';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
 import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
-import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
-  ENROLMENT_FIELDS,
-  ENROLMENT_MODALS,
-  ENROLMENT_QUERY_PARAMS,
-  NOTIFICATIONS,
-} from '../constants';
-import Divider from '../divider/Divider';
-import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import useEnrolmentActions from '../hooks/useEnrolmentActions';
-import useLanguageOptions from '../hooks/useLanguageOptions';
-import useNotificationOptions from '../hooks/useNotificationOptions';
-import ConfirmCancelModal from '../modals/confirmCancelModal/ConfirmCancelModal';
-import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
-import ReservationTimer from '../reservationTimer/ReservationTimer';
-import { SignupFields, EnrolmentFormFields, Signup } from '../types';
-import { isEnrolmentFieldRequired } from '../utils';
-import {
-  getEnrolmentSchema,
+  getSignupGroupSchema,
   scrollToFirstError,
   showErrors,
 } from '../validation';
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
-import styles from './enrolmentForm.module.scss';
+import styles from './signupGroupForm.module.scss';
 import Signups from './signups/Signups';
+import { isSignupFieldRequired } from '../utils';
 
 const RegistrationWarning = dynamic(
-  () => import('../registrationWarning/RegistrationWarning'),
+  () => import('../../enrolment/registrationWarning/RegistrationWarning'),
   { ssr: false }
 );
 
 type Props = {
   enrolment?: Signup;
-  initialValues: EnrolmentFormFields;
+  initialValues: SignupGroupFormFields;
   readOnly?: boolean;
   registration: Registration;
 };
 
-const EnrolmentForm: React.FC<Props> = ({
+const SignupGroupForm: React.FC<Props> = ({
   enrolment,
   initialValues,
   readOnly,
@@ -151,14 +156,14 @@ const EnrolmentForm: React.FC<Props> = ({
       initialValues={initialValues}
       onSubmit={/* istanbul ignore next */ () => undefined}
       validationSchema={
-        readOnly ? undefined : () => getEnrolmentSchema(registration)
+        readOnly ? undefined : () => getSignupGroupSchema(registration)
       }
     >
       {({ setErrors, setFieldValue, setTouched, values }) => {
         const clearErrors = () => setErrors({});
 
         const setSignups = (signups: SignupFields[]) => {
-          setFieldValue(ENROLMENT_FIELDS.SIGNUPS, signups);
+          setFieldValue(SIGNUP_GROUP_FIELDS.SIGNUPS, signups);
         };
 
         const handleSubmit = async () => {
@@ -166,7 +171,7 @@ const EnrolmentForm: React.FC<Props> = ({
             setServerErrorItems([]);
             clearErrors();
 
-            await getEnrolmentSchema(registration).validate(values, {
+            await getSignupGroupSchema(registration).validate(values, {
               abortEarly: false,
             });
 
@@ -241,7 +246,7 @@ const EnrolmentForm: React.FC<Props> = ({
                 <FormGroup>
                   <div className={styles.emailRow}>
                     <Field
-                      name={ENROLMENT_FIELDS.EMAIL}
+                      name={SIGNUP_GROUP_FIELDS.EMAIL}
                       component={TextInputField}
                       disabled={formDisabled}
                       label={t(`labelEmail`)}
@@ -250,7 +255,7 @@ const EnrolmentForm: React.FC<Props> = ({
                       required
                     />
                     <Field
-                      name={ENROLMENT_FIELDS.PHONE_NUMBER}
+                      name={SIGNUP_GROUP_FIELDS.PHONE_NUMBER}
                       component={PhoneInputField}
                       disabled={formDisabled}
                       label={t(`labelPhoneNumber`)}
@@ -258,9 +263,9 @@ const EnrolmentForm: React.FC<Props> = ({
                       readOnly={readOnly}
                       required={
                         values.notifications.includes(NOTIFICATIONS.SMS) ||
-                        isEnrolmentFieldRequired(
+                        isSignupFieldRequired(
                           registration,
-                          ENROLMENT_FIELDS.PHONE_NUMBER
+                          SIGNUP_GROUP_FIELDS.PHONE_NUMBER
                         )
                       }
                       type="tel"
@@ -272,7 +277,7 @@ const EnrolmentForm: React.FC<Props> = ({
               <Fieldset heading={t(`titleNotifications`)}>
                 <FormGroup>
                   <Field
-                    name={ENROLMENT_FIELDS.NOTIFICATIONS}
+                    name={SIGNUP_GROUP_FIELDS.NOTIFICATIONS}
                     className={styles.notifications}
                     component={CheckboxGroupField}
                     // TODO: At the moment only email notifications are supported
@@ -289,7 +294,7 @@ const EnrolmentForm: React.FC<Props> = ({
                 <FormGroup>
                   <div className={styles.membershipNumberRow}>
                     <Field
-                      name={ENROLMENT_FIELDS.MEMBERSHIP_NUMBER}
+                      name={SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER}
                       component={TextInputField}
                       disabled={formDisabled}
                       label={t(`labelMembershipNumber`)}
@@ -297,9 +302,9 @@ const EnrolmentForm: React.FC<Props> = ({
                         readOnly ? '' : t(`placeholderMembershipNumber`)
                       }
                       readOnly={readOnly}
-                      required={isEnrolmentFieldRequired(
+                      required={isSignupFieldRequired(
                         registration,
-                        ENROLMENT_FIELDS.MEMBERSHIP_NUMBER
+                        SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER
                       )}
                     />
                   </div>
@@ -308,7 +313,7 @@ const EnrolmentForm: React.FC<Props> = ({
                   <div className={styles.nativeLanguageRow}>
                     <Field
                       component={SingleSelectField}
-                      name={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
+                      name={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
                       disabled={formDisabled || readOnly}
                       label={t(`labelNativeLanguage`)}
                       options={languageOptions}
@@ -320,7 +325,7 @@ const EnrolmentForm: React.FC<Props> = ({
                     />
                     <Field
                       component={SingleSelectField}
-                      name={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
+                      name={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
                       disabled={formDisabled || readOnly}
                       label={t(`labelServiceLanguage`)}
                       options={serviceLanguageOptions}
@@ -333,15 +338,15 @@ const EnrolmentForm: React.FC<Props> = ({
                 </FormGroup>
                 <FormGroup>
                   <Field
-                    name={ENROLMENT_FIELDS.EXTRA_INFO}
+                    name={SIGNUP_GROUP_FIELDS.EXTRA_INFO}
                     component={TextAreaField}
                     disabled={formDisabled}
                     label={t(`labelExtraInfo`)}
                     placeholder={readOnly ? '' : t(`placeholderExtraInfo`)}
                     readOnly={readOnly}
-                    required={isEnrolmentFieldRequired(
+                    required={isSignupFieldRequired(
                       registration,
-                      ENROLMENT_FIELDS.EXTRA_INFO
+                      SIGNUP_GROUP_FIELDS.EXTRA_INFO
                     )}
                   />
                 </FormGroup>
@@ -361,7 +366,7 @@ const EnrolmentForm: React.FC<Props> = ({
                           }}
                         />
                       }
-                      name={ENROLMENT_FIELDS.ACCEPTED}
+                      name={SIGNUP_GROUP_FIELDS.ACCEPTED}
                       component={CheckboxField}
                     />
                   </FormGroup>
@@ -393,4 +398,4 @@ const EnrolmentForm: React.FC<Props> = ({
   );
 };
 
-export default EnrolmentForm;
+export default SignupGroupForm;

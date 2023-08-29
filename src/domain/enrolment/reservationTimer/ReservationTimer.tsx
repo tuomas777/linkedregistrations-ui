@@ -12,13 +12,13 @@ import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
+import { clearCreateSignupGroupFormData } from '../../signupGroup/utils';
 import { ENROLMENT_MODALS, ENROLMENT_QUERY_PARAMS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
 import { SignupFields } from '../types';
-import { clearCreateEnrolmentFormData } from '../utils';
 
 const getTimeStr = (timeLeft: number) => {
   const hours = Math.floor(timeLeft / 3600);
@@ -144,7 +144,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
           if (!data || isSeatsReservationExpired(data)) {
             disableCallbacks();
 
-            clearCreateEnrolmentFormData(registrationId);
+            clearCreateSignupGroupFormData(registrationId);
             clearSeatsReservationData(registrationId);
             const session = await getSession();
 

@@ -13,7 +13,7 @@ import formatDate from '../../../utils/formatDate';
 import {
   fakeSeatsReservation,
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../../../utils/mockDataUtils';
 import { fakeAuthenticatedSession } from '../../../utils/mockSession';
 import {
@@ -498,7 +498,7 @@ test('should reload page if reservation is expired and route is create enrolment
   const user = userEvent.setup();
 
   setQueryMocks(...defaultMocks);
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(-1000),
   });

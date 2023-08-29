@@ -2,12 +2,12 @@
   "appName": "Linked Registrations",
   "cancel": "Undo",
   "cookieConsent": {
-    "enrolmentForm": {
-      "description": "The cookie required to save the enrolment form data",
-      "name": "Enrolment form cookie"
-    },
     "expiration": {
       "session": "Session"
+    },
+    "signupForm": {
+      "description": "The cookie required to save the signup form data",
+      "name": "Signup form cookie"
     },
     "siteName": "Linked Registrations"
   },
@@ -86,7 +86,7 @@
       "max": "The maximum number of participants is {{max}}.",
       "min": "The minimum number of participants is {{min}}."
     },
-    "enrolmentAccepted": "Sharing information with the organizer must be approved",
+    "signupAccepted": "Sharing information with the organizer must be approved",
     "string": {
       "charsLeft": "{{count}} character left",
       "charsLeft_other": "{{count}} characters left",

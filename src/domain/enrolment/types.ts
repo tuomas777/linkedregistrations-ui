@@ -1,9 +1,9 @@
 import { stringOrNull } from '../api/types';
 import {
   ATTENDEE_STATUS,
-  ENROLMENT_FIELDS,
   NOTIFICATION_TYPE,
   SIGNUP_FIELDS,
+  SIGNUP_GROUP_FIELDS,
 } from './constants';
 
 export type SignupFields = {
@@ -17,16 +17,16 @@ export type SignupFields = {
   [SIGNUP_FIELDS.ZIPCODE]: string;
 };
 
-export type EnrolmentFormFields = {
-  [ENROLMENT_FIELDS.ACCEPTED]: boolean;
-  [ENROLMENT_FIELDS.EMAIL]: string;
-  [ENROLMENT_FIELDS.EXTRA_INFO]: string;
-  [ENROLMENT_FIELDS.MEMBERSHIP_NUMBER]: string;
-  [ENROLMENT_FIELDS.NATIVE_LANGUAGE]: string;
-  [ENROLMENT_FIELDS.NOTIFICATIONS]: string[];
-  [ENROLMENT_FIELDS.PHONE_NUMBER]: string;
-  [ENROLMENT_FIELDS.SERVICE_LANGUAGE]: string;
-  [ENROLMENT_FIELDS.SIGNUPS]: SignupFields[];
+export type SignupGroupFormFields = {
+  [SIGNUP_GROUP_FIELDS.ACCEPTED]: boolean;
+  [SIGNUP_GROUP_FIELDS.EMAIL]: string;
+  [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: string;
+  [SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER]: string;
+  [SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE]: string;
+  [SIGNUP_GROUP_FIELDS.NOTIFICATIONS]: string[];
+  [SIGNUP_GROUP_FIELDS.PHONE_NUMBER]: string;
+  [SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE]: string;
+  [SIGNUP_GROUP_FIELDS.SIGNUPS]: SignupFields[];
 };
 
 export type SignupInput = {

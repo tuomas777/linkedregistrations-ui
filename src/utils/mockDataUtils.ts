@@ -9,10 +9,10 @@ import { FORM_NAMES, RESERVATION_NAMES } from '../constants';
 import { LocalisedObject, Meta } from '../domain/api/types';
 import {
   ATTENDEE_STATUS,
-  ENROLMENT_INITIAL_VALUES,
   NOTIFICATION_TYPE,
+  SIGNUP_GROUP_INITIAL_VALUES,
 } from '../domain/enrolment/constants';
-import { EnrolmentFormFields, Signup } from '../domain/enrolment/types';
+import { Signup, SignupGroupFormFields } from '../domain/enrolment/types';
 import {
   EventStatus,
   EventTypeId,
@@ -393,32 +393,32 @@ const generateNodeArray = <T extends (...args: any) => any>(
   return Array.from({ length }).map((_, i) => fakeFunc(i));
 };
 
-export const setEnrolmentFormSessionStorageValues = ({
-  enrolmentFormValues,
+export const setSignupGroupFormSessionStorageValues = ({
   registrationId,
   seatsReservation,
+  signupGroupFormValues,
 }: {
   registrationId: string;
-  enrolmentFormValues?: Partial<EnrolmentFormFields>;
   seatsReservation?: SeatsReservation;
+  signupGroupFormValues?: Partial<SignupGroupFormFields>;
 }) => {
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
     switch (key) {
       case `${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registrationId}`:
-        const state: FormikState<EnrolmentFormFields> = {
+        const state: FormikState<SignupGroupFormFields> = {
           errors: {},
           isSubmitting: false,
           isValidating: false,
           submitCount: 0,
           touched: {},
           values: {
-            ...ENROLMENT_INITIAL_VALUES,
-            ...enrolmentFormValues,
+            ...SIGNUP_GROUP_INITIAL_VALUES,
+            ...signupGroupFormValues,
           },
         };
 
         return JSON.stringify(state);
-      case `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`:
+      case `${RESERVATION_NAMES.SIGNUP_RESERVATION}-${registrationId}`:
         return seatsReservation ? JSON.stringify(seatsReservation) : '';
       default:
         return '';
@@ -438,7 +438,7 @@ export const setSessionStorageValues = (
   registration: Registration
 ) => {
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
-    const reservationKey = `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registration.id}`;
+    const reservationKey = `${RESERVATION_NAMES.SIGNUP_RESERVATION}-${registration.id}`;
 
     if (key === reservationKey) {
       return reservation ? JSON.stringify(reservation) : '';

@@ -5,7 +5,7 @@ import React from 'react';
 import {
   fakeSeatsReservation,
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
 import {
   render,
@@ -61,7 +61,7 @@ test('should show modal if reserved seats are in waiting list', async () => {
   const user = userEvent.setup();
 
   const reservation = getMockedSeatsReservationData(1000);
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: reservation,
   });

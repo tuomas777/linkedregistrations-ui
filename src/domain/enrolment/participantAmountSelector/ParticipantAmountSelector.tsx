@@ -10,7 +10,7 @@ import {
   getMaxSeatsAmount,
 } from '../../registration/utils';
 import { getSeatsReservationData } from '../../reserveSeats/utils';
-import { ENROLMENT_FIELDS, ENROLMENT_MODALS } from '../constants';
+import { ENROLMENT_MODALS, SIGNUP_GROUP_FIELDS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
@@ -37,7 +37,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
   const [{ value: signups }, , { setValue: setSignups }] = useField<
     SignupFields[]
-  >({ name: ENROLMENT_FIELDS.SIGNUPS });
+  >({ name: SIGNUP_GROUP_FIELDS.SIGNUPS });
 
   const [participantAmount, setParticipantAmount] = useState(
     Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)

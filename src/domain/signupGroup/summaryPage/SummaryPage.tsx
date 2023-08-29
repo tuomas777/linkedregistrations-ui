@@ -28,11 +28,6 @@ import FormContainer from '../../enrolment/formContainer/FormContainer';
 import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
 import useEventAndRegistrationData from '../../enrolment/hooks/useEventAndRegistrationData';
 import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
-import {
-  clearCreateEnrolmentFormData,
-  getEnrolmentDefaultInitialValues,
-} from '../../enrolment/utils';
-import { getEnrolmentSchema } from '../../enrolment/validation';
 import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
 import { Registration } from '../../registration/types';
@@ -40,7 +35,12 @@ import {
   clearSeatsReservationData,
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
-import { getSignupGroupPayload } from '../utils';
+import {
+  clearCreateSignupGroupFormData,
+  getSignupGroupDefaultInitialValues,
+  getSignupGroupPayload,
+} from '../utils';
+import { getSignupGroupSchema } from '../validation';
 import InformantInfo from './informantInfo/InformantInfo';
 import Signups from './signups/Signups';
 import SummaryEventInfo from './summaryEventInfo/SummaryEventInfo';
@@ -72,7 +72,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     // so user is not redirected to create enrolment page
     disableReservationTimerCallbacks();
 
-    clearCreateEnrolmentFormData(registration.id);
+    clearCreateSignupGroupFormData(registration.id);
     clearSeatsReservationData(registration.id);
 
     goToPage(
@@ -89,7 +89,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     );
   };
 
-  const initialValues = getEnrolmentDefaultInitialValues();
+  const initialValues = getSignupGroupDefaultInitialValues();
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
     useEnrolmentServerErrorsContext();
@@ -129,16 +129,17 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
               <Formik
                 initialValues={initialValues}
                 onSubmit={/* istanbul ignore next */ () => undefined}
-                validationSchema={() => getEnrolmentSchema(registration)}
+                validationSchema={() => getSignupGroupSchema(registration)}
               >
                 {({ values }) => {
                   const handleSubmit = async () => {
                     try {
                       setServerErrorItems([]);
 
-                      await getEnrolmentSchema(registration).validate(values, {
-                        abortEarly: true,
-                      });
+                      await getSignupGroupSchema(registration).validate(
+                        values,
+                        { abortEarly: true }
+                      );
 
                       const reservationData = getSeatsReservationData(
                         registration.id

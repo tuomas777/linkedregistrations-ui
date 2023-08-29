@@ -9,7 +9,7 @@ import React from 'react';
 import {
   fakeSeatsReservation,
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
 import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
 import {
@@ -117,7 +117,7 @@ test('should show modal if reserved seats are in waiting list', async () => {
 test('should route to create signup group page if reservation is expired', async () => {
   const user = userEvent.setup();
 
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
@@ -146,11 +146,11 @@ test('should route to create signup group page if reservation is expired', async
   );
 });
 
-test('should reload page if reservation is expired and route is create enrolment page', async () => {
+test('should reload page if reservation is expired and route is create signup group page', async () => {
   mockRouter.reload = jest.fn();
   const user = userEvent.setup();
 
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(-1000),
   });

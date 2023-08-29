@@ -7,17 +7,17 @@ import Container from '../app/layout/container/Container';
 import MainContent from '../app/layout/mainContent/MainContent';
 // eslint-disable-next-line max-len
 import AuthenticationRequiredNotification from '../enrolment/authenticationRequiredNotification/AuthenticationRequiredNotification';
-import EnrolmentForm from '../enrolment/enrolmentForm/EnrolmentForm';
 import { EnrolmentPageProvider } from '../enrolment/enrolmentPageContext/EnrolmentPageContext';
 import EnrolmentPageMeta from '../enrolment/enrolmentPageMeta/EnrolmentPageMeta';
 import { EnrolmentServerErrorsProvider } from '../enrolment/enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import EventInfo from '../enrolment/eventInfo/EventInfo';
 import FormContainer from '../enrolment/formContainer/FormContainer';
 import useEventAndRegistrationData from '../enrolment/hooks/useEventAndRegistrationData';
-import { getEnrolmentDefaultInitialValues } from '../enrolment/utils';
 import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import { Registration } from '../registration/types';
+import SignupGroupForm from './signupGroupForm/SignupGroupForm';
+import { getSignupGroupDefaultInitialValues } from './utils';
 
 type Props = {
   event: Event;
@@ -25,7 +25,7 @@ type Props = {
 };
 
 const CreateSignupGroupPage: React.FC<Props> = ({ event, registration }) => {
-  const initialValues = getEnrolmentDefaultInitialValues();
+  const initialValues = getSignupGroupDefaultInitialValues();
   const { data: session } = useSession() as {
     data: ExtendedSession | null;
   };
@@ -38,7 +38,7 @@ const CreateSignupGroupPage: React.FC<Props> = ({ event, registration }) => {
           {!session && <AuthenticationRequiredNotification />}
           <EventInfo event={event} registration={registration} />
           {session && (
-            <EnrolmentForm
+            <SignupGroupForm
               initialValues={initialValues}
               registration={registration}
             />

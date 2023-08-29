@@ -14,7 +14,7 @@ import {
   NOTIFICATIONS,
   TEST_ENROLMENT_ID,
 } from '../domain/enrolment/constants';
-import { EnrolmentFormFields } from '../domain/enrolment/types';
+import { SignupGroupFormFields } from '../domain/enrolment/types';
 import { eventName } from '../domain/event/__mocks__/event';
 import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages';
 import { registration } from '../domain/registration/__mocks__/registration';
@@ -38,7 +38,7 @@ import formatDate from '../utils/formatDate';
 import { EnrolmentServerSideProps } from '../utils/generateEnrolmentGetServerSideProps';
 import {
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../utils/mockDataUtils';
 import { mockDefaultConfig } from '../utils/mockNextJsConfig';
 import {
@@ -62,7 +62,7 @@ const isHeadingRendered = async (heading: string | RegExp) => {
   await screen.findByRole('heading', { name: heading }, { timeout: 5000 });
 };
 
-const enrolmentValues: EnrolmentFormFields = {
+const signupGroupValues: SignupGroupFormFields = {
   accepted: true,
   email: 'participant@email.com',
   extraInfo: '',
@@ -99,10 +99,10 @@ describe('CreateSignupGroupPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
-    setEnrolmentFormSessionStorageValues({
-      enrolmentFormValues: { ...enrolmentValues, email: '' },
+    setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
+      signupGroupFormValues: { ...signupGroupValues, email: '' },
     });
 
     singletonRouter.push({
@@ -139,10 +139,10 @@ describe('SummaryPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
-    setEnrolmentFormSessionStorageValues({
-      enrolmentFormValues: { ...enrolmentValues, email: '' },
+    setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
+      signupGroupFormValues: { ...signupGroupValues, email: '' },
     });
 
     singletonRouter.push({

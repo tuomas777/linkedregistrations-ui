@@ -1,16 +1,49 @@
 import { AxiosError } from 'axios';
+import isEqual from 'lodash/isEqual';
+import snakeCase from 'lodash/snakeCase';
 
+import { FORM_NAMES } from '../../constants';
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
 import stringToDate from '../../utils/stringToDate';
 import { callPost } from '../app/axios/axiosClient';
-import { NOTIFICATIONS, NOTIFICATION_TYPE } from '../enrolment/constants';
-import { EnrolmentFormFields, SignupInput } from '../enrolment/types';
+import {
+  NOTIFICATIONS,
+  NOTIFICATION_TYPE,
+  SIGNUP_FIELDS,
+  SIGNUP_GROUP_FIELDS,
+  SIGNUP_GROUP_INITIAL_VALUES,
+  SIGNUP_INITIAL_VALUES,
+} from '../enrolment/constants';
+import {
+  Signup,
+  SignupFields,
+  SignupGroupFormFields,
+  SignupInput,
+} from '../enrolment/types';
 import { Registration } from '../registration/types';
+import { SeatsReservation } from '../reserveSeats/types';
 import {
   CreateSignupGroupMutationInput,
   CreateSignupGroupResponse,
 } from './types';
+
+export const getSignupNotificationsCode = (
+  notifications: string[]
+): NOTIFICATION_TYPE => {
+  if (
+    notifications.includes(NOTIFICATIONS.EMAIL) &&
+    notifications.includes(NOTIFICATIONS.SMS)
+  ) {
+    return NOTIFICATION_TYPE.SMS_EMAIL;
+  } else if (notifications.includes(NOTIFICATIONS.EMAIL)) {
+    return NOTIFICATION_TYPE.EMAIL;
+  } else if (notifications.includes(NOTIFICATIONS.SMS)) {
+    return NOTIFICATION_TYPE.SMS;
+  } else {
+    return NOTIFICATION_TYPE.NO_NOTIFICATION;
+  }
+};
 
 export const getSignupNotificationTypes = (
   notifications: string
@@ -51,7 +84,7 @@ export const getSignupGroupPayload = ({
   registration,
   reservationCode,
 }: {
-  formValues: EnrolmentFormFields;
+  formValues: SignupGroupFormFields;
   registration: Registration;
   reservationCode: string;
 }): CreateSignupGroupMutationInput => {
@@ -88,7 +121,7 @@ export const getSignupGroupPayload = ({
       native_language: nativeLanguage || null,
       // TODO: At the moment only email notifications are supported
       notifications: NOTIFICATION_TYPE.EMAIL,
-      // notifications: getSignupNotificationTypes(notifications),
+      // notifications: getSignupNotificationsCode(notifications),
       phone_number: phoneNumber || null,
       responsible_for_group: index == 0,
       service_language: serviceLanguage || null,
@@ -104,3 +137,85 @@ export const getSignupGroupPayload = ({
     signups,
   };
 };
+
+export const getSignupDefaultInitialValues = (): SignupFields => ({
+  ...SIGNUP_INITIAL_VALUES,
+});
+
+export const getSignupGroupDefaultInitialValues =
+  (): SignupGroupFormFields => ({
+    ...SIGNUP_GROUP_INITIAL_VALUES,
+    signups: [getSignupDefaultInitialValues()],
+  });
+
+export const getSignupGroupInitialValues = (
+  enrolment: Signup
+): SignupGroupFormFields => {
+  return {
+    ...getSignupGroupDefaultInitialValues(),
+    accepted: true,
+    email: enrolment.email || '-',
+    extraInfo: enrolment.extra_info || '-',
+    membershipNumber: enrolment.membership_number || '-',
+    nativeLanguage: enrolment.native_language ?? '',
+    // TODO: At the moment only email notifications are supported
+    notifications: [NOTIFICATIONS.EMAIL],
+    // notifications: getEnrolmentNotificationTypes(
+    //   enrolment.notifications as string
+    // ),
+    phoneNumber: enrolment.phone_number || '-',
+    serviceLanguage: enrolment.service_language ?? '',
+    signups: [
+      {
+        city: enrolment.city || '-',
+        dateOfBirth: enrolment.date_of_birth
+          ? formatDate(new Date(enrolment.date_of_birth))
+          : '',
+        extraInfo: '',
+        firstName: enrolment.first_name || '-',
+        inWaitingList: false,
+        lastName: enrolment.last_name || '-',
+        streetAddress: enrolment.street_address || '-',
+        zipcode: enrolment.zipcode || '-',
+      },
+    ],
+  };
+};
+
+export const clearCreateSignupGroupFormData = (
+  registrationId: string
+): void => {
+  sessionStorage?.removeItem(
+    `${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registrationId}`
+  );
+};
+
+export const getNewSignups = ({
+  seatsReservation,
+  signups,
+}: {
+  seatsReservation: SeatsReservation;
+  signups: SignupFields[];
+}) => {
+  const { in_waitlist, seats } = seatsReservation;
+  const signupInitialValues = getSignupDefaultInitialValues();
+  const filledSignups = signups.filter((a) => !isEqual(a, signupInitialValues));
+  return [
+    ...filledSignups,
+    ...Array(Math.max(seats - filledSignups.length, 0)).fill(
+      signupInitialValues
+    ),
+  ]
+    .slice(0, seats)
+    .map((signup) => ({ ...signup, inWaitingList: in_waitlist }));
+};
+
+export const isSignupFieldRequired = (
+  registration: Registration,
+  fieldId: SIGNUP_FIELDS | SIGNUP_GROUP_FIELDS
+): boolean => registration.mandatory_fields.includes(snakeCase(fieldId));
+
+export const isDateOfBirthFieldRequired = (
+  registration: Registration
+): boolean =>
+  Boolean(registration.audience_max_age || registration.audience_min_age);

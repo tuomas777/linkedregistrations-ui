@@ -2,12 +2,12 @@
   "appName": "Linked Registrations",
   "cancel": "Peruuta",
   "cookieConsent": {
-    "enrolmentForm": {
-      "description": "Osallistumislomakkeen tietojen säilymiseksi vaadittu eväste",
-      "name": "Osallistumislomakkeen eväste"
-    },
     "expiration": {
       "session": "Istunto"
+    },
+    "signupForm": {
+      "description": "Osallistumislomakkeen tietojen säilymiseksi vaadittu eväste",
+      "name": "Osallistumislomakkeen eväste"
     },
     "siteName": "Linked Registrations"
   },
@@ -86,7 +86,7 @@
       "max": "Osallistujien enimmäismäärä on {{max}}.",
       "min": "Osallistujien vähimmäismäärä on {{min}}."
     },
-    "enrolmentAccepted": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
+    "signupAccepted": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
     "string": {
       "charsLeft": "{{count}} merkki jäljellä",
       "charsLeft_other": "{{count}} merkkiä jäljellä",

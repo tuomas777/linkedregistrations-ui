@@ -11,14 +11,14 @@ import TextInputField from '../../../../../common/components/formFields/TextInpu
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
 import skipFalsyType from '../../../../../utils/skipFalsyType';
+import { SIGNUP_FIELDS } from '../../../../enrolment/constants';
+import { useEnrolmentPageContext } from '../../../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
+import InWaitingListInfo from '../../../../enrolment/inWaitingListInfo/InWaitingListInfo';
+import { SignupFields } from '../../../../enrolment/types';
 import { Registration } from '../../../../registration/types';
-import { SIGNUP_FIELDS } from '../../../constants';
-import { useEnrolmentPageContext } from '../../../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
-import { SignupFields } from '../../../types';
 import {
   isDateOfBirthFieldRequired,
-  isEnrolmentFieldRequired,
+  isSignupFieldRequired,
 } from '../../../utils';
 import styles from './signup.module.scss';
 
@@ -84,7 +84,7 @@ const Signup: React.FC<Props> = ({
               label={t(`labelFirstName`)}
               placeholder={readOnly ? '' : t(`placeholderFirstName`)}
               readOnly={readOnly}
-              required={isEnrolmentFieldRequired(
+              required={isSignupFieldRequired(
                 registration,
                 SIGNUP_FIELDS.FIRST_NAME
               )}
@@ -96,7 +96,7 @@ const Signup: React.FC<Props> = ({
               label={t(`labelLastName`)}
               placeholder={readOnly ? '' : t(`placeholderLastName`)}
               readOnly={readOnly}
-              required={isEnrolmentFieldRequired(
+              required={isSignupFieldRequired(
                 registration,
                 SIGNUP_FIELDS.LAST_NAME
               )}
@@ -116,7 +116,7 @@ const Signup: React.FC<Props> = ({
               label={t(`labelStreetAddress`)}
               placeholder={readOnly ? '' : t(`placeholderStreetAddress`)}
               readOnly={readOnly}
-              required={isEnrolmentFieldRequired(
+              required={isSignupFieldRequired(
                 registration,
                 SIGNUP_FIELDS.STREET_ADDRESS
               )}
@@ -154,7 +154,7 @@ const Signup: React.FC<Props> = ({
               label={t(`labelZipcode`)}
               placeholder={readOnly ? '' : t(`placeholderZipcode`)}
               readOnly={readOnly}
-              required={isEnrolmentFieldRequired(
+              required={isSignupFieldRequired(
                 registration,
                 SIGNUP_FIELDS.ZIPCODE
               )}
@@ -166,10 +166,7 @@ const Signup: React.FC<Props> = ({
               label={t(`labelCity`)}
               placeholder={readOnly ? '' : t(`placeholderCity`)}
               readOnly={readOnly}
-              required={isEnrolmentFieldRequired(
-                registration,
-                SIGNUP_FIELDS.CITY
-              )}
+              required={isSignupFieldRequired(registration, SIGNUP_FIELDS.CITY)}
             />
           </div>
         </FormGroup>
@@ -181,7 +178,7 @@ const Signup: React.FC<Props> = ({
           label={t(`labelSignupExtraInfo`)}
           placeholder={readOnly ? '' : t(`placeholderSignupExtraInfo`)}
           readOnly={readOnly}
-          required={isEnrolmentFieldRequired(
+          required={isSignupFieldRequired(
             registration,
             SIGNUP_FIELDS.EXTRA_INFO
           )}

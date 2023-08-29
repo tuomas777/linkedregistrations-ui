@@ -5,16 +5,16 @@ import Fieldset from '../../../../common/components/fieldset/Fieldset';
 import FormGroup from '../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../common/components/textArea/TextArea';
 import skipFalsyType from '../../../../utils/skipFalsyType';
-import { ENROLMENT_FIELDS } from '../../../enrolment/constants';
+import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
 import Divider from '../../../enrolment/divider/Divider';
 import useLanguageOptions from '../../../enrolment/hooks/useLanguageOptions';
 import useNotificationOptions from '../../../enrolment/hooks/useNotificationOptions';
-import { EnrolmentFormFields } from '../../../enrolment/types';
+import { SignupGroupFormFields } from '../../../enrolment/types';
 import ReadOnlyTextInput from '../readOnlyTextInput/ReadOnlyTextInput';
 import styles from './informantInfo.module.scss';
 
 type Props = {
-  values: EnrolmentFormFields;
+  values: SignupGroupFormFields;
 };
 
 const InformantInfo: FC<Props> = ({ values }) => {
@@ -41,12 +41,12 @@ const InformantInfo: FC<Props> = ({ values }) => {
         <FormGroup>
           <div className={styles.emailRow}>
             <ReadOnlyTextInput
-              id={ENROLMENT_FIELDS.EMAIL}
+              id={SIGNUP_GROUP_FIELDS.EMAIL}
               label={t(`labelEmail`)}
               value={getFieldText(values.email)}
             />
             <ReadOnlyTextInput
-              id={ENROLMENT_FIELDS.PHONE_NUMBER}
+              id={SIGNUP_GROUP_FIELDS.PHONE_NUMBER}
               label={t(`labelPhoneNumber`)}
               value={getFieldText(values.phoneNumber)}
             />
@@ -57,7 +57,7 @@ const InformantInfo: FC<Props> = ({ values }) => {
       <Fieldset heading={t(`titleNotifications`)}>
         <FormGroup>
           <ReadOnlyTextInput
-            id={ENROLMENT_FIELDS.NOTIFICATIONS}
+            id={SIGNUP_GROUP_FIELDS.NOTIFICATIONS}
             label={t(`labelNotifications`)}
             value={getFieldText(getNotificationsText(values.notifications))}
           />
@@ -68,7 +68,7 @@ const InformantInfo: FC<Props> = ({ values }) => {
         <FormGroup>
           <div className={styles.membershipNumberRow}>
             <ReadOnlyTextInput
-              id={ENROLMENT_FIELDS.MEMBERSHIP_NUMBER}
+              id={SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER}
               label={t(`labelMembershipNumber`)}
               value={getFieldText(values.membershipNumber)}
             />
@@ -77,12 +77,12 @@ const InformantInfo: FC<Props> = ({ values }) => {
         <FormGroup>
           <div className={styles.nativeLanguageRow}>
             <ReadOnlyTextInput
-              id={ENROLMENT_FIELDS.NATIVE_LANGUAGE}
+              id={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
               label={t(`labelNativeLanguage`)}
               value={getFieldText(getLanguageText(values.nativeLanguage))}
             />
             <ReadOnlyTextInput
-              id={ENROLMENT_FIELDS.SERVICE_LANGUAGE}
+              id={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
               label={t(`labelServiceLanguage`)}
               value={getFieldText(getLanguageText(values.serviceLanguage))}
             />
@@ -90,7 +90,7 @@ const InformantInfo: FC<Props> = ({ values }) => {
         </FormGroup>
         <TextArea
           className={styles.textArea}
-          id={ENROLMENT_FIELDS.EXTRA_INFO}
+          id={SIGNUP_GROUP_FIELDS.EXTRA_INFO}
           label={t(`labelExtraInfo`)}
           readOnly
           value={getFieldText(values.extraInfo)}

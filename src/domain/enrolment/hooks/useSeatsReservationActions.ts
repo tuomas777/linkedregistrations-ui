@@ -17,10 +17,10 @@ import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
+import { getNewSignups } from '../../signupGroup/utils';
 import { ENROLMENT_MODALS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { SignupFields } from '../types';
-import { getNewSignups } from '../utils';
 
 type UseSeatsReservationActionsProps = {
   registration: Registration;

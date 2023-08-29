@@ -5,22 +5,22 @@ import React, { useRef, useState } from 'react';
 
 import { ExtendedSession } from '../../../../types';
 import { reportError } from '../../../app/sentry/utils';
+import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
+import { useEnrolmentServerErrorsContext } from '../../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
+import ConfirmDeleteParticipantModal from '../../../enrolment/modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
+import { SignupFields } from '../../../enrolment/types';
 import { Registration } from '../../../registration/types';
 import { useUpdateSeatsReservationMutation } from '../../../reserveSeats/mutation';
 import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../../reserveSeats/utils';
-import { ENROLMENT_FIELDS } from '../../constants';
-import { useEnrolmentServerErrorsContext } from '../../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
-import { SignupFields } from '../../types';
 import { getNewSignups } from '../../utils';
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
 
 const getSignupPath = (index: number) =>
-  `${ENROLMENT_FIELDS.SIGNUPS}[${index}]`;
+  `${SIGNUP_GROUP_FIELDS.SIGNUPS}[${index}]`;
 
 interface Props {
   formDisabled: boolean;
@@ -40,7 +40,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
 
   const [{ value: signups }, , { setValue: setSingups }] = useField<
     SignupFields[]
-  >({ name: ENROLMENT_FIELDS.SIGNUPS });
+  >({ name: SIGNUP_GROUP_FIELDS.SIGNUPS });
 
   const closeModal = () => {
     setOpenModalIndex(null);
@@ -88,7 +88,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
   return (
     <div className={styles.accordions}>
       <FieldArray
-        name={ENROLMENT_FIELDS.SIGNUPS}
+        name={SIGNUP_GROUP_FIELDS.SIGNUPS}
         render={() => (
           <div>
             {signups.map((signup, index: number) => {

@@ -2,19 +2,19 @@ import { useField } from 'formik';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-import { ENROLMENT_FIELDS } from '../../../enrolment/constants';
+import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
 import { SignupFields } from '../../../enrolment/types';
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
 
 const getSignupPath = (index: number) =>
-  `${ENROLMENT_FIELDS.SIGNUPS}[${index}]`;
+  `${SIGNUP_GROUP_FIELDS.SIGNUPS}[${index}]`;
 
 const Signups: React.FC = () => {
   const { t } = useTranslation('summary');
 
   const [{ value: signups }] = useField<SignupFields[]>({
-    name: ENROLMENT_FIELDS.SIGNUPS,
+    name: SIGNUP_GROUP_FIELDS.SIGNUPS,
   });
 
   return (
