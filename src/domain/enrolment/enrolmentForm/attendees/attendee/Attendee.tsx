@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { FastField as Field } from 'formik';
+import { Field } from 'formik';
 import { Fieldset, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
