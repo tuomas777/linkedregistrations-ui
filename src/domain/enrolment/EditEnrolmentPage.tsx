@@ -9,6 +9,8 @@ import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import { Registration } from '../registration/types';
 import SignInRequired from '../signInRequired/SignInRequired';
+import useSignupData from '../signup/hooks/useSignupData';
+import { Signup } from '../signup/types';
 import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
 import { getSignupGroupInitialValues } from '../signupGroup/utils';
 import { EnrolmentPageProvider } from './enrolmentPageContext/EnrolmentPageContext';
@@ -16,22 +18,16 @@ import EnrolmentPageMeta from './enrolmentPageMeta/EnrolmentPageMeta';
 import { EnrolmentServerErrorsProvider } from './enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';
-import useEnrolmentData from './hooks/useEnrolmentData';
 import useEventAndRegistrationData from './hooks/useEventAndRegistrationData';
-import { Signup } from './types';
 
 type Props = {
-  enrolment: Signup;
   event: Event;
   registration: Registration;
+  signup: Signup;
 };
 
-const EditEnrolmentPage: React.FC<Props> = ({
-  enrolment,
-  event,
-  registration,
-}) => {
-  const initialValues = getSignupGroupInitialValues(enrolment);
+const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
+  const initialValues = getSignupGroupInitialValues(signup);
 
   return (
     <MainContent>
@@ -41,10 +37,10 @@ const EditEnrolmentPage: React.FC<Props> = ({
           <EventInfo event={event} registration={registration} />
 
           <SignupGroupForm
-            enrolment={enrolment}
             initialValues={initialValues}
             readOnly={true}
             registration={registration}
+            signup={signup}
           />
         </FormContainer>
       </Container>
@@ -52,13 +48,13 @@ const EditEnrolmentPage: React.FC<Props> = ({
   );
 };
 
-const EditEnrolmentPageWrapper: React.FC = () => {
+const EditSignupPageWrapper: React.FC = () => {
   const {
     event,
     isLoading: isLoadingEventOrReigstration,
     registration,
   } = useEventAndRegistrationData();
-  const { enrolment, isLoading: isLoadingEnrolment } = useEnrolmentData();
+  const { isLoading: isLoadingEnrolment, signup } = useSignupData();
   const { data: session } = useSession() as {
     data: ExtendedSession | null;
   };
@@ -71,13 +67,13 @@ const EditEnrolmentPageWrapper: React.FC = () => {
     <LoadingSpinner
       isLoading={isLoadingEnrolment || isLoadingEventOrReigstration}
     >
-      {enrolment && event && registration ? (
+      {event && registration && signup ? (
         <EnrolmentPageProvider>
           <EnrolmentServerErrorsProvider>
-            <EditEnrolmentPage
-              enrolment={enrolment}
+            <EditSignupPage
               event={event}
               registration={registration}
+              signup={signup}
             />
           </EnrolmentServerErrorsProvider>
         </EnrolmentPageProvider>
@@ -88,4 +84,4 @@ const EditEnrolmentPageWrapper: React.FC = () => {
   );
 };
 
-export default EditEnrolmentPageWrapper;
+export default EditSignupPageWrapper;

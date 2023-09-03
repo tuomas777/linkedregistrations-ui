@@ -9,20 +9,16 @@ import stringToDate from '../../utils/stringToDate';
 import { callPost } from '../app/axios/axiosClient';
 import {
   NOTIFICATIONS,
-  NOTIFICATION_TYPE,
   SIGNUP_FIELDS,
   SIGNUP_GROUP_FIELDS,
   SIGNUP_GROUP_INITIAL_VALUES,
   SIGNUP_INITIAL_VALUES,
 } from '../enrolment/constants';
-import {
-  Signup,
-  SignupFields,
-  SignupGroupFormFields,
-  SignupInput,
-} from '../enrolment/types';
+import { SignupFields, SignupGroupFormFields } from '../enrolment/types';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
+import { NOTIFICATION_TYPE } from '../signup/constants';
+import { Signup, SignupInput } from '../signup/types';
 import {
   CreateSignupGroupMutationInput,
   CreateSignupGroupResponse,

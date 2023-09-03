@@ -2,16 +2,20 @@ import { AxiosError } from 'axios';
 
 import { ExtendedSession } from '../../types';
 import { callDelete, callGet } from '../app/axios/axiosClient';
-import { EnrolmentQueryVariables, Signup } from './types';
+import { Signup, SignupQueryVariables } from './types';
 
-export const fetchEnrolment = async (
-  args: EnrolmentQueryVariables,
+export const signupPathBuilder = (args: SignupQueryVariables): string => {
+  return `/signup/${args.id}/`;
+};
+
+export const fetchSignup = async (
+  args: SignupQueryVariables,
   session: ExtendedSession | null
 ): Promise<Signup> => {
   try {
     const { data } = await callGet({
       session,
-      url: enrolmentPathBuilder(args),
+      url: signupPathBuilder(args),
     });
     return data;
   } catch (error) {
@@ -20,22 +24,17 @@ export const fetchEnrolment = async (
   }
 };
 
-export const enrolmentPathBuilder = (args: EnrolmentQueryVariables): string => {
-  const { enrolmentId } = args;
-  return `/signup/${enrolmentId}/`;
-};
-
-export const deleteEnrolment = async ({
-  enrolmentId,
+export const deleteSignup = async ({
+  id,
   session,
 }: {
-  enrolmentId: string;
+  id: string;
   session: ExtendedSession | null;
 }): Promise<null> => {
   try {
     const { data } = await callDelete({
       session,
-      url: `/signup/${enrolmentId}/`,
+      url: signupPathBuilder({ id }),
     });
     return data;
   } catch (error) {

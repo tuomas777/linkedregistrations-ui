@@ -7,12 +7,8 @@ import merge from 'lodash/merge';
 
 import { FORM_NAMES, RESERVATION_NAMES } from '../constants';
 import { LocalisedObject, Meta } from '../domain/api/types';
-import {
-  ATTENDEE_STATUS,
-  NOTIFICATION_TYPE,
-  SIGNUP_GROUP_INITIAL_VALUES,
-} from '../domain/enrolment/constants';
-import { Signup, SignupGroupFormFields } from '../domain/enrolment/types';
+import { SIGNUP_GROUP_INITIAL_VALUES } from '../domain/enrolment/constants';
+import { SignupGroupFormFields } from '../domain/enrolment/types';
 import {
   EventStatus,
   EventTypeId,
@@ -29,6 +25,8 @@ import {
   RegistrationsResponse,
 } from '../domain/registration/types';
 import { SeatsReservation } from '../domain/reserveSeats/types';
+import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../domain/signup/constants';
+import { Signup } from '../domain/signup/types';
 import { SignupGroup } from '../domain/signupGroup/types';
 import { User } from '../domain/user/types';
 import generateAtId from './generateAtId';

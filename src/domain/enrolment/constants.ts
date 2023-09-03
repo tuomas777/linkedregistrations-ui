@@ -61,26 +61,10 @@ export const SIGNUP_GROUP_FORM_SELECT_FIELDS = [
   SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE,
 ];
 
-export enum ATTENDEE_STATUS {
-  Attending = 'attending',
-  Waitlisted = 'waitlisted',
-}
-
-export enum NOTIFICATION_TYPE {
-  NO_NOTIFICATION = 'none',
-  SMS = 'sms',
-  EMAIL = 'email',
-  SMS_EMAIL = 'sms and email',
-}
-
 export enum ENROLMENT_ACTIONS {
   CANCEL = 'cancel',
   CREATE = 'create',
 }
-export const TEST_ENROLMENT_ID = 'enrolment:1';
-
-export const ENROLMENT_TIME_IN_MINUTES = 30;
-export const ENROLMENT_TIME_PER_PARTICIPANT_IN_MINUTES = 1;
 
 export enum ENROLMENT_MODALS {
   CANCEL = 'cancel',

@@ -24,8 +24,8 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import { enrolment } from '../__mocks__/enrolment';
-import { TEST_ENROLMENT_ID } from '../constants';
+import { signup } from '../../signup/__mocks__/enrolment';
+import { TEST_SIGNUP_ID } from '../../signup/constants';
 import EditEnrolmentPage from '../EditEnrolmentPage';
 
 configure({ defaultHidden: true });
@@ -102,16 +102,16 @@ const defaultMocks = [
     res(ctx.status(200), ctx.json(registration))
   ),
   rest.get(`*/signup/*`, (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(enrolment))
+    res(ctx.status(200), ctx.json(signup))
   ),
 ];
 
-const pushEditEnrolmentRoute = (registrationId: string) => {
+const pushEditSignupRoute = (registrationId: string) => {
   singletonRouter.push({
-    pathname: ROUTES.EDIT_ENROLMENT,
+    pathname: ROUTES.EDIT_SIGNUP,
     query: {
-      enrolmentId: TEST_ENROLMENT_ID,
       registrationId: registrationId,
+      signupId: TEST_SIGNUP_ID,
     },
   });
 };
@@ -125,15 +125,15 @@ const tryToCancel = async () => {
     name: 'Haluatko varmasti poistaa ilmoittautumisen?',
   });
   const withinModal = within(modal);
-  const cancelEnrolmentButton = withinModal.getByRole('button', {
+  const cancelSignupButton = withinModal.getByRole('button', {
     name: 'Peruuta ilmoittautuminen',
   });
-  await user.click(cancelEnrolmentButton);
+  await user.click(cancelSignupButton);
 };
 
-test('should edit enrolment page field', async () => {
+test('should edit signup page field', async () => {
   setQueryMocks(...defaultMocks);
-  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await actWait(100);
@@ -166,14 +166,14 @@ test('should edit enrolment page field', async () => {
   expect(serviceLanguageButton).toBeDisabled();
 });
 
-test('should cancel enrolment', async () => {
+test('should cancel signup', async () => {
   setQueryMocks(
     ...defaultMocks,
-    rest.delete(`*/signup/${TEST_ENROLMENT_ID}`, (req, res, ctx) =>
+    rest.delete(`*/signup/${TEST_SIGNUP_ID}`, (req, res, ctx) =>
       res(ctx.status(201), ctx.json(null))
     )
   );
-  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await findFirstNameInput();
@@ -181,19 +181,19 @@ test('should cancel enrolment', async () => {
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/fi/registration/${TEST_REGISTRATION_ID}/enrolment/cancelled`
+      `/fi/registration/${TEST_REGISTRATION_ID}/signup/cancelled`
     )
   );
 });
 
-test('should show error message when cancelling enrolment fails', async () => {
+test('should show error message when cancelling signup fails', async () => {
   setQueryMocks(
     ...defaultMocks,
-    rest.delete(`*/signup/${TEST_ENROLMENT_ID}`, (req, res, ctx) =>
+    rest.delete(`*/signup/${TEST_SIGNUP_ID}`, (req, res, ctx) =>
       res(ctx.status(403), ctx.json({ detail: 'Malformed UUID.' }))
     )
   );
-  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await findFirstNameInput();
@@ -212,10 +212,10 @@ test('should show not found page if registration does not exist', async () => {
       res(ctx.status(404), ctx.json({ errorMessage: 'Not found' }))
     ),
     rest.get(`*/signup/*`, (req, res, ctx) =>
-      res(ctx.status(200), ctx.json(enrolment))
+      res(ctx.status(200), ctx.json(signup))
     )
   );
-  pushEditEnrolmentRoute('not-found');
+  pushEditSignupRoute('not-found');
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -231,7 +231,7 @@ test('should show not found page if registration does not exist', async () => {
 
 test('should show authentication required page if user is not authenticated', async () => {
   setQueryMocks(...defaultMocks);
-  pushEditEnrolmentRoute(TEST_REGISTRATION_ID);
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent(null);
 
   await loadingSpinnerIsNotInDocument();

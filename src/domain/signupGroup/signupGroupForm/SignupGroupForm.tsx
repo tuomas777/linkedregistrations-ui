@@ -33,23 +33,20 @@ import {
 import Divider from '../../enrolment/divider/Divider';
 import { useEnrolmentPageContext } from '../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
 import useLanguageOptions from '../../enrolment/hooks/useLanguageOptions';
 import useNotificationOptions from '../../enrolment/hooks/useNotificationOptions';
 import ConfirmCancelModal from '../../enrolment/modals/confirmCancelModal/ConfirmCancelModal';
 import ParticipantAmountSelector from '../../enrolment/participantAmountSelector/ParticipantAmountSelector';
 import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
-import {
-  Signup,
-  SignupFields,
-  SignupGroupFormFields,
-} from '../../enrolment/types';
+import { SignupFields, SignupGroupFormFields } from '../../enrolment/types';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
 import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
+import useSignupActions from '../../signup/hooks/useSignupActions';
+import { Signup } from '../../signup/types';
 import { isSignupFieldRequired } from '../utils';
 import {
   getSignupGroupSchema,
@@ -66,20 +63,20 @@ const RegistrationWarning = dynamic(
 );
 
 type Props = {
-  enrolment?: Signup;
   initialValues: SignupGroupFormFields;
   readOnly?: boolean;
   registration: Registration;
+  signup?: Signup;
 };
 
 const SignupGroupForm: React.FC<Props> = ({
-  enrolment,
   initialValues,
   readOnly,
   registration,
+  signup,
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
-  const { cancelEnrolment } = useEnrolmentActions({ enrolment, registration });
+  const { cancelSignup } = useSignupActions({ registration, signup });
   const formSavingDisabled = React.useRef(!!readOnly);
 
   const reservationTimerCallbacksDisabled = React.useRef(false);
@@ -128,9 +125,9 @@ const SignupGroupForm: React.FC<Props> = ({
     );
   };
 
-  const goToEnrolmentCancelledPage = () => {
+  const goToSignupCancelledPage = () => {
     goToPage(
-      `/${locale}${ROUTES.ENROLMENT_CANCELLED.replace(
+      `/${locale}${ROUTES.SIGNUP_CANCELLED.replace(
         '[registrationId]',
         registration.id
       )}`
@@ -139,10 +136,10 @@ const SignupGroupForm: React.FC<Props> = ({
 
   const handleCancel = async () => {
     setServerErrorItems([]);
-    await cancelEnrolment({
+    await cancelSignup({
       onError: (error) =>
         showServerErrors({ error: JSON.parse(error.message) }, 'enrolment'),
-      onSuccess: goToEnrolmentCancelledPage,
+      onSuccess: goToSignupCancelledPage,
     });
   };
 

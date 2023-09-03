@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
-import { dehydrate, DehydratedState, QueryClient } from '@tanstack/react-query';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
-import { SSRConfig } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import { prefetchEnrolmentQuery } from '../domain/enrolment/query';
-import { ExtendedSession } from '../types';
+import { prefetchSignupQuery } from '../domain/signup/query';
+import { ExtendedSSRConfig } from '../types';
 import { getSessionAndUser } from './getSessionAndUser';
 import prefetchRegistrationAndEvent from './prefetchRegistrationAndEvent';
 
@@ -13,22 +12,18 @@ type TranslationNamespaces = Array<
   'common' | 'enrolment' | 'reservation' | 'summary'
 >;
 
-export type EnrolmentServerSideProps = SSRConfig & {
-  dehydratedState: DehydratedState;
-  session: ExtendedSession | null;
-};
-
 type Props = {
   translationNamespaces: TranslationNamespaces;
-  shouldPrefetchEnrolment: boolean;
+
   shouldPrefetchPlace: boolean;
+  shouldPrefetchSignup: boolean;
 };
 
-const generateEnrolmentGetServerSideProps = ({
-  shouldPrefetchEnrolment,
+const generateSignupGetServerSideProps = ({
   shouldPrefetchPlace,
+  shouldPrefetchSignup,
   translationNamespaces,
-}: Props): GetServerSideProps<EnrolmentServerSideProps> => {
+}: Props): GetServerSideProps<ExtendedSSRConfig> => {
   return async ({ locale, query, req, res }) => {
     const queryClient = new QueryClient();
     const { session } = await getSessionAndUser(queryClient, {
@@ -44,9 +39,9 @@ const generateEnrolmentGetServerSideProps = ({
     });
 
     try {
-      if (shouldPrefetchEnrolment && typeof query?.enrolmentId === 'string') {
-        await prefetchEnrolmentQuery({
-          args: { enrolmentId: query.enrolmentId },
+      if (shouldPrefetchSignup && typeof query?.signupId === 'string') {
+        await prefetchSignupQuery({
+          args: { id: query.signupId },
           queryClient,
           session,
         });
@@ -68,4 +63,4 @@ const generateEnrolmentGetServerSideProps = ({
   };
 };
 
-export default generateEnrolmentGetServerSideProps;
+export default generateSignupGetServerSideProps;

@@ -1,17 +1,15 @@
 import {
-  useMutation,
   UseMutationOptions,
   UseMutationResult,
+  useMutation,
 } from '@tanstack/react-query';
 
 import { ExtendedSession } from '../../types';
 import {
   CreateSignupGroupMutationInput,
   CreateSignupGroupResponse,
-} from '../signupGroup/types';
-import { createSignupGroup } from '../signupGroup/utils';
-import { DeleteEnrolmentMutationInput } from './types';
-import { deleteEnrolment } from './utils';
+} from './types';
+import { createSignupGroup } from './utils';
 
 export const useCreateSignupGroupMutation = ({
   options,
@@ -29,21 +27,4 @@ export const useCreateSignupGroupMutation = ({
   CreateSignupGroupMutationInput
 > => {
   return useMutation((input) => createSignupGroup({ input, session }), options);
-};
-
-export const useDeleteEnrolmentMutation = ({
-  options,
-  session,
-}: {
-  options?: UseMutationOptions<null, Error, DeleteEnrolmentMutationInput>;
-  session: ExtendedSession | null;
-}): UseMutationResult<null, Error, DeleteEnrolmentMutationInput> => {
-  return useMutation(
-    ({ enrolmentId }) =>
-      deleteEnrolment({
-        enrolmentId,
-        session,
-      }),
-    options
-  );
 };

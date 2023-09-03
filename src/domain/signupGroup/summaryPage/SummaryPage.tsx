@@ -25,7 +25,6 @@ import { EnrolmentServerErrorsProvider } from '../../enrolment/enrolmentServerEr
 import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import EventInfo from '../../enrolment/eventInfo/EventInfo';
 import FormContainer from '../../enrolment/formContainer/FormContainer';
-import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
 import useEventAndRegistrationData from '../../enrolment/hooks/useEventAndRegistrationData';
 import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
 import { Event } from '../../event/types';
@@ -35,6 +34,7 @@ import {
   clearSeatsReservationData,
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
+import useSignupAction from '../../signup/hooks/useSignupActions';
 import {
   clearCreateSignupGroupFormData,
   getSignupGroupDefaultInitialValues,
@@ -57,7 +57,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     data: ExtendedSession | null;
   };
 
-  const { createSignupGroup } = useEnrolmentActions({ registration });
+  const { createSignupGroup } = useSignupAction({ registration });
 
   const reservationTimerCallbacksDisabled = useRef(false);
   const disableReservationTimerCallbacks = useCallback(() => {

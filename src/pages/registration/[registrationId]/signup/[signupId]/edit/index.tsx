@@ -2,13 +2,13 @@
 import { NextPage } from 'next';
 
 import EditEnrolmentPage from '../../../../../../domain/enrolment/EditEnrolmentPage';
-import generateEnrolmentGetServerSideProps from '../../../../../../utils/generateEnrolmentGetServerSideProps';
+import generateSignupGetServerSideProps from '../../../../../../utils/generateSignupGetServerSideProps';
 
 const EditEnrolment: NextPage = () => <EditEnrolmentPage />;
 
-export const getServerSideProps = generateEnrolmentGetServerSideProps({
-  shouldPrefetchEnrolment: true,
+export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: false,
+  shouldPrefetchSignup: true,
   translationNamespaces: ['common', 'enrolment'],
 });
 

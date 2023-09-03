@@ -2,33 +2,31 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import { ExtendedSession } from '../../../types';
-import { useEnrolmentQuery } from '../query';
+import { useSignupQuery } from '../query';
 import { Signup } from '../types';
 
-type UseEnrolmentDataState = {
-  enrolment: Signup | undefined;
+type UseSignupDataState = {
   isLoading: boolean;
+  signup: Signup | undefined;
 };
 
-const useEnrolmentData = (): UseEnrolmentDataState => {
+const useSignupData = (): UseSignupDataState => {
   const router = useRouter();
   const { query } = router;
   const { data: session } = useSession() as { data: ExtendedSession | null };
 
   const {
-    data: enrolment,
+    data: signup,
     isFetching,
     status,
-  } = useEnrolmentQuery({
-    args: {
-      enrolmentId: query.enrolmentId as string,
-    },
+  } = useSignupQuery({
+    args: { id: query.signupId as string },
     session,
   });
 
   const isLoading = status === 'loading' && isFetching;
 
-  return { enrolment, isLoading };
+  return { isLoading, signup };
 };
 
-export default useEnrolmentData;
+export default useSignupData;

@@ -6,49 +6,49 @@ import {
 } from '@tanstack/react-query';
 
 import { ExtendedSession } from '../../types';
-import { EnrolmentQueryVariables, Signup } from './types';
-import { fetchEnrolment } from './utils';
+import { Signup, SignupQueryVariables } from './types';
+import { fetchSignup } from './utils';
 
-export const fetchEnrolmentQuery = ({
+export const fetchSignupQuery = ({
   args,
   queryClient,
   session,
 }: {
-  args: EnrolmentQueryVariables;
+  args: SignupQueryVariables;
   queryClient: QueryClient;
   session: ExtendedSession | null;
 }): Promise<Signup> => {
-  return queryClient.fetchQuery(['enrolment', args.enrolmentId], () =>
-    fetchEnrolment(args, session)
+  return queryClient.fetchQuery(['signup', args.id], () =>
+    fetchSignup(args, session)
   );
 };
 
-export const prefetchEnrolmentQuery = ({
+export const prefetchSignupQuery = ({
   args,
   queryClient,
   session,
 }: {
-  args: EnrolmentQueryVariables;
+  args: SignupQueryVariables;
   queryClient: QueryClient;
   session: ExtendedSession | null;
 }): Promise<void> => {
-  return queryClient.prefetchQuery(['enrolment', args.enrolmentId], () =>
-    fetchEnrolment(args, session)
+  return queryClient.prefetchQuery(['signup', args.id], () =>
+    fetchSignup(args, session)
   );
 };
 
-export const useEnrolmentQuery = ({
+export const useSignupQuery = ({
   args,
   options,
   session,
 }: {
-  args: EnrolmentQueryVariables;
+  args: SignupQueryVariables;
   options?: Pick<UseQueryOptions, 'enabled'>;
   session: ExtendedSession | null;
 }): UseQueryResult<Signup> => {
   return useQuery<Signup, Error>(
-    ['enrolment', args.enrolmentId],
-    () => fetchEnrolment(args, session),
+    ['signup', args.id],
+    () => fetchSignup(args, session),
     options
   );
 };

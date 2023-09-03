@@ -1,5 +1,5 @@
 import { stringOrNull } from '../api/types';
-import { Signup, SignupInput } from '../enrolment/types';
+import { Signup, SignupInput } from '../signup/types';
 
 export type CreateSignupGroupMutationInput = {
   extra_info: string;

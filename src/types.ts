@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { DehydratedState } from '@tanstack/react-query';
 import { Session, User as NextAuthUser } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
+import { SSRConfig } from 'next-i18next';
 
 export type Language = 'en' | 'fi' | 'sv';
 
@@ -90,4 +92,9 @@ export type RefreshTokenResponse = {
 export type MutationCallbacks<SuccessResponseType = string> = {
   onError?: (error: any) => void;
   onSuccess?: (data?: SuccessResponseType) => void;
+};
+
+export type ExtendedSSRConfig = SSRConfig & {
+  dehydratedState: DehydratedState;
+  session: ExtendedSession | null;
 };

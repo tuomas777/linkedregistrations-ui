@@ -1,13 +1,13 @@
 import { NextPage } from 'next';
 
 import EnrolmentCancelledPage from '../../../../../domain/enrolment/EnrolmentCancelledPage';
-import generateEnrolmentGetServerSideProps from '../../../../../utils/generateEnrolmentGetServerSideProps';
+import generateSignupGetServerSideProps from '../../../../../utils/generateSignupGetServerSideProps';
 
 const EnrolmentCancelled: NextPage = () => <EnrolmentCancelledPage />;
 
-export const getServerSideProps = generateEnrolmentGetServerSideProps({
-  shouldPrefetchEnrolment: false,
+export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: false,
+  shouldPrefetchSignup: false,
   translationNamespaces: ['common', 'enrolment'],
 });
 
