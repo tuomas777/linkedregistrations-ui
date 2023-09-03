@@ -15,8 +15,18 @@ import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import { signup } from '../domain/signup/__mocks__/signup';
 import { TEST_SIGNUP_ID } from '../domain/signup/constants';
-import { NOTIFICATIONS } from '../domain/signupGroup/constants';
+import { signupGroup } from '../domain/signupGroup/__mocks__/signupGroup';
+import {
+  NOTIFICATIONS,
+  TEST_SIGNUP_GROUP_ID,
+} from '../domain/signupGroup/constants';
 import { SignupGroupFormFields } from '../domain/signupGroup/types';
+import EditSignupGroupPage, {
+  getServerSideProps as getEditSignupGroupPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/[signupGroupId]/edit/index';
+import SignupGroupCancelledPage, {
+  getServerSideProps as getSignupGroupCancelledPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/cancelled/index';
 import SignupGroupCompletedPage, {
   getServerSideProps as getSignupGroupCompletedPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/completed/index';
@@ -93,6 +103,9 @@ const mocks = [
   rest.get(`*/signup/*`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(signup))
   ),
+  rest.get(`*/signup_group/*`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(signupGroup))
+  ),
 ];
 
 describe('CreateSignupGroupPage', () => {
@@ -119,6 +132,85 @@ describe('CreateSignupGroupPage', () => {
     setQueryMocks(...mocks);
 
     const { props } = (await getCreateSignupGroupPageServerSideProps({
+      locale: 'fi',
+      query: { registrationId: registration.id },
+    } as unknown as GetServerSidePropsContext)) as {
+      props: ExtendedSSRConfig;
+    };
+
+    expect(props.dehydratedState.queries).toEqual([
+      {
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
+        queryKey: ['registration', TEST_REGISTRATION_ID],
+        state: expect.objectContaining({ data: registration }),
+      },
+    ]);
+  });
+});
+
+describe('EditSignupGroupPage', () => {
+  it('should render heading', async () => {
+    setQueryMocks(...mocks);
+
+    singletonRouter.push({
+      pathname: ROUTES.EDIT_SIGNUP_GROUP,
+      query: {
+        registrationId: registration.id,
+        signupGroupId: signupGroup.id,
+      },
+    });
+
+    render(<EditSignupGroupPage />);
+
+    await isHeadingRendered(eventName);
+  });
+
+  it('should prefetch data', async () => {
+    setQueryMocks(...mocks);
+
+    const { props } = (await getEditSignupGroupPageServerSideProps({
+      locale: 'fi',
+      query: {
+        registrationId: registration.id,
+        signupGroupId: signupGroup.id,
+      },
+    } as unknown as GetServerSidePropsContext)) as {
+      props: ExtendedSSRConfig;
+    };
+
+    expect(props.dehydratedState.queries).toEqual([
+      {
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
+        queryKey: ['registration', TEST_REGISTRATION_ID],
+        state: expect.objectContaining({ data: registration }),
+      },
+      {
+        queryHash: `["signupGroup","${TEST_SIGNUP_GROUP_ID}"]`,
+        queryKey: ['signupGroup', TEST_SIGNUP_GROUP_ID],
+        state: expect.objectContaining({ data: signupGroup }),
+      },
+    ]);
+  });
+});
+
+describe('SignupGroupCancelledPage', () => {
+  it('should render heading', async () => {
+    setQueryMocks(...mocks);
+
+    singletonRouter.push({
+      pathname: ROUTES.SIGNUP_GROUP_CANCELLED,
+      query: { registrationId: registration.id },
+    });
+
+    render(<SignupGroupCancelledPage />);
+
+    await isHeadingRendered('Ilmoittautumisesi on peruttu');
+  });
+
+  it('should prefetch data', async () => {
+    setQueryMocks(...mocks);
+
+    const { props } = (await getSignupGroupCancelledPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {

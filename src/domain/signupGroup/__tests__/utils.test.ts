@@ -12,6 +12,7 @@ import {
   SIGNUP_GROUP_INITIAL_VALUES,
   SIGNUP_INITIAL_VALUES,
 } from '../constants';
+import { SignupGroupQueryVariables } from '../types';
 import {
   getSignupDefaultInitialValues,
   getSignupGroupDefaultInitialValues,
@@ -20,6 +21,7 @@ import {
   getSignupNotificationTypes,
   getSignupNotificationsCode,
   isSignupFieldRequired,
+  signupGroupPathBuilder,
 } from '../utils';
 
 describe('getSignupGroupPayload function', () => {
@@ -340,6 +342,28 @@ describe('getSignupGroupInitialValues function', () => {
     expect(phoneNumber).toBe(expectedPhoneNumber);
     expect(serviceLanguage).toBe(expectedServiceLanguage);
   });
+
+  it('should sort singnups so that items where responsibleForGroup is true are at the start', () => {
+    const signup1 = fakeSignup({
+      id: 'signup:1',
+      responsible_for_group: false,
+    });
+    const signup2 = fakeSignup({ id: 'signup:2', responsible_for_group: true });
+    const signup3 = fakeSignup({ id: 'signup:3', responsible_for_group: true });
+    const signup4 = fakeSignup({
+      id: 'signup:4',
+      responsible_for_group: false,
+    });
+    const signupGroup = fakeSignupGroup({
+      signups: [signup1, signup2, signup3, signup4],
+    });
+
+    const initialValues = getSignupGroupInitialValues(signupGroup);
+    expect(initialValues.signups[0].id).toEqual(signup2.id);
+    expect(initialValues.signups[1].id).toEqual(signup3.id);
+    expect(initialValues.signups[2].id).toEqual(signup1.id);
+    expect(initialValues.signups[3].id).toEqual(signup4.id);
+  });
 });
 
 describe('isSignupFieldRequired', () => {
@@ -385,5 +409,15 @@ describe('isSignupFieldRequired', () => {
       expect(
         isSignupFieldRequired(fakeRegistration({ mandatory_fields }), field)
       ).toBe(true)
+  );
+});
+
+describe('signupGroupPathBuilder function', () => {
+  const cases: [SignupGroupQueryVariables, string][] = [
+    [{ id: 'signupGroup:1' }, '/signup_group/signupGroup:1/'],
+  ];
+
+  it.each(cases)('should build correct path', (variables, expectedPath) =>
+    expect(signupGroupPathBuilder(variables)).toBe(expectedPath)
   );
 });

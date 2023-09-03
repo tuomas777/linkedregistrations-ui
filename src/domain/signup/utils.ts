@@ -4,7 +4,7 @@ import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
 import { callDelete, callGet } from '../app/axios/axiosClient';
 import { NOTIFICATIONS } from '../signupGroup/constants';
-import { SignupGroupFormFields } from '../signupGroup/types';
+import { SignupFields, SignupGroupFormFields } from '../signupGroup/types';
 import { ATTENDEE_STATUS } from './constants';
 import { Signup, SignupQueryVariables } from './types';
 
@@ -46,6 +46,21 @@ export const deleteSignup = async ({
   }
 };
 
+export const getSignupInitialValues = (signup: Signup): SignupFields => ({
+  city: signup.city ?? '',
+  dateOfBirth: signup.date_of_birth
+    ? formatDate(new Date(signup.date_of_birth))
+    : '',
+  extraInfo: signup.extra_info ?? '',
+  firstName: signup.first_name ?? '',
+  id: signup.id,
+  inWaitingList: signup.attendee_status === ATTENDEE_STATUS.Waitlisted,
+  lastName: signup.last_name ?? '',
+  responsibleForGroup: !!signup.responsible_for_group,
+  streetAddress: signup.street_address ?? '',
+  zipcode: signup.zipcode ?? '',
+});
+
 export const getSignupGroupInitialValuesFromSignup = (
   signup: Signup
 ): SignupGroupFormFields => {
@@ -58,21 +73,6 @@ export const getSignupGroupInitialValuesFromSignup = (
     notifications: [NOTIFICATIONS.EMAIL],
     phoneNumber: signup.phone_number ?? '',
     serviceLanguage: signup.service_language ?? '',
-    signups: [
-      {
-        city: signup.city ?? '',
-        dateOfBirth: signup.date_of_birth
-          ? formatDate(new Date(signup.date_of_birth))
-          : '',
-        extraInfo: signup.extra_info ?? '',
-        firstName: signup.first_name ?? '',
-        id: signup.id ?? null,
-        inWaitingList: signup.attendee_status === ATTENDEE_STATUS.Waitlisted,
-        lastName: signup.last_name ?? '',
-        responsibleForGroup: !!signup.responsible_for_group,
-        streetAddress: signup.street_address ?? '',
-        zipcode: signup.zipcode ?? '',
-      },
-    ],
+    signups: [getSignupInitialValues(signup)],
   };
 };

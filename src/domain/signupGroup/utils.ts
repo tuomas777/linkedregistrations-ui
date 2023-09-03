@@ -10,8 +10,9 @@ import stringToDate from '../../utils/stringToDate';
 import { callDelete, callGet, callPost } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
-import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../signup/constants';
+import { NOTIFICATION_TYPE } from '../signup/constants';
 import { Signup, SignupInput } from '../signup/types';
+import { getSignupInitialValues } from '../signup/utils';
 import {
   NOTIFICATIONS,
   SIGNUP_FIELDS,
@@ -151,7 +152,9 @@ export const getSignupGroupDefaultInitialValues =
 export const getSignupGroupInitialValues = (
   signupGroup: SignupGroup
 ): SignupGroupFormFields => {
-  const signups: Signup[] = (signupGroup.signups ?? [])
+  const signups: Signup[] = (
+    signupGroup.signups ?? /* istanbul ignore next*/ []
+  )
     .filter(skipFalsyType)
     .sort((a: Signup, b: Signup) => {
       if (a.responsible_for_group === b.responsible_for_group) {
@@ -171,20 +174,7 @@ export const getSignupGroupInitialValues = (
     notifications: [NOTIFICATIONS.EMAIL],
     phoneNumber: responsibleSignup?.phone_number ?? '',
     serviceLanguage: responsibleSignup?.service_language ?? '',
-    signups: signups.map((su) => ({
-      city: su.city ?? '',
-      dateOfBirth: su.date_of_birth
-        ? formatDate(new Date(su.date_of_birth))
-        : '',
-      extraInfo: su.extra_info ?? '',
-      firstName: su.first_name ?? '',
-      id: su.id ?? null,
-      inWaitingList: su.attendee_status === ATTENDEE_STATUS.Waitlisted,
-      lastName: su.last_name ?? '',
-      responsibleForGroup: !!su.responsible_for_group,
-      streetAddress: su.street_address ?? '',
-      zipcode: su.zipcode ?? '',
-    })),
+    signups: signups.map((su) => getSignupInitialValues(su)),
   };
 };
 
