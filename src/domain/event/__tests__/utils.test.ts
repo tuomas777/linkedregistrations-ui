@@ -61,7 +61,7 @@ describe('getEventFields function', () => {
 
     expect(audienceMaxAge).toBe(5);
     expect(audienceMinAge).toBe(12);
-    expect(description).toBe(expectedDescription.fi);
+    expect(description).toBe(expectedDescription?.fi);
     expect(endTime).toEqual(new Date(expectedEndTime));
     expect(imageUrl).toBe(expectedImageUrl);
     expect(offers).toEqual(expectedOffers);

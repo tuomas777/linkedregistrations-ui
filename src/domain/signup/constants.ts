@@ -13,7 +13,6 @@ export enum NOTIFICATION_TYPE {
 export const TEST_SIGNUP_ID = 'signup:1';
 
 export enum SIGNUP_ACTIONS {
-  CREATE = 'create',
   DELETE = 'delete',
 }
 

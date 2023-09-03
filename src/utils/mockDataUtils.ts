@@ -325,7 +325,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
 export const fakeSignupGroup = (
   overrides?: Partial<SignupGroup>
 ): SignupGroup => {
-  const id = overrides?.id || faker.datatype.number();
+  const id = overrides?.id || faker.datatype.uuid();
 
   return merge<SignupGroup, typeof overrides>(
     {

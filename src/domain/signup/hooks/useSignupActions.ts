@@ -1,12 +1,10 @@
 import { useSession } from 'next-auth/react';
 
+import useHandleError from '../../../hooks/useHandleError';
 import useMountedState from '../../../hooks/useMountedState';
 import { ExtendedSession, MutationCallbacks } from '../../../types';
-import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
-import { useCreateSignupGroupMutation } from '../../signupGroup/mutation';
 import { useSignupGroupFormContext } from '../../signupGroup/signupGroupFormContext/hooks/useSignupGroupFormContext';
-import { CreateSignupGroupMutationInput } from '../../signupGroup/types';
 import { SIGNUP_ACTIONS } from '../constants';
 import { useDeleteSignupMutation } from '../mutation';
 import { DeleteSignupMutationInput, Signup } from '../types';
@@ -17,10 +15,6 @@ interface Props {
 }
 
 type UseSignupActionsState = {
-  createSignupGroup: (
-    payload: CreateSignupGroupMutationInput,
-    callbacks?: MutationCallbacks
-  ) => Promise<void>;
   deleteSignup: (callbacks?: MutationCallbacks) => Promise<void>;
   saving: SIGNUP_ACTIONS | null;
 };
@@ -44,61 +38,11 @@ const useSignupActions = ({
     await (callbacks?.onSuccess && callbacks.onSuccess());
   };
 
-  const handleError = ({
-    callbacks,
-    error,
-    message,
-    payload,
-  }: {
-    callbacks?: MutationCallbacks;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: any;
-    message: string;
-    payload?: CreateSignupGroupMutationInput | DeleteSignupMutationInput;
-  }) => {
-    closeModal();
-    savingFinished();
-
-    // Report error to Sentry
-    reportError({
-      data: {
-        error,
-        payloadAsString: payload && JSON.stringify(payload),
-        signup,
-      },
-      message,
-    });
-
-    // Call callback function if defined
-    callbacks?.onError?.(error);
-  };
+  const { handleError } = useHandleError<DeleteSignupMutationInput, Signup>();
 
   const deleteSignupMutation = useDeleteSignupMutation({
     session,
   });
-  const createSignupGroupMutation = useCreateSignupGroupMutation({
-    session,
-  });
-
-  const createSignupGroup = async (
-    payload: CreateSignupGroupMutationInput,
-    callbacks?: MutationCallbacks
-  ) => {
-    setSaving(SIGNUP_ACTIONS.CREATE);
-    createSignupGroupMutation.mutate(payload, {
-      onError: (error, variables) => {
-        handleError({
-          callbacks,
-          error,
-          message: 'Failed to create signup group',
-          payload: variables,
-        });
-      },
-      onSuccess: () => {
-        cleanAfterUpdate(callbacks);
-      },
-    });
-  };
 
   const deleteSignup = async (callbacks?: MutationCallbacks) => {
     setSaving(SIGNUP_ACTIONS.DELETE);
@@ -115,6 +59,7 @@ const useSignupActions = ({
             error,
             message: 'Failed to delete signup',
             payload: variables,
+            savingFinished,
           });
         },
         onSuccess: () => {
@@ -124,7 +69,6 @@ const useSignupActions = ({
     );
   };
   return {
-    createSignupGroup,
     deleteSignup,
     saving,
   };

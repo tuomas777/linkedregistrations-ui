@@ -90,6 +90,7 @@
   "titleInformantInfo": "Ilmoittajan tiedot",
   "titleNotifications": "Tapahtumaa koskevat ilmoitukset",
   "titleRegistration": "Ilmoittautuminen",
+  "titleSignups": "Ilmoittautuneet",
   "warnings": {
     "allSeatsReserved": "Tapahtuman kaikki paikat ovat tällä hetkellä varatut. Kokeile myöhemmin uudelleen.",
     "capacityInWaitingList": "Ilmoittautuminen tähän tapahtumaan on vielä mahdollista, mutta jonopaikkoja on jäljellä vain {{count}} kpl.",

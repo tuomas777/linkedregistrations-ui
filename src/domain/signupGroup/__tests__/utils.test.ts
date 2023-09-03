@@ -1,7 +1,11 @@
-import { fakeRegistration, fakeSignup } from '../../../utils/mockDataUtils';
+import {
+  fakeRegistration,
+  fakeSignup,
+  fakeSignupGroup,
+} from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
-import { NOTIFICATION_TYPE } from '../../signup/constants';
+import { NOTIFICATION_TYPE, TEST_SIGNUP_ID } from '../../signup/constants';
 import {
   NOTIFICATIONS,
   SIGNUP_GROUP_FIELDS,
@@ -78,8 +82,10 @@ describe('getSignupGroupPayload function', () => {
             dateOfBirth,
             extraInfo,
             firstName,
+            id: null,
             inWaitingList: false,
             lastName,
+            responsibleForGroup: false,
             streetAddress,
             zipcode,
           },
@@ -164,8 +170,10 @@ describe('getSignupDefaultInitialValues function', () => {
       dateOfBirth: '',
       extraInfo: '',
       firstName: '',
+      id: null,
       inWaitingList: false,
       lastName: '',
+      responsibleForGroup: false,
       streetAddress: '',
       zipcode: '',
     });
@@ -173,7 +181,7 @@ describe('getSignupDefaultInitialValues function', () => {
 });
 
 describe('getSignupGroupDefaultInitialValues function', () => {
-  it('should return signup group initial values', () => {
+  it('should return signup group default initial values', () => {
     expect(getSignupGroupDefaultInitialValues()).toEqual({
       accepted: false,
       email: '',
@@ -189,8 +197,10 @@ describe('getSignupGroupDefaultInitialValues function', () => {
           dateOfBirth: '',
           extraInfo: '',
           firstName: '',
+          id: null,
           inWaitingList: false,
           lastName: '',
+          responsibleForGroup: false,
           streetAddress: '',
           zipcode: '',
         },
@@ -211,41 +221,50 @@ describe('getSignupGroupInitialValues function', () => {
       serviceLanguage,
       signups,
     } = getSignupGroupInitialValues(
-      fakeSignup({
-        city: null,
-        date_of_birth: null,
-        email: null,
+      fakeSignupGroup({
         extra_info: null,
-        first_name: null,
-        last_name: null,
-        membership_number: null,
-        native_language: null,
-        notifications: NOTIFICATION_TYPE.EMAIL,
-        phone_number: null,
-        service_language: null,
-        street_address: null,
-        zipcode: null,
+        signups: [
+          fakeSignup({
+            city: null,
+            date_of_birth: null,
+            email: null,
+            extra_info: null,
+            first_name: null,
+            id: TEST_SIGNUP_ID,
+            last_name: null,
+            membership_number: null,
+            native_language: null,
+            notifications: NOTIFICATION_TYPE.EMAIL,
+            phone_number: null,
+            responsible_for_group: true,
+            service_language: null,
+            street_address: null,
+            zipcode: null,
+          }),
+        ],
       })
     );
 
     expect(signups).toEqual([
       {
-        city: '-',
+        city: '',
         dateOfBirth: '',
         extraInfo: '',
-        firstName: '-',
+        firstName: '',
+        id: TEST_SIGNUP_ID,
         inWaitingList: false,
-        lastName: '-',
-        streetAddress: '-',
-        zipcode: '-',
+        lastName: '',
+        responsibleForGroup: true,
+        streetAddress: '',
+        zipcode: '',
       },
     ]);
-    expect(email).toBe('-');
-    expect(extraInfo).toBe('-');
-    expect(membershipNumber).toBe('-');
+    expect(email).toBe('');
+    expect(extraInfo).toBe('');
+    expect(membershipNumber).toBe('');
     expect(nativeLanguage).toBe('');
     expect(notifications).toEqual([NOTIFICATIONS.EMAIL]);
-    expect(phoneNumber).toBe('-');
+    expect(phoneNumber).toBe('');
     expect(serviceLanguage).toBe('');
   });
 
@@ -254,6 +273,7 @@ describe('getSignupGroupInitialValues function', () => {
     const expectedDateOfBirth = '10.10.2021';
     const expectedEmail = 'user@email.com';
     const expectedExtraInfo = 'Extra info';
+    const expectedGroupExtraInfo = 'Group extra info';
     const expectedFirstName = 'First name';
     const expectedLastName = 'Last name';
     const expectedMembershipNumber = 'XXX-XXX-XXX';
@@ -274,20 +294,27 @@ describe('getSignupGroupInitialValues function', () => {
       serviceLanguage,
       signups,
     } = getSignupGroupInitialValues(
-      fakeSignup({
-        city: expectedCity,
-        date_of_birth: '2021-10-10',
-        email: expectedEmail,
-        extra_info: expectedExtraInfo,
-        first_name: expectedFirstName,
-        last_name: expectedLastName,
-        membership_number: expectedMembershipNumber,
-        native_language: expectedNativeLanguage,
-        notifications: NOTIFICATION_TYPE.EMAIL,
-        phone_number: expectedPhoneNumber,
-        service_language: expectedServiceLanguage,
-        street_address: expectedStreetAddress,
-        zipcode: expectedZip,
+      fakeSignupGroup({
+        extra_info: expectedGroupExtraInfo,
+        signups: [
+          fakeSignup({
+            city: expectedCity,
+            date_of_birth: '2021-10-10',
+            email: expectedEmail,
+            extra_info: expectedExtraInfo,
+            first_name: expectedFirstName,
+            id: TEST_SIGNUP_ID,
+            last_name: expectedLastName,
+            membership_number: expectedMembershipNumber,
+            native_language: expectedNativeLanguage,
+            notifications: NOTIFICATION_TYPE.EMAIL,
+            phone_number: expectedPhoneNumber,
+            responsible_for_group: true,
+            service_language: expectedServiceLanguage,
+            street_address: expectedStreetAddress,
+            zipcode: expectedZip,
+          }),
+        ],
       })
     );
 
@@ -295,16 +322,18 @@ describe('getSignupGroupInitialValues function', () => {
       {
         city: expectedCity,
         dateOfBirth: expectedDateOfBirth,
-        extraInfo: '',
+        extraInfo: expectedExtraInfo,
         firstName: expectedFirstName,
+        id: TEST_SIGNUP_ID,
         inWaitingList: false,
         lastName: expectedLastName,
+        responsibleForGroup: true,
         streetAddress: expectedStreetAddress,
         zipcode: expectedZip,
       },
     ]);
     expect(email).toBe(expectedEmail);
-    expect(extraInfo).toBe(expectedExtraInfo);
+    expect(extraInfo).toBe(expectedGroupExtraInfo);
     expect(membershipNumber).toBe(expectedMembershipNumber);
     expect(nativeLanguage).toBe(expectedNativeLanguage);
     expect(notifications).toEqual(expectedNotifications);

@@ -90,6 +90,7 @@
   "titleInformantInfo": "Information om uppgiftslämnaren",
   "titleNotifications": "Evenemangmeddelanden",
   "titleRegistration": "Registrering",
+  "titleSignups": "Registrerade personer",
   "warnings": {
     "allSeatsReserved": "Alla platser i evenemanget är för närvarande bokade. Vänligen försök igen senare.",
     "capacityInWaitingList": "Registrering för detta evenemang är fortfarande möjligt, men det är bara {{count}} plats kvar i kön.",

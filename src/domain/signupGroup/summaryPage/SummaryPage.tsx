@@ -25,7 +25,6 @@ import {
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
 import { SIGNUP_QUERY_PARAMS } from '../../signup/constants';
-import useSignupAction from '../../signup/hooks/useSignupActions';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { SignupServerErrorsProvider } from '../../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import AuthenticationRequiredNotification from '../authenticationRequiredNotification/AuthenticationRequiredNotification';
@@ -33,6 +32,7 @@ import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import Divider from '../divider/Divider';
 import EventInfo from '../eventInfo/EventInfo';
 import FormContainer from '../formContainer/FormContainer';
+import useSignupGroupActions from '../hooks/useSignupGroupActions';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { SignupGroupFormProvider } from '../signupGroupFormContext/SignupGroupFormContext';
 import {
@@ -57,7 +57,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     data: ExtendedSession | null;
   };
 
-  const { createSignupGroup } = useSignupAction({ registration });
+  const { createSignupGroup } = useSignupGroupActions();
 
   const reservationTimerCallbacksDisabled = useRef(false);
   const disableReservationTimerCallbacks = useCallback(() => {

@@ -5,5 +5,6 @@ export enum ROUTES {
   EDIT_SIGNUP = '/registration/[registrationId]/signup/[signupId]/edit',
   HOME = '/',
   SIGNUP_CANCELLED = '/registration/[registrationId]/signup/cancelled',
+  SIGNUP_GROUP_CANCELLED = '/registration/[registrationId]/signup-group/cancelled',
   SIGNUP_GROUP_COMPLETED = '/registration/[registrationId]/signup-group/completed',
 }
