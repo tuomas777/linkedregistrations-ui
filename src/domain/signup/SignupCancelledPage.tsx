@@ -16,7 +16,7 @@ type Props = {
 };
 
 const SignupCancelledPage: React.FC<Props> = ({ event }) => {
-  const { t } = useTranslation(['enrolment']);
+  const { t } = useTranslation(['signup']);
   const locale = useLocale();
 
   const { name } = getEventFields(event, locale);

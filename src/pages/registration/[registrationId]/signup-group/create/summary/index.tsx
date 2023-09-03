@@ -9,7 +9,7 @@ const SummaryPage: NextPage = () => <CreateSignupGroupSummaryPage />;
 export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: true,
   shouldPrefetchSignup: false,
-  translationNamespaces: ['common', 'enrolment', 'reservation', 'summary'],
+  translationNamespaces: ['common', 'reservation', 'signup', 'summary'],
 });
 
 export default SummaryPage;

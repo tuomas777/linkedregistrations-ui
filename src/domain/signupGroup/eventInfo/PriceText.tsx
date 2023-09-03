@@ -11,7 +11,7 @@ export interface PriceTextProps {
 }
 
 const PriceText: React.FC<PriceTextProps> = ({ freeEvent, offers }) => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
   const locale = useLocale();
 
   const getText = () => {

@@ -46,7 +46,7 @@ const Signup: React.FC<Props> = ({
   signup,
   signupPath,
 }) => {
-  const { t } = useTranslation(['enrolment']);
+  const { t } = useTranslation(['signup']);
   const locale = useLocale();
   const { openParticipant, toggleOpenParticipant } =
     useSignupGroupFormContext();

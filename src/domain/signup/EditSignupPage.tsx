@@ -54,7 +54,7 @@ const EditSignupPageWrapper: React.FC = () => {
     isLoading: isLoadingEventOrReigstration,
     registration,
   } = useEventAndRegistrationData();
-  const { isLoading: isLoadingEnrolment, signup } = useSignupData();
+  const { isLoading: isLoadingSignup, signup } = useSignupData();
   const { data: session } = useSession() as {
     data: ExtendedSession | null;
   };
@@ -64,9 +64,7 @@ const EditSignupPageWrapper: React.FC = () => {
   }
 
   return (
-    <LoadingSpinner
-      isLoading={isLoadingEnrolment || isLoadingEventOrReigstration}
-    >
+    <LoadingSpinner isLoading={isLoadingSignup || isLoadingEventOrReigstration}>
       {event && registration && signup ? (
         <SignupGroupFormProvider>
           <SignupServerErrorsProvider>

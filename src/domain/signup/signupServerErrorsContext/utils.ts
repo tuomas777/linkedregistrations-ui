@@ -83,7 +83,7 @@ export const parseSignupGroupServerErrors = ({
       case 'non_field_errors':
         return '';
       default:
-        return t(`enrolment:label${pascalCase(key)}`);
+        return t(`signup:label${pascalCase(key)}`);
     }
   }
 };

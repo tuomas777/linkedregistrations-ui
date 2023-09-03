@@ -9,7 +9,7 @@ import { getSessionAndUser } from './getSessionAndUser';
 import prefetchRegistrationAndEvent from './prefetchRegistrationAndEvent';
 
 type TranslationNamespaces = Array<
-  'common' | 'enrolment' | 'reservation' | 'summary'
+  'common' | 'reservation' | 'signup' | 'summary'
 >;
 
 type Props = {

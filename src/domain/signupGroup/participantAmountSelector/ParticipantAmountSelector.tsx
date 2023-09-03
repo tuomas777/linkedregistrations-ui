@@ -29,7 +29,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   disabled,
   registration,
 }) => {
-  const { t } = useTranslation(['enrolment', 'common']);
+  const { t } = useTranslation(['signup', 'common']);
 
   const { closeModal, openModal, setOpenModal } = useSignupGroupFormContext();
   const { setServerErrorItems, showServerErrors } =

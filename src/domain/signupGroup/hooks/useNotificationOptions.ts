@@ -5,7 +5,7 @@ import { OptionType } from '../../../types';
 import { NOTIFICATIONS } from '../constants';
 
 const useNotificationOptions = (): OptionType[] => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
   const options: OptionType[] = React.useMemo(
     () =>
       Object.values(NOTIFICATIONS).map((type) => ({

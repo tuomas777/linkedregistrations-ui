@@ -16,7 +16,7 @@ const ConfirmDeleteSignupModal: React.FC<ConfirmDeleteSignupModalProps> = ({
   onClose,
   onCancel,
 }) => {
-  const { t } = useTranslation(['enrolment', 'common']);
+  const { t } = useTranslation(['signup', 'common']);
   const openConfirmationButtonRef = React.useRef(null);
   const id = 'delete-signup-confirmation-dialog';
   const titleId = 'delete-signup-confirmation-dialog-title';
@@ -34,18 +34,18 @@ const ConfirmDeleteSignupModal: React.FC<ConfirmDeleteSignupModalProps> = ({
     >
       <Dialog.Header
         id={titleId}
-        title={t('enrolment:deleteSignupModal.title')}
+        title={t('signup:deleteSignupModal.title')}
         iconLeft={<IconAlertCircle aria-hidden="true" />}
       />
       <Dialog.Content>
         <p className={styles.warning}>
           <strong>{t('common:warning')}</strong>
         </p>
-        <p id={descriptionId}>{t('enrolment:deleteSignupModal.text')} </p>
+        <p id={descriptionId}>{t('signup:deleteSignupModal.text')} </p>
       </Dialog.Content>
       <Dialog.ActionButtons>
         <Button onClick={onCancel} variant="danger">
-          {t('enrolment:deleteSignupModal.buttonCancel')}
+          {t('signup:deleteSignupModal.buttonCancel')}
         </Button>
         <Button onClick={onClose} theme={'black'} variant="secondary">
           {t('common:cancel')}

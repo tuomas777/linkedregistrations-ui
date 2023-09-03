@@ -15,7 +15,7 @@ type Props = {
 };
 
 const RegistrationWarning: React.FC<Props> = ({ registration }) => {
-  const { t } = useTranslation(['enrolment']);
+  const { t } = useTranslation(['signup']);
   const registrationWarning = getRegistrationWarning(registration, t);
 
   const hasReservation = useMemo(() => {

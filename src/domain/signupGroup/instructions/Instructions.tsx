@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Instructions: React.FC<Props> = ({ registration }) => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
   const locale = useLocale();
   const { instructions } = getRegistrationFields(registration, locale);
   const instructionsParts = instructions.split('\n');
@@ -21,7 +21,7 @@ const Instructions: React.FC<Props> = ({ registration }) => {
 
   return (
     <>
-      <strong>{t('enrolment:instructions')}</strong>
+      <strong>{t('signup:instructions')}</strong>
       {instructionsParts.map((part) => (
         <p key={part}>{part}</p>
       ))}

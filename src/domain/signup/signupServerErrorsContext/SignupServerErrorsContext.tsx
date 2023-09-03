@@ -30,7 +30,7 @@ export const SignupServerErrorsContext = React.createContext<
 export const SignupServerErrorsProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
 
   const [serverErrorItems, setServerErrorItems] = React.useState<
     ServerErrorItem[]

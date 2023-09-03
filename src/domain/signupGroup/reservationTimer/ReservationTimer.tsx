@@ -54,7 +54,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   signups,
 }) => {
   const router = useRouter();
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
 
   const creatingReservationStarted = useRef(false);
   const timerEnabled = useRef(false);

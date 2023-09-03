@@ -13,7 +13,7 @@ export interface PersonsAddedToWaitingListModalProps {
 const PersonsAddedToWaitingListModal: React.FC<
   PersonsAddedToWaitingListModalProps
 > = ({ isOpen, onClose }) => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
 
   const handleClose = (event?: React.MouseEvent | React.KeyboardEvent) => {
     event?.preventDefault();

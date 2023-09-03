@@ -8,7 +8,7 @@ const SignupGroupCompleted: NextPage = () => <SignupGroupCompletedPage />;
 export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: false,
   shouldPrefetchSignup: false,
-  translationNamespaces: ['common', 'enrolment'],
+  translationNamespaces: ['common', 'signup'],
 });
 
 export default SignupGroupCompleted;

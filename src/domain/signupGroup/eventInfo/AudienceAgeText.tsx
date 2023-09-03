@@ -10,7 +10,7 @@ const AudienceAgeText: React.FC<AudienceAgeTextProps> = ({
   maxAge,
   minAge,
 }) => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
   const getText = () => {
     if (maxAge && minAge) {
       return t('event.audienceAge.between', { max: maxAge, min: minAge });

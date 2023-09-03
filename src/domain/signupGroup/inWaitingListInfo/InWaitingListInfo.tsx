@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 import styles from './inWaitingListInfo.module.scss';
 
 const InWaitingListInfo: FC = () => {
-  const { t } = useTranslation('enrolment');
+  const { t } = useTranslation('signup');
 
   return (
     <span className={styles.inWaitingListInfo}>

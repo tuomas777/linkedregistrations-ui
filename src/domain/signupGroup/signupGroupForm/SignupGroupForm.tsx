@@ -71,7 +71,7 @@ const SignupGroupForm: React.FC<Props> = ({
   registration,
   signup,
 }) => {
-  const { t } = useTranslation(['enrolment', 'common']);
+  const { t } = useTranslation(['signup', 'common']);
   const { deleteSignup } = useSignupActions({ registration, signup });
   const formSavingDisabled = React.useRef(!!readOnly);
 

@@ -24,7 +24,7 @@ type Props = {
 const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
   const { query } = useRouter();
   const { [SIGNUP_QUERY_PARAMS.REDIRECT_URL]: redirectUrl } = query;
-  const { t } = useTranslation(['enrolment']);
+  const { t } = useTranslation(['signup']);
   const locale = useLocale();
 
   const { name } = getEventFields(event, locale);

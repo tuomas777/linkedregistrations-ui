@@ -9,7 +9,7 @@ const EditSignup: NextPage = () => <EditSignupPage />;
 export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: false,
   shouldPrefetchSignup: true,
-  translationNamespaces: ['common', 'enrolment'],
+  translationNamespaces: ['common', 'signup'],
 });
 
 export default EditSignup;

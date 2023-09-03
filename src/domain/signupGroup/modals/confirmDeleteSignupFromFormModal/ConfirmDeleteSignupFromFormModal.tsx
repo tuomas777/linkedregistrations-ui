@@ -17,7 +17,7 @@ export interface ConfirmDeleteSignupFromFormModalProps {
 const ConfirmDeleteSignupFromFormModal: React.FC<
   ConfirmDeleteSignupFromFormModalProps
 > = ({ isOpen, isSaving, onClose, onDelete, participantCount }) => {
-  const { t } = useTranslation(['enrolment', 'common']);
+  const { t } = useTranslation(['signup', 'common']);
 
   const handleClose = (event?: React.MouseEvent | React.KeyboardEvent) => {
     event?.preventDefault();
@@ -49,7 +49,7 @@ const ConfirmDeleteSignupFromFormModal: React.FC<
       <Dialog.Header
         id={titleId}
         iconLeft={<IconAlertCircle aria-hidden={true} />}
-        title={t('enrolment:deleteSignupFromFormModal.title', {
+        title={t('signup:deleteSignupFromFormModal.title', {
           count: participantCount,
         })}
       />
@@ -58,11 +58,11 @@ const ConfirmDeleteSignupFromFormModal: React.FC<
           <strong>{t('common:warning')}</strong>
         </p>
         <p id={descriptionId}>
-          {t('enrolment:deleteSignupFromFormModal.text1', {
+          {t('signup:deleteSignupFromFormModal.text1', {
             count: participantCount,
           })}
         </p>
-        <p>{t('enrolment:deleteSignupFromFormModal.text2')}</p>
+        <p>{t('signup:deleteSignupFromFormModal.text2')}</p>
       </Dialog.Content>
       <Dialog.ActionButtons>
         <LoadingButton
@@ -73,7 +73,7 @@ const ConfirmDeleteSignupFromFormModal: React.FC<
           type="button"
           variant="danger"
         >
-          {t('enrolment:deleteSignupFromFormModal.buttonDelete', {
+          {t('signup:deleteSignupFromFormModal.buttonDelete', {
             count: participantCount,
           })}
         </LoadingButton>
