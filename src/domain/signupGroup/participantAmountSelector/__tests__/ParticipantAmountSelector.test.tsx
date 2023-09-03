@@ -18,12 +18,12 @@ import {
 import { registration } from '../../../registration/__mocks__/registration';
 import { SignupServerErrorsProvider } from '../../../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import { SIGNUP_INITIAL_VALUES } from '../../constants';
-import { EnrolmentPageProvider } from '../../enrolmentPageContext/EnrolmentPageContext';
+import { SignupGroupFormProvider } from '../../signupGroupFormContext/SignupGroupFormContext';
 import ParticipantAmountSelector from '../ParticipantAmountSelector';
 
 const renderComponent = () =>
   render(
-    <EnrolmentPageProvider>
+    <SignupGroupFormProvider>
       <SignupServerErrorsProvider>
         <Formik
           initialValues={{ signups: [{ ...SIGNUP_INITIAL_VALUES }] }}
@@ -35,7 +35,7 @@ const renderComponent = () =>
           />
         </Formik>
       </SignupServerErrorsProvider>
-    </EnrolmentPageProvider>
+    </SignupGroupFormProvider>
   );
 
 beforeEach(() => {

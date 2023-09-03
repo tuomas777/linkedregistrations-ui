@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 
 import { ExtendedSession } from '../../../types';
 import { Event } from '../../event/types';
-import { REGISTRATION_INCLUDES } from '../../registration/constants';
-import { useRegistrationQuery } from '../../registration/query';
-import { Registration } from '../../registration/types';
+import { REGISTRATION_INCLUDES } from '../constants';
+import { useRegistrationQuery } from '../query';
+import { Registration } from '../types';
 
 type UseEventAndRegistrationDataState = {
   event: Event | undefined;

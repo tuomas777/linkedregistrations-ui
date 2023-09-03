@@ -28,11 +28,6 @@ export enum NOTIFICATIONS {
   SMS = 'sms',
 }
 
-export enum ENROLMENT_QUERY_PARAMS {
-  IFRAME = 'iframe',
-  REDIRECT_URL = 'redirect_url',
-}
-
 export const SIGNUP_INITIAL_VALUES: SignupFields = {
   [SIGNUP_FIELDS.CITY]: '',
   [SIGNUP_FIELDS.DATE_OF_BIRTH]: '',

@@ -27,7 +27,7 @@ import {
   SignupServerErrorsContext,
   SignupServerErrorsContextProps,
 } from '../../../signup/signupServerErrorsContext/SignupServerErrorsContext';
-import { EnrolmentPageProvider } from '../../enrolmentPageContext/EnrolmentPageContext';
+import { SignupGroupFormProvider } from '../../signupGroupFormContext/SignupGroupFormContext';
 import ReservationTimer from '../ReservationTimer';
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
@@ -44,7 +44,7 @@ const renderComponent = (
   serverErrorProps?: Partial<SignupServerErrorsContextProps>
 ) =>
   render(
-    <EnrolmentPageProvider>
+    <SignupGroupFormProvider>
       <SignupServerErrorsContext.Provider
         value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
       >
@@ -57,7 +57,7 @@ const renderComponent = (
           signups={[]}
         />
       </SignupServerErrorsContext.Provider>
-    </EnrolmentPageProvider>,
+    </SignupGroupFormProvider>,
     { session }
   );
 

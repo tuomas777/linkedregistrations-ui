@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, {
   createContext,
   FC,
@@ -11,7 +12,7 @@ import useMountedState from '../../../hooks/useMountedState';
 import { SIGNUP_MODALS } from '../../signup/constants';
 import PersonsAddedToWaitingListModal from '../modals/personsAddedToWaitingListModal/PersonsAddedToWaitingListModal';
 
-export type EnrolmentPageContextProps = {
+export type SignupGroupFormContextProps = {
   closeModal: () => void;
   openModal: SIGNUP_MODALS | null;
   openParticipant: number | null;
@@ -20,11 +21,13 @@ export type EnrolmentPageContextProps = {
   toggleOpenParticipant: (index: number) => void;
 };
 
-export const EnrolmentPageContext = createContext<
-  EnrolmentPageContextProps | undefined
+export const SignupGroupFormContext = createContext<
+  SignupGroupFormContextProps | undefined
 >(undefined);
 
-export const EnrolmentPageProvider: FC<PropsWithChildren> = ({ children }) => {
+export const SignupGroupFormProvider: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const [openParticipant, setOpenParticipant] = useState<number | null>(0);
 
   const [openModal, setOpenModal] = useMountedState<SIGNUP_MODALS | null>(null);
@@ -49,12 +52,12 @@ export const EnrolmentPageProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   return (
-    <EnrolmentPageContext.Provider value={value}>
+    <SignupGroupFormContext.Provider value={value}>
       <PersonsAddedToWaitingListModal
         isOpen={openModal === SIGNUP_MODALS.PERSONS_ADDED_TO_WAITLIST}
         onClose={() => setOpenModal(null)}
       />
       {children}
-    </EnrolmentPageContext.Provider>
+    </SignupGroupFormContext.Provider>
   );
 };

@@ -13,13 +13,12 @@ import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
-import { SIGNUP_MODALS } from '../../signup/constants';
+import { SIGNUP_MODALS, SIGNUP_QUERY_PARAMS } from '../../signup/constants';
+import useSeatsReservationActions from '../../signup/hooks/useSeatsReservationActions';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { clearCreateSignupGroupFormData } from '../../signupGroup/utils';
-import { ENROLMENT_QUERY_PARAMS } from '../constants';
-import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
+import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFields } from '../types';
 
 const getTimeStr = (timeLeft: number) => {
@@ -68,7 +67,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
     setSignups,
     signups,
   });
-  const { openModal, setOpenModal } = useEnrolmentPageContext();
+  const { openModal, setOpenModal } = useSignupGroupFormContext();
   const { setServerErrorItems, showServerErrors } =
     useSignupServerErrorsContext();
 
@@ -80,8 +79,8 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
     router.push({
       pathname,
       query: pick(router.query, [
-        ENROLMENT_QUERY_PARAMS.IFRAME,
-        ENROLMENT_QUERY_PARAMS.REDIRECT_URL,
+        SIGNUP_QUERY_PARAMS.IFRAME,
+        SIGNUP_QUERY_PARAMS.REDIRECT_URL,
       ]),
     });
   };

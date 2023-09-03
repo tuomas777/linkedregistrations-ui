@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { NextPage } from 'next';
 
-import EditEnrolmentPage from '../../../../../../domain/enrolment/EditEnrolmentPage';
+import EditSignupPage from '../../../../../../domain/signup/EditSignupPage';
 import generateSignupGetServerSideProps from '../../../../../../utils/generateSignupGetServerSideProps';
 
-const EditEnrolment: NextPage = () => <EditEnrolmentPage />;
+const EditSignup: NextPage = () => <EditSignupPage />;
 
 export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: false,
@@ -12,4 +12,4 @@ export const getServerSideProps = generateSignupGetServerSideProps({
   translationNamespaces: ['common', 'enrolment'],
 });
 
-export default EditEnrolment;
+export default EditSignup;

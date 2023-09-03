@@ -5,14 +5,14 @@ import { fakeRegistration } from '../../../utils/mockDataUtils';
 import { render, screen, setQueryMocks } from '../../../utils/testUtils';
 import { event, eventOverrides } from '../../event/__mocks__/event';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import EnrolmentCancelledPage from '../EnrolmentCancelledPage';
+import SignupCancelledPage from '../SignupCancelledPage';
 
 const renderComponent = () =>
-  render(<EnrolmentCancelledPage />, {
+  render(<SignupCancelledPage />, {
     query: { registrationId: TEST_REGISTRATION_ID },
   });
 
-test('should show enrolment cancelled text', async () => {
+test('should show signup cancelled text', async () => {
   const registration = fakeRegistration({
     id: TEST_REGISTRATION_ID,
     event,
@@ -27,6 +27,6 @@ test('should show enrolment cancelled text', async () => {
 
   await screen.findByRole('heading', { name: 'Ilmoittautumisesi on peruttu' });
   screen.getByText(
-    `Olet perunut ilmoittautumisesi tapahtumaamme ${eventOverrides.name.fi}.`
+    `Olet perunut ilmoittautumisesi tapahtumaamme ${eventOverrides.name?.fi}.`
   );
 });

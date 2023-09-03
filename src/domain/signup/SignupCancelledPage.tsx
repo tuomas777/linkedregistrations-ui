@@ -9,13 +9,13 @@ import MainContent from '../app/layout/mainContent/MainContent';
 import { Event } from '../event/types';
 import { getEventFields } from '../event/utils';
 import NotFound from '../notFound/NotFound';
-import useEventAndRegistrationData from './hooks/useEventAndRegistrationData';
+import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 
 type Props = {
   event: Event;
 };
 
-const EnrolmentCompletedPage: React.FC<Props> = ({ event }) => {
+const SignupCancelledPage: React.FC<Props> = ({ event }) => {
   const { t } = useTranslation(['enrolment']);
   const locale = useLocale();
 
@@ -33,14 +33,14 @@ const EnrolmentCompletedPage: React.FC<Props> = ({ event }) => {
   );
 };
 
-const EnrolmentCancelledPageWrapper: React.FC = () => {
+const SignupCancelledPageWrapper: React.FC = () => {
   const { event, isLoading } = useEventAndRegistrationData();
 
   return (
     <LoadingSpinner isLoading={isLoading}>
-      {event ? <EnrolmentCompletedPage event={event} /> : <NotFound />}
+      {event ? <SignupCancelledPage event={event} /> : <NotFound />}
     </LoadingSpinner>
   );
 };
 
-export default EnrolmentCancelledPageWrapper;
+export default SignupCancelledPageWrapper;

@@ -3,10 +3,10 @@ import * as Yup from 'yup';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../../constants';
 import { fakeRegistration } from '../../../utils/mockDataUtils';
-import { NOTIFICATIONS } from '../../enrolment/constants';
-import { SignupFields, SignupGroupFormFields } from '../../enrolment/types';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import { Registration } from '../../registration/types';
+import { NOTIFICATIONS } from '../constants';
+import { SignupFields, SignupGroupFormFields } from '../types';
 import {
   getSignupGroupSchema,
   getSignupSchema,

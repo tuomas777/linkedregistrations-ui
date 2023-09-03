@@ -9,13 +9,13 @@ import {
   setQueryMocks,
   waitFor,
 } from '../../../utils/testUtils';
-import { ENROLMENT_QUERY_PARAMS } from '../../enrolment/constants';
 import { event, eventOverrides } from '../../event/__mocks__/event';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { SIGNUP_QUERY_PARAMS } from '../../signup/constants';
 import SignupGroupCompletedPage from '../SignupGroupCompletedPage';
 
 const renderComponent = (query?: {
-  [ENROLMENT_QUERY_PARAMS.REDIRECT_URL]: string;
+  [SIGNUP_QUERY_PARAMS.REDIRECT_URL]: string;
 }) =>
   render(<SignupGroupCompletedPage />, {
     query: {

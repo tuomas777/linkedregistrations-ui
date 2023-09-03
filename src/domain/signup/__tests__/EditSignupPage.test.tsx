@@ -24,9 +24,9 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import { signup } from '../../signup/__mocks__/signup';
-import { TEST_SIGNUP_ID } from '../../signup/constants';
-import EditEnrolmentPage from '../EditEnrolmentPage';
+import { signup } from '../__mocks__/signup';
+import { TEST_SIGNUP_ID } from '../constants';
+import EditSignupPage from '../EditSignupPage';
 
 configure({ defaultHidden: true });
 
@@ -84,7 +84,7 @@ const getElement = (
 
 const defaultSession = fakeAuthenticatedSession();
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
-  render(<EditEnrolmentPage />, { session });
+  render(<EditSignupPage />, { session });
 
 // Mock getSession return value
 (nextAuth as any).getSession = jest.fn().mockReturnValue(defaultSession);

@@ -17,10 +17,10 @@ import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
-import { SIGNUP_MODALS } from '../../signup/constants';
+import { useSignupGroupFormContext } from '../../signupGroup/signupGroupFormContext/hooks/useSignupGroupFormContext';
+import { SignupFields } from '../../signupGroup/types';
 import { getNewSignups } from '../../signupGroup/utils';
-import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { SignupFields } from '../types';
+import { SIGNUP_MODALS } from '../constants';
 
 type UseSeatsReservationActionsProps = {
   registration: Registration;
@@ -47,7 +47,7 @@ const useSeatsReservationActions = ({
   const { data: session } = useSession() as { data: ExtendedSession | null };
   const [saving, setSaving] = useMountedState(false);
 
-  const { closeModal, setOpenModal } = useEnrolmentPageContext();
+  const { closeModal, setOpenModal } = useSignupGroupFormContext();
 
   const registrationId = registration.id;
 

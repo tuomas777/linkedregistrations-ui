@@ -23,3 +23,8 @@ export enum SIGNUP_MODALS {
   PERSONS_ADDED_TO_WAITLIST = 'personsAddedToWaitList',
   RESERVATION_TIME_EXPIRED = 'reservationTimeExpired',
 }
+
+export enum SIGNUP_QUERY_PARAMS {
+  IFRAME = 'iframe',
+  REDIRECT_URL = 'redirect_url',
+}

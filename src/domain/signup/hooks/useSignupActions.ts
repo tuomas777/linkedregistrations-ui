@@ -3,9 +3,9 @@ import { useSession } from 'next-auth/react';
 import useMountedState from '../../../hooks/useMountedState';
 import { ExtendedSession, MutationCallbacks } from '../../../types';
 import { reportError } from '../../app/sentry/utils';
-import { useEnrolmentPageContext } from '../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { Registration } from '../../registration/types';
 import { useCreateSignupGroupMutation } from '../../signupGroup/mutation';
+import { useSignupGroupFormContext } from '../../signupGroup/signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { CreateSignupGroupMutationInput } from '../../signupGroup/types';
 import { SIGNUP_ACTIONS } from '../constants';
 import { useDeleteSignupMutation } from '../mutation';
@@ -31,7 +31,7 @@ const useSignupActions = ({
   const { data: session } = useSession() as { data: ExtendedSession | null };
   const [saving, setSaving] = useMountedState<SIGNUP_ACTIONS | null>(null);
 
-  const { closeModal } = useEnrolmentPageContext();
+  const { closeModal } = useSignupGroupFormContext();
 
   const savingFinished = () => {
     setSaving(null);

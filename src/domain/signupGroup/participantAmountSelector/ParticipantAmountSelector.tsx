@@ -12,12 +12,12 @@ import {
 } from '../../registration/utils';
 import { getSeatsReservationData } from '../../reserveSeats/utils';
 import { SIGNUP_MODALS } from '../../signup/constants';
-import ConfirmDeleteSignupFromForm from '../../signup/modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import useSeatsReservationActions from '../../signup/hooks/useSeatsReservationActions';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
-import { SIGNUP_GROUP_FIELDS } from '../constants';
-import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
-import { SignupFields } from '../types';
+import { SIGNUP_GROUP_FIELDS } from '../../signupGroup/constants';
+import { SignupFields } from '../../signupGroup/types';
+import ConfirmDeleteSignupFromForm from '../modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {
@@ -31,7 +31,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
-  const { closeModal, openModal, setOpenModal } = useEnrolmentPageContext();
+  const { closeModal, openModal, setOpenModal } = useSignupGroupFormContext();
   const { setServerErrorItems, showServerErrors } =
     useSignupServerErrorsContext();
 

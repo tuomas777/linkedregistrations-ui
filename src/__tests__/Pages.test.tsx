@@ -9,14 +9,14 @@ import singletonRouter from 'next/router';
 import React from 'react';
 
 import { ROUTES } from '../domain/app/routes/constants';
-import { NOTIFICATIONS } from '../domain/enrolment/constants';
-import { SignupGroupFormFields } from '../domain/enrolment/types';
 import { eventName } from '../domain/event/__mocks__/event';
 import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages';
 import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import { signup } from '../domain/signup/__mocks__/signup';
 import { TEST_SIGNUP_ID } from '../domain/signup/constants';
+import { NOTIFICATIONS } from '../domain/signupGroup/constants';
+import { SignupGroupFormFields } from '../domain/signupGroup/types';
 import SignupGroupCompletedPage, {
   getServerSideProps as getSignupGroupCompletedPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/completed/index';
@@ -29,8 +29,8 @@ import SummaryPage, {
 import EditSignupPage, {
   getServerSideProps as getEditSignupPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup/[signupId]/edit/index';
-import EnrolmentCancelledPage, {
-  getServerSideProps as getEnrolmentCancelledPageServerSideProps,
+import SignupCancelledPage, {
+  getServerSideProps as getSignupCancelledPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup/cancelled/index';
 import { ExtendedSSRConfig } from '../types';
 import formatDate from '../utils/formatDate';
@@ -261,7 +261,7 @@ describe('SignupCancelledPage', () => {
       query: { registrationId: registration.id },
     });
 
-    render(<EnrolmentCancelledPage />);
+    render(<SignupCancelledPage />);
 
     await isHeadingRendered('Ilmoittautumisesi on peruttu');
   });
@@ -269,7 +269,7 @@ describe('SignupCancelledPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getEnrolmentCancelledPageServerSideProps({
+    const { props } = (await getSignupCancelledPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {

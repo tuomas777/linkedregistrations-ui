@@ -2,9 +2,9 @@ import React from 'react';
 
 import useLocale from '../../../hooks/useLocale';
 import { OptionType } from '../../../types';
-import { useLanguagesQuery } from '../../language/query';
-import { LanguagesQueryVariables } from '../../language/types';
-import { getLanguageOption, sortLanguageOptions } from '../../language/utils';
+import { useLanguagesQuery } from '../query';
+import { LanguagesQueryVariables } from '../types';
+import { getLanguageOption, sortLanguageOptions } from '../utils';
 
 const useLanguageOptions = (
   variables?: LanguagesQueryVariables

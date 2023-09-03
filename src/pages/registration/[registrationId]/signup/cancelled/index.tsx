@@ -1,9 +1,9 @@
 import { NextPage } from 'next';
 
-import EnrolmentCancelledPage from '../../../../../domain/enrolment/EnrolmentCancelledPage';
+import SignupCancelledPage from '../../../../../domain/signup/SignupCancelledPage';
 import generateSignupGetServerSideProps from '../../../../../utils/generateSignupGetServerSideProps';
 
-const EnrolmentCancelled: NextPage = () => <EnrolmentCancelledPage />;
+const SignupCancelled: NextPage = () => <SignupCancelledPage />;
 
 export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: false,
@@ -11,4 +11,4 @@ export const getServerSideProps = generateSignupGetServerSideProps({
   translationNamespaces: ['common', 'enrolment'],
 });
 
-export default EnrolmentCancelled;
+export default SignupCancelled;

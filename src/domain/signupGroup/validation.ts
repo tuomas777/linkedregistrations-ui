@@ -18,14 +18,14 @@ import {
 } from '../../utils/validationUtils';
 import wait from '../../utils/wait';
 import { numberOrNull, stringOrNull } from '../api/types';
+import { Registration } from '../registration/types';
 import {
   NOTIFICATIONS,
   SIGNUP_FIELDS,
   SIGNUP_GROUP_FIELDS,
   SIGNUP_GROUP_FORM_SELECT_FIELDS,
-} from '../enrolment/constants';
-import { SignupGroupFormFields } from '../enrolment/types';
-import { Registration } from '../registration/types';
+} from './constants';
+import { SignupGroupFormFields } from './types';
 import { isDateOfBirthFieldRequired, isSignupFieldRequired } from './utils';
 
 export const isAboveMinAge = (

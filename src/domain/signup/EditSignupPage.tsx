@@ -7,18 +7,18 @@ import Container from '../app/layout/container/Container';
 import MainContent from '../app/layout/mainContent/MainContent';
 import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
+import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../registration/types';
 import SignInRequired from '../signInRequired/SignInRequired';
-import useSignupData from '../signup/hooks/useSignupData';
-import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
-import { Signup } from '../signup/types';
+import EventInfo from '../signupGroup/eventInfo/EventInfo';
+import FormContainer from '../signupGroup/formContainer/FormContainer';
 import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
+import { SignupGroupFormProvider } from '../signupGroup/signupGroupFormContext/SignupGroupFormContext';
 import { getSignupGroupInitialValues } from '../signupGroup/utils';
-import { EnrolmentPageProvider } from './enrolmentPageContext/EnrolmentPageContext';
-import EnrolmentPageMeta from './enrolmentPageMeta/EnrolmentPageMeta';
-import EventInfo from './eventInfo/EventInfo';
-import FormContainer from './formContainer/FormContainer';
-import useEventAndRegistrationData from './hooks/useEventAndRegistrationData';
+import useSignupData from './hooks/useSignupData';
+import SignupPageMeta from './signupPageMeta/SignupPageMeta';
+import { SignupServerErrorsProvider } from './signupServerErrorsContext/SignupServerErrorsContext';
+import { Signup } from './types';
 
 type Props = {
   event: Event;
@@ -31,7 +31,7 @@ const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
 
   return (
     <MainContent>
-      <EnrolmentPageMeta event={event} />
+      <SignupPageMeta event={event} />
       <Container withOffset>
         <FormContainer>
           <EventInfo event={event} registration={registration} />
@@ -68,7 +68,7 @@ const EditSignupPageWrapper: React.FC = () => {
       isLoading={isLoadingEnrolment || isLoadingEventOrReigstration}
     >
       {event && registration && signup ? (
-        <EnrolmentPageProvider>
+        <SignupGroupFormProvider>
           <SignupServerErrorsProvider>
             <EditSignupPage
               event={event}
@@ -76,7 +76,7 @@ const EditSignupPageWrapper: React.FC = () => {
               signup={signup}
             />
           </SignupServerErrorsProvider>
-        </EnrolmentPageProvider>
+        </SignupGroupFormProvider>
       ) : (
         <NotFound />
       )}

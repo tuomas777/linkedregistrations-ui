@@ -11,7 +11,7 @@ interface Props {
   title?: string;
 }
 
-const EnrolmentPageMeta: React.FC<Props> = ({ event, title }) => {
+const SignupPageMeta: React.FC<Props> = ({ event, title }) => {
   const locale = useLocale();
 
   const {
@@ -51,4 +51,4 @@ const EnrolmentPageMeta: React.FC<Props> = ({ event, title }) => {
   );
 };
 
-export default EnrolmentPageMeta;
+export default SignupPageMeta;

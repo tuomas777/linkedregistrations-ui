@@ -2,7 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 
 import { getQueryWrapper, setQueryMocks } from '../../../../utils/testUtils';
-import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
+import { mockedLanguagesResponses } from '../../__mocks__/languages';
 import useLanguageOptions from '../useLanguageOptions';
 
 test('should return language options', async () => {
