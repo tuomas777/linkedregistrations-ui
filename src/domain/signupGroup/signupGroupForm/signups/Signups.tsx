@@ -38,7 +38,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
   const { setServerErrorItems, showServerErrors } =
     useSignupServerErrorsContext();
 
-  const [{ value: signups }, , { setValue: setSingups }] = useField<
+  const [{ value: signups }, , { setValue: setSignups }] = useField<
     SignupFields[]
   >({ name: SIGNUP_GROUP_FIELDS.SIGNUPS });
 
@@ -74,7 +74,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
           seatsReservation,
         });
 
-        setSingups(newSignups);
+        setSignups(newSignups);
 
         setSeatsReservationData(registration.id, seatsReservation);
 
