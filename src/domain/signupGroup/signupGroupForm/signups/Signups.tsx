@@ -6,8 +6,6 @@ import React, { useRef, useState } from 'react';
 import { ExtendedSession } from '../../../../types';
 import { reportError } from '../../../app/sentry/utils';
 import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
-import { useEnrolmentServerErrorsContext } from '../../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import ConfirmDeleteParticipantModal from '../../../signup/modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
 import { SignupFields } from '../../../enrolment/types';
 import { Registration } from '../../../registration/types';
 import { useUpdateSeatsReservationMutation } from '../../../reserveSeats/mutation';
@@ -15,6 +13,8 @@ import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../../reserveSeats/utils';
+import ConfirmDeleteParticipantModal from '../../../signup/modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import { useSignupServerErrorsContext } from '../../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { getNewSignups } from '../../utils';
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
@@ -36,7 +36,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
   const [saving, setSaving] = useState(false);
 
   const { setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const [{ value: signups }, , { setValue: setSingups }] = useField<
     SignupFields[]

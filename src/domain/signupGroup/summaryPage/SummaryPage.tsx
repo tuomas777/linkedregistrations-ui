@@ -21,8 +21,6 @@ import ButtonWrapper from '../../enrolment/buttonWrapper/ButtonWrapper';
 import { ENROLMENT_QUERY_PARAMS } from '../../enrolment/constants';
 import Divider from '../../enrolment/divider/Divider';
 import { EnrolmentPageProvider } from '../../enrolment/enrolmentPageContext/EnrolmentPageContext';
-import { EnrolmentServerErrorsProvider } from '../../enrolment/enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
-import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import EventInfo from '../../enrolment/eventInfo/EventInfo';
 import FormContainer from '../../enrolment/formContainer/FormContainer';
 import useEventAndRegistrationData from '../../enrolment/hooks/useEventAndRegistrationData';
@@ -35,6 +33,8 @@ import {
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
 import useSignupAction from '../../signup/hooks/useSignupActions';
+import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
+import { SignupServerErrorsProvider } from '../../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import {
   clearCreateSignupGroupFormData,
   getSignupGroupDefaultInitialValues,
@@ -92,7 +92,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const initialValues = getSignupGroupDefaultInitialValues();
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
@@ -154,7 +154,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                         onError: (error) =>
                           showServerErrors(
                             { error: JSON.parse(error.message) },
-                            'enrolment'
+                            'signup'
                           ),
                         onSuccess: goToSignupGroupCompletedPage,
                       });
@@ -209,9 +209,9 @@ const SummaryPageWrapper: React.FC = () => {
     <LoadingSpinner isLoading={isLoading}>
       {event && registration ? (
         <EnrolmentPageProvider>
-          <EnrolmentServerErrorsProvider>
+          <SignupServerErrorsProvider>
             <SummaryPage event={event} registration={registration} />
-          </EnrolmentServerErrorsProvider>
+          </SignupServerErrorsProvider>
         </EnrolmentPageProvider>
       ) : (
         <NotFound />

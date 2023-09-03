@@ -8,20 +8,20 @@ import pascalCase from '../../../utils/pascalCase';
 type ErrorObject = Record<string, any>;
 type ErrorType = ErrorObject | ErrorObject[] | string;
 
-export const parseEnrolmentServerErrors = ({
+export const parseSignupGroupServerErrors = ({
   error,
   t,
 }: {
   error: ErrorType;
   t: TFunction;
 }): ServerErrorItem[] => {
-  // LE returns errors as array when trying to create/edit multiple enrolments in same request.
-  // In that case call parseEnrolmentServerErrors recursively to get all single errors
+  // LE returns errors as array when trying to create/edit multiple signup in same request.
+  // In that case call parseSignupGroupServerErrors recursively to get all single errors
   if (Array.isArray(error)) {
     return (error as ErrorObject[]).reduce(
       (previous: ServerErrorItem[], r: ErrorType) => [
         ...previous,
-        ...parseEnrolmentServerErrors({ error: r, t }),
+        ...parseSignupGroupServerErrors({ error: r, t }),
       ],
       []
     );
@@ -32,13 +32,13 @@ export const parseEnrolmentServerErrors = ({
     : Object.entries(error).reduce(
         (previous: ServerErrorItem[], [key, error]) => [
           ...previous,
-          ...parseEnrolmentServerError({ error, key }),
+          ...parseSignupGroupServerError({ error, key }),
         ],
         []
       );
 
   // Get error item for an single error.
-  function parseEnrolmentServerError({
+  function parseSignupGroupServerError({
     error,
     key,
   }: {
@@ -51,7 +51,7 @@ export const parseEnrolmentServerErrors = ({
 
     return [
       {
-        label: parseEnrolmentServerErrorLabel({ key }),
+        label: parseSignupGroupServerErrorLabel({ key }),
         message: parseServerErrorMessage({ error, t }),
       },
     ];
@@ -65,7 +65,7 @@ export const parseEnrolmentServerErrors = ({
         (previous: ServerErrorItem[], [key, e]) => [
           ...previous,
           {
-            label: parseEnrolmentServerErrorLabel({ key }),
+            label: parseSignupGroupServerErrorLabel({ key }),
             message: parseServerErrorMessage({ error: e as string[], t }),
           },
         ],
@@ -77,7 +77,7 @@ export const parseEnrolmentServerErrors = ({
   }
 
   // Get correct field name for an error item
-  function parseEnrolmentServerErrorLabel({ key }: { key: string }): string {
+  function parseSignupGroupServerErrorLabel({ key }: { key: string }): string {
     switch (key) {
       case 'detail':
       case 'non_field_errors':

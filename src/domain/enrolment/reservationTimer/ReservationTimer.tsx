@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import pick from 'lodash/pick';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -13,10 +14,10 @@ import {
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
 import { SIGNUP_MODALS } from '../../signup/constants';
+import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { clearCreateSignupGroupFormData } from '../../signupGroup/utils';
 import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
 import { SignupFields } from '../types';
@@ -69,7 +70,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   });
   const { openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const enableTimer = useCallback(() => {
     timerEnabled.current = true;

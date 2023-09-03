@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useField } from 'formik';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
@@ -12,9 +13,9 @@ import {
 import { getSeatsReservationData } from '../../reserveSeats/utils';
 import { SIGNUP_MODALS } from '../../signup/constants';
 import ConfirmDeleteSignupFromForm from '../../signup/modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { SIGNUP_GROUP_FIELDS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import { SignupFields } from '../types';
 import styles from './participantAmountSelector.module.scss';
@@ -32,7 +33,7 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
   const { closeModal, openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const [participantsToDelete, setParticipantsToDelete] = useState(0);
 

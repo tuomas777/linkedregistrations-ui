@@ -3,11 +3,11 @@
 import i18n from 'i18next';
 
 import {
-  parseEnrolmentServerErrors,
   parseSeatsReservationServerErrors,
+  parseSignupGroupServerErrors,
 } from '../utils';
 
-describe('parseEnrolmentServerErrors', () => {
+describe('parseSignupGroupServerErrors', () => {
   it('should set server error items', async () => {
     const error = {
       firstName: ['The name must be specified.'],
@@ -20,15 +20,15 @@ describe('parseEnrolmentServerErrors', () => {
       ],
     };
 
-    expect(parseEnrolmentServerErrors({ error, t: i18n.t.bind(i18n) })).toEqual(
-      [
-        { label: 'Etunimi', message: 'Nimi on pakollinen.' },
-        {
-          label: '',
-          message: 'Sähköpostiosoitteella on jo ilmoittautuminen.',
-        },
-      ]
-    );
+    expect(
+      parseSignupGroupServerErrors({ error, t: i18n.t.bind(i18n) })
+    ).toEqual([
+      { label: 'Etunimi', message: 'Nimi on pakollinen.' },
+      {
+        label: '',
+        message: 'Sähköpostiosoitteella on jo ilmoittautuminen.',
+      },
+    ]);
   });
 
   it('should return server error items when result is array', () => {
@@ -37,20 +37,22 @@ describe('parseEnrolmentServerErrors', () => {
       { lastName: ['The name must be specified.'] },
     ];
 
-    expect(parseEnrolmentServerErrors({ error, t: i18n.t.bind(i18n) })).toEqual(
-      [
-        { label: 'Etunimi', message: 'Nimi on pakollinen.' },
-        { label: 'Sukunimi', message: 'Nimi on pakollinen.' },
-      ]
-    );
+    expect(
+      parseSignupGroupServerErrors({ error, t: i18n.t.bind(i18n) })
+    ).toEqual([
+      { label: 'Etunimi', message: 'Nimi on pakollinen.' },
+      { label: 'Sukunimi', message: 'Nimi on pakollinen.' },
+    ]);
   });
 
   it('should return server error items when result is array of string', () => {
     const error = ['Could not find all objects to update.'];
 
-    expect(parseEnrolmentServerErrors({ error, t: i18n.t.bind(i18n) })).toEqual(
-      [{ label: '', message: 'Kaikkia päivitettäviä objekteja ei löytynyt.' }]
-    );
+    expect(
+      parseSignupGroupServerErrors({ error, t: i18n.t.bind(i18n) })
+    ).toEqual([
+      { label: '', message: 'Kaikkia päivitettäviä objekteja ei löytynyt.' },
+    ]);
   });
 });
 

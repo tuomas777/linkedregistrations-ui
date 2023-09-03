@@ -9,13 +9,13 @@ import MainContent from '../app/layout/mainContent/MainContent';
 import AuthenticationRequiredNotification from '../enrolment/authenticationRequiredNotification/AuthenticationRequiredNotification';
 import { EnrolmentPageProvider } from '../enrolment/enrolmentPageContext/EnrolmentPageContext';
 import EnrolmentPageMeta from '../enrolment/enrolmentPageMeta/EnrolmentPageMeta';
-import { EnrolmentServerErrorsProvider } from '../enrolment/enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import EventInfo from '../enrolment/eventInfo/EventInfo';
 import FormContainer from '../enrolment/formContainer/FormContainer';
 import useEventAndRegistrationData from '../enrolment/hooks/useEventAndRegistrationData';
 import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import { Registration } from '../registration/types';
+import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import SignupGroupForm from './signupGroupForm/SignupGroupForm';
 import { getSignupGroupDefaultInitialValues } from './utils';
 
@@ -56,9 +56,9 @@ const CreateSignupGroupPageWrapper: React.FC = () => {
     <LoadingSpinner isLoading={isLoading}>
       {registration && event ? (
         <EnrolmentPageProvider>
-          <EnrolmentServerErrorsProvider>
+          <SignupServerErrorsProvider>
             <CreateSignupGroupPage event={event} registration={registration} />
-          </EnrolmentServerErrorsProvider>
+          </SignupServerErrorsProvider>
         </EnrolmentPageProvider>
       ) : (
         <NotFound />

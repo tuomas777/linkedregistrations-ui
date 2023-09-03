@@ -31,7 +31,6 @@ import {
 } from '../../enrolment/constants';
 import Divider from '../../enrolment/divider/Divider';
 import { useEnrolmentPageContext } from '../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useLanguageOptions from '../../enrolment/hooks/useLanguageOptions';
 import useNotificationOptions from '../../enrolment/hooks/useNotificationOptions';
 import ParticipantAmountSelector from '../../enrolment/participantAmountSelector/ParticipantAmountSelector';
@@ -46,6 +45,7 @@ import {
 import { SIGNUP_MODALS } from '../../signup/constants';
 import useSignupActions from '../../signup/hooks/useSignupActions';
 import ConfirmDeleteSignupModal from '../../signup/modals/confirmDeleteSignupModal/ConfirmDeleteSignupModal';
+import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { Signup } from '../../signup/types';
 import { isSignupFieldRequired } from '../utils';
 import {
@@ -105,7 +105,7 @@ const SignupGroupForm: React.FC<Props> = ({
   }, [registration]);
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
@@ -138,7 +138,7 @@ const SignupGroupForm: React.FC<Props> = ({
     setServerErrorItems([]);
     await deleteSignup({
       onError: (error) =>
-        showServerErrors({ error: JSON.parse(error.message) }, 'enrolment'),
+        showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
       onSuccess: goToSignupCancelledPage,
     });
   };

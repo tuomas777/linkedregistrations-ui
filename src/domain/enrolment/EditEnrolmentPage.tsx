@@ -10,12 +10,12 @@ import NotFound from '../notFound/NotFound';
 import { Registration } from '../registration/types';
 import SignInRequired from '../signInRequired/SignInRequired';
 import useSignupData from '../signup/hooks/useSignupData';
+import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import { Signup } from '../signup/types';
 import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
 import { getSignupGroupInitialValues } from '../signupGroup/utils';
 import { EnrolmentPageProvider } from './enrolmentPageContext/EnrolmentPageContext';
 import EnrolmentPageMeta from './enrolmentPageMeta/EnrolmentPageMeta';
-import { EnrolmentServerErrorsProvider } from './enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';
 import useEventAndRegistrationData from './hooks/useEventAndRegistrationData';
@@ -69,13 +69,13 @@ const EditSignupPageWrapper: React.FC = () => {
     >
       {event && registration && signup ? (
         <EnrolmentPageProvider>
-          <EnrolmentServerErrorsProvider>
+          <SignupServerErrorsProvider>
             <EditSignupPage
               event={event}
               registration={registration}
               signup={signup}
             />
-          </EnrolmentServerErrorsProvider>
+          </SignupServerErrorsProvider>
         </EnrolmentPageProvider>
       ) : (
         <NotFound />

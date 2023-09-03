@@ -4,17 +4,17 @@ import React, { FC, PropsWithChildren, useCallback, useMemo } from 'react';
 
 import { ServerErrorItem } from '../../../types';
 import {
-  parseEnrolmentServerErrors,
   parseSeatsReservationServerErrors,
+  parseSignupGroupServerErrors,
 } from './utils';
 
 type ShowServerErrorsFnParams = {
   error: any;
 };
 
-type RequestType = 'enrolment' | 'seatsReservation';
+type RequestType = 'seatsReservation' | 'signup';
 
-export type EnrolmentServerErrorsContextProps = {
+export type SignupServerErrorsContextProps = {
   serverErrorItems: ServerErrorItem[];
   setServerErrorItems: (items: ServerErrorItem[]) => void;
   showServerErrors: (
@@ -23,11 +23,11 @@ export type EnrolmentServerErrorsContextProps = {
   ) => void;
 };
 
-export const EnrolmentServerErrorsContext = React.createContext<
-  EnrolmentServerErrorsContextProps | undefined
+export const SignupServerErrorsContext = React.createContext<
+  SignupServerErrorsContextProps | undefined
 >(undefined);
 
-export const EnrolmentServerErrorsProvider: FC<PropsWithChildren> = ({
+export const SignupServerErrorsProvider: FC<PropsWithChildren> = ({
   children,
 }) => {
   const { t } = useTranslation('enrolment');
@@ -41,13 +41,13 @@ export const EnrolmentServerErrorsProvider: FC<PropsWithChildren> = ({
       /* istanbul ignore else */
       if (error) {
         switch (type) {
-          case 'enrolment':
-            setServerErrorItems(parseEnrolmentServerErrors({ error, t }));
-            break;
           case 'seatsReservation':
             setServerErrorItems(
               parseSeatsReservationServerErrors({ error, t })
             );
+            break;
+          case 'signup':
+            setServerErrorItems(parseSignupGroupServerErrors({ error, t }));
             break;
         }
       }
@@ -64,8 +64,8 @@ export const EnrolmentServerErrorsProvider: FC<PropsWithChildren> = ({
     [serverErrorItems, showServerErrors]
   );
   return (
-    <EnrolmentServerErrorsContext.Provider value={value}>
+    <SignupServerErrorsContext.Provider value={value}>
       {children}
-    </EnrolmentServerErrorsContext.Provider>
+    </SignupServerErrorsContext.Provider>
   );
 };
