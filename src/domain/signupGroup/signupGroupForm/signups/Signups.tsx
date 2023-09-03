@@ -7,7 +7,7 @@ import { ExtendedSession } from '../../../../types';
 import { reportError } from '../../../app/sentry/utils';
 import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
 import { useEnrolmentServerErrorsContext } from '../../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import ConfirmDeleteParticipantModal from '../../../enrolment/modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
+import ConfirmDeleteParticipantModal from '../../../signup/modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
 import { SignupFields } from '../../../enrolment/types';
 import { Registration } from '../../../registration/types';
 import { useUpdateSeatsReservationMutation } from '../../../reserveSeats/mutation';

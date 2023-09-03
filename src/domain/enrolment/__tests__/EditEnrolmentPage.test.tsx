@@ -24,7 +24,7 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import { signup } from '../../signup/__mocks__/enrolment';
+import { signup } from '../../signup/__mocks__/signup';
 import { TEST_SIGNUP_ID } from '../../signup/constants';
 import EditEnrolmentPage from '../EditEnrolmentPage';
 

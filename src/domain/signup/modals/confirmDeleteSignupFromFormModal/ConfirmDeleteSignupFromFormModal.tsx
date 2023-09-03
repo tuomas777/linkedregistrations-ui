@@ -6,7 +6,7 @@ import Button from '../../../../common/components/button/Button';
 import styles from '../../../../common/components/dialog/dialog.module.scss';
 import LoadingButton from '../../../../common/components/loadingButton/LoadingButton';
 
-export interface ConfirmDeleteParticipantModalProps {
+export interface ConfirmDeleteSignupFromFormModalProps {
   isOpen: boolean;
   isSaving: boolean;
   onClose: () => void;
@@ -14,8 +14,8 @@ export interface ConfirmDeleteParticipantModalProps {
   participantCount: number;
 }
 
-const ConfirmDeleteParticipantModal: React.FC<
-  ConfirmDeleteParticipantModalProps
+const ConfirmDeleteSignupFromFormModal: React.FC<
+  ConfirmDeleteSignupFromFormModalProps
 > = ({ isOpen, isSaving, onClose, onDelete, participantCount }) => {
   const { t } = useTranslation(['enrolment', 'common']);
 
@@ -49,7 +49,7 @@ const ConfirmDeleteParticipantModal: React.FC<
       <Dialog.Header
         id={titleId}
         iconLeft={<IconAlertCircle aria-hidden={true} />}
-        title={t('enrolment:deleteParticipantModal.title', {
+        title={t('enrolment:deleteSignupFromFormModal.title', {
           count: participantCount,
         })}
       />
@@ -58,11 +58,11 @@ const ConfirmDeleteParticipantModal: React.FC<
           <strong>{t('common:warning')}</strong>
         </p>
         <p id={descriptionId}>
-          {t('enrolment:deleteParticipantModal.text1', {
+          {t('enrolment:deleteSignupFromFormModal.text1', {
             count: participantCount,
           })}
         </p>
-        <p>{t('enrolment:deleteParticipantModal.text2')}</p>
+        <p>{t('enrolment:deleteSignupFromFormModal.text2')}</p>
       </Dialog.Content>
       <Dialog.ActionButtons>
         <LoadingButton
@@ -73,7 +73,7 @@ const ConfirmDeleteParticipantModal: React.FC<
           type="button"
           variant="danger"
         >
-          {t('enrolment:deleteParticipantModal.buttonDelete', {
+          {t('enrolment:deleteSignupFromFormModal.buttonDelete', {
             count: participantCount,
           })}
         </LoadingButton>
@@ -91,4 +91,4 @@ const ConfirmDeleteParticipantModal: React.FC<
   );
 };
 
-export default ConfirmDeleteParticipantModal;
+export default ConfirmDeleteSignupFromFormModal;

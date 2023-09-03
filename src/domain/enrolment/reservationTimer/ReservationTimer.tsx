@@ -12,8 +12,9 @@ import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
+import { SIGNUP_MODALS } from '../../signup/constants';
 import { clearCreateSignupGroupFormData } from '../../signupGroup/utils';
-import { ENROLMENT_MODALS, ENROLMENT_QUERY_PARAMS } from '../constants';
+import { ENROLMENT_QUERY_PARAMS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
@@ -150,7 +151,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
 
             // Show modal only if user is authenticated
             if (session) {
-              setOpenModal(ENROLMENT_MODALS.RESERVATION_TIME_EXPIRED);
+              setOpenModal(SIGNUP_MODALS.RESERVATION_TIME_EXPIRED);
             }
           }
         }
@@ -173,7 +174,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   return (
     <>
       <ReservationTimeExpiredModal
-        isOpen={openModal === ENROLMENT_MODALS.RESERVATION_TIME_EXPIRED}
+        isOpen={openModal === SIGNUP_MODALS.RESERVATION_TIME_EXPIRED}
         onTryAgain={handleTryAgain}
       />
 

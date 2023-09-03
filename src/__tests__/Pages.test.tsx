@@ -15,7 +15,7 @@ import { eventName } from '../domain/event/__mocks__/event';
 import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages';
 import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
-import { signup } from '../domain/signup/__mocks__/enrolment';
+import { signup } from '../domain/signup/__mocks__/signup';
 import { TEST_SIGNUP_ID } from '../domain/signup/constants';
 import SignupGroupCompletedPage, {
   getServerSideProps as getSignupGroupCompletedPageServerSideProps,

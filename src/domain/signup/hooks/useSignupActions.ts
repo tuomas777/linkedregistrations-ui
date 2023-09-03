@@ -3,11 +3,11 @@ import { useSession } from 'next-auth/react';
 import useMountedState from '../../../hooks/useMountedState';
 import { ExtendedSession, MutationCallbacks } from '../../../types';
 import { reportError } from '../../app/sentry/utils';
-import { ENROLMENT_ACTIONS } from '../../enrolment/constants';
 import { useEnrolmentPageContext } from '../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { Registration } from '../../registration/types';
 import { useCreateSignupGroupMutation } from '../../signupGroup/mutation';
 import { CreateSignupGroupMutationInput } from '../../signupGroup/types';
+import { SIGNUP_ACTIONS } from '../constants';
 import { useDeleteSignupMutation } from '../mutation';
 import { DeleteSignupMutationInput, Signup } from '../types';
 
@@ -17,19 +17,19 @@ interface Props {
 }
 
 type UseSignupActionsState = {
-  cancelSignup: (callbacks?: MutationCallbacks) => Promise<void>;
   createSignupGroup: (
     payload: CreateSignupGroupMutationInput,
     callbacks?: MutationCallbacks
   ) => Promise<void>;
-  saving: ENROLMENT_ACTIONS | null;
+  deleteSignup: (callbacks?: MutationCallbacks) => Promise<void>;
+  saving: SIGNUP_ACTIONS | null;
 };
 const useSignupActions = ({
   registration,
   signup,
 }: Props): UseSignupActionsState => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
-  const [saving, setSaving] = useMountedState<ENROLMENT_ACTIONS | null>(null);
+  const [saving, setSaving] = useMountedState<SIGNUP_ACTIONS | null>(null);
 
   const { closeModal } = useEnrolmentPageContext();
 
@@ -84,7 +84,7 @@ const useSignupActions = ({
     payload: CreateSignupGroupMutationInput,
     callbacks?: MutationCallbacks
   ) => {
-    setSaving(ENROLMENT_ACTIONS.CREATE);
+    setSaving(SIGNUP_ACTIONS.CREATE);
     createSignupGroupMutation.mutate(payload, {
       onError: (error, variables) => {
         handleError({
@@ -100,8 +100,8 @@ const useSignupActions = ({
     });
   };
 
-  const cancelSignup = async (callbacks?: MutationCallbacks) => {
-    setSaving(ENROLMENT_ACTIONS.CANCEL);
+  const deleteSignup = async (callbacks?: MutationCallbacks) => {
+    setSaving(SIGNUP_ACTIONS.DELETE);
 
     deleteSignupMutation.mutate(
       {
@@ -113,7 +113,7 @@ const useSignupActions = ({
           handleError({
             callbacks,
             error,
-            message: 'Failed to cancel signup',
+            message: 'Failed to delete signup',
             payload: variables,
           });
         },
@@ -124,8 +124,8 @@ const useSignupActions = ({
     );
   };
   return {
-    cancelSignup,
     createSignupGroup,
+    deleteSignup,
     saving,
   };
 };

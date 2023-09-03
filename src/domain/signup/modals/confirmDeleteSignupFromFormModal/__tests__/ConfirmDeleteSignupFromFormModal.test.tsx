@@ -7,13 +7,13 @@ import {
   screen,
   userEvent,
 } from '../../../../../utils/testUtils';
-import ConfirmDeleteParticipantModal, {
-  ConfirmDeleteParticipantModalProps,
-} from '../ConfirmDeleteParticipantModal';
+import ConfirmDeleteSignupFromFormModal, {
+  ConfirmDeleteSignupFromFormModalProps,
+} from '../ConfirmDeleteSignupFromFormModal';
 
 configure({ defaultHidden: true });
 
-const defaultProps: ConfirmDeleteParticipantModalProps = {
+const defaultProps: ConfirmDeleteSignupFromFormModalProps = {
   isOpen: true,
   isSaving: false,
   onClose: jest.fn(),
@@ -21,8 +21,9 @@ const defaultProps: ConfirmDeleteParticipantModalProps = {
   participantCount: 1,
 };
 
-const renderComponent = (props: Partial<ConfirmDeleteParticipantModalProps>) =>
-  render(<ConfirmDeleteParticipantModal {...defaultProps} {...props} />);
+const renderComponent = (
+  props: Partial<ConfirmDeleteSignupFromFormModalProps>
+) => render(<ConfirmDeleteSignupFromFormModal {...defaultProps} {...props} />);
 
 test('should call onCancel', async () => {
   const onDelete = jest.fn();

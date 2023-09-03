@@ -3,11 +3,6 @@
   "buttonDeleteSignup": "Ta bort deltagare",
   "buttonGoToSummary": "Fortsätt till registreringen",
   "buttonUpdateParticipantAmount": "Uppdatera",
-  "cancelEnrolmentModal": {
-    "buttonCancel": "Avbryt registreringen",
-    "text": "Denna operation kan inte ångras.",
-    "title": "Är du säker på att du vill avbryta registreringen?"
-  },
   "cancelledPage": {
     "text": "Du har avbokat din anmälan till vårt evenemang {{name}}.",
     "title": "Din registrering har avbrutits"
@@ -18,7 +13,7 @@
     "text": "Du har registrerat dig för vårt evenemang {{name}} - välkommen!",
     "title": "Tack för din registrering!"
   },
-  "deleteParticipantModal": {
+  "deleteSignupFromFormModal": {
     "buttonDelete": "Ta bort deltagare",
     "buttonDelete_other": "Ta bort deltagare",
     "text1": "Är du säker på att du vill ta bort deltagaren? Deltagarens reservationer tas också bort.",
@@ -26,6 +21,11 @@
     "text2": "Denna operation kan inte ångras.",
     "title": "Bekräfta borttagning av deltagare",
     "title_other": "Bekräfta borttagning av deltagare"
+  },
+  "deleteSignupModal": {
+    "buttonCancel": "Avbryt registreringen",
+    "text": "Denna operation kan inte ångras.",
+    "title": "Är du säker på att du vill avbryta registreringen?"
   },
   "event": {
     "audienceAge": {

@@ -7,20 +7,20 @@ import {
   screen,
   userEvent,
 } from '../../../../../utils/testUtils';
-import ConfirmCancelModal, {
-  ConfirmCancelModalProps,
-} from '../ConfirmCancelModal';
+import ConfirmDeleteSignupModal, {
+  ConfirmDeleteSignupModalProps,
+} from '../ConfirmDeleteSignupModal';
 
 configure({ defaultHidden: true });
 
-const defaultProps: ConfirmCancelModalProps = {
+const defaultProps: ConfirmDeleteSignupModalProps = {
   isOpen: true,
   onCancel: jest.fn(),
   onClose: jest.fn(),
 };
 
-const renderComponent = (props: Partial<ConfirmCancelModalProps>) =>
-  render(<ConfirmCancelModal {...defaultProps} {...props} />);
+const renderComponent = (props: Partial<ConfirmDeleteSignupModalProps>) =>
+  render(<ConfirmDeleteSignupModal {...defaultProps} {...props} />);
 
 test('should call onCancel', async () => {
   const onCancel = jest.fn();

@@ -17,8 +17,8 @@ import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../reserveSeats/utils';
+import { SIGNUP_MODALS } from '../../signup/constants';
 import { getNewSignups } from '../../signupGroup/utils';
-import { ENROLMENT_MODALS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { SignupFields } from '../types';
 
@@ -79,7 +79,7 @@ const useSeatsReservationActions = ({
 
     // Show modal to inform that persons will be added to the waiting list
     if (seatsReservation.in_waitlist) {
-      setOpenModal(ENROLMENT_MODALS.PERSONS_ADDED_TO_WAITLIST);
+      setOpenModal(SIGNUP_MODALS.PERSONS_ADDED_TO_WAITLIST);
     } else {
       closeModal();
     }

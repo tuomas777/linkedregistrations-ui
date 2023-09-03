@@ -60,15 +60,3 @@ export const SIGNUP_GROUP_FORM_SELECT_FIELDS = [
   SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE,
   SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE,
 ];
-
-export enum ENROLMENT_ACTIONS {
-  CANCEL = 'cancel',
-  CREATE = 'create',
-}
-
-export enum ENROLMENT_MODALS {
-  CANCEL = 'cancel',
-  DELETE = 'delete',
-  PERSONS_ADDED_TO_WAITLIST = 'personsAddedToWaitList',
-  RESERVATION_TIME_EXPIRED = 'reservationTimeExpired',
-}

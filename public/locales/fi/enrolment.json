@@ -3,11 +3,6 @@
   "buttonDeleteSignup": "Poista osallistuja",
   "buttonGoToSummary": "Jatka ilmoittautumiseen",
   "buttonUpdateParticipantAmount": "Päivitä",
-  "cancelEnrolmentModal": {
-    "buttonCancel": "Peruuta ilmoittautuminen",
-    "text": "Tätä toimintoa ei voi perua.",
-    "title": "Haluatko varmasti poistaa ilmoittautumisen?"
-  },
   "cancelledPage": {
     "text": "Olet perunut ilmoittautumisesi tapahtumaamme {{name}}.",
     "title": "Ilmoittautumisesi on peruttu"
@@ -18,7 +13,7 @@
     "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
     "title": "Kiitos ilmoittautumisestasi!"
   },
-  "deleteParticipantModal": {
+  "deleteSignupFromFormModal": {
     "buttonDelete": "Poista osallistuja",
     "buttonDelete_other": "Poista osallistujat",
     "text1": "Haluatko varmasti poistaa osallistujan? Myös osallistujan varaus poistetaan.",
@@ -26,6 +21,11 @@
     "text2": "Tätä toimintoa ei voi perua.",
     "title": "Vahvista osallistujan poistaminen",
     "title_other": "Vahvista osallistujien poistaminen"
+  },
+  "deleteSignupModal": {
+    "buttonCancel": "Peruuta ilmoittautuminen",
+    "text": "Tätä toimintoa ei voi perua.",
+    "title": "Haluatko varmasti poistaa ilmoittautumisen?"
   },
   "event": {
     "audienceAge": {

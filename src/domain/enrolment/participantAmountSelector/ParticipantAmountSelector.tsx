@@ -10,11 +10,12 @@ import {
   getMaxSeatsAmount,
 } from '../../registration/utils';
 import { getSeatsReservationData } from '../../reserveSeats/utils';
-import { ENROLMENT_MODALS, SIGNUP_GROUP_FIELDS } from '../constants';
+import { SIGNUP_MODALS } from '../../signup/constants';
+import ConfirmDeleteSignupFromForm from '../../signup/modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import { SIGNUP_GROUP_FIELDS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
-import ConfirmDeleteParticipantModal from '../modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
 import { SignupFields } from '../types';
 import styles from './participantAmountSelector.module.scss';
 
@@ -79,14 +80,14 @@ const ParticipantAmountSelector: React.FC<Props> = ({
     }
   };
 
-  const openDeleteParticipantModal = () => {
-    setOpenModal(ENROLMENT_MODALS.DELETE);
+  const openDeleteSignupFromFromModal = () => {
+    setOpenModal(SIGNUP_MODALS.DELETE_SIGNUP_FROM_FORM);
   };
 
   const handleUpdateClick = () => {
     if (participantAmount < signups.length) {
       setParticipantsToDelete(signups.length - participantAmount);
-      openDeleteParticipantModal();
+      openDeleteSignupFromFromModal();
     } else {
       updateParticipantAmount();
     }
@@ -94,8 +95,8 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 
   return (
     <>
-      <ConfirmDeleteParticipantModal
-        isOpen={openModal === ENROLMENT_MODALS.DELETE}
+      <ConfirmDeleteSignupFromForm
+        isOpen={openModal === SIGNUP_MODALS.DELETE_SIGNUP_FROM_FORM}
         isSaving={saving}
         onClose={closeModal}
         onDelete={updateParticipantAmount}
