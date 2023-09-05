@@ -222,8 +222,8 @@ describe('signupSchema function', () => {
     advanceTo('2022-10-10');
 
     expect(
-      await testAttendeeSchema(fakeRegistration(), {
-        ...validAttendee,
+      await testSignupSchema(fakeRegistration(), {
+        ...validSignup,
         dateOfBirth: '1.1.202',
       })
     ).toBe(false);
