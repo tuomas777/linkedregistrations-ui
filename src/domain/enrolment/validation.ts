@@ -69,6 +69,11 @@ export const getAttendeeSchema = (registration: Registration) => {
       isDateOfBirthFieldRequired(registration)
     )
       .test(
+        'isValidDate',
+        VALIDATION_MESSAGE_KEYS.DATE,
+        (date) => !date || isValidDate(date)
+      )
+      .test(
         'isAboveMinAge',
         () => ({
           key: VALIDATION_MESSAGE_KEYS.AGE_MIN,

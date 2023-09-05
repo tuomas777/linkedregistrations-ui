@@ -218,6 +218,17 @@ describe('attendeeSchema function', () => {
     ).toBe(false);
   });
 
+  test('should return false if date of birth is in invalid format', async () => {
+    advanceTo('2022-10-10');
+
+    expect(
+      await testAttendeeSchema(fakeRegistration(), {
+        ...validAttendee,
+        dateOfBirth: '1.1.202',
+      })
+    ).toBe(false);
+  });
+
   test('should return false if city is missing', async () => {
     expect(
       await testAttendeeSchema(
