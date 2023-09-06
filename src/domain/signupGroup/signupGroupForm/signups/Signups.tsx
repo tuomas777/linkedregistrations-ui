@@ -138,7 +138,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
                     onDelete={openModal}
                     readOnly={readOnly}
                     registration={registration}
-                    showDelete={signups.length > 1}
+                    showDelete={!readOnly && signups.length > 1}
                     signup={signup}
                     signupPath={getSignupPath(index)}
                   />
