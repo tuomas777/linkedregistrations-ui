@@ -13,7 +13,7 @@ export const createMinErrorMessage = (
 };
 
 export const isValidPhoneNumber = (phone: string): boolean =>
-  /^\+?\(?\d{1,3}\)? ?-?\d{1,3} ?-?\d{3,5} ?-?\d{4}( ?-?\d{3})?/.test(phone);
+  /^\+?\(?\d{1,3}\)? ?-?\d{1,3} ?-?\d{3,5} ?-?\d{3,4}( ?-?\d{3})?/.test(phone);
 
 export const isValidZip = (zip: string): boolean => /^\d{5}$/.test(zip);
 
