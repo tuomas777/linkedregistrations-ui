@@ -44,7 +44,7 @@
     "text": "Varasija",
     "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon varasijalla. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
   },
-  "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Rekisteriseloste {{openInNewTab}}\">Rekisteriseloste</a>",
+  "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Tietosuojaseloste {{openInNewTab}}\">Tietosuojaseloste</a>",
   "labelAttendeeExtraInfo": "Lisätietoa (valinnainen)",
   "labelCity": "Kaupunki",
   "labelDateOfBirth": "Syntymäaika",
@@ -59,7 +59,7 @@
   "labelServiceLanguage": "Asiointikieli",
   "labelStreetAddress": "Katuosoite",
   "labelZipcode": "Postinumero",
-  "linkPrivacyPolicy": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
+  "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notifications": {
     "email": "Sähköpostilla",
     "sms": "Tekstiviestillä"
