@@ -356,7 +356,7 @@ const EnrolmentForm: React.FC<Props> = ({
                           dangerouslySetInnerHTML={{
                             __html: t('labelAccepted', {
                               openInNewTab: t('common:openInNewTab'),
-                              url: t('linkPrivacyPolicy'),
+                              url: t('linkDataProtectionNotice'),
                             }),
                           }}
                         />
