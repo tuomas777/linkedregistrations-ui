@@ -9,7 +9,10 @@ import useSelectLanguage from '../../../hooks/useSelectLanguage';
 type SupportedLanguage = 'en' | 'fi' | 'sv';
 
 /* istanbul ignore next */
-const origin = typeof window !== 'undefined' ? window.location.origin : '';
+const hostname =
+  typeof window !== 'undefined'
+    ? window.location.hostname
+    : new URL(process.env.NEXTAUTH_URL as string).hostname;
 
 const CookieConsent: FC = () => {
   const { t } = useTranslation('common');
@@ -29,6 +32,7 @@ const CookieConsent: FC = () => {
 
   return (
     <CookieModal
+      cookieDomain={hostname}
       contentSource={{
         siteName: t('cookieConsent.siteName') as string,
         currentLanguage: locale,
@@ -43,7 +47,7 @@ const CookieConsent: FC = () => {
               cookies: [
                 {
                   id: 'enrolmentForm',
-                  hostName: origin,
+                  hostName: hostname,
                   name: t('cookieConsent.enrolmentForm.name') as string,
                   description: t(
                     'cookieConsent.enrolmentForm.description'
