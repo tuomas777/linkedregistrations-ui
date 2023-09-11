@@ -149,17 +149,17 @@ Use .env.local for development.
 
 ## Url parameters
 
-There are some url parameters which can be used when using enrolment form in external service:
+There are some url parameters which can be used when using signup form in external service:
 
 `iframe`:
-e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/enrolment/create?iframe=true
+e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/signup-group/create?iframe=true
 
 This parameter can be used to hide page header. Page header is hidden when iframe=true
 
 `redirect_url`:
-e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/enrolment/create?redirect_url=https://www.google.com/
+e.g. https://linkedregistrations-ui.test.kuva.hel.ninja/fi/registration/22/signup-group/create?redirect_url=https://www.google.com/
 
-This parameter can be used to redirect user automatically to selected url after successful enrolment. It's important to include also protocol to the url.
+This parameter can be used to redirect user automatically to selected url after successful signup. It's important to include also protocol to the url.
 
 ## Available Scripts
 

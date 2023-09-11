@@ -9,7 +9,7 @@ import React from 'react';
 import {
   fakeSeatsReservation,
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
 import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
 import {
@@ -49,12 +49,12 @@ const renderComponent = (
         value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
       >
         <ReservationTimer
-          attendees={[]}
           callbacksDisabled={false}
           disableCallbacks={jest.fn()}
           initReservationData={true}
           registration={registration}
-          setAttendees={jest.fn()}
+          setSignups={jest.fn()}
+          signups={[]}
         />
       </EnrolmentServerErrorsContext.Provider>
     </EnrolmentPageProvider>,
@@ -79,7 +79,7 @@ test('should show server errors when creating seats reservation fails', async ()
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent({ showServerErrors });
@@ -100,7 +100,7 @@ test('should show modal if reserved seats are in waiting list', async () => {
     )
   );
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
@@ -114,16 +114,16 @@ test('should show modal if reserved seats are in waiting list', async () => {
   await waitFor(() => expect(modal).not.toBeInTheDocument());
 });
 
-test('should route to create enrolment page if reservation is expired', async () => {
+test('should route to create signup group page if reservation is expired', async () => {
   const user = userEvent.setup();
 
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
   });
   renderComponent();
@@ -141,22 +141,22 @@ test('should route to create enrolment page if reservation is expired', async ()
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/registration/${registration.id}/enrolment/create`
+      `/registration/${registration.id}/signup-group/create`
     )
   );
 });
 
-test('should reload page if reservation is expired and route is create enrolment page', async () => {
+test('should reload page if reservation is expired and route is create signup group page', async () => {
   mockRouter.reload = jest.fn();
   const user = userEvent.setup();
 
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: registration.id },
   });
   renderComponent();

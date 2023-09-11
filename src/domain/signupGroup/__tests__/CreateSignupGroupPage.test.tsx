@@ -1,0 +1,540 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-require-imports */
+import subYears from 'date-fns/subYears';
+import { axe } from 'jest-axe';
+import { rest } from 'msw';
+import * as nextAuth from 'next-auth/react';
+import mockRouter from 'next-router-mock';
+import singletonRouter from 'next/router';
+import React from 'react';
+
+import { ExtendedSession } from '../../../types';
+import formatDate from '../../../utils/formatDate';
+import {
+  fakeSeatsReservation,
+  getMockedSeatsReservationData,
+  setSignupGroupFormSessionStorageValues,
+} from '../../../utils/mockDataUtils';
+import { fakeAuthenticatedSession } from '../../../utils/mockSession';
+import {
+  actWait,
+  configure,
+  loadingSpinnerIsNotInDocument,
+  render,
+  screen,
+  setQueryMocks,
+  userEvent,
+  waitFor,
+  within,
+} from '../../../utils/testUtils';
+import { ROUTES } from '../../app/routes/constants';
+import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
+import { registration } from '../../registration/__mocks__/registration';
+import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import CreateSignupGroupPage from '../CreateSignupGroupPage';
+
+configure({ defaultHidden: true });
+
+jest.mock('next/dist/client/router', () => require('next-router-mock'));
+
+const enrolmentValues = {
+  city: 'City',
+  dateOfBirth: formatDate(subYears(new Date(), 9)),
+  email: 'participant@email.com',
+  firstName: 'First name',
+  lastName: 'Last name',
+  phoneNumber: '+358 44 123 4567',
+  streetAddress: 'Street address',
+  zip: '00100',
+};
+
+let seats = 1;
+const seatsReservation = fakeSeatsReservation();
+
+const findFirstNameInput = () => {
+  return screen.findByRole('textbox', { name: /etunimi/i });
+};
+
+const getElement = (
+  key:
+    | 'acceptCheckbox'
+    | 'cityInput'
+    | 'dateOfBirthInput'
+    | 'emailCheckbox'
+    | 'emailInput'
+    | 'firstNameInput'
+    | 'lastNameInput'
+    | 'nativeLanguageButton'
+    | 'participantAmountInput'
+    | 'phoneCheckbox'
+    | 'phoneInput'
+    | 'serviceLanguageButton'
+    | 'streetAddressInput'
+    | 'submitButton'
+    | 'updateParticipantAmountButton'
+    | 'zipInput'
+) => {
+  switch (key) {
+    case 'acceptCheckbox':
+      return screen.getByLabelText(
+        /hyväksyn tietojeni jakamisen järjestäjän kanssa/i
+      );
+    case 'cityInput':
+      return screen.getByLabelText(/kaupunki/i);
+    case 'dateOfBirthInput':
+      return screen.getByLabelText(/syntymäaika/i);
+    case 'emailCheckbox':
+      return screen.getByLabelText(/sähköpostilla/i);
+    case 'emailInput':
+      return screen.getByLabelText(/sähköpostiosoite/i);
+    case 'firstNameInput':
+      return screen.getByLabelText(/etunimi/i);
+    case 'lastNameInput':
+      return screen.getByLabelText(/sukunimi/i);
+    case 'nativeLanguageButton':
+      return screen.getByRole('button', { name: /äidinkieli/i });
+    case 'participantAmountInput':
+      return screen.getByRole('spinbutton', {
+        name: /ilmoittautujien määrä \*/i,
+      });
+    case 'phoneCheckbox':
+      return screen.getByLabelText(/tekstiviestillä/i);
+    case 'phoneInput':
+      return screen.getByLabelText(/puhelinnumero/i);
+    case 'serviceLanguageButton':
+      return screen.getByRole('button', { name: /asiointikieli/i });
+    case 'streetAddressInput':
+      return screen.getByLabelText(/katuosoite/i);
+    case 'submitButton':
+      return screen.getByRole('button', { name: /jatka ilmoittautumiseen/i });
+    case 'updateParticipantAmountButton':
+      return screen.getByRole('button', { name: /päivitä/i });
+    case 'zipInput':
+      return screen.getByLabelText(/postinumero/i);
+  }
+};
+const defaultSession = fakeAuthenticatedSession();
+
+const renderComponent = (session: ExtendedSession | null = defaultSession) =>
+  render(<CreateSignupGroupPage />, { session });
+
+beforeEach(() => {
+  // Mock getSession return value
+  (nextAuth as any).getSession = jest.fn().mockReturnValue(defaultSession);
+  seats = 1;
+  // values stored in tests will also be available in other tests unless you run
+  localStorage.clear();
+  sessionStorage.clear();
+});
+
+const defaultMocks = [
+  ...mockedLanguagesResponses,
+  rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+    res(ctx.status(200), ctx.json(registration))
+  ),
+];
+
+test.skip('page is accessible', async () => {
+  setQueryMocks(...defaultMocks);
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  const { container } = renderComponent();
+
+  await findFirstNameInput();
+  expect(await axe(container)).toHaveNoViolations();
+});
+
+test('should validate enrolment form and focus invalid field', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/seats_reservation/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  const firstNameInput = await findFirstNameInput();
+  const lastNameInput = await getElement('lastNameInput');
+  const dateOfBirthInput = getElement('dateOfBirthInput');
+  const emailInput = getElement('emailInput');
+  const phoneInput = getElement('phoneInput');
+  const nativeLanguageButton = getElement('nativeLanguageButton');
+  const serviceLanguageButton = getElement('serviceLanguageButton');
+  const acceptCheckbox = getElement('acceptCheckbox');
+  const submitButton = getElement('submitButton');
+
+  expect(firstNameInput).not.toHaveFocus();
+
+  await user.click(submitButton);
+  await waitFor(() => expect(firstNameInput).toHaveFocus());
+
+  await user.type(firstNameInput, enrolmentValues.firstName);
+  await user.click(submitButton);
+  await waitFor(() => expect(lastNameInput).toHaveFocus());
+
+  await user.type(lastNameInput, enrolmentValues.lastName);
+  await user.click(submitButton);
+  await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
+
+  await user.type(dateOfBirthInput, formatDate(subYears(new Date(), 15)));
+  await user.click(submitButton);
+  await waitFor(() => expect(emailInput).toHaveFocus());
+  expect(emailInput).toBeRequired();
+  expect(phoneInput).not.toBeRequired();
+
+  await user.type(emailInput, enrolmentValues.email);
+  await user.type(phoneInput, enrolmentValues.phoneNumber);
+  await user.click(submitButton);
+  await waitFor(() => expect(nativeLanguageButton).toHaveFocus());
+
+  await user.click(nativeLanguageButton);
+  const nativeLanguageOption = await screen.findByRole('option', {
+    name: /suomi/i,
+  });
+  await user.click(nativeLanguageOption);
+  await user.click(submitButton);
+  await waitFor(() => expect(serviceLanguageButton).toHaveFocus());
+
+  await user.click(serviceLanguageButton);
+  const serviceLanguageOption = await screen.findByRole('option', {
+    name: /suomi/i,
+  });
+  await user.click(serviceLanguageOption);
+  await user.click(submitButton);
+  await waitFor(() => expect(acceptCheckbox).toHaveFocus());
+
+  await user.click(acceptCheckbox);
+  await user.click(submitButton);
+  await waitFor(() =>
+    expect(mockRouter.asPath).toBe(
+      `/fi/registration/${registration.id}/signup-group/create/summary`
+    )
+  );
+});
+
+test('should show not found page if registration does not exist', async () => {
+  setQueryMocks(
+    rest.get(`*/registration/not-found/`, (req, res, ctx) =>
+      res(ctx.status(404), ctx.json({ errorMessage: 'Not found' }))
+    )
+  );
+
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: 'not-found' },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', {
+    name: 'Valitettavasti etsimääsi sivua ei löydy',
+  });
+
+  screen.getByText(
+    'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
+  );
+});
+
+test('should add and delete participants', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/seats_reservation/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    ),
+    rest.put(`*/seats_reservation/${seatsReservation.id}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '2');
+  seats = 2;
+  await user.click(updateParticipantAmountButton);
+
+  await screen.findByRole('button', { name: 'Osallistuja 2' });
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '1');
+  seats = 1;
+  await user.click(updateParticipantAmountButton);
+
+  const dialog = screen.getByRole('dialog', {
+    name: 'Vahvista osallistujan poistaminen',
+  });
+  const deleteParticipantButton = within(dialog).getByRole('button', {
+    name: 'Poista osallistuja',
+  });
+  await user.click(deleteParticipantButton);
+
+  await actWait(10);
+  await waitFor(() =>
+    expect(
+      screen.queryByRole('button', { name: 'Osallistuja 2' })
+    ).not.toBeInTheDocument()
+  );
+});
+
+test('should show server errors when updating seats reservation fails', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/seats_reservation/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    ),
+    rest.put(`*/seats_reservation/${seatsReservation.id}/`, (req, res, ctx) =>
+      seats === 2
+        ? res(
+            ctx.status(400),
+            ctx.json('Not enough seats available. Capacity left: 0.')
+          )
+        : res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '2');
+  seats = 2;
+  await user.click(updateParticipantAmountButton);
+
+  await screen.findByText(
+    'Paikkoja ei ole riittävästi jäljellä. Paikkoja jäljellä: 0.'
+  );
+});
+
+test('should show and hide participant specific fields', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/seats_reservation/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    ),
+    rest.put(`*/seats_reservation/${seatsReservation.id}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const firstNameInput = getElement('firstNameInput');
+  const toggleButton = screen.getByRole('button', { name: 'Osallistuja 1' });
+
+  await user.click(toggleButton);
+  expect(firstNameInput).not.toBeInTheDocument();
+
+  await user.click(toggleButton);
+  getElement('firstNameInput');
+});
+
+test('should delete participants by clicking delete participant button', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/seats_reservation/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    ),
+    rest.put(`*/seats_reservation/${seatsReservation.id}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 2' })
+  ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '2');
+  seats = 2;
+  await user.click(updateParticipantAmountButton);
+
+  await screen.findByRole('button', { name: 'Osallistuja 2' });
+
+  const deleteButton = screen.getAllByRole('button', {
+    name: /poista osallistuja/i,
+  })[1];
+  await user.click(deleteButton);
+
+  const dialog = screen.getByRole('dialog', {
+    name: 'Vahvista osallistujan poistaminen',
+  });
+  const deleteParticipantButton = within(dialog).getByRole('button', {
+    name: 'Poista osallistuja',
+  });
+  seats = 1;
+  await user.click(deleteParticipantButton);
+
+  await actWait(10);
+  await waitFor(() =>
+    expect(
+      screen.queryByRole('button', { name: 'Osallistuja 2' })
+    ).not.toBeInTheDocument()
+  );
+});
+
+test('should show server errors when updating seats reservation fails', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/seats_reservation/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
+    ),
+    rest.put(`*/seats_reservation/${seatsReservation.id}/`, (req, res, ctx) =>
+      seats === 2
+        ? res(
+            ctx.status(400),
+            ctx.json('Not enough seats available. Capacity left: 0.')
+          )
+        : res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
+    )
+  );
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: TEST_REGISTRATION_ID },
+  });
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const participantAmountInput = getElement('participantAmountInput');
+  const updateParticipantAmountButton = getElement(
+    'updateParticipantAmountButton'
+  );
+
+  expect(
+    screen.queryByRole('button', { name: 'Osallistuja 3' })
+  ).not.toBeInTheDocument();
+
+  await user.clear(participantAmountInput);
+  await user.type(participantAmountInput, '3');
+  seats = 3;
+  await user.click(updateParticipantAmountButton);
+
+  await screen.findByRole('button', { name: 'Osallistuja 3' });
+
+  const deleteButton = screen.getAllByRole('button', {
+    name: /poista osallistuja/i,
+  })[1];
+  await user.click(deleteButton);
+
+  const dialog = screen.getByRole('dialog', {
+    name: 'Vahvista osallistujan poistaminen',
+  });
+  const deleteParticipantButton = within(dialog).getByRole('button', {
+    name: 'Poista osallistuja',
+  });
+  seats = 2;
+  await user.click(deleteParticipantButton);
+
+  await screen.findByText(
+    'Paikkoja ei ole riittävästi jäljellä. Paikkoja jäljellä: 0.'
+  );
+});
+
+test('should reload page if reservation is expired and route is create enrolment page', async () => {
+  mockRouter.reload = jest.fn();
+  const user = userEvent.setup();
+
+  setQueryMocks(...defaultMocks);
+  setSignupGroupFormSessionStorageValues({
+    registrationId: registration.id,
+    seatsReservation: getMockedSeatsReservationData(-1000),
+  });
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: registration.id },
+  });
+
+  renderComponent();
+
+  const modal = await screen.findByRole(
+    'dialog',
+    { name: 'Varausaika on täynnä.' },
+    { timeout: 5000 }
+  );
+  const tryAgainButton = within(modal).getByRole('button', {
+    name: 'Yritä uudelleen',
+  });
+
+  user.click(tryAgainButton);
+  await waitFor(() => expect(mockRouter.reload).toBeCalled());
+});
+
+test('should show authentication required notification', async () => {
+  setQueryMocks(...defaultMocks);
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId: registration.id },
+  });
+
+  renderComponent(null);
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', { name: 'Kirjaudu sisään' });
+  screen.getByText(
+    'Sinun täytyy kirjautua sisään ilmoittautuaksesi tähän tapahtumaan.'
+  );
+});

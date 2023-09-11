@@ -1,7 +1,6 @@
 {
-  "attendeeDefaultTitle": "Participant {{index}}",
   "buttonCancel": "Cancel registration",
-  "buttonDeleteAttendee": "Delete participant",
+  "buttonDeleteSignup": "Delete participant",
   "buttonGoToSummary": "Continue to registration",
   "buttonUpdateParticipantAmount": "Update",
   "cancelEnrolmentModal": {
@@ -57,6 +56,7 @@
   "labelParticipantAmount": "Number of registrants",
   "labelPhoneNumber": "Telephone number",
   "labelServiceLanguage": "Language of communication",
+  "labelSignupExtraInfo": "Additional information (optional)",
   "labelStreetAddress": "Street address",
   "labelZipcode": "Postcode",
   "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
@@ -69,7 +69,6 @@
     "text": "Please note that not all registrants' places are guaranteed. Entrants in the reserve position will only be confirmed if more places become available in the queue. You will receive a separate email from confirmed registration.",
     "title": "Entrants have been added to the reservation queue"
   },
-  "placeholderAttendeeExtraInfo": "Enter any additional information or request",
   "placeholderCity": "Enter city",
   "placeholderDateOfBirth": "D.M.YYYY",
   "placeholderEmail": "Enter your email address",
@@ -80,8 +79,10 @@
   "placeholderNativeLanguage": "Select language",
   "placeholderPhoneNumber": "+358 44 1234 567",
   "placeholderServiceLanguage": "Select language",
+  "placeholderSignupExtraInfo": "Enter any additional information or request",
   "placeholderStreetAddress": "Enter a street address",
   "placeholderZipcode": "Enter postcode",
+  "signupDefaultTitle": "Participant {{index}}",
   "timeLeft": "Time left to register",
   "titleAdditionalInfo": "Additional information",
   "titleBasicInfo": "Basic information of the registrant",

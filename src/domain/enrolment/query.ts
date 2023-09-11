@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 
 import { ExtendedSession } from '../../types';
-import { Enrolment, EnrolmentQueryVariables } from './types';
+import { EnrolmentQueryVariables, Signup } from './types';
 import { fetchEnrolment } from './utils';
 
 export const fetchEnrolmentQuery = ({
@@ -17,7 +17,7 @@ export const fetchEnrolmentQuery = ({
   args: EnrolmentQueryVariables;
   queryClient: QueryClient;
   session: ExtendedSession | null;
-}): Promise<Enrolment> => {
+}): Promise<Signup> => {
   return queryClient.fetchQuery(['enrolment', args.enrolmentId], () =>
     fetchEnrolment(args, session)
   );
@@ -45,8 +45,8 @@ export const useEnrolmentQuery = ({
   args: EnrolmentQueryVariables;
   options?: Pick<UseQueryOptions, 'enabled'>;
   session: ExtendedSession | null;
-}): UseQueryResult<Enrolment> => {
-  return useQuery<Enrolment, Error>(
+}): UseQueryResult<Signup> => {
+  return useQuery<Signup, Error>(
     ['enrolment', args.enrolmentId],
     () => fetchEnrolment(args, session),
     options

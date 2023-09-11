@@ -15,8 +15,8 @@ export enum VALIDATION_MESSAGE_KEYS {
   CAPACITY_MIN = 'validation.capacity.min',
   DATE = 'validation.string.date',
   EMAIL = 'validation.string.email',
-  ENROLMENT_ACCEPTED = 'validation.enrolmentAccepted',
   PHONE = 'validation.string.phone',
+  SIGNUP_ACCEPTED = 'validation.signupAccepted',
   STRING_REQUIRED = 'validation.string.required',
   ZIP = 'validation.string.zip',
 }
@@ -27,9 +27,9 @@ export const MAIN_CONTENT_ID = 'maincontent';
 export const DATE_FORMAT = 'd.M.yyyy';
 
 export enum RESERVATION_NAMES {
-  ENROLMENT_RESERVATION = 'enrolment-reservation',
+  SIGNUP_RESERVATION = 'signup-reservation',
 }
 
 export enum FORM_NAMES {
-  CREATE_ENROLMENT_FORM = 'create-enrolment-form',
+  CREATE_SIGNUP_GROUP_FORM = 'create-signup-group-form',
 }

@@ -9,10 +9,10 @@ import { FORM_NAMES, RESERVATION_NAMES } from '../constants';
 import { LocalisedObject, Meta } from '../domain/api/types';
 import {
   ATTENDEE_STATUS,
-  ENROLMENT_INITIAL_VALUES,
   NOTIFICATION_TYPE,
+  SIGNUP_GROUP_INITIAL_VALUES,
 } from '../domain/enrolment/constants';
-import { Enrolment, EnrolmentFormFields } from '../domain/enrolment/types';
+import { Signup, SignupGroupFormFields } from '../domain/enrolment/types';
 import {
   EventStatus,
   EventTypeId,
@@ -29,34 +29,9 @@ import {
   RegistrationsResponse,
 } from '../domain/registration/types';
 import { SeatsReservation } from '../domain/reserveSeats/types';
+import { SignupGroup } from '../domain/signupGroup/types';
 import { User } from '../domain/user/types';
 import generateAtId from './generateAtId';
-
-export const fakeEnrolment = (overrides?: Partial<Enrolment>): Enrolment => {
-  const id = overrides?.id || faker.datatype.uuid();
-
-  return merge<Enrolment, typeof overrides>(
-    {
-      id,
-      attendee_status: ATTENDEE_STATUS.Attending,
-      city: faker.address.city(),
-      date_of_birth: '1990-10-10',
-      email: faker.internet.email(),
-      extra_info: faker.lorem.paragraph(),
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      membership_number: faker.datatype.uuid(),
-      native_language: 'fi',
-      notifications: NOTIFICATION_TYPE.SMS_EMAIL,
-      phone_number: faker.phone.number(),
-      registration: TEST_REGISTRATION_ID,
-      service_language: 'fi',
-      street_address: faker.address.streetAddress(),
-      zipcode: faker.address.zipCode('#####'),
-    },
-    overrides
-  );
-};
 
 export const fakeEvent = (overrides?: Partial<Event>): Event => {
   const id = overrides?.id || faker.datatype.uuid();
@@ -316,6 +291,57 @@ export const fakeSeatsReservation = (
   );
 };
 
+export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
+  const id = overrides?.id || faker.datatype.uuid();
+
+  return merge<Signup, typeof overrides>(
+    {
+      id,
+      attendee_status: ATTENDEE_STATUS.Attending,
+      city: faker.address.city(),
+      created_at: null,
+      created_by: null,
+      date_of_birth: '1990-10-10',
+      email: faker.internet.email(),
+      extra_info: faker.lorem.paragraph(),
+      first_name: faker.name.firstName(),
+      last_modified_at: null,
+      last_modified_by: null,
+      last_name: faker.name.lastName(),
+      membership_number: faker.datatype.uuid(),
+      native_language: 'fi',
+      notifications: NOTIFICATION_TYPE.SMS_EMAIL,
+      phone_number: faker.phone.number(),
+      registration: TEST_REGISTRATION_ID,
+      responsible_for_group: false,
+      service_language: 'fi',
+      street_address: faker.address.streetAddress(),
+      zipcode: faker.address.zipCode('#####'),
+    },
+    overrides
+  );
+};
+
+export const fakeSignupGroup = (
+  overrides?: Partial<SignupGroup>
+): SignupGroup => {
+  const id = overrides?.id || faker.datatype.number();
+
+  return merge<SignupGroup, typeof overrides>(
+    {
+      id,
+      created_at: null,
+      created_by: null,
+      extra_info: '',
+      last_modified_at: null,
+      last_modified_by: null,
+      registration: TEST_REGISTRATION_ID,
+      signups: [],
+    },
+    overrides
+  );
+};
+
 export const fakeUser = (overrides?: Partial<User>): User => {
   const uuid = overrides?.uuid || faker.datatype.uuid();
   return merge<User, typeof overrides>(
@@ -367,32 +393,32 @@ const generateNodeArray = <T extends (...args: any) => any>(
   return Array.from({ length }).map((_, i) => fakeFunc(i));
 };
 
-export const setEnrolmentFormSessionStorageValues = ({
-  enrolmentFormValues,
+export const setSignupGroupFormSessionStorageValues = ({
   registrationId,
   seatsReservation,
+  signupGroupFormValues,
 }: {
   registrationId: string;
-  enrolmentFormValues?: Partial<EnrolmentFormFields>;
   seatsReservation?: SeatsReservation;
+  signupGroupFormValues?: Partial<SignupGroupFormFields>;
 }) => {
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
     switch (key) {
-      case `${FORM_NAMES.CREATE_ENROLMENT_FORM}-${registrationId}`:
-        const state: FormikState<EnrolmentFormFields> = {
+      case `${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registrationId}`:
+        const state: FormikState<SignupGroupFormFields> = {
           errors: {},
           isSubmitting: false,
           isValidating: false,
           submitCount: 0,
           touched: {},
           values: {
-            ...ENROLMENT_INITIAL_VALUES,
-            ...enrolmentFormValues,
+            ...SIGNUP_GROUP_INITIAL_VALUES,
+            ...signupGroupFormValues,
           },
         };
 
         return JSON.stringify(state);
-      case `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registrationId}`:
+      case `${RESERVATION_NAMES.SIGNUP_RESERVATION}-${registrationId}`:
         return seatsReservation ? JSON.stringify(seatsReservation) : '';
       default:
         return '';
@@ -412,7 +438,7 @@ export const setSessionStorageValues = (
   registration: Registration
 ) => {
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
-    const reservationKey = `${RESERVATION_NAMES.ENROLMENT_RESERVATION}-${registration.id}`;
+    const reservationKey = `${RESERVATION_NAMES.SIGNUP_RESERVATION}-${registration.id}`;
 
     if (key === reservationKey) {
       return reservation ? JSON.stringify(reservation) : '';

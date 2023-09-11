@@ -46,11 +46,11 @@ const CookieConsent: FC = () => {
               commonGroup: 'userInputs',
               cookies: [
                 {
-                  id: 'enrolmentForm',
+                  id: 'signupForm',
                   hostName: hostname,
-                  name: t('cookieConsent.enrolmentForm.name') as string,
+                  name: t('cookieConsent.signupForm.name') as string,
                   description: t(
-                    'cookieConsent.enrolmentForm.description'
+                    'cookieConsent.signupForm.description'
                   ) as string,
                   expiration: t('cookieConsent.expiration.session') as string,
                 },

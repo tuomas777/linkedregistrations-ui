@@ -14,7 +14,7 @@ import {
   NOTIFICATIONS,
   TEST_ENROLMENT_ID,
 } from '../domain/enrolment/constants';
-import { EnrolmentFormFields } from '../domain/enrolment/types';
+import { SignupGroupFormFields } from '../domain/enrolment/types';
 import { eventName } from '../domain/event/__mocks__/event';
 import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages';
 import { registration } from '../domain/registration/__mocks__/registration';
@@ -25,20 +25,20 @@ import EditEnrolmentPage, {
 import EnrolmentCancelledPage, {
   getServerSideProps as getEnrolmentCancelledPageServerSideProps,
 } from '../pages/registration/[registrationId]/enrolment/cancelled/index';
-import EnrolmentCompletedPage, {
-  getServerSideProps as getEnrolmentCompletedPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/completed/index';
-import CreateEnrolmentPage, {
-  getServerSideProps as getCreateEnrolmentPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/create/index';
+import SignupGroupCompletedPage, {
+  getServerSideProps as getSignupGroupCompletedPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/completed/index';
+import CreateSignupGroupPage, {
+  getServerSideProps as getCreateSignupGroupPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/create/index';
 import SummaryPage, {
   getServerSideProps as getSummaryPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/create/summary/index';
+} from '../pages/registration/[registrationId]/signup-group/create/summary/index';
 import formatDate from '../utils/formatDate';
 import { EnrolmentServerSideProps } from '../utils/generateEnrolmentGetServerSideProps';
 import {
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../utils/mockDataUtils';
 import { mockDefaultConfig } from '../utils/mockNextJsConfig';
 import {
@@ -62,9 +62,16 @@ const isHeadingRendered = async (heading: string | RegExp) => {
   await screen.findByRole('heading', { name: heading }, { timeout: 5000 });
 };
 
-const enrolmentValues: EnrolmentFormFields = {
+const signupGroupValues: SignupGroupFormFields = {
   accepted: true,
-  attendees: [
+  email: 'participant@email.com',
+  extraInfo: '',
+  membershipNumber: '',
+  nativeLanguage: 'fi',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: '358 44 123 4567',
+  serviceLanguage: 'fi',
+  signups: [
     {
       city: 'City',
       dateOfBirth: formatDate(subYears(new Date(), 9)),
@@ -76,13 +83,6 @@ const enrolmentValues: EnrolmentFormFields = {
       zipcode: '00100',
     },
   ],
-  email: 'participant@email.com',
-  extraInfo: '',
-  membershipNumber: '',
-  nativeLanguage: 'fi',
-  notifications: [NOTIFICATIONS.EMAIL],
-  phoneNumber: '358 44 123 4567',
-  serviceLanguage: 'fi',
 };
 
 const mocks = [
@@ -95,22 +95,22 @@ const mocks = [
   ),
 ];
 
-describe('CreateEnrolmentPage', () => {
+describe('CreateSignupGroupPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
-    setEnrolmentFormSessionStorageValues({
-      enrolmentFormValues: { ...enrolmentValues, email: '' },
+    setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
+      signupGroupFormValues: { ...signupGroupValues, email: '' },
     });
 
     singletonRouter.push({
-      pathname: ROUTES.CREATE_ENROLMENT,
+      pathname: ROUTES.CREATE_SIGNUP_GROUP,
       query: { registrationId: registration.id },
     });
 
-    render(<CreateEnrolmentPage />);
+    render(<CreateSignupGroupPage />);
 
     await isHeadingRendered(eventName);
   });
@@ -118,7 +118,7 @@ describe('CreateEnrolmentPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getCreateEnrolmentPageServerSideProps({
+    const { props } = (await getCreateSignupGroupPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {
@@ -139,14 +139,14 @@ describe('SummaryPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
-    setEnrolmentFormSessionStorageValues({
-      enrolmentFormValues: { ...enrolmentValues, email: '' },
+    setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
+      signupGroupFormValues: { ...signupGroupValues, email: '' },
     });
 
     singletonRouter.push({
-      pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+      pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
       query: { registrationId: registration.id },
     });
 
@@ -175,16 +175,16 @@ describe('SummaryPage', () => {
   });
 });
 
-describe('EnrolmentCompletedPage', () => {
+describe('SignupGroupCompletedPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
     singletonRouter.push({
-      pathname: ROUTES.ENROLMENT_COMPLETED,
+      pathname: ROUTES.SIGNUP_GROUP_COMPLETED,
       query: { enrolmentId: enrolment.id, registrationId: registration.id },
     });
 
-    render(<EnrolmentCompletedPage />);
+    render(<SignupGroupCompletedPage />);
 
     await isHeadingRendered('Kiitos ilmoittautumisestasi!');
   });
@@ -192,7 +192,7 @@ describe('EnrolmentCompletedPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getEnrolmentCompletedPageServerSideProps({
+    const { props } = (await getSignupGroupCompletedPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {

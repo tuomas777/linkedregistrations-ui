@@ -1,6 +1,5 @@
 {
   "buttonSend": "Lähetä ilmoittautuminen",
-  "labelAttendeeExtraInfo": "Lisätietoa",
   "labelCity": "Kaupunki",
   "labelDateOfBirth": "Syntymäaika",
   "labelEmail": "Sähköpostiosoite",
@@ -13,14 +12,15 @@
   "labelParticipantAmount": "Ilmoittautujien määrä",
   "labelPhoneNumber": "Puhelinnumero",
   "labelServiceLanguage": "Asiointikieli",
+  "labelSignupExtraInfo": "Lisätietoa",
   "labelStreetAddress": "Katuosoite",
   "labelZipcode": "Postinumero",
   "notificationLabel": "Lähetämme sinulle vielä erillisen vahvistusviestin, kun tapahtuman järjestäjä on käsitellyt ja vahvistanut ilmoittautumisesi.",
   "notificationTitle": "Ilmoittautumisen vahvistaminen",
   "pageTitle": "Ilmoittautumisen vahvistaminen",
   "titleAdditionalInfo": "Lisätiedot",
-  "titleAttendeesInfo": "Ilmoittautujien tiedot",
   "titleContactInfo": "Yhteystiedot",
   "titleInformantInfo": "Ilmoittajan tiedot",
-  "titleNotifications": "Tapahtumaa koskevat ilmoitukset"
+  "titleNotifications": "Tapahtumaa koskevat ilmoitukset",
+  "titleSignupsInfo": "Ilmoittautujien tiedot"
 }

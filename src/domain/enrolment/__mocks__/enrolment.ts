@@ -1,7 +1,7 @@
-import { fakeEnrolment } from '../../../utils/mockDataUtils';
+import { fakeSignup } from '../../../utils/mockDataUtils';
 import { TEST_ENROLMENT_ID } from '../constants';
 
-const enrolment = fakeEnrolment({
+const enrolment = fakeSignup({
   id: TEST_ENROLMENT_ID,
 });
 

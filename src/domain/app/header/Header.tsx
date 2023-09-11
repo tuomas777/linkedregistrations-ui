@@ -41,10 +41,10 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   const NAVIGATION_ITEMS: NavigationItem[] = [
-    router.pathname === ROUTES.CREATE_ENROLMENT_SUMMARY && {
+    router.pathname === ROUTES.CREATE_SIGNUP_GROUP_SUMMARY && {
       icon: <IconArrowLeft aria-hidden />,
-      labelKey: 'navigation.backToEnrolmentForm',
-      url: ROUTES.CREATE_ENROLMENT.replace(
+      labelKey: 'navigation.backToSignupGroupForm',
+      url: ROUTES.CREATE_SIGNUP_GROUP.replace(
         '[registrationId]',
         router.query.registrationId as string
       ),

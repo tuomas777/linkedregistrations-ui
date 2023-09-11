@@ -6,28 +6,29 @@ import {
 
 import { ExtendedSession } from '../../types';
 import {
-  CreateEnrolmentMutationInput,
-  CreateEnrolmentResponse,
-  DeleteEnrolmentMutationInput,
-} from './types';
-import { createEnrolment, deleteEnrolment } from './utils';
+  CreateSignupGroupMutationInput,
+  CreateSignupGroupResponse,
+} from '../signupGroup/types';
+import { createSignupGroup } from '../signupGroup/utils';
+import { DeleteEnrolmentMutationInput } from './types';
+import { deleteEnrolment } from './utils';
 
-export const useCreateEnrolmentMutation = ({
+export const useCreateSignupGroupMutation = ({
   options,
   session,
 }: {
   options?: UseMutationOptions<
-    CreateEnrolmentResponse,
+    CreateSignupGroupResponse,
     Error,
-    CreateEnrolmentMutationInput
+    CreateSignupGroupMutationInput
   >;
   session: ExtendedSession | null;
 }): UseMutationResult<
-  CreateEnrolmentResponse,
+  CreateSignupGroupResponse,
   Error,
-  CreateEnrolmentMutationInput
+  CreateSignupGroupMutationInput
 > => {
-  return useMutation((input) => createEnrolment({ input, session }), options);
+  return useMutation((input) => createSignupGroup({ input, session }), options);
 };
 
 export const useDeleteEnrolmentMutation = ({

@@ -1,6 +1,5 @@
 {
   "buttonSend": "Submit registration",
-  "labelAttendeeExtraInfo": "Additional information (optional)",
   "labelCity": "City",
   "labelDateOfBirth": "Date of birth",
   "labelEmail": "Email address",
@@ -13,14 +12,15 @@
   "labelParticipantAmount": "Number of registrants",
   "labelPhoneNumber": "Telephone number",
   "labelServiceLanguage": "Language of communication",
+  "labelSignupExtraInfo": "Additional information (optional)",
   "labelStreetAddress": "Street address",
   "labelZipcode": "Postcode",
   "notificationLabel": "We will send you a separate confirmation message once the event organizer has processed and confirmed your registration.",
   "notificationTitle": "Confirmation of registration",
   "pageTitle": "Confirmation of registration",
   "titleAdditionalInfo": "Additional information",
-  "titleAttendeesInfo": "Registrants' information",
   "titleContactInfo": "Contact information",
   "titleInformantInfo": "Information of the informant",
-  "titleNotifications": "Event notifications"
+  "titleNotifications": "Event notifications",
+  "titleSignupsInfo": "Registrants' information"
 }

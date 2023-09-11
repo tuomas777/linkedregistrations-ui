@@ -5,7 +5,7 @@ import React from 'react';
 import {
   fakeSeatsReservation,
   getMockedSeatsReservationData,
-  setEnrolmentFormSessionStorageValues,
+  setSignupGroupFormSessionStorageValues,
 } from '../../../../utils/mockDataUtils';
 import {
   render,
@@ -16,7 +16,7 @@ import {
   within,
 } from '../../../../utils/testUtils';
 import { registration } from '../../../registration/__mocks__/registration';
-import { ATTENDEE_INITIAL_VALUES } from '../../constants';
+import { SIGNUP_INITIAL_VALUES } from '../../constants';
 import { EnrolmentPageProvider } from '../../enrolmentPageContext/EnrolmentPageContext';
 import { EnrolmentServerErrorsProvider } from '../../enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
 import ParticipantAmountSelector from '../ParticipantAmountSelector';
@@ -26,7 +26,7 @@ const renderComponent = () =>
     <EnrolmentPageProvider>
       <EnrolmentServerErrorsProvider>
         <Formik
-          initialValues={{ attendees: [{ ...ATTENDEE_INITIAL_VALUES }] }}
+          initialValues={{ signups: [{ ...SIGNUP_INITIAL_VALUES }] }}
           onSubmit={() => undefined}
         >
           <ParticipantAmountSelector
@@ -61,7 +61,7 @@ test('should show modal if reserved seats are in waiting list', async () => {
   const user = userEvent.setup();
 
   const reservation = getMockedSeatsReservationData(1000);
-  setEnrolmentFormSessionStorageValues({
+  setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: reservation,
   });

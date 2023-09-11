@@ -59,7 +59,7 @@ const getElement = (key: 'enOption' | 'menuButton' | 'svOption') => {
 const getElements = (
   key:
     | 'appName'
-    | 'backToEnrolmentFormLink'
+    | 'backToSignupGroupFormLink'
     | 'languageSelector'
     | 'signInButton'
     | 'signOutLink'
@@ -69,7 +69,7 @@ const getElements = (
       return screen.getAllByRole('link', {
         name: /linked registrations/i,
       });
-    case 'backToEnrolmentFormLink':
+    case 'backToSignupGroupFormLink':
       return screen.getAllByRole('link', {
         name: /palaa ilmoittautumiskaavakkeeseen/i,
       });
@@ -170,17 +170,17 @@ test('should start logout process', async () => {
   await waitFor(() => expect(nextAuth.signOut).toBeCalled());
 });
 
-test('should show back to enrolment form link', async () => {
+test('should show back to signup group form link', async () => {
   const user = userEvent.setup();
 
   singletonRouter.push({
-    pathname: ROUTES.CREATE_ENROLMENT_SUMMARY,
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: TEST_REGISTRATION_ID },
   });
   renderComponent();
 
-  const backToEnrolmentFormLinks = getElements('backToEnrolmentFormLink');
-  await user.click(backToEnrolmentFormLinks[0]);
+  const backToSignupGroupFormLinks = getElements('backToSignupGroupFormLink');
+  await user.click(backToSignupGroupFormLinks[0]);
 
-  expect(mockRouter.asPath).toBe('/registration/1/enrolment/create');
+  expect(mockRouter.asPath).toBe('/registration/1/signup-group/create');
 });

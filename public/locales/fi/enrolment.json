@@ -1,7 +1,6 @@
 {
-  "attendeeDefaultTitle": "Osallistuja {{index}}",
   "buttonCancel": "Peruuta ilmoittautuminen",
-  "buttonDeleteAttendee": "Poista osallistuja",
+  "buttonDeleteSignup": "Poista osallistuja",
   "buttonGoToSummary": "Jatka ilmoittautumiseen",
   "buttonUpdateParticipantAmount": "Päivitä",
   "cancelEnrolmentModal": {
@@ -57,6 +56,7 @@
   "labelParticipantAmount": "Ilmoittautujien määrä",
   "labelPhoneNumber": "Puhelinnumero",
   "labelServiceLanguage": "Asiointikieli",
+  "labelSignupExtraInfo": "Lisätietoa (valinnainen)",
   "labelStreetAddress": "Katuosoite",
   "labelZipcode": "Postinumero",
   "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
@@ -69,7 +69,6 @@
     "text": "Huomioi, että kaikki ilmoittautujien paikat eivät ole varmistettuja. Varasijalla olevat ilmoittautujat varmistuvat vain, jos jonosta vapautuu lisää paikkoja. Varmistuneesta ilmoittautumisesta saat erillisen sähköpostin.",
     "title": "Ilmoittautujia on lisätty varausjonoon"
   },
-  "placeholderAttendeeExtraInfo": "Syötä mahdollinen lisätieto tai toive",
   "placeholderCity": "Syötä kaupunki",
   "placeholderDateOfBirth": "P.K.VVVV",
   "placeholderEmail": "Syötä sähköpostiosoite",
@@ -80,8 +79,10 @@
   "placeholderNativeLanguage": "Valitse äidinkieli",
   "placeholderPhoneNumber": "+358 44 1234 567",
   "placeholderServiceLanguage": "Valitse asiointikieli",
+  "placeholderSignupExtraInfo": "Syötä mahdollinen lisätieto tai toive",
   "placeholderStreetAddress": "Syötä katuosoite",
   "placeholderZipcode": "Syötä postinumero",
+  "signupDefaultTitle": "Osallistuja {{index}}",
   "timeLeft": "Aikaa jäljellä ilmoittautumisen tekoon",
   "titleAdditionalInfo": "Lisätiedot",
   "titleBasicInfo": "Ilmoittautujan perustiedot",

@@ -12,13 +12,13 @@ import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
+import { clearCreateSignupGroupFormData } from '../../signupGroup/utils';
 import { ENROLMENT_MODALS, ENROLMENT_QUERY_PARAMS } from '../constants';
 import { useEnrolmentPageContext } from '../enrolmentPageContext/hooks/useEnrolmentPageContext';
 import { useEnrolmentServerErrorsContext } from '../enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
 import useSeatsReservationActions from '../hooks/useSeatsReservationActions';
 import ReservationTimeExpiredModal from '../modals/reservationTimeExpiredModal/ReservationTimeExpiredModal';
-import { AttendeeFields } from '../types';
-import { clearCreateEnrolmentFormData } from '../utils';
+import { SignupFields } from '../types';
 
 const getTimeStr = (timeLeft: number) => {
   const hours = Math.floor(timeLeft / 3600);
@@ -34,23 +34,23 @@ const getTimeStr = (timeLeft: number) => {
 };
 
 interface ReservationTimerProps {
-  attendees?: AttendeeFields[];
   callbacksDisabled: boolean;
   disableCallbacks: () => void;
   initReservationData: boolean;
   onDataNotFound?: () => void;
   registration: Registration;
-  setAttendees?: (value: AttendeeFields[]) => void;
+  setSignups?: (value: SignupFields[]) => void;
+  signups?: SignupFields[];
 }
 
 const ReservationTimer: React.FC<ReservationTimerProps> = ({
-  attendees,
   callbacksDisabled,
   disableCallbacks,
   initReservationData,
   onDataNotFound,
   registration,
-  setAttendees,
+  setSignups,
+  signups,
 }) => {
   const router = useRouter();
   const { t } = useTranslation('enrolment');
@@ -62,9 +62,9 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   const registrationId = useMemo(() => registration.id, [registration]);
 
   const { createSeatsReservation } = useSeatsReservationActions({
-    attendees,
     registration,
-    setAttendees,
+    setSignups,
+    signups,
   });
   const { openModal, setOpenModal } = useEnrolmentPageContext();
   const { setServerErrorItems, showServerErrors } =
@@ -85,11 +85,11 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
   };
 
   const handleTryAgain = () => {
-    if (router.pathname === ROUTES.CREATE_ENROLMENT) {
+    if (router.pathname === ROUTES.CREATE_SIGNUP_GROUP) {
       router.reload();
     } else {
       goToPage(
-        ROUTES.CREATE_ENROLMENT.replace(
+        ROUTES.CREATE_SIGNUP_GROUP.replace(
           '[registrationId]',
           router.query.registrationId as string
         )
@@ -144,7 +144,7 @@ const ReservationTimer: React.FC<ReservationTimerProps> = ({
           if (!data || isSeatsReservationExpired(data)) {
             disableCallbacks();
 
-            clearCreateEnrolmentFormData(registrationId);
+            clearCreateSignupGroupFormData(registrationId);
             clearSeatsReservationData(registrationId);
             const session = await getSession();
 

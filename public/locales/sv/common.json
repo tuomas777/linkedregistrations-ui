@@ -2,12 +2,12 @@
   "appName": "Linked Registrations",
   "cancel": "Ångra",
   "cookieConsent": {
-    "enrolmentForm": {
-      "description": "Cookien som krävs för att spara deltagande formulär data",
-      "name": "Cookie för deltagande formulär"
-    },
     "expiration": {
       "session": "Session"
+    },
+    "signupForm": {
+      "description": "Cookien som krävs för att spara deltagande formulär data",
+      "name": "Cookie för deltagande formulär"
     },
     "siteName": "Linked Registrations"
   },
@@ -26,7 +26,7 @@
   "loading": "Laddar...",
   "loadingFinished": "Laddningen är klar",
   "navigation": {
-    "backToEnrolmentForm": "Återgå till registreringsformuläret",
+    "backToSignupGroupForm": "Återgå till registreringsformuläret",
     "languages": {
       "en": "In English",
       "fi": "Suomeksi",
@@ -86,7 +86,7 @@
       "max": "Max antal deltagare är {{max}}.",
       "min": "Minsta antal deltagare är {{min}}."
     },
-    "enrolmentAccepted": "Dela information med arrangören måste godkännas",
+    "signupAccepted": "Dela information med arrangören måste godkännas",
     "string": {
       "charsLeft": "{{count}} tecken kvar",
       "charsLeft_other": "{{count}} tecken kvar",
