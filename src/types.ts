@@ -98,3 +98,7 @@ export type ExtendedSSRConfig = SSRConfig & {
   dehydratedState: DehydratedState;
   session: ExtendedSession | null;
 };
+
+export type TranslationNamespaces = Array<
+  'common' | 'reservation' | 'signup' | 'summary'
+>;

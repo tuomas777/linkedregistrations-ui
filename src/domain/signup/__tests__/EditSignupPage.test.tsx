@@ -16,14 +16,17 @@ import {
   render,
   screen,
   setQueryMocks,
-  userEvent,
   waitFor,
-  within,
 } from '../../../utils/testUtils';
 import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import {
+  findFirstNameInput,
+  shouldRenderSignupFormFields,
+  tryToCancel,
+} from '../../signupGroup/__tests__/EditSignupGroupPage.test';
 import { signup } from '../__mocks__/signup';
 import { TEST_SIGNUP_ID } from '../constants';
 import EditSignupPage from '../EditSignupPage';
@@ -31,56 +34,6 @@ import EditSignupPage from '../EditSignupPage';
 configure({ defaultHidden: true });
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
-
-const findFirstNameInput = () => {
-  return screen.findByRole('textbox', { name: /etunimi/i });
-};
-
-const getElement = (
-  key:
-    | 'cancelButton'
-    | 'cityInput'
-    | 'dateOfBirthInput'
-    | 'emailCheckbox'
-    | 'emailInput'
-    | 'firstNameInput'
-    | 'lastNameInput'
-    | 'nativeLanguageButton'
-    | 'phoneCheckbox'
-    | 'phoneInput'
-    | 'serviceLanguageButton'
-    | 'streetAddressInput'
-    | 'zipInput'
-) => {
-  switch (key) {
-    case 'cancelButton':
-      return screen.getByRole('button', { name: /peruuta ilmoittautuminen/i });
-    case 'cityInput':
-      return screen.getByLabelText(/kaupunki/i);
-    case 'dateOfBirthInput':
-      return screen.getByLabelText(/syntymäaika/i);
-    case 'emailCheckbox':
-      return screen.getByLabelText(/sähköpostilla/i);
-    case 'emailInput':
-      return screen.getByLabelText(/sähköpostiosoite/i);
-    case 'firstNameInput':
-      return screen.getByLabelText(/etunimi/i);
-    case 'lastNameInput':
-      return screen.getByLabelText(/sukunimi/i);
-    case 'nativeLanguageButton':
-      return screen.getByRole('button', { name: /äidinkieli/i });
-    case 'phoneCheckbox':
-      return screen.getByLabelText(/tekstiviestillä/i);
-    case 'phoneInput':
-      return screen.getByLabelText(/puhelinnumero/i);
-    case 'serviceLanguageButton':
-      return screen.getByRole('button', { name: /asiointikieli/i });
-    case 'streetAddressInput':
-      return screen.getByLabelText(/katuosoite/i);
-    case 'zipInput':
-      return screen.getByLabelText(/postinumero/i);
-  }
-};
 
 const defaultSession = fakeAuthenticatedSession();
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
@@ -116,54 +69,13 @@ const pushEditSignupRoute = (registrationId: string) => {
   });
 };
 
-const tryToCancel = async () => {
-  const user = userEvent.setup();
-  const cancelButton = getElement('cancelButton');
-  await user.click(cancelButton);
-
-  const modal = await screen.findByRole('dialog', {
-    name: 'Haluatko varmasti poistaa ilmoittautumisen?',
-  });
-  const withinModal = within(modal);
-  const cancelSignupButton = withinModal.getByRole('button', {
-    name: 'Peruuta ilmoittautuminen',
-  });
-  await user.click(cancelSignupButton);
-};
-
 test('should edit signup page field', async () => {
   setQueryMocks(...defaultMocks);
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await actWait(100);
-
-  const firstNameInput = await findFirstNameInput();
-  const lastNameInput = getElement('lastNameInput');
-  const streetAddressInput = getElement('streetAddressInput');
-  const dateOfBirthInput = getElement('dateOfBirthInput');
-  const zipInput = getElement('zipInput');
-  const cityInput = getElement('cityInput');
-  const emailInput = getElement('emailInput');
-  const phoneInput = getElement('phoneInput');
-  const emailCheckbox = getElement('emailCheckbox');
-  const phoneCheckbox = getElement('phoneCheckbox');
-  const nativeLanguageButton = getElement('nativeLanguageButton');
-  const serviceLanguageButton = getElement('serviceLanguageButton');
-  getElement('cancelButton');
-
-  expect(firstNameInput.hasAttribute('readonly')).toBeTruthy();
-  expect(lastNameInput.hasAttribute('readonly')).toBeTruthy();
-  expect(streetAddressInput.hasAttribute('readonly')).toBeTruthy();
-  expect(dateOfBirthInput.hasAttribute('readonly')).toBeTruthy();
-  expect(zipInput.hasAttribute('readonly')).toBeTruthy();
-  expect(cityInput.hasAttribute('readonly')).toBeTruthy();
-  expect(emailInput.hasAttribute('readonly')).toBeTruthy();
-  expect(phoneInput.hasAttribute('readonly')).toBeTruthy();
-  expect(emailCheckbox).toBeDisabled();
-  expect(phoneCheckbox).toBeDisabled();
-  expect(nativeLanguageButton).toBeDisabled();
-  expect(serviceLanguageButton).toBeDisabled();
+  await shouldRenderSignupFormFields();
 });
 
 test('should cancel signup', async () => {

@@ -11,7 +11,7 @@ export type CreateSignupGroupMutationInput = {
 
 export type CreateSignupGroupResponse = {
   extra_info: string;
-  id: number;
+  id: string;
   registration: string;
   signups: Signup[];
 };
@@ -19,8 +19,8 @@ export type CreateSignupGroupResponse = {
 export type SignupGroup = {
   created_at: stringOrNull;
   created_by: stringOrNull;
-  extra_info: string;
-  id: number;
+  extra_info: stringOrNull;
+  id: string;
   last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
   registration: string;
@@ -32,8 +32,10 @@ export type SignupFields = {
   [SIGNUP_FIELDS.DATE_OF_BIRTH]: string;
   [SIGNUP_FIELDS.EXTRA_INFO]: string;
   [SIGNUP_FIELDS.FIRST_NAME]: string;
+  [SIGNUP_FIELDS.ID]: string | null;
   [SIGNUP_FIELDS.IN_WAITING_LIST]: boolean;
   [SIGNUP_FIELDS.LAST_NAME]: string;
+  [SIGNUP_FIELDS.RESPONSIBLE_FOR_GROUP]: boolean;
   [SIGNUP_FIELDS.STREET_ADDRESS]: string;
   [SIGNUP_FIELDS.ZIPCODE]: string;
 };
@@ -48,4 +50,12 @@ export type SignupGroupFormFields = {
   [SIGNUP_GROUP_FIELDS.PHONE_NUMBER]: string;
   [SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE]: string;
   [SIGNUP_GROUP_FIELDS.SIGNUPS]: SignupFields[];
+};
+
+export type DeleteSignupGroupMutationInput = {
+  id: string;
+};
+
+export type SignupGroupQueryVariables = {
+  id: string;
 };

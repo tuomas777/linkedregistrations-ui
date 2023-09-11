@@ -5,12 +5,14 @@ import snakeCase from 'lodash/snakeCase';
 import { FORM_NAMES } from '../../constants';
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
+import skipFalsyType from '../../utils/skipFalsyType';
 import stringToDate from '../../utils/stringToDate';
-import { callPost } from '../app/axios/axiosClient';
+import { callDelete, callGet, callPost } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import { NOTIFICATION_TYPE } from '../signup/constants';
 import { Signup, SignupInput } from '../signup/types';
+import { getSignupInitialValues } from '../signup/utils';
 import {
   NOTIFICATIONS,
   SIGNUP_FIELDS,
@@ -22,7 +24,9 @@ import {
   CreateSignupGroupMutationInput,
   CreateSignupGroupResponse,
   SignupFields,
+  SignupGroup,
   SignupGroupFormFields,
+  SignupGroupQueryVariables,
 } from './types';
 
 export const getSignupNotificationsCode = (
@@ -146,36 +150,31 @@ export const getSignupGroupDefaultInitialValues =
   });
 
 export const getSignupGroupInitialValues = (
-  signup: Signup
+  signupGroup: SignupGroup
 ): SignupGroupFormFields => {
+  const signups: Signup[] = (
+    signupGroup.signups ?? /* istanbul ignore next*/ []
+  )
+    .filter(skipFalsyType)
+    .sort((a: Signup, b: Signup) => {
+      if (a.responsible_for_group === b.responsible_for_group) {
+        return 0;
+      }
+      return a.responsible_for_group === true ? -1 : 1;
+    });
+
+  const responsibleSignup = signups[0];
+
   return {
-    ...getSignupGroupDefaultInitialValues(),
     accepted: true,
-    email: signup.email || '-',
-    extraInfo: signup.extra_info || '-',
-    membershipNumber: signup.membership_number || '-',
-    nativeLanguage: signup.native_language ?? '',
-    // TODO: At the moment only email notifications are supported
+    email: responsibleSignup?.email ?? '',
+    extraInfo: signupGroup.extra_info ?? '',
+    membershipNumber: responsibleSignup?.membership_number ?? '',
+    nativeLanguage: responsibleSignup?.native_language ?? '',
     notifications: [NOTIFICATIONS.EMAIL],
-    // notifications: getSignupNotificationTypes(
-    //   signup.notifications as string
-    // ),
-    phoneNumber: signup.phone_number || '-',
-    serviceLanguage: signup.service_language ?? '',
-    signups: [
-      {
-        city: signup.city || '-',
-        dateOfBirth: signup.date_of_birth
-          ? formatDate(new Date(signup.date_of_birth))
-          : '',
-        extraInfo: '',
-        firstName: signup.first_name || '-',
-        inWaitingList: false,
-        lastName: signup.last_name || '-',
-        streetAddress: signup.street_address || '-',
-        zipcode: signup.zipcode || '-',
-      },
-    ],
+    phoneNumber: responsibleSignup?.phone_number ?? '',
+    serviceLanguage: responsibleSignup?.service_language ?? '',
+    signups: signups.map((su) => getSignupInitialValues(su)),
   };
 };
 
@@ -216,3 +215,43 @@ export const isDateOfBirthFieldRequired = (
   registration: Registration
 ): boolean =>
   Boolean(registration.audience_max_age || registration.audience_min_age);
+
+export const signupGroupPathBuilder = (
+  args: SignupGroupQueryVariables
+): string => {
+  return `/signup_group/${args.id}/`;
+};
+
+export const fetchSignupGroup = async (
+  args: SignupGroupQueryVariables,
+  session: ExtendedSession | null
+): Promise<SignupGroup> => {
+  try {
+    const { data } = await callGet({
+      session,
+      url: signupGroupPathBuilder(args),
+    });
+    return data;
+  } catch (error) {
+    /* istanbul ignore next */
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
+export const deleteSignupGroup = async ({
+  id,
+  session,
+}: {
+  id: string;
+  session: ExtendedSession | null;
+}): Promise<null> => {
+  try {
+    const { data } = await callDelete({
+      session,
+      url: signupGroupPathBuilder({ id }),
+    });
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSession } from 'next-auth/react';
 
+import useHandleError from '../../../hooks/useHandleError';
 import useMountedState from '../../../hooks/useMountedState';
 import { ExtendedSession, MutationCallbacks } from '../../../types';
-import { reportError } from '../../app/sentry/utils';
 import { Registration } from '../../registration/types';
 import {
   useCreateSeatsReservationMutation,
@@ -89,34 +90,10 @@ const useSeatsReservationActions = ({
     await (callbacks?.onSuccess && callbacks.onSuccess(seatsReservation));
   };
 
-  const handleError = ({
-    callbacks,
-    error,
-    message,
-    payload,
-  }: {
-    callbacks?: MutationCallbacks<SeatsReservation>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: any;
-    message: string;
-    payload?: CreateSeatsReservationInput | UpdateSeatsReservationInput;
-  }) => {
-    savingFinished();
-    closeModal();
-
-    // Report error to Sentry
-    reportError({
-      data: {
-        error,
-        payload,
-        payloadAsString: JSON.stringify(payload),
-      },
-      message,
-    });
-
-    // Call callback function if defined
-    callbacks?.onError?.(error);
-  };
+  const { handleError } = useHandleError<
+    CreateSeatsReservationInput | UpdateSeatsReservationInput,
+    any
+  >();
 
   const createSeatsReservation = async (
     callbacks?: MutationCallbacks<SeatsReservation>
@@ -139,6 +116,7 @@ const useSeatsReservationActions = ({
         error,
         message: 'Failed to reserve seats',
         payload,
+        savingFinished,
       });
     }
   };
@@ -169,6 +147,7 @@ const useSeatsReservationActions = ({
           error,
           message: 'Failed to update seats reservation',
           payload,
+          savingFinished,
         });
       },
       onSuccess: (seatsReservation) => {

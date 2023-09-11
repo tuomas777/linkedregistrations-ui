@@ -32,6 +32,10 @@ import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import CreateSignupGroupPage from '../CreateSignupGroupPage';
+import {
+  findFirstNameInput,
+  getSignupFormElement,
+} from './EditSignupGroupPage.test';
 
 configure({ defaultHidden: true });
 
@@ -51,68 +55,6 @@ const signupValues = {
 let seats = 1;
 const seatsReservation = fakeSeatsReservation();
 
-const findFirstNameInput = () => {
-  return screen.findByRole('textbox', { name: /etunimi/i });
-};
-
-const getElement = (
-  key:
-    | 'acceptCheckbox'
-    | 'cityInput'
-    | 'dateOfBirthInput'
-    | 'emailCheckbox'
-    | 'emailInput'
-    | 'firstNameInput'
-    | 'lastNameInput'
-    | 'nativeLanguageButton'
-    | 'participantAmountInput'
-    | 'phoneCheckbox'
-    | 'phoneInput'
-    | 'serviceLanguageButton'
-    | 'streetAddressInput'
-    | 'submitButton'
-    | 'updateParticipantAmountButton'
-    | 'zipInput'
-) => {
-  switch (key) {
-    case 'acceptCheckbox':
-      return screen.getByLabelText(
-        /hyväksyn tietojeni jakamisen järjestäjän kanssa/i
-      );
-    case 'cityInput':
-      return screen.getByLabelText(/kaupunki/i);
-    case 'dateOfBirthInput':
-      return screen.getByLabelText(/syntymäaika/i);
-    case 'emailCheckbox':
-      return screen.getByLabelText(/sähköpostilla/i);
-    case 'emailInput':
-      return screen.getByLabelText(/sähköpostiosoite/i);
-    case 'firstNameInput':
-      return screen.getByLabelText(/etunimi/i);
-    case 'lastNameInput':
-      return screen.getByLabelText(/sukunimi/i);
-    case 'nativeLanguageButton':
-      return screen.getByRole('button', { name: /äidinkieli/i });
-    case 'participantAmountInput':
-      return screen.getByRole('spinbutton', {
-        name: /ilmoittautujien määrä \*/i,
-      });
-    case 'phoneCheckbox':
-      return screen.getByLabelText(/tekstiviestillä/i);
-    case 'phoneInput':
-      return screen.getByLabelText(/puhelinnumero/i);
-    case 'serviceLanguageButton':
-      return screen.getByRole('button', { name: /asiointikieli/i });
-    case 'streetAddressInput':
-      return screen.getByLabelText(/katuosoite/i);
-    case 'submitButton':
-      return screen.getByRole('button', { name: /jatka ilmoittautumiseen/i });
-    case 'updateParticipantAmountButton':
-      return screen.getByRole('button', { name: /päivitä/i });
-    case 'zipInput':
-      return screen.getByLabelText(/postinumero/i);
-  }
-};
 const defaultSession = fakeAuthenticatedSession();
 
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
@@ -133,6 +75,13 @@ const defaultMocks = [
     res(ctx.status(200), ctx.json(registration))
   ),
 ];
+
+const pushCreateSignupGroupRoute = (registrationId: string) => {
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP,
+    query: { registrationId },
+  });
+};
 
 test.skip('page is accessible', async () => {
   setQueryMocks(...defaultMocks);
@@ -155,21 +104,18 @@ test('should validate signup group form and focus invalid field', async () => {
       res(ctx.status(201), ctx.json({ ...seatsReservation, seats }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   const firstNameInput = await findFirstNameInput();
-  const lastNameInput = await getElement('lastNameInput');
-  const dateOfBirthInput = getElement('dateOfBirthInput');
-  const emailInput = getElement('emailInput');
-  const phoneInput = getElement('phoneInput');
-  const nativeLanguageButton = getElement('nativeLanguageButton');
-  const serviceLanguageButton = getElement('serviceLanguageButton');
-  const acceptCheckbox = getElement('acceptCheckbox');
-  const submitButton = getElement('submitButton');
+  const lastNameInput = await getSignupFormElement('lastNameInput');
+  const dateOfBirthInput = getSignupFormElement('dateOfBirthInput');
+  const emailInput = getSignupFormElement('emailInput');
+  const phoneInput = getSignupFormElement('phoneInput');
+  const nativeLanguageButton = getSignupFormElement('nativeLanguageButton');
+  const serviceLanguageButton = getSignupFormElement('serviceLanguageButton');
+  const acceptCheckbox = getSignupFormElement('acceptCheckbox');
+  const submitButton = getSignupFormElement('submitButton');
 
   expect(firstNameInput).not.toHaveFocus();
 
@@ -227,10 +173,7 @@ test('should show not found page if registration does not exist', async () => {
     )
   );
 
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: 'not-found' },
-  });
+  pushCreateSignupGroupRoute('not-found');
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -256,16 +199,13 @@ test('should add and delete participants', async () => {
       res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
 
-  const participantAmountInput = getElement('participantAmountInput');
-  const updateParticipantAmountButton = getElement(
+  const participantAmountInput = getSignupFormElement('participantAmountInput');
+  const updateParticipantAmountButton = getSignupFormElement(
     'updateParticipantAmountButton'
   );
 
@@ -303,7 +243,6 @@ test('should add and delete participants', async () => {
 
 test('should show server errors when updating seats reservation fails', async () => {
   const user = userEvent.setup();
-
   setQueryMocks(
     ...defaultMocks,
     rest.post(`*/seats_reservation/`, (req, res, ctx) =>
@@ -318,16 +257,13 @@ test('should show server errors when updating seats reservation fails', async ()
         : res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
 
-  const participantAmountInput = getElement('participantAmountInput');
-  const updateParticipantAmountButton = getElement(
+  const participantAmountInput = getSignupFormElement('participantAmountInput');
+  const updateParticipantAmountButton = getSignupFormElement(
     'updateParticipantAmountButton'
   );
 
@@ -357,22 +293,19 @@ test('should show and hide participant specific fields', async () => {
       res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
 
-  const firstNameInput = getElement('firstNameInput');
+  const firstNameInput = getSignupFormElement('firstNameInput');
   const toggleButton = screen.getByRole('button', { name: 'Osallistuja 1' });
 
   await user.click(toggleButton);
   expect(firstNameInput).not.toBeInTheDocument();
 
   await user.click(toggleButton);
-  getElement('firstNameInput');
+  getSignupFormElement('firstNameInput');
 });
 
 test('should delete participants by clicking delete participant button', async () => {
@@ -387,16 +320,13 @@ test('should delete participants by clicking delete participant button', async (
       res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
 
-  const participantAmountInput = getElement('participantAmountInput');
-  const updateParticipantAmountButton = getElement(
+  const participantAmountInput = getSignupFormElement('participantAmountInput');
+  const updateParticipantAmountButton = getSignupFormElement(
     'updateParticipantAmountButton'
   );
 
@@ -450,16 +380,13 @@ test('should show server errors when updating seats reservation fails', async ()
         : res(ctx.status(200), ctx.json({ ...seatsReservation, seats }))
     )
   );
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
 
-  const participantAmountInput = getElement('participantAmountInput');
-  const updateParticipantAmountButton = getElement(
+  const participantAmountInput = getSignupFormElement('participantAmountInput');
+  const updateParticipantAmountButton = getSignupFormElement(
     'updateParticipantAmountButton'
   );
 
@@ -502,11 +429,7 @@ test('should reload page if reservation is expired and route is create signup gr
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: registration.id },
-  });
-
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
   const modal = await screen.findByRole(
@@ -524,11 +447,7 @@ test('should reload page if reservation is expired and route is create signup gr
 
 test('should show authentication required notification', async () => {
   setQueryMocks(...defaultMocks);
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP,
-    query: { registrationId: registration.id },
-  });
-
+  pushCreateSignupGroupRoute(registration.id);
   renderComponent(null);
 
   await loadingSpinnerIsNotInDocument();

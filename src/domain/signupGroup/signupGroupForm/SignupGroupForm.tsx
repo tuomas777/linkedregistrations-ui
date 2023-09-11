@@ -36,13 +36,18 @@ import ConfirmDeleteSignupModal from '../../signup/modals/confirmDeleteSignupMod
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { Signup } from '../../signup/types';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
-import { NOTIFICATIONS, SIGNUP_GROUP_FIELDS } from '../constants';
+import {
+  NOTIFICATIONS,
+  READ_ONLY_PLACEHOLDER,
+  SIGNUP_GROUP_FIELDS,
+} from '../constants';
 import Divider from '../divider/Divider';
 import useNotificationOptions from '../hooks/useNotificationOptions';
+import useSignupGroupActions from '../hooks/useSignupGroupActions';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
-import { SignupFields, SignupGroupFormFields } from '../types';
+import { SignupFields, SignupGroup, SignupGroupFormFields } from '../types';
 import { isSignupFieldRequired } from '../utils';
 import {
   getSignupGroupSchema,
@@ -63,6 +68,7 @@ type Props = {
   readOnly?: boolean;
   registration: Registration;
   signup?: Signup;
+  signupGroup?: SignupGroup;
 };
 
 const SignupGroupForm: React.FC<Props> = ({
@@ -70,9 +76,13 @@ const SignupGroupForm: React.FC<Props> = ({
   readOnly,
   registration,
   signup,
+  signupGroup,
 }) => {
   const { t } = useTranslation(['signup', 'common']);
   const { deleteSignup } = useSignupActions({ registration, signup });
+  const { deleteSignupGroup } = useSignupGroupActions({
+    signupGroup,
+  });
   const formSavingDisabled = React.useRef(!!readOnly);
 
   const reservationTimerCallbacksDisabled = React.useRef(false);
@@ -130,13 +140,30 @@ const SignupGroupForm: React.FC<Props> = ({
     );
   };
 
+  const goToSignupGroupCancelledPage = () => {
+    goToPage(
+      `/${locale}${ROUTES.SIGNUP_GROUP_CANCELLED.replace(
+        '[registrationId]',
+        registration.id
+      )}`
+    );
+  };
+
   const handleDelete = async () => {
     setServerErrorItems([]);
-    await deleteSignup({
-      onError: (error) =>
-        showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
-      onSuccess: goToSignupCancelledPage,
-    });
+    if (signupGroup) {
+      await deleteSignupGroup({
+        onError: (error) =>
+          showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+        onSuccess: goToSignupGroupCancelledPage,
+      });
+    } else {
+      await deleteSignup({
+        onError: (error) =>
+          showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+        onSuccess: goToSignupCancelledPage,
+      });
+    }
   };
 
   const isRestoringDisabled = () => {
@@ -191,40 +218,47 @@ const SignupGroupForm: React.FC<Props> = ({
               onClose={closeModal}
             />
             <Form noValidate>
-              <FormikPersist
-                isSessionStorage={true}
-                name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
-                restoringDisabled={isRestoringDisabled()}
-                savingDisabled={formSavingDisabled.current}
-              />
+              {!signup && !signupGroup && (
+                <FormikPersist
+                  isSessionStorage={true}
+                  name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
+                  restoringDisabled={isRestoringDisabled()}
+                  savingDisabled={formSavingDisabled.current}
+                />
+              )}
 
               <ServerErrorSummary errors={serverErrorItems} />
               <RegistrationWarning registration={registration} />
 
-              {isRegistrationPossible(registration) && !readOnly && (
+              {!signup && !signupGroup ? (
                 <>
+                  {isRegistrationPossible(registration) && (
+                    <>
+                      <Divider />
+                      <ReservationTimer
+                        callbacksDisabled={
+                          reservationTimerCallbacksDisabled.current
+                        }
+                        disableCallbacks={disableReservationTimerCallbacks}
+                        initReservationData={true}
+                        registration={registration}
+                        setSignups={setSignups}
+                        signups={values.signups}
+                      />
+                    </>
+                  )}
                   <Divider />
-                  <ReservationTimer
-                    callbacksDisabled={
-                      reservationTimerCallbacksDisabled.current
-                    }
-                    disableCallbacks={disableReservationTimerCallbacks}
-                    initReservationData={true}
+                  <h2>{t('titleRegistration')}</h2>
+
+                  <AvailableSeatsText registration={registration} />
+                  <ParticipantAmountSelector
+                    disabled={formDisabled || !!readOnly}
                     registration={registration}
-                    setSignups={setSignups}
-                    signups={values.signups}
                   />
                 </>
+              ) : (
+                <h2>{t('titleSignups')}</h2>
               )}
-
-              <Divider />
-              <h2>{t('titleRegistration')}</h2>
-
-              <AvailableSeatsText registration={registration} />
-              <ParticipantAmountSelector
-                disabled={formDisabled || !!readOnly}
-                registration={registration}
-              />
 
               <Signups
                 formDisabled={formDisabled}
@@ -243,7 +277,9 @@ const SignupGroupForm: React.FC<Props> = ({
                       component={TextInputField}
                       disabled={formDisabled}
                       label={t(`labelEmail`)}
-                      placeholder={readOnly ? '' : t(`placeholderEmail`)}
+                      placeholder={
+                        readOnly ? READ_ONLY_PLACEHOLDER : t(`placeholderEmail`)
+                      }
                       readOnly={readOnly}
                       required
                     />
@@ -252,7 +288,11 @@ const SignupGroupForm: React.FC<Props> = ({
                       component={PhoneInputField}
                       disabled={formDisabled}
                       label={t(`labelPhoneNumber`)}
-                      placeholder={readOnly ? '' : t(`placeholderPhoneNumber`)}
+                      placeholder={
+                        readOnly
+                          ? READ_ONLY_PLACEHOLDER
+                          : t(`placeholderPhoneNumber`)
+                      }
                       readOnly={readOnly}
                       required={
                         values.notifications.includes(NOTIFICATIONS.SMS) ||
@@ -292,7 +332,9 @@ const SignupGroupForm: React.FC<Props> = ({
                       disabled={formDisabled}
                       label={t(`labelMembershipNumber`)}
                       placeholder={
-                        readOnly ? '' : t(`placeholderMembershipNumber`)
+                        readOnly
+                          ? READ_ONLY_PLACEHOLDER
+                          : t(`placeholderMembershipNumber`)
                       }
                       readOnly={readOnly}
                       required={isSignupFieldRequired(
@@ -311,7 +353,9 @@ const SignupGroupForm: React.FC<Props> = ({
                       label={t(`labelNativeLanguage`)}
                       options={languageOptions}
                       placeholder={
-                        readOnly ? '' : t(`placeholderNativeLanguage`)
+                        readOnly
+                          ? READ_ONLY_PLACEHOLDER
+                          : t(`placeholderNativeLanguage`)
                       }
                       readOnly={readOnly}
                       required
@@ -323,26 +367,35 @@ const SignupGroupForm: React.FC<Props> = ({
                       label={t(`labelServiceLanguage`)}
                       options={serviceLanguageOptions}
                       placeholder={
-                        readOnly ? '' : t(`placeholderServiceLanguage`)
+                        readOnly
+                          ? READ_ONLY_PLACEHOLDER
+                          : t(`placeholderServiceLanguage`)
                       }
                       required
                     />
                   </div>
                 </FormGroup>
-                <FormGroup>
-                  <Field
-                    name={SIGNUP_GROUP_FIELDS.EXTRA_INFO}
-                    component={TextAreaField}
-                    disabled={formDisabled}
-                    label={t(`labelExtraInfo`)}
-                    placeholder={readOnly ? '' : t(`placeholderExtraInfo`)}
-                    readOnly={readOnly}
-                    required={isSignupFieldRequired(
-                      registration,
-                      SIGNUP_GROUP_FIELDS.EXTRA_INFO
-                    )}
-                  />
-                </FormGroup>
+                {/* Don't show group extra info field when editing a single signup */}
+                {!signup && (
+                  <FormGroup>
+                    <Field
+                      name={SIGNUP_GROUP_FIELDS.EXTRA_INFO}
+                      component={TextAreaField}
+                      disabled={formDisabled}
+                      label={t(`labelExtraInfo`)}
+                      placeholder={
+                        readOnly
+                          ? READ_ONLY_PLACEHOLDER
+                          : t(`placeholderExtraInfo`)
+                      }
+                      readOnly={readOnly}
+                      required={isSignupFieldRequired(
+                        registration,
+                        SIGNUP_GROUP_FIELDS.EXTRA_INFO
+                      )}
+                    />
+                  </FormGroup>
+                )}
               </Fieldset>
               {!readOnly && (
                 <>

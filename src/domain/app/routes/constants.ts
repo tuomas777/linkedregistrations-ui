@@ -3,7 +3,9 @@ export enum ROUTES {
   CREATE_SIGNUP_GROUP = '/registration/[registrationId]/signup-group/create',
   CREATE_SIGNUP_GROUP_SUMMARY = '/registration/[registrationId]/signup-group/create/summary',
   EDIT_SIGNUP = '/registration/[registrationId]/signup/[signupId]/edit',
+  EDIT_SIGNUP_GROUP = '/registration/[registrationId]/signup-group/[signupGroupId]/edit',
   HOME = '/',
   SIGNUP_CANCELLED = '/registration/[registrationId]/signup/cancelled',
+  SIGNUP_GROUP_CANCELLED = '/registration/[registrationId]/signup-group/cancelled',
   SIGNUP_GROUP_COMPLETED = '/registration/[registrationId]/signup-group/completed',
 }

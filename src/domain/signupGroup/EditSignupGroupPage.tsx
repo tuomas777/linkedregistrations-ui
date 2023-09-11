@@ -10,24 +10,28 @@ import NotFound from '../notFound/NotFound';
 import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../registration/types';
 import SignInRequired from '../signInRequired/SignInRequired';
+import SignupPageMeta from '../signup/signupPageMeta/SignupPageMeta';
+import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import EventInfo from '../signupGroup/eventInfo/EventInfo';
 import FormContainer from '../signupGroup/formContainer/FormContainer';
 import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
 import { SignupGroupFormProvider } from '../signupGroup/signupGroupFormContext/SignupGroupFormContext';
-import useSignupData from './hooks/useSignupData';
-import SignupPageMeta from './signupPageMeta/SignupPageMeta';
-import { SignupServerErrorsProvider } from './signupServerErrorsContext/SignupServerErrorsContext';
-import { Signup } from './types';
-import { getSignupGroupInitialValuesFromSignup } from './utils';
+import { getSignupGroupInitialValues } from '../signupGroup/utils';
+import useSignupGroupData from './hooks/useSignupGroupData';
+import { SignupGroup } from './types';
 
 type Props = {
   event: Event;
   registration: Registration;
-  signup: Signup;
+  signupGroup: SignupGroup;
 };
 
-const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
-  const initialValues = getSignupGroupInitialValuesFromSignup(signup);
+const EditSignupGroupPage: React.FC<Props> = ({
+  event,
+  registration,
+  signupGroup,
+}) => {
+  const initialValues = getSignupGroupInitialValues(signupGroup);
 
   return (
     <MainContent>
@@ -40,7 +44,7 @@ const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
             initialValues={initialValues}
             readOnly={true}
             registration={registration}
-            signup={signup}
+            signupGroup={signupGroup}
           />
         </FormContainer>
       </Container>
@@ -48,13 +52,13 @@ const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
   );
 };
 
-const EditSignupPageWrapper: React.FC = () => {
+const EditSignupGroupPageWrapper: React.FC = () => {
   const {
     event,
     isLoading: isLoadingEventOrReigstration,
     registration,
   } = useEventAndRegistrationData();
-  const { isLoading: isLoadingSignup, signup } = useSignupData();
+  const { isLoading: isLoadingSignup, signupGroup } = useSignupGroupData();
   const { data: session } = useSession() as {
     data: ExtendedSession | null;
   };
@@ -65,13 +69,13 @@ const EditSignupPageWrapper: React.FC = () => {
 
   return (
     <LoadingSpinner isLoading={isLoadingSignup || isLoadingEventOrReigstration}>
-      {event && registration && signup ? (
+      {event && registration && signupGroup ? (
         <SignupGroupFormProvider>
           <SignupServerErrorsProvider>
-            <EditSignupPage
+            <EditSignupGroupPage
               event={event}
               registration={registration}
-              signup={signup}
+              signupGroup={signupGroup}
             />
           </SignupServerErrorsProvider>
         </SignupGroupFormProvider>
@@ -82,4 +86,4 @@ const EditSignupPageWrapper: React.FC = () => {
   );
 };
 
-export default EditSignupPageWrapper;
+export default EditSignupGroupPageWrapper;
