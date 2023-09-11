@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import '../tests/mockNextAuth';
 
+import { DehydratedState } from '@tanstack/react-query';
 import subYears from 'date-fns/subYears';
 import { rest } from 'msw';
 import { GetServerSidePropsContext } from 'next';
@@ -70,6 +71,42 @@ const isHeadingRendered = async (heading: string | RegExp) => {
   await screen.findByRole('heading', { name: heading }, { timeout: 5000 });
 };
 
+const isRegistrationInDehydratedState = (dehydratedState: DehydratedState) => {
+  expect(dehydratedState.queries).toEqual(
+    expect.arrayContaining([
+      {
+        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
+        queryKey: ['registration', TEST_REGISTRATION_ID],
+        state: expect.objectContaining({ data: registration }),
+      },
+    ])
+  );
+};
+
+const isSignupInDehydratedState = (dehydratedState: DehydratedState) => {
+  expect(dehydratedState.queries).toEqual(
+    expect.arrayContaining([
+      {
+        queryHash: `["signup","${TEST_SIGNUP_ID}"]`,
+        queryKey: ['signup', TEST_SIGNUP_ID],
+        state: expect.objectContaining({ data: signup }),
+      },
+    ])
+  );
+};
+
+const isSignupGroupInDehydratedState = (dehydratedState: DehydratedState) => {
+  expect(dehydratedState.queries).toEqual(
+    expect.arrayContaining([
+      {
+        queryHash: `["signupGroup","${TEST_SIGNUP_GROUP_ID}"]`,
+        queryKey: ['signupGroup', TEST_SIGNUP_GROUP_ID],
+        state: expect.objectContaining({ data: signupGroup }),
+      },
+    ])
+  );
+};
+
 const signupGroupValues: SignupGroupFormFields = {
   accepted: true,
   email: 'participant@email.com',
@@ -108,10 +145,12 @@ const mocks = [
   ),
 ];
 
+beforeEach(() => {
+  setQueryMocks(...mocks);
+});
+
 describe('CreateSignupGroupPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
@@ -129,8 +168,6 @@ describe('CreateSignupGroupPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getCreateSignupGroupPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
@@ -138,20 +175,12 @@ describe('CreateSignupGroupPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
   });
 });
 
 describe('EditSignupGroupPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     singletonRouter.push({
       pathname: ROUTES.EDIT_SIGNUP_GROUP,
       query: {
@@ -166,8 +195,6 @@ describe('EditSignupGroupPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getEditSignupGroupPageServerSideProps({
       locale: 'fi',
       query: {
@@ -178,25 +205,13 @@ describe('EditSignupGroupPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-      {
-        queryHash: `["signupGroup","${TEST_SIGNUP_GROUP_ID}"]`,
-        queryKey: ['signupGroup', TEST_SIGNUP_GROUP_ID],
-        state: expect.objectContaining({ data: signupGroup }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
+    isSignupGroupInDehydratedState(props.dehydratedState);
   });
 });
 
 describe('SignupGroupCancelledPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     singletonRouter.push({
       pathname: ROUTES.SIGNUP_GROUP_CANCELLED,
       query: { registrationId: registration.id },
@@ -208,8 +223,6 @@ describe('SignupGroupCancelledPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getSignupGroupCancelledPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
@@ -217,20 +230,12 @@ describe('SignupGroupCancelledPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
   });
 });
 
 describe('SummaryPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
@@ -248,8 +253,6 @@ describe('SummaryPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getSummaryPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
@@ -257,20 +260,12 @@ describe('SummaryPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
   });
 });
 
 describe('SignupGroupCompletedPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     singletonRouter.push({
       pathname: ROUTES.SIGNUP_GROUP_COMPLETED,
       query: { signupId: signup.id, registrationId: registration.id },
@@ -282,8 +277,6 @@ describe('SignupGroupCompletedPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getSignupGroupCompletedPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
@@ -291,20 +284,12 @@ describe('SignupGroupCompletedPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
   });
 });
 
 describe('EditSignupPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     singletonRouter.push({
       pathname: ROUTES.EDIT_SIGNUP,
       query: {
@@ -319,8 +304,6 @@ describe('EditSignupPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getEditSignupPageServerSideProps({
       locale: 'fi',
       query: {
@@ -331,25 +314,13 @@ describe('EditSignupPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-      {
-        queryHash: `["signup","${TEST_SIGNUP_ID}"]`,
-        queryKey: ['signup', TEST_SIGNUP_ID],
-        state: expect.objectContaining({ data: signup }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
+    isSignupInDehydratedState(props.dehydratedState);
   });
 });
 
 describe('SignupCancelledPage', () => {
   it('should render heading', async () => {
-    setQueryMocks(...mocks);
-
     singletonRouter.push({
       pathname: ROUTES.SIGNUP_CANCELLED,
       query: { registrationId: registration.id },
@@ -361,8 +332,6 @@ describe('SignupCancelledPage', () => {
   });
 
   it('should prefetch data', async () => {
-    setQueryMocks(...mocks);
-
     const { props } = (await getSignupCancelledPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
@@ -370,12 +339,6 @@ describe('SignupCancelledPage', () => {
       props: ExtendedSSRConfig;
     };
 
-    expect(props.dehydratedState.queries).toEqual([
-      {
-        queryHash: `["registration","${TEST_REGISTRATION_ID}"]`,
-        queryKey: ['registration', TEST_REGISTRATION_ID],
-        state: expect.objectContaining({ data: registration }),
-      },
-    ]);
+    isRegistrationInDehydratedState(props.dehydratedState);
   });
 });

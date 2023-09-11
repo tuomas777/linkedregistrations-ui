@@ -32,12 +32,13 @@ configure({ defaultHidden: true });
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
-const findFirstNameInput = () => {
+export const findFirstNameInput = () => {
   return screen.findByRole('textbox', { name: /etunimi/i });
 };
 
-const getElement = (
+export const getSignupFormElement = (
   key:
+    | 'acceptCheckbox'
     | 'cancelButton'
     | 'cityInput'
     | 'dateOfBirthInput'
@@ -46,13 +47,20 @@ const getElement = (
     | 'firstNameInput'
     | 'lastNameInput'
     | 'nativeLanguageButton'
+    | 'participantAmountInput'
     | 'phoneCheckbox'
     | 'phoneInput'
     | 'serviceLanguageButton'
     | 'streetAddressInput'
+    | 'submitButton'
+    | 'updateParticipantAmountButton'
     | 'zipInput'
 ) => {
   switch (key) {
+    case 'acceptCheckbox':
+      return screen.getByLabelText(
+        /hyväksyn tietojeni jakamisen järjestäjän kanssa/i
+      );
     case 'cancelButton':
       return screen.getByRole('button', { name: /peruuta ilmoittautuminen/i });
     case 'cityInput':
@@ -69,6 +77,10 @@ const getElement = (
       return screen.getByLabelText(/sukunimi/i);
     case 'nativeLanguageButton':
       return screen.getByRole('button', { name: /äidinkieli/i });
+    case 'participantAmountInput':
+      return screen.getByRole('spinbutton', {
+        name: /ilmoittautujien määrä \*/i,
+      });
     case 'phoneCheckbox':
       return screen.getByLabelText(/tekstiviestillä/i);
     case 'phoneInput':
@@ -77,6 +89,10 @@ const getElement = (
       return screen.getByRole('button', { name: /asiointikieli/i });
     case 'streetAddressInput':
       return screen.getByLabelText(/katuosoite/i);
+    case 'submitButton':
+      return screen.getByRole('button', { name: /jatka ilmoittautumiseen/i });
+    case 'updateParticipantAmountButton':
+      return screen.getByRole('button', { name: /päivitä/i });
     case 'zipInput':
       return screen.getByLabelText(/postinumero/i);
   }
@@ -116,9 +132,9 @@ const pushEditSignupGroupRoute = (registrationId: string) => {
   });
 };
 
-const tryToCancel = async () => {
+export const tryToCancel = async () => {
   const user = userEvent.setup();
-  const cancelButton = getElement('cancelButton');
+  const cancelButton = getSignupFormElement('cancelButton');
   await user.click(cancelButton);
 
   const modal = await screen.findByRole('dialog', {
@@ -131,26 +147,20 @@ const tryToCancel = async () => {
   await user.click(cancelSignupButton);
 };
 
-test('should render signup group edit page field', async () => {
-  setQueryMocks(...defaultMocks);
-  pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
-  renderComponent();
-
-  await actWait(100);
-
+export const shouldRenderSignupFormFields = async () => {
   const firstNameInput = await findFirstNameInput();
-  const lastNameInput = getElement('lastNameInput');
-  const streetAddressInput = getElement('streetAddressInput');
-  const dateOfBirthInput = getElement('dateOfBirthInput');
-  const zipInput = getElement('zipInput');
-  const cityInput = getElement('cityInput');
-  const emailInput = getElement('emailInput');
-  const phoneInput = getElement('phoneInput');
-  const emailCheckbox = getElement('emailCheckbox');
-  const phoneCheckbox = getElement('phoneCheckbox');
-  const nativeLanguageButton = getElement('nativeLanguageButton');
-  const serviceLanguageButton = getElement('serviceLanguageButton');
-  getElement('cancelButton');
+  const lastNameInput = getSignupFormElement('lastNameInput');
+  const streetAddressInput = getSignupFormElement('streetAddressInput');
+  const dateOfBirthInput = getSignupFormElement('dateOfBirthInput');
+  const zipInput = getSignupFormElement('zipInput');
+  const cityInput = getSignupFormElement('cityInput');
+  const emailInput = getSignupFormElement('emailInput');
+  const phoneInput = getSignupFormElement('phoneInput');
+  const emailCheckbox = getSignupFormElement('emailCheckbox');
+  const phoneCheckbox = getSignupFormElement('phoneCheckbox');
+  const nativeLanguageButton = getSignupFormElement('nativeLanguageButton');
+  const serviceLanguageButton = getSignupFormElement('serviceLanguageButton');
+  getSignupFormElement('cancelButton');
 
   expect(firstNameInput.hasAttribute('readonly')).toBeTruthy();
   expect(lastNameInput.hasAttribute('readonly')).toBeTruthy();
@@ -164,6 +174,15 @@ test('should render signup group edit page field', async () => {
   expect(phoneCheckbox).toBeDisabled();
   expect(nativeLanguageButton).toBeDisabled();
   expect(serviceLanguageButton).toBeDisabled();
+};
+
+test('should render signup group edit page field', async () => {
+  setQueryMocks(...defaultMocks);
+  pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await actWait(100);
+  await shouldRenderSignupFormFields();
 });
 
 test('should cancel signup group', async () => {
