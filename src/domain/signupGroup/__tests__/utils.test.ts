@@ -1,13 +1,13 @@
 import { fakeRegistration, fakeSignup } from '../../../utils/mockDataUtils';
+import { registration } from '../../registration/__mocks__/registration';
+import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
+import { NOTIFICATION_TYPE } from '../../signup/constants';
 import {
   NOTIFICATIONS,
-  NOTIFICATION_TYPE,
   SIGNUP_GROUP_FIELDS,
   SIGNUP_GROUP_INITIAL_VALUES,
   SIGNUP_INITIAL_VALUES,
-} from '../../enrolment/constants';
-import { registration } from '../../registration/__mocks__/registration';
-import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
+} from '../constants';
 import {
   getSignupDefaultInitialValues,
   getSignupGroupDefaultInitialValues,
@@ -173,7 +173,7 @@ describe('getSignupDefaultInitialValues function', () => {
 });
 
 describe('getSignupGroupDefaultInitialValues function', () => {
-  it('should return enrolment initial values', () => {
+  it('should return signup group initial values', () => {
     expect(getSignupGroupDefaultInitialValues()).toEqual({
       accepted: false,
       email: '',

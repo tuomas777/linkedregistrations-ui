@@ -25,11 +25,11 @@ import {
   waitFor,
 } from '../../../../utils/testUtils';
 import { ROUTES } from '../../../app/routes/constants';
-import { NOTIFICATIONS } from '../../../enrolment/constants';
-import { SignupGroupFormFields } from '../../../enrolment/types';
 import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
+import { NOTIFICATIONS } from '../../constants';
+import { SignupGroupFormFields } from '../../types';
 import SummaryPage from '../SummaryPage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -86,7 +86,7 @@ const getSubmitButton = () => {
   return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
 };
 
-test('should route back to enrolment form if reservation data is missing', async () => {
+test('should route back to signup form if reservation data is missing', async () => {
   setQueryMocks(...defaultMocks);
 
   setSignupGroupFormSessionStorageValues({
@@ -109,7 +109,7 @@ test('should route back to enrolment form if reservation data is missing', async
   );
 });
 
-test('should route back to enrolment form after clicking submit button if there are any validation errors', async () => {
+test('should route back to signup form after clicking submit button if there are any validation errors', async () => {
   const user = userEvent.setup();
   setQueryMocks(...defaultMocks);
 
@@ -137,7 +137,7 @@ test('should route back to enrolment form after clicking submit button if there 
   );
 });
 
-test('should route to enrolment completed page', async () => {
+test('should route to signup completed page', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,

@@ -11,11 +11,11 @@ import TextInputField from '../../../../../common/components/formFields/TextInpu
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import useLocale from '../../../../../hooks/useLocale';
 import skipFalsyType from '../../../../../utils/skipFalsyType';
-import { SIGNUP_FIELDS } from '../../../../enrolment/constants';
-import { useEnrolmentPageContext } from '../../../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
-import InWaitingListInfo from '../../../../enrolment/inWaitingListInfo/InWaitingListInfo';
-import { SignupFields } from '../../../../enrolment/types';
 import { Registration } from '../../../../registration/types';
+import { SIGNUP_FIELDS } from '../../../constants';
+import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
+import { useSignupGroupFormContext } from '../../../signupGroupFormContext/hooks/useSignupGroupFormContext';
+import { SignupFields } from '../../../types';
 import {
   isDateOfBirthFieldRequired,
   isSignupFieldRequired,
@@ -46,9 +46,10 @@ const Signup: React.FC<Props> = ({
   signup,
   signupPath,
 }) => {
-  const { t } = useTranslation(['enrolment']);
+  const { t } = useTranslation(['signup']);
   const locale = useLocale();
-  const { openParticipant, toggleOpenParticipant } = useEnrolmentPageContext();
+  const { openParticipant, toggleOpenParticipant } =
+    useSignupGroupFormContext();
 
   return (
     <Accordion

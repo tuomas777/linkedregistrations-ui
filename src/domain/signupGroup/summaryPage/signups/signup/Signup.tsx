@@ -4,10 +4,10 @@ import React from 'react';
 
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../../common/components/textArea/TextArea';
-import { SIGNUP_FIELDS } from '../../../../enrolment/constants';
-import Divider from '../../../../enrolment/divider/Divider';
-import InWaitingListInfo from '../../../../enrolment/inWaitingListInfo/InWaitingListInfo';
-import { SignupFields } from '../../../../enrolment/types';
+import { SIGNUP_FIELDS } from '../../../constants';
+import Divider from '../../../divider/Divider';
+import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
+import { SignupFields } from '../../../types';
 import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
 import styles from './signup.module.scss';
 

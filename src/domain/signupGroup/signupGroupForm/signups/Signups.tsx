@@ -5,16 +5,16 @@ import React, { useRef, useState } from 'react';
 
 import { ExtendedSession } from '../../../../types';
 import { reportError } from '../../../app/sentry/utils';
-import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
-import { useEnrolmentServerErrorsContext } from '../../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import ConfirmDeleteParticipantModal from '../../../enrolment/modals/confirmDeleteParticipantModal/ConfirmDeleteParticipantModal';
-import { SignupFields } from '../../../enrolment/types';
 import { Registration } from '../../../registration/types';
 import { useUpdateSeatsReservationMutation } from '../../../reserveSeats/mutation';
 import {
   getSeatsReservationData,
   setSeatsReservationData,
 } from '../../../reserveSeats/utils';
+import { useSignupServerErrorsContext } from '../../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
+import { SIGNUP_GROUP_FIELDS } from '../../constants';
+import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import { SignupFields } from '../../types';
 import { getNewSignups } from '../../utils';
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
@@ -36,9 +36,9 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
   const [saving, setSaving] = useState(false);
 
   const { setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
-  const [{ value: signups }, , { setValue: setSingups }] = useField<
+  const [{ value: signups }, , { setValue: setSignups }] = useField<
     SignupFields[]
   >({ name: SIGNUP_GROUP_FIELDS.SIGNUPS });
 
@@ -74,7 +74,7 @@ const Signups: React.FC<Props> = ({ formDisabled, readOnly, registration }) => {
           seatsReservation,
         });
 
-        setSingups(newSignups);
+        setSignups(newSignups);
 
         setSeatsReservationData(registration.id, seatsReservation);
 

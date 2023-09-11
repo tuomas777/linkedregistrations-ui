@@ -23,33 +23,26 @@ import ServerErrorSummary from '../../../common/components/serverErrorSummary/Se
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import { ROUTES } from '../../app/routes/constants';
-import ButtonWrapper from '../../enrolment/buttonWrapper/ButtonWrapper';
-import {
-  ENROLMENT_MODALS,
-  ENROLMENT_QUERY_PARAMS,
-  NOTIFICATIONS,
-  SIGNUP_GROUP_FIELDS,
-} from '../../enrolment/constants';
-import Divider from '../../enrolment/divider/Divider';
-import { useEnrolmentPageContext } from '../../enrolment/enrolmentPageContext/hooks/useEnrolmentPageContext';
-import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
-import useLanguageOptions from '../../enrolment/hooks/useLanguageOptions';
-import useNotificationOptions from '../../enrolment/hooks/useNotificationOptions';
-import ConfirmCancelModal from '../../enrolment/modals/confirmCancelModal/ConfirmCancelModal';
-import ParticipantAmountSelector from '../../enrolment/participantAmountSelector/ParticipantAmountSelector';
-import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
-import {
-  Signup,
-  SignupFields,
-  SignupGroupFormFields,
-} from '../../enrolment/types';
+import useLanguageOptions from '../../language/hooks/useLanguageOptions';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
 import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../../reserveSeats/utils';
+import { SIGNUP_MODALS, SIGNUP_QUERY_PARAMS } from '../../signup/constants';
+import useSignupActions from '../../signup/hooks/useSignupActions';
+import ConfirmDeleteSignupModal from '../../signup/modals/confirmDeleteSignupModal/ConfirmDeleteSignupModal';
+import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
+import { Signup } from '../../signup/types';
+import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
+import { NOTIFICATIONS, SIGNUP_GROUP_FIELDS } from '../constants';
+import Divider from '../divider/Divider';
+import useNotificationOptions from '../hooks/useNotificationOptions';
+import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
+import ReservationTimer from '../reservationTimer/ReservationTimer';
+import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
+import { SignupFields, SignupGroupFormFields } from '../types';
 import { isSignupFieldRequired } from '../utils';
 import {
   getSignupGroupSchema,
@@ -61,25 +54,25 @@ import styles from './signupGroupForm.module.scss';
 import Signups from './signups/Signups';
 
 const RegistrationWarning = dynamic(
-  () => import('../../enrolment/registrationWarning/RegistrationWarning'),
+  () => import('../registrationWarning/RegistrationWarning'),
   { ssr: false }
 );
 
 type Props = {
-  enrolment?: Signup;
   initialValues: SignupGroupFormFields;
   readOnly?: boolean;
   registration: Registration;
+  signup?: Signup;
 };
 
 const SignupGroupForm: React.FC<Props> = ({
-  enrolment,
   initialValues,
   readOnly,
   registration,
+  signup,
 }) => {
-  const { t } = useTranslation(['enrolment', 'common']);
-  const { cancelEnrolment } = useEnrolmentActions({ enrolment, registration });
+  const { t } = useTranslation(['signup', 'common']);
+  const { deleteSignup } = useSignupActions({ registration, signup });
   const formSavingDisabled = React.useRef(!!readOnly);
 
   const reservationTimerCallbacksDisabled = React.useRef(false);
@@ -88,7 +81,7 @@ const SignupGroupForm: React.FC<Props> = ({
   }, []);
 
   const { closeModal, openModal, setOpenModal, setOpenParticipant } =
-    useEnrolmentPageContext();
+    useSignupGroupFormContext();
 
   const notificationOptions = useNotificationOptions();
   const languageOptions = useLanguageOptions();
@@ -108,18 +101,18 @@ const SignupGroupForm: React.FC<Props> = ({
   }, [registration]);
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
       pathname,
       query: pick(query, [
-        ENROLMENT_QUERY_PARAMS.IFRAME,
-        ENROLMENT_QUERY_PARAMS.REDIRECT_URL,
+        SIGNUP_QUERY_PARAMS.IFRAME,
+        SIGNUP_QUERY_PARAMS.REDIRECT_URL,
       ]),
     });
   };
-  const goToEnrolmentSummaryPage = () => {
+  const goToSignupGroupSummaryPage = () => {
     goToPage(
       `/${locale}${ROUTES.CREATE_SIGNUP_GROUP_SUMMARY.replace(
         '[registrationId]',
@@ -128,21 +121,21 @@ const SignupGroupForm: React.FC<Props> = ({
     );
   };
 
-  const goToEnrolmentCancelledPage = () => {
+  const goToSignupCancelledPage = () => {
     goToPage(
-      `/${locale}${ROUTES.ENROLMENT_CANCELLED.replace(
+      `/${locale}${ROUTES.SIGNUP_CANCELLED.replace(
         '[registrationId]',
         registration.id
       )}`
     );
   };
 
-  const handleCancel = async () => {
+  const handleDelete = async () => {
     setServerErrorItems([]);
-    await cancelEnrolment({
+    await deleteSignup({
       onError: (error) =>
-        showServerErrors({ error: JSON.parse(error.message) }, 'enrolment'),
-      onSuccess: goToEnrolmentCancelledPage,
+        showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+      onSuccess: goToSignupCancelledPage,
     });
   };
 
@@ -175,7 +168,7 @@ const SignupGroupForm: React.FC<Props> = ({
               abortEarly: false,
             });
 
-            goToEnrolmentSummaryPage();
+            goToSignupGroupSummaryPage();
           } catch (error) {
             showErrors({
               error: error as ValidationError,
@@ -192,9 +185,9 @@ const SignupGroupForm: React.FC<Props> = ({
 
         return (
           <>
-            <ConfirmCancelModal
-              isOpen={openModal === ENROLMENT_MODALS.CANCEL}
-              onCancel={handleCancel}
+            <ConfirmDeleteSignupModal
+              isOpen={openModal === SIGNUP_MODALS.DELETE}
+              onCancel={handleDelete}
               onClose={closeModal}
             />
             <Form noValidate>
@@ -383,7 +376,7 @@ const SignupGroupForm: React.FC<Props> = ({
                   <Button
                     disabled={formDisabled}
                     iconLeft={<IconCross aria-hidden={true} />}
-                    onClick={() => setOpenModal(ENROLMENT_MODALS.CANCEL)}
+                    onClick={() => setOpenModal(SIGNUP_MODALS.DELETE)}
                     variant={'danger'}
                   >
                     {t('buttonCancel')}

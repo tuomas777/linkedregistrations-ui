@@ -182,5 +182,7 @@ test('should show back to signup group form link', async () => {
   const backToSignupGroupFormLinks = getElements('backToSignupGroupFormLink');
   await user.click(backToSignupGroupFormLinks[0]);
 
-  expect(mockRouter.asPath).toBe('/registration/1/signup-group/create');
+  expect(mockRouter.asPath).toBe(
+    '/registration/registration:1/signup-group/create'
+  );
 });

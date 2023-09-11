@@ -9,22 +9,14 @@ import singletonRouter from 'next/router';
 import React from 'react';
 
 import { ROUTES } from '../domain/app/routes/constants';
-import { enrolment } from '../domain/enrolment/__mocks__/enrolment';
-import {
-  NOTIFICATIONS,
-  TEST_ENROLMENT_ID,
-} from '../domain/enrolment/constants';
-import { SignupGroupFormFields } from '../domain/enrolment/types';
 import { eventName } from '../domain/event/__mocks__/event';
 import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages';
 import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
-import EditEnrolmentPage, {
-  getServerSideProps as getEditEnrolmentPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/[enrolmentId]/edit/index';
-import EnrolmentCancelledPage, {
-  getServerSideProps as getEnrolmentCancelledPageServerSideProps,
-} from '../pages/registration/[registrationId]/enrolment/cancelled/index';
+import { signup } from '../domain/signup/__mocks__/signup';
+import { TEST_SIGNUP_ID } from '../domain/signup/constants';
+import { NOTIFICATIONS } from '../domain/signupGroup/constants';
+import { SignupGroupFormFields } from '../domain/signupGroup/types';
 import SignupGroupCompletedPage, {
   getServerSideProps as getSignupGroupCompletedPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/completed/index';
@@ -34,8 +26,14 @@ import CreateSignupGroupPage, {
 import SummaryPage, {
   getServerSideProps as getSummaryPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/create/summary/index';
+import EditSignupPage, {
+  getServerSideProps as getEditSignupPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup/[signupId]/edit/index';
+import SignupCancelledPage, {
+  getServerSideProps as getSignupCancelledPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup/cancelled/index';
+import { ExtendedSSRConfig } from '../types';
 import formatDate from '../utils/formatDate';
-import { EnrolmentServerSideProps } from '../utils/generateEnrolmentGetServerSideProps';
 import {
   getMockedSeatsReservationData,
   setSignupGroupFormSessionStorageValues,
@@ -91,7 +89,7 @@ const mocks = [
     res(ctx.status(200), ctx.json(registration))
   ),
   rest.get(`*/signup/*`, (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(enrolment))
+    res(ctx.status(200), ctx.json(signup))
   ),
 ];
 
@@ -122,7 +120,7 @@ describe('CreateSignupGroupPage', () => {
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {
-      props: EnrolmentServerSideProps;
+      props: ExtendedSSRConfig;
     };
 
     expect(props.dehydratedState.queries).toEqual([
@@ -162,7 +160,7 @@ describe('SummaryPage', () => {
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {
-      props: EnrolmentServerSideProps;
+      props: ExtendedSSRConfig;
     };
 
     expect(props.dehydratedState.queries).toEqual([
@@ -181,7 +179,7 @@ describe('SignupGroupCompletedPage', () => {
 
     singletonRouter.push({
       pathname: ROUTES.SIGNUP_GROUP_COMPLETED,
-      query: { enrolmentId: enrolment.id, registrationId: registration.id },
+      query: { signupId: signup.id, registrationId: registration.id },
     });
 
     render(<SignupGroupCompletedPage />);
@@ -196,7 +194,7 @@ describe('SignupGroupCompletedPage', () => {
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {
-      props: EnrolmentServerSideProps;
+      props: ExtendedSSRConfig;
     };
 
     expect(props.dehydratedState.queries).toEqual([
@@ -209,19 +207,19 @@ describe('SignupGroupCompletedPage', () => {
   });
 });
 
-describe('EditEnrolmentPage', () => {
+describe('EditSignupPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
     singletonRouter.push({
-      pathname: ROUTES.EDIT_ENROLMENT,
+      pathname: ROUTES.EDIT_SIGNUP,
       query: {
-        enrolmentId: enrolment.id,
         registrationId: registration.id,
+        signupId: signup.id,
       },
     });
 
-    render(<EditEnrolmentPage />);
+    render(<EditSignupPage />);
 
     await isHeadingRendered(eventName);
   });
@@ -229,14 +227,14 @@ describe('EditEnrolmentPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getEditEnrolmentPageServerSideProps({
+    const { props } = (await getEditSignupPageServerSideProps({
       locale: 'fi',
       query: {
-        enrolmentId: enrolment.id,
         registrationId: registration.id,
+        signupId: signup.id,
       },
     } as unknown as GetServerSidePropsContext)) as {
-      props: EnrolmentServerSideProps;
+      props: ExtendedSSRConfig;
     };
 
     expect(props.dehydratedState.queries).toEqual([
@@ -246,24 +244,24 @@ describe('EditEnrolmentPage', () => {
         state: expect.objectContaining({ data: registration }),
       },
       {
-        queryHash: `["enrolment","${TEST_ENROLMENT_ID}"]`,
-        queryKey: ['enrolment', TEST_ENROLMENT_ID],
-        state: expect.objectContaining({ data: enrolment }),
+        queryHash: `["signup","${TEST_SIGNUP_ID}"]`,
+        queryKey: ['signup', TEST_SIGNUP_ID],
+        state: expect.objectContaining({ data: signup }),
       },
     ]);
   });
 });
 
-describe('EnrolmentCancelledPage', () => {
+describe('SignupCancelledPage', () => {
   it('should render heading', async () => {
     setQueryMocks(...mocks);
 
     singletonRouter.push({
-      pathname: ROUTES.ENROLMENT_CANCELLED,
+      pathname: ROUTES.SIGNUP_CANCELLED,
       query: { registrationId: registration.id },
     });
 
-    render(<EnrolmentCancelledPage />);
+    render(<SignupCancelledPage />);
 
     await isHeadingRendered('Ilmoittautumisesi on peruttu');
   });
@@ -271,11 +269,11 @@ describe('EnrolmentCancelledPage', () => {
   it('should prefetch data', async () => {
     setQueryMocks(...mocks);
 
-    const { props } = (await getEnrolmentCancelledPageServerSideProps({
+    const { props } = (await getSignupCancelledPageServerSideProps({
       locale: 'fi',
       query: { registrationId: registration.id },
     } as unknown as GetServerSidePropsContext)) as {
-      props: EnrolmentServerSideProps;
+      props: ExtendedSSRConfig;
     };
 
     expect(props.dehydratedState.queries).toEqual([

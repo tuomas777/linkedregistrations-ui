@@ -37,7 +37,7 @@ configure({ defaultHidden: true });
 
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
-const enrolmentValues = {
+const signupValues = {
   city: 'City',
   dateOfBirth: formatDate(subYears(new Date(), 9)),
   email: 'participant@email.com',
@@ -146,7 +146,7 @@ test.skip('page is accessible', async () => {
   expect(await axe(container)).toHaveNoViolations();
 });
 
-test('should validate enrolment form and focus invalid field', async () => {
+test('should validate signup group form and focus invalid field', async () => {
   const user = userEvent.setup();
 
   setQueryMocks(
@@ -176,11 +176,11 @@ test('should validate enrolment form and focus invalid field', async () => {
   await user.click(submitButton);
   await waitFor(() => expect(firstNameInput).toHaveFocus());
 
-  await user.type(firstNameInput, enrolmentValues.firstName);
+  await user.type(firstNameInput, signupValues.firstName);
   await user.click(submitButton);
   await waitFor(() => expect(lastNameInput).toHaveFocus());
 
-  await user.type(lastNameInput, enrolmentValues.lastName);
+  await user.type(lastNameInput, signupValues.lastName);
   await user.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
@@ -190,8 +190,8 @@ test('should validate enrolment form and focus invalid field', async () => {
   expect(emailInput).toBeRequired();
   expect(phoneInput).not.toBeRequired();
 
-  await user.type(emailInput, enrolmentValues.email);
-  await user.type(phoneInput, enrolmentValues.phoneNumber);
+  await user.type(emailInput, signupValues.email);
+  await user.type(phoneInput, signupValues.phoneNumber);
   await user.click(submitButton);
   await waitFor(() => expect(nativeLanguageButton).toHaveFocus());
 
@@ -493,7 +493,7 @@ test('should show server errors when updating seats reservation fails', async ()
   );
 });
 
-test('should reload page if reservation is expired and route is create enrolment page', async () => {
+test('should reload page if reservation is expired and route is create signup group page', async () => {
   mockRouter.reload = jest.fn();
   const user = userEvent.setup();
 

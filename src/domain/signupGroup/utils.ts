@@ -7,25 +7,22 @@ import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
 import stringToDate from '../../utils/stringToDate';
 import { callPost } from '../app/axios/axiosClient';
+import { Registration } from '../registration/types';
+import { SeatsReservation } from '../reserveSeats/types';
+import { NOTIFICATION_TYPE } from '../signup/constants';
+import { Signup, SignupInput } from '../signup/types';
 import {
   NOTIFICATIONS,
-  NOTIFICATION_TYPE,
   SIGNUP_FIELDS,
   SIGNUP_GROUP_FIELDS,
   SIGNUP_GROUP_INITIAL_VALUES,
   SIGNUP_INITIAL_VALUES,
-} from '../enrolment/constants';
-import {
-  Signup,
-  SignupFields,
-  SignupGroupFormFields,
-  SignupInput,
-} from '../enrolment/types';
-import { Registration } from '../registration/types';
-import { SeatsReservation } from '../reserveSeats/types';
+} from './constants';
 import {
   CreateSignupGroupMutationInput,
   CreateSignupGroupResponse,
+  SignupFields,
+  SignupGroupFormFields,
 } from './types';
 
 export const getSignupNotificationsCode = (
@@ -149,34 +146,34 @@ export const getSignupGroupDefaultInitialValues =
   });
 
 export const getSignupGroupInitialValues = (
-  enrolment: Signup
+  signup: Signup
 ): SignupGroupFormFields => {
   return {
     ...getSignupGroupDefaultInitialValues(),
     accepted: true,
-    email: enrolment.email || '-',
-    extraInfo: enrolment.extra_info || '-',
-    membershipNumber: enrolment.membership_number || '-',
-    nativeLanguage: enrolment.native_language ?? '',
+    email: signup.email || '-',
+    extraInfo: signup.extra_info || '-',
+    membershipNumber: signup.membership_number || '-',
+    nativeLanguage: signup.native_language ?? '',
     // TODO: At the moment only email notifications are supported
     notifications: [NOTIFICATIONS.EMAIL],
-    // notifications: getEnrolmentNotificationTypes(
-    //   enrolment.notifications as string
+    // notifications: getSignupNotificationTypes(
+    //   signup.notifications as string
     // ),
-    phoneNumber: enrolment.phone_number || '-',
-    serviceLanguage: enrolment.service_language ?? '',
+    phoneNumber: signup.phone_number || '-',
+    serviceLanguage: signup.service_language ?? '',
     signups: [
       {
-        city: enrolment.city || '-',
-        dateOfBirth: enrolment.date_of_birth
-          ? formatDate(new Date(enrolment.date_of_birth))
+        city: signup.city || '-',
+        dateOfBirth: signup.date_of_birth
+          ? formatDate(new Date(signup.date_of_birth))
           : '',
         extraInfo: '',
-        firstName: enrolment.first_name || '-',
+        firstName: signup.first_name || '-',
         inWaitingList: false,
-        lastName: enrolment.last_name || '-',
-        streetAddress: enrolment.street_address || '-',
-        zipcode: enrolment.zipcode || '-',
+        lastName: signup.last_name || '-',
+        streetAddress: signup.street_address || '-',
+        zipcode: signup.zipcode || '-',
       },
     ],
   };

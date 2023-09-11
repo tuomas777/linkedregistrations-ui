@@ -7,14 +7,14 @@ import LoadingSpinner from '../../common/components/loadingSpinner/LoadingSpinne
 import SuccessTemplate from '../../common/components/successTemplate/SuccessTemplate';
 import useLocale from '../../hooks/useLocale';
 import MainContent from '../app/layout/mainContent/MainContent';
-import ConfirmationMessage from '../enrolment/confirmationMessage/ConfirmationMessage';
-import { ENROLMENT_QUERY_PARAMS } from '../enrolment/constants';
-import useEventAndRegistrationData from '../enrolment/hooks/useEventAndRegistrationData';
 import { Event } from '../event/types';
 import { getEventFields } from '../event/utils';
 import NotFound from '../notFound/NotFound';
+import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../registration/types';
 import { getRegistrationFields } from '../registration/utils';
+import { SIGNUP_QUERY_PARAMS } from '../signup/constants';
+import ConfirmationMessage from './confirmationMessage/ConfirmationMessage';
 
 type Props = {
   event: Event;
@@ -23,8 +23,8 @@ type Props = {
 
 const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
   const { query } = useRouter();
-  const { [ENROLMENT_QUERY_PARAMS.REDIRECT_URL]: redirectUrl } = query;
-  const { t } = useTranslation(['enrolment']);
+  const { [SIGNUP_QUERY_PARAMS.REDIRECT_URL]: redirectUrl } = query;
+  const { t } = useTranslation(['signup']);
   const locale = useLocale();
 
   const { name } = getEventFields(event, locale);

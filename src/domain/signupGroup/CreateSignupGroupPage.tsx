@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
@@ -6,17 +7,17 @@ import { ExtendedSession } from '../../types';
 import Container from '../app/layout/container/Container';
 import MainContent from '../app/layout/mainContent/MainContent';
 // eslint-disable-next-line max-len
-import AuthenticationRequiredNotification from '../enrolment/authenticationRequiredNotification/AuthenticationRequiredNotification';
-import { EnrolmentPageProvider } from '../enrolment/enrolmentPageContext/EnrolmentPageContext';
-import EnrolmentPageMeta from '../enrolment/enrolmentPageMeta/EnrolmentPageMeta';
-import { EnrolmentServerErrorsProvider } from '../enrolment/enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
-import EventInfo from '../enrolment/eventInfo/EventInfo';
-import FormContainer from '../enrolment/formContainer/FormContainer';
-import useEventAndRegistrationData from '../enrolment/hooks/useEventAndRegistrationData';
 import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
+import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../registration/types';
+import SignupPageMeta from '../signup/signupPageMeta/SignupPageMeta';
+import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
+import AuthenticationRequiredNotification from './authenticationRequiredNotification/AuthenticationRequiredNotification';
+import EventInfo from './eventInfo/EventInfo';
+import FormContainer from './formContainer/FormContainer';
 import SignupGroupForm from './signupGroupForm/SignupGroupForm';
+import { SignupGroupFormProvider } from './signupGroupFormContext/SignupGroupFormContext';
 import { getSignupGroupDefaultInitialValues } from './utils';
 
 type Props = {
@@ -32,7 +33,7 @@ const CreateSignupGroupPage: React.FC<Props> = ({ event, registration }) => {
 
   return (
     <MainContent>
-      <EnrolmentPageMeta event={event} />
+      <SignupPageMeta event={event} />
       <Container withOffset>
         <FormContainer>
           {!session && <AuthenticationRequiredNotification />}
@@ -55,11 +56,11 @@ const CreateSignupGroupPageWrapper: React.FC = () => {
   return (
     <LoadingSpinner isLoading={isLoading}>
       {registration && event ? (
-        <EnrolmentPageProvider>
-          <EnrolmentServerErrorsProvider>
+        <SignupGroupFormProvider>
+          <SignupServerErrorsProvider>
             <CreateSignupGroupPage event={event} registration={registration} />
-          </EnrolmentServerErrorsProvider>
-        </EnrolmentPageProvider>
+          </SignupServerErrorsProvider>
+        </SignupGroupFormProvider>
       ) : (
         <NotFound />
       )}

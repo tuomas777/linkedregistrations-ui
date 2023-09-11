@@ -2,14 +2,14 @@
 import { NextPage } from 'next';
 
 import CreateSignupGroupSummaryPage from '../../../../../../domain/signupGroup/summaryPage/SummaryPage';
-import generateEnrolmentGetServerSideProps from '../../../../../../utils/generateEnrolmentGetServerSideProps';
+import generateSignupGetServerSideProps from '../../../../../../utils/generateSignupGetServerSideProps';
 
 const SummaryPage: NextPage = () => <CreateSignupGroupSummaryPage />;
 
-export const getServerSideProps = generateEnrolmentGetServerSideProps({
-  shouldPrefetchEnrolment: false,
+export const getServerSideProps = generateSignupGetServerSideProps({
   shouldPrefetchPlace: true,
-  translationNamespaces: ['common', 'enrolment', 'reservation', 'summary'],
+  shouldPrefetchSignup: false,
+  translationNamespaces: ['common', 'reservation', 'signup', 'summary'],
 });
 
 export default SummaryPage;

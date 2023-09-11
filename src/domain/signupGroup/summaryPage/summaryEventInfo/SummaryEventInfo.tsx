@@ -3,13 +3,13 @@ import React from 'react';
 
 import TextWithIcon from '../../../../common/components/textWithIcon/TextWithIcon';
 import useLocale from '../../../../hooks/useLocale';
-import AudienceAgeText from '../../../enrolment/eventInfo/AudienceAgeText';
-import DateText from '../../../enrolment/eventInfo/DateText';
-import PriceText from '../../../enrolment/eventInfo/PriceText';
 import useEventLocationText from '../../../event/hooks/useEventLocationText';
 import { getEventFields } from '../../../event/utils';
 import { Registration } from '../../../registration/types';
 import { getRegistrationFields } from '../../../registration/utils';
+import AudienceAgeText from '../../eventInfo/AudienceAgeText';
+import DateText from '../../eventInfo/DateText';
+import PriceText from '../../eventInfo/PriceText';
 import styles from './summaryEventInfo.module.scss';
 
 type EventInfoProps = {

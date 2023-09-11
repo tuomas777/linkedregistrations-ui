@@ -16,7 +16,7 @@ type Props = {
   registration: Registration;
 };
 const AvailableSeatsText: FC<Props> = ({ registration }) => {
-  const { t } = useTranslation(['enrolment']);
+  const { t } = useTranslation(['signup']);
 
   const freeAttendeeCapacity = getFreeAttendeeCapacity(registration);
   const attendeeCapacityUsed = isAttendeeCapacityUsed(registration);

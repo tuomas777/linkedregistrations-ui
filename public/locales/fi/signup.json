@@ -1,0 +1,100 @@
+{
+  "buttonCancel": "Peruuta ilmoittautuminen",
+  "buttonDeleteSignup": "Poista osallistuja",
+  "buttonGoToSummary": "Jatka ilmoittautumiseen",
+  "buttonUpdateParticipantAmount": "Päivitä",
+  "cancelledPage": {
+    "text": "Olet perunut ilmoittautumisesi tapahtumaamme {{name}}.",
+    "title": "Ilmoittautumisesi on peruttu"
+  },
+  "completedPage": {
+    "redirectInfo1": "Sinut ohjataan automaattisesti palveluntarjoajan sivulle.",
+    "redirectInfo2": "Jos uudelleenohjaus ei toimi, pääset sivulle <a href=\"{{url}}\">tästä</a>.",
+    "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
+    "title": "Kiitos ilmoittautumisestasi!"
+  },
+  "deleteSignupFromFormModal": {
+    "buttonDelete": "Poista osallistuja",
+    "buttonDelete_other": "Poista osallistujat",
+    "text1": "Haluatko varmasti poistaa osallistujan? Myös osallistujan varaus poistetaan.",
+    "text1_other": "Haluatko varmasti poistaa osallistujat? Myös osallistujien varaukset poistetaan.",
+    "text2": "Tätä toimintoa ei voi perua.",
+    "title": "Vahvista osallistujan poistaminen",
+    "title_other": "Vahvista osallistujien poistaminen"
+  },
+  "deleteSignupModal": {
+    "buttonCancel": "Peruuta ilmoittautuminen",
+    "text": "Tätä toimintoa ei voi perua.",
+    "title": "Haluatko varmasti poistaa ilmoittautumisen?"
+  },
+  "event": {
+    "audienceAge": {
+      "between": "{{min}} – {{max}} v",
+      "noAgeLimit": "Ei ikärajaa",
+      "over": "Yli {{min}} v",
+      "under": "Alle {{max}} v"
+    },
+    "freeEvent": "Maksuton"
+  },
+  "freeAttendeeCapacity": "Saatavilla olevia paikkoja",
+  "freeWaitingListCapacity": "Saatavilla olevia jonopaikkoja",
+  "instructions": "Ilmoittautumisohjeet",
+  "inWaitingList": {
+    "text": "Varasija",
+    "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon varasijalla. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
+  },
+  "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Tietosuojaseloste {{openInNewTab}}\">Tietosuojaseloste</a>",
+  "labelAttendeeExtraInfo": "Lisätietoa (valinnainen)",
+  "labelCity": "Kaupunki",
+  "labelDateOfBirth": "Syntymäaika",
+  "labelEmail": "Sähköpostiosoite",
+  "labelExtraInfo": "Lisätietoa ilmoittautumisesta (valinnainen)",
+  "labelFirstName": "Etunimi",
+  "labelLastName": "Sukunimi",
+  "labelMembershipNumber": "Jäsenkortin numero (valinnainen)",
+  "labelNativeLanguage": "Äidinkieli",
+  "labelParticipantAmount": "Ilmoittautujien määrä",
+  "labelPhoneNumber": "Puhelinnumero",
+  "labelServiceLanguage": "Asiointikieli",
+  "labelSignupExtraInfo": "Lisätietoa (valinnainen)",
+  "labelStreetAddress": "Katuosoite",
+  "labelZipcode": "Postinumero",
+  "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
+  "notifications": {
+    "email": "Sähköpostilla",
+    "sms": "Tekstiviestillä"
+  },
+  "personsAddedToWaitingListModal": {
+    "buttonClose": "Sulje",
+    "text": "Huomioi, että kaikki ilmoittautujien paikat eivät ole varmistettuja. Varasijalla olevat ilmoittautujat varmistuvat vain, jos jonosta vapautuu lisää paikkoja. Varmistuneesta ilmoittautumisesta saat erillisen sähköpostin.",
+    "title": "Ilmoittautujia on lisätty varausjonoon"
+  },
+  "placeholderCity": "Syötä kaupunki",
+  "placeholderDateOfBirth": "P.K.VVVV",
+  "placeholderEmail": "Syötä sähköpostiosoite",
+  "placeholderExtraInfo": "Syötä mahdollinen lisätieto tai toive",
+  "placeholderFirstName": "Syötä ilmoittautujan etunimi",
+  "placeholderLastName": "Syötä ilmoittautujan sukunimi",
+  "placeholderMembershipNumber": "Syötä jäsenkortin numero",
+  "placeholderNativeLanguage": "Valitse äidinkieli",
+  "placeholderPhoneNumber": "+358 44 1234 567",
+  "placeholderServiceLanguage": "Valitse asiointikieli",
+  "placeholderSignupExtraInfo": "Syötä mahdollinen lisätieto tai toive",
+  "placeholderStreetAddress": "Syötä katuosoite",
+  "placeholderZipcode": "Syötä postinumero",
+  "signupDefaultTitle": "Osallistuja {{index}}",
+  "timeLeft": "Aikaa jäljellä ilmoittautumisen tekoon",
+  "titleAdditionalInfo": "Lisätiedot",
+  "titleBasicInfo": "Ilmoittautujan perustiedot",
+  "titleContactInfo": "Yhteystiedot",
+  "titleInformantInfo": "Ilmoittajan tiedot",
+  "titleNotifications": "Tapahtumaa koskevat ilmoitukset",
+  "titleRegistration": "Ilmoittautuminen",
+  "warnings": {
+    "allSeatsReserved": "Tapahtuman kaikki paikat ovat tällä hetkellä varatut. Kokeile myöhemmin uudelleen.",
+    "capacityInWaitingList": "Ilmoittautuminen tähän tapahtumaan on vielä mahdollista, mutta jonopaikkoja on jäljellä vain {{count}} kpl.",
+    "capacityInWaitingList_other": "Ilmoittautuminen tähän tapahtumaan on vielä mahdollista, mutta jonopaikkoja on jäljellä vain {{count}} kpl.",
+    "capacityInWaitingListNoLimit": "Ilmoittautuminen tähän tapahtumaan on vielä mahdollista, mutta vain jonopaikkoja on jäljellä.",
+    "closed": "Ilmoittautuminen tähän tapahtumaan on tällä hetkellä suljettu. Kokeile myöhemmin uudelleen."
+  }
+}

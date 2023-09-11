@@ -2,8 +2,8 @@ import { useField } from 'formik';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
-import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
-import { SignupFields } from '../../../enrolment/types';
+import { SIGNUP_GROUP_FIELDS } from '../../constants';
+import { SignupFields } from '../../types';
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
 

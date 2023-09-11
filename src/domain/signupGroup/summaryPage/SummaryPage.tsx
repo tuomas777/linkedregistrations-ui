@@ -16,25 +16,25 @@ import { ExtendedSession } from '../../../types';
 import Container from '../../app/layout/container/Container';
 import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
-import AuthenticationRequiredNotification from '../../enrolment/authenticationRequiredNotification/AuthenticationRequiredNotification';
-import ButtonWrapper from '../../enrolment/buttonWrapper/ButtonWrapper';
-import { ENROLMENT_QUERY_PARAMS } from '../../enrolment/constants';
-import Divider from '../../enrolment/divider/Divider';
-import { EnrolmentPageProvider } from '../../enrolment/enrolmentPageContext/EnrolmentPageContext';
-import { EnrolmentServerErrorsProvider } from '../../enrolment/enrolmentServerErrorsContext/EnrolmentServerErrorsContext';
-import { useEnrolmentServerErrorsContext } from '../../enrolment/enrolmentServerErrorsContext/hooks/useEnrolmentServerErrorsContext';
-import EventInfo from '../../enrolment/eventInfo/EventInfo';
-import FormContainer from '../../enrolment/formContainer/FormContainer';
-import useEnrolmentActions from '../../enrolment/hooks/useEnrolmentActions';
-import useEventAndRegistrationData from '../../enrolment/hooks/useEventAndRegistrationData';
-import ReservationTimer from '../../enrolment/reservationTimer/ReservationTimer';
 import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
+import useEventAndRegistrationData from '../../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../../registration/types';
 import {
   clearSeatsReservationData,
   getSeatsReservationData,
 } from '../../reserveSeats/utils';
+import { SIGNUP_QUERY_PARAMS } from '../../signup/constants';
+import useSignupAction from '../../signup/hooks/useSignupActions';
+import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
+import { SignupServerErrorsProvider } from '../../signup/signupServerErrorsContext/SignupServerErrorsContext';
+import AuthenticationRequiredNotification from '../authenticationRequiredNotification/AuthenticationRequiredNotification';
+import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
+import Divider from '../divider/Divider';
+import EventInfo from '../eventInfo/EventInfo';
+import FormContainer from '../formContainer/FormContainer';
+import ReservationTimer from '../reservationTimer/ReservationTimer';
+import { SignupGroupFormProvider } from '../signupGroupFormContext/SignupGroupFormContext';
 import {
   clearCreateSignupGroupFormData,
   getSignupGroupDefaultInitialValues,
@@ -57,7 +57,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     data: ExtendedSession | null;
   };
 
-  const { createSignupGroup } = useEnrolmentActions({ registration });
+  const { createSignupGroup } = useSignupAction({ registration });
 
   const reservationTimerCallbacksDisabled = useRef(false);
   const disableReservationTimerCallbacks = useCallback(() => {
@@ -69,7 +69,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
 
   const goToSignupGroupCompletedPage = () => {
     // Disable reservation timer callbacks
-    // so user is not redirected to create enrolment page
+    // so user is not redirected to create signup page
     disableReservationTimerCallbacks();
 
     clearCreateSignupGroupFormData(registration.id);
@@ -92,14 +92,14 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const initialValues = getSignupGroupDefaultInitialValues();
 
   const { serverErrorItems, setServerErrorItems, showServerErrors } =
-    useEnrolmentServerErrorsContext();
+    useSignupServerErrorsContext();
 
   const goToPage = (pathname: string) => {
     router.push({
       pathname,
       query: pick(router.query, [
-        ENROLMENT_QUERY_PARAMS.IFRAME,
-        ENROLMENT_QUERY_PARAMS.REDIRECT_URL,
+        SIGNUP_QUERY_PARAMS.IFRAME,
+        SIGNUP_QUERY_PARAMS.REDIRECT_URL,
       ]),
     });
   };
@@ -154,7 +154,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                         onError: (error) =>
                           showServerErrors(
                             { error: JSON.parse(error.message) },
-                            'enrolment'
+                            'signup'
                           ),
                         onSuccess: goToSignupGroupCompletedPage,
                       });
@@ -208,11 +208,11 @@ const SummaryPageWrapper: React.FC = () => {
   return (
     <LoadingSpinner isLoading={isLoading}>
       {event && registration ? (
-        <EnrolmentPageProvider>
-          <EnrolmentServerErrorsProvider>
+        <SignupGroupFormProvider>
+          <SignupServerErrorsProvider>
             <SummaryPage event={event} registration={registration} />
-          </EnrolmentServerErrorsProvider>
-        </EnrolmentPageProvider>
+          </SignupServerErrorsProvider>
+        </SignupGroupFormProvider>
       ) : (
         <NotFound />
       )}

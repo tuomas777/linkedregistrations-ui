@@ -5,11 +5,11 @@ import Fieldset from '../../../../common/components/fieldset/Fieldset';
 import FormGroup from '../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../common/components/textArea/TextArea';
 import skipFalsyType from '../../../../utils/skipFalsyType';
-import { SIGNUP_GROUP_FIELDS } from '../../../enrolment/constants';
-import Divider from '../../../enrolment/divider/Divider';
-import useLanguageOptions from '../../../enrolment/hooks/useLanguageOptions';
-import useNotificationOptions from '../../../enrolment/hooks/useNotificationOptions';
-import { SignupGroupFormFields } from '../../../enrolment/types';
+import useLanguageOptions from '../../../language/hooks/useLanguageOptions';
+import { SIGNUP_GROUP_FIELDS } from '../../constants';
+import Divider from '../../divider/Divider';
+import useNotificationOptions from '../../hooks/useNotificationOptions';
+import { SignupGroupFormFields } from '../../types';
 import ReadOnlyTextInput from '../readOnlyTextInput/ReadOnlyTextInput';
 import styles from './informantInfo.module.scss';
 
