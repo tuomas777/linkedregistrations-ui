@@ -34,7 +34,7 @@ import { User } from '../domain/user/types';
 import generateAtId from './generateAtId';
 
 export const fakeEvent = (overrides?: Partial<Event>): Event => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<Event, typeof overrides>(
     {
@@ -60,15 +60,15 @@ export const fakeEvent = (overrides?: Partial<Event>): Event => {
       keywords: [],
       last_modified_time: '2020-07-13T05:51:05.761000Z',
       location: fakePlace(),
-      location_extra_info: fakeLocalisedObject(faker.address.streetAddress()),
+      location_extra_info: fakeLocalisedObject(faker.location.streetAddress()),
       maximum_attendee_capacity: null,
       minimum_attendee_capacity: null,
-      name: fakeLocalisedObject(faker.name.jobTitle()),
+      name: fakeLocalisedObject(faker.person.jobTitle()),
       offers: [],
       provider_contact_info: null,
       provider: fakeLocalisedObject(),
       publication_status: PublicationStatus.Public,
-      publisher: faker.datatype.uuid(),
+      publisher: faker.string.uuid(),
       short_description: fakeLocalisedObject(),
       start_time: '2020-07-13T05:51:05.761000Z',
       sub_events: [],
@@ -93,20 +93,20 @@ export const fakeImages = (
 });
 
 export const fakeImage = (overrides?: Partial<Image>): Image => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<Image, typeof overrides>(
     {
       id,
-      alt_text: faker.image.cats(),
+      alt_text: faker.lorem.words(),
       created_time: null,
       cropping: '59,0,503,444',
       data_source: 'hel',
       last_modified_time: null,
       license: 'cc_by',
-      name: faker.random.words(),
-      photographer_name: faker.name.firstName(),
-      publisher: faker.datatype.uuid(),
+      name: faker.lorem.words(),
+      photographer_name: faker.person.firstName(),
+      publisher: faker.string.uuid(),
       url: faker.internet.url(),
       '@id': generateAtId(id, 'image'),
       '@context': 'https://schema.org',
@@ -125,7 +125,7 @@ export const fakeKeywords = (
 });
 
 export const fakeKeyword = (overrides?: Partial<Keyword>): Keyword => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<Keyword, typeof overrides>(
     {
@@ -140,7 +140,7 @@ export const fakeKeyword = (overrides?: Partial<Keyword>): Keyword => {
       image: null,
       name: fakeLocalisedObject(),
       n_nvents: 0,
-      publisher: faker.datatype.uuid(),
+      publisher: faker.string.uuid(),
       '@id': generateAtId(id, 'keyword'),
       '@context': 'https://schema.org',
       '@type': 'Keyword',
@@ -158,7 +158,7 @@ export const fakeLanguages = (
 });
 
 export const fakeLanguage = (overrides?: Partial<LELanguage>): LELanguage => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<LELanguage, typeof overrides>(
     {
@@ -188,7 +188,7 @@ export const fakeOffer = (overrides?: Partial<Offer>): Offer =>
   );
 
 export const fakePlace = (overrides?: Partial<Place>): Place => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<Place, typeof overrides>(
     {
@@ -211,7 +211,7 @@ export const fakePlace = (overrides?: Partial<Place>): Place => {
       n_events: 0,
       parent: null,
       position: null,
-      postal_code: faker.address.zipCode(),
+      postal_code: faker.location.zipCode(),
       post_office_box_num: null,
       publisher: 'hel:1234',
       replaced_by: null,
@@ -237,7 +237,7 @@ export const fakeRegistrations = (
 export const fakeRegistration = (
   overrides?: Partial<Registration>
 ): Registration => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
   const event = fakeEvent();
 
   return merge<Registration, typeof overrides>(
@@ -248,7 +248,7 @@ export const fakeRegistration = (
       audience_min_age: null,
       confirmation_message: fakeLocalisedObject(faker.lorem.paragraph()),
       created_at: null,
-      created_by: faker.name.firstName(),
+      created_by: faker.person.firstName(),
       current_attendee_count: 0,
       current_waiting_list_count: 0,
       enrolment_end_time: '2020-09-30T16:00:00.000000Z',
@@ -273,14 +273,14 @@ export const fakeRegistration = (
 export const fakeSeatsReservation = (
   overrides?: Partial<SeatsReservation>
 ): SeatsReservation => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   const timestamp = new Date().toISOString();
 
   return merge<SeatsReservation, typeof overrides>(
     {
       id,
-      code: faker.datatype.uuid(),
+      code: faker.string.uuid(),
       expiration: addMinutes(new Date(timestamp), 30).toISOString(),
       in_waitlist: false,
       registration: TEST_REGISTRATION_ID,
@@ -292,31 +292,31 @@ export const fakeSeatsReservation = (
 };
 
 export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<Signup, typeof overrides>(
     {
       id,
       attendee_status: ATTENDEE_STATUS.Attending,
-      city: faker.address.city(),
+      city: faker.location.city(),
       created_at: null,
       created_by: null,
       date_of_birth: '1990-10-10',
       email: faker.internet.email(),
       extra_info: faker.lorem.paragraph(),
-      first_name: faker.name.firstName(),
+      first_name: faker.person.firstName(),
       last_modified_at: null,
       last_modified_by: null,
-      last_name: faker.name.lastName(),
-      membership_number: faker.datatype.uuid(),
+      last_name: faker.person.lastName(),
+      membership_number: faker.string.uuid(),
       native_language: 'fi',
       notifications: NOTIFICATION_TYPE.SMS_EMAIL,
       phone_number: faker.phone.number(),
       registration: TEST_REGISTRATION_ID,
       responsible_for_group: false,
       service_language: 'fi',
-      street_address: faker.address.streetAddress(),
-      zipcode: faker.address.zipCode('#####'),
+      street_address: faker.location.streetAddress(),
+      zipcode: faker.location.zipCode('#####'),
     },
     overrides
   );
@@ -325,7 +325,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
 export const fakeSignupGroup = (
   overrides?: Partial<SignupGroup>
 ): SignupGroup => {
-  const id = overrides?.id || faker.datatype.uuid();
+  const id = overrides?.id || faker.string.uuid();
 
   return merge<SignupGroup, typeof overrides>(
     {
@@ -343,21 +343,21 @@ export const fakeSignupGroup = (
 };
 
 export const fakeUser = (overrides?: Partial<User>): User => {
-  const uuid = overrides?.uuid || faker.datatype.uuid();
+  const uuid = overrides?.uuid || faker.string.uuid();
   return merge<User, typeof overrides>(
     {
       admin_organizations: [],
       date_joined: null,
-      department_name: faker.random.words(),
-      display_name: faker.random.words(),
+      department_name: faker.lorem.words(),
+      display_name: faker.lorem.words(),
       email: faker.internet.email(),
-      first_name: faker.name.firstName(),
+      first_name: faker.person.firstName(),
       is_staff: false,
       last_login: '',
-      last_name: faker.name.lastName(),
-      organization: faker.random.words(),
+      last_name: faker.person.lastName(),
+      organization: faker.lorem.words(),
       organization_memberships: [],
-      username: faker.datatype.uuid(),
+      username: faker.string.uuid(),
       uuid,
       '@id': generateAtId(uuid, 'user'),
       '@context': 'https://schema.org',
@@ -368,12 +368,12 @@ export const fakeUser = (overrides?: Partial<User>): User => {
 };
 
 export const fakeLocalisedObject = (text?: string): LocalisedObject => ({
-  ar: faker.random.words(),
-  en: faker.random.words(),
-  fi: text || faker.random.words(),
-  ru: faker.random.words(),
-  sv: faker.random.words(),
-  zh_hans: faker.random.words(),
+  ar: faker.lorem.words(),
+  en: faker.lorem.words(),
+  fi: text || faker.lorem.words(),
+  ru: faker.lorem.words(),
+  sv: faker.lorem.words(),
+  zh_hans: faker.lorem.words(),
 });
 
 export const fakeMeta = (count = 1, overrides?: Partial<Meta>): Meta =>
