@@ -56,7 +56,9 @@ const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
             <p>{t('completedPage.redirectInfo1')}</p>
             <p
               dangerouslySetInnerHTML={{
-                __html: t('completedPage.redirectInfo2', { url: redirectUrl }),
+                __html: t('completedPage.redirectInfo2', {
+                  url: redirectUrl,
+                }) as string,
               }}
             />
           </>

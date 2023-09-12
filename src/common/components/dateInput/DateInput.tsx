@@ -4,7 +4,13 @@ import React from 'react';
 import isTestEnv from '../../../utils/isTestEnv';
 
 const DateInput: React.FC<DateInputProps> = (props) => {
-  return <BaseDateInput disableDatePicker={isTestEnv} {...props} />;
+  return (
+    <BaseDateInput
+      crossOrigin={undefined}
+      disableDatePicker={isTestEnv}
+      {...props}
+    />
+  );
 };
 
 export default DateInput;

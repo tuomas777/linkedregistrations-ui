@@ -411,7 +411,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             __html: t('labelAccepted', {
                               openInNewTab: t('common:openInNewTab'),
                               url: t('linkDataProtectionNotice'),
-                            }),
+                            }) as string,
                           }}
                         />
                       }
