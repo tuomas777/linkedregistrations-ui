@@ -174,7 +174,10 @@ const SignupGroupForm: React.FC<Props> = ({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={/* istanbul ignore next */ () => undefined}
+      onSubmit={
+        /* istanbul ignore next */
+        () => undefined
+      }
       validationSchema={
         readOnly ? undefined : () => getSignupGroupSchema(registration)
       }
