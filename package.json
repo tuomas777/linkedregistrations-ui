@@ -30,10 +30,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-i18next": "^13.2.2",
-    "react-scroll": "^1.8.8",
-    "react-toastify": "^9.1.1",
+    "react-scroll": "^1.8.9",
+    "react-toastify": "^9.1.3",
     "sass": "^1.56.1",
-    "use-debounce": "^9.0.2",
+    "use-debounce": "^9.0.4",
     "yup": "^1.2.0"
   },
   "devDependencies": {
