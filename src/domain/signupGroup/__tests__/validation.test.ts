@@ -137,8 +137,10 @@ describe('signupSchema function', () => {
     dateOfBirth: '1.1.2000',
     extraInfo: '',
     firstName: 'first name',
+    id: null,
     inWaitingList: true,
     lastName: 'last name',
+    responsibleForGroup: true,
     streetAddress: 'Street address',
     zipcode: '00100',
   };

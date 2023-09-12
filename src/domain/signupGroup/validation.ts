@@ -123,7 +123,7 @@ export const getSignupGroupSchema = (registration: Registration) => {
       )
       .when(
         [SIGNUP_GROUP_FIELDS.NOTIFICATIONS],
-        (notifications: string[], schema) =>
+        ([notifications]: string[][], schema) =>
           notifications.includes(NOTIFICATIONS.SMS)
             ? schema.required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
             : schema

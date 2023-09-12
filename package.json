@@ -34,7 +34,7 @@
     "react-toastify": "^9.1.1",
     "sass": "^1.56.1",
     "use-debounce": "^9.0.2",
-    "yup": "^0.32.11"
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
