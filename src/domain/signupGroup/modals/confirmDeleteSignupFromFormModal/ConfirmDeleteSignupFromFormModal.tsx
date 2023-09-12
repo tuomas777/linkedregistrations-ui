@@ -1,6 +1,6 @@
 import { Dialog, IconAlertCircle, IconCross } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 import Button from '../../../../common/components/button/Button';
 import styles from '../../../../common/components/dialog/dialog.module.scss';

@@ -1,6 +1,6 @@
 import { CookieModal } from 'hds-react';
+import { useTranslation } from 'next-i18next';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { PAGE_HEADER_ID } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
