@@ -106,9 +106,8 @@ const useSeatsReservationActions = ({
     try {
       // For some reason onSuccess and onError callbacks are not called when using mutate function
       // Use mutateAsync instead
-      const seatsReservation = await createSeatsReservationMutation.mutateAsync(
-        payload
-      );
+      const seatsReservation =
+        await createSeatsReservationMutation.mutateAsync(payload);
       cleanAfterUpdate(seatsReservation, callbacks);
     } catch (error) {
       handleError({
