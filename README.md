@@ -190,6 +190,24 @@ Launches the test runner in the interactive watch mode.
 
 Run tests and generate coverage report
 
+## Snyk
+
+Snyk CLI scans and monitors your projects for security vulnerabilities and license issues.
+
+For more information visit the Snyk website https://snyk.io
+
+For details see the CLI documentation https://docs.snyk.io/features/snyk-cli
+
+How to get started
+
+1. Authenticate by running `yarn snyk auth`
+2. Test your local project with `yarn snyk test`
+3. Get alerted for new vulnerabilities with `yarn snyk monitor`
+
+You can see all available command with `yarn snyk`
+
+You can install Snyk extension for Visual Studio Code from https://marketplace.visualstudio.com/items?itemName=snyk-security.snyk-vulnerability-scanner
+
 ## Debugging
 
 ### Debugging project in VS Code
