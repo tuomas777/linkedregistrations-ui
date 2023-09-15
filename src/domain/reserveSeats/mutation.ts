@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 
 import { ExtendedSession } from '../../types';
+
 import {
   CreateSeatsReservationInput,
   SeatsReservation,

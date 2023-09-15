@@ -1,4 +1,5 @@
 import { stringOrNull } from '../api/types';
+
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 
 export type SignupInput = {

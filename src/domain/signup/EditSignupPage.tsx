@@ -14,6 +14,7 @@ import EventInfo from '../signupGroup/eventInfo/EventInfo';
 import FormContainer from '../signupGroup/formContainer/FormContainer';
 import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
 import { SignupGroupFormProvider } from '../signupGroup/signupGroupFormContext/SignupGroupFormContext';
+
 import useSignupData from './hooks/useSignupData';
 import SignupPageMeta from './signupPageMeta/SignupPageMeta';
 import { SignupServerErrorsProvider } from './signupServerErrorsContext/SignupServerErrorsContext';

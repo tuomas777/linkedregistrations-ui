@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import pick from 'lodash/pick';
+import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ROUTES } from '../../app/routes/constants';

@@ -31,6 +31,7 @@ import {
   SignupGroupFormFields,
 } from '../domain/signupGroup/types';
 import { User } from '../domain/user/types';
+
 import generateAtId from './generateAtId';
 
 export const fakeEvent = (overrides?: Partial<Event>): Event => {

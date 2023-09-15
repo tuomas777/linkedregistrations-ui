@@ -2,6 +2,7 @@ import { IconAlertCircle } from 'hds-react';
 import React from 'react';
 
 import Container from '../../../domain/app/layout/container/Container';
+
 import styles from './errorTemplate.module.scss';
 
 interface Props {

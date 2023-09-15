@@ -22,6 +22,12 @@ import {
   TEST_SIGNUP_GROUP_ID,
 } from '../domain/signupGroup/constants';
 import { SignupGroupFormFields } from '../domain/signupGroup/types';
+import EditSignupPage, {
+  getServerSideProps as getEditSignupPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup/[signupId]/edit/index';
+import SignupCancelledPage, {
+  getServerSideProps as getSignupCancelledPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup/cancelled/index';
 import EditSignupGroupPage, {
   getServerSideProps as getEditSignupGroupPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/[signupGroupId]/edit/index';
@@ -37,12 +43,6 @@ import CreateSignupGroupPage, {
 import SummaryPage, {
   getServerSideProps as getSummaryPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/create/summary/index';
-import EditSignupPage, {
-  getServerSideProps as getEditSignupPageServerSideProps,
-} from '../pages/registration/[registrationId]/signup/[signupId]/edit/index';
-import SignupCancelledPage, {
-  getServerSideProps as getSignupCancelledPageServerSideProps,
-} from '../pages/registration/[registrationId]/signup/cancelled/index';
 import { ExtendedSSRConfig } from '../types';
 import formatDate from '../utils/formatDate';
 import {

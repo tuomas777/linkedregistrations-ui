@@ -11,6 +11,7 @@ import Divider from '../../divider/Divider';
 import useNotificationOptions from '../../hooks/useNotificationOptions';
 import { SignupGroupFormFields } from '../../types';
 import ReadOnlyTextInput from '../readOnlyTextInput/ReadOnlyTextInput';
+
 import styles from './informantInfo.module.scss';
 
 type Props = {

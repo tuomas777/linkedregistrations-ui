@@ -4,6 +4,7 @@ import React from 'react';
 
 import { SIGNUP_GROUP_FIELDS } from '../../constants';
 import { SignupFields } from '../../types';
+
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
 

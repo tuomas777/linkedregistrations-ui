@@ -7,6 +7,7 @@ import { toHaveNoViolations } from 'jest-axe';
 import { setConfig } from 'next/config';
 
 import config from '../next.config';
+
 import { server } from './tests/msw/server';
 
 setConfig(config);

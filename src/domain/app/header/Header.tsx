@@ -12,6 +12,7 @@ import { ExtendedSession } from '../../../types';
 import { getUserName } from '../../auth/utils';
 import { useUserQuery } from '../../user/query';
 import { ROUTES } from '../routes/constants';
+
 import styles from './header.module.scss';
 
 const Header: React.FC = () => {

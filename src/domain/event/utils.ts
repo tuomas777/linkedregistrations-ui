@@ -1,5 +1,6 @@
 import { Language } from '../../types';
 import getLocalisedString from '../../utils/getLocalisedString';
+
 import { Event, EventFields } from './types';
 
 export const getEventFields = (event: Event, locale: Language): EventFields => {

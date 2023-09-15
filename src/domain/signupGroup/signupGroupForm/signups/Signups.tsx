@@ -16,6 +16,7 @@ import { SIGNUP_GROUP_FIELDS } from '../../constants';
 import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
 import { SignupFields } from '../../types';
 import { getNewSignups } from '../../utils';
+
 import Signup from './signup/Signup';
 import styles from './signups.module.scss';
 

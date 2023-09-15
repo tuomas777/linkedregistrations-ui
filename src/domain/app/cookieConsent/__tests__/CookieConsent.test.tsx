@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable max-len */
 import i18n from 'i18next';
-import mockRouter from 'next-router-mock';
 import singletonRouter from 'next/router';
+import mockRouter from 'next-router-mock';
 import React from 'react';
 
 import {

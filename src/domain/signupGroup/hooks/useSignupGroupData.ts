@@ -1,5 +1,5 @@
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 import { ExtendedSession } from '../../../types';
 import { useSignupGroupQuery } from '../query';

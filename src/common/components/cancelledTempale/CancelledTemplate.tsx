@@ -2,6 +2,7 @@ import { IconCross } from 'hds-react';
 import React from 'react';
 
 import Container from '../../../domain/app/layout/container/Container';
+
 import styles from './cancelledTemplate.module.scss';
 
 interface Props {

@@ -10,6 +10,7 @@ import { getErrorText } from '../../../utils/validationUtils';
 import Button from '../button/Button';
 import Checkbox from '../checkbox/Checkbox';
 import { RequiredIndicator } from '../requiredIndicator/RequiredIndicator';
+
 import styles from './checkboxGroupField.module.scss';
 
 type Columns = 1 | 2 | 3 | 4;

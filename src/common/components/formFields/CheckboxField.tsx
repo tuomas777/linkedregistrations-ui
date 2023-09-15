@@ -5,6 +5,7 @@ import React from 'react';
 
 import useLocale from '../../../hooks/useLocale';
 import Checkbox from '../checkbox/Checkbox';
+
 import styles from './checkboxGroupField.module.scss';
 
 type Props = FieldProps & CheckboxProps;

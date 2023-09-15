@@ -18,6 +18,7 @@ import { SIGNUP_GROUP_FIELDS } from '../../signupGroup/constants';
 import { SignupFields } from '../../signupGroup/types';
 import ConfirmDeleteSignupFromForm from '../modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
 import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
+
 import styles from './participantAmountSelector.module.scss';
 
 interface Props {

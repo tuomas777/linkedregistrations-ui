@@ -19,6 +19,7 @@ import {
 import wait from '../../utils/wait';
 import { numberOrNull, stringOrNull } from '../api/types';
 import { Registration } from '../registration/types';
+
 import {
   NOTIFICATIONS,
   SIGNUP_FIELDS,

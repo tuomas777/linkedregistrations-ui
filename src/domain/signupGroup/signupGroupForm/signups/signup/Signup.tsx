@@ -20,6 +20,7 @@ import {
   isDateOfBirthFieldRequired,
   isSignupFieldRequired,
 } from '../../../utils';
+
 import styles from './signup.module.scss';
 
 type Props = {

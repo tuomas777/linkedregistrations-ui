@@ -6,6 +6,7 @@ import Button from '../../common/components/button/Button';
 import ErrorTemplate from '../../common/components/errorTemplate/ErrorTemplate';
 import ErrorPageMeta from '../../common/components/errrorPageMeta/ErrorPageMeta';
 import MainContent from '../app/layout/mainContent/MainContent';
+
 import styles from './signInRequired.module.scss';
 
 const SignInRequired: React.FC = () => {

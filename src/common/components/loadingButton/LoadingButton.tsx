@@ -3,6 +3,7 @@ import React from 'react';
 
 import Button from '../button/Button';
 import LoadingSpinner from '../loadingSpinner/LoadingSpinner';
+
 import styles from './loadingButton.module.scss';
 
 export type LoadingButtonProps = {

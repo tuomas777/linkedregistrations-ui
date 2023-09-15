@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { prefetchSignupQuery } from '../domain/signup/query';
 import { ExtendedSSRConfig, TranslationNamespaces } from '../types';
+
 import { getSessionAndUser } from './getSessionAndUser';
 import prefetchRegistrationAndEvent from './prefetchRegistrationAndEvent';
 
