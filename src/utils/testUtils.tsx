@@ -16,7 +16,7 @@ import { RequestHandler } from 'msw';
 import { SessionProvider } from 'next-auth/react';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { NextRouter } from 'next/router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import wait from 'waait';
 
 import { testId } from '../common/components/loadingSpinner/LoadingSpinner';
@@ -50,16 +50,19 @@ const customRender: CustomRender = (
     },
   });
 
-  const Wrapper = ({ children }) => {
+  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+    const value = useMemo(
+      () => ({
+        ...mockRouter,
+        ...router,
+        ...(path ? { pathname: path, asPath: path, basePath: path } : {}),
+        ...(query ? { query } : {}),
+      }),
+      []
+    );
+
     return (
-      <RouterContext.Provider
-        value={{
-          ...mockRouter,
-          ...router,
-          ...(path ? { pathname: path, asPath: path, basePath: path } : {}),
-          ...(query ? { query } : {}),
-        }}
-      >
+      <RouterContext.Provider value={value}>
         <SessionProvider session={session}>
           {/* @ts-ignore */}
           <QueryClientProvider client={queryClient}>
@@ -117,7 +120,7 @@ export const getQueryWrapper = (session: ExtendedSession | null = null) => {
     defaultOptions: { queries: { retry: false } },
   });
 
-  const wrapper = ({ children }) => (
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </SessionProvider>
