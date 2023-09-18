@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { IconArrowLeft, IconSignout, Navigation } from 'hds-react';
+import { IconSignout, Navigation } from 'hds-react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -9,17 +9,10 @@ import { MAIN_CONTENT_ID, PAGE_HEADER_ID } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import useSelectLanguage from '../../../hooks/useSelectLanguage';
 import { ExtendedSession } from '../../../types';
-import skipFalsyType from '../../../utils/skipFalsyType';
 import { getUserName } from '../../auth/utils';
 import { useUserQuery } from '../../user/query';
 import { ROUTES } from '../routes/constants';
 import styles from './header.module.scss';
-
-interface NavigationItem {
-  icon?: React.ReactElement;
-  labelKey: string;
-  url: string;
-}
 
 const Header: React.FC = () => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
@@ -40,37 +33,11 @@ const Header: React.FC = () => {
   const { t } = useTranslation('common');
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-  const NAVIGATION_ITEMS: NavigationItem[] = [
-    router.pathname === ROUTES.CREATE_SIGNUP_GROUP_SUMMARY && {
-      icon: <IconArrowLeft aria-hidden />,
-      labelKey: 'navigation.backToSignupGroupForm',
-      url: ROUTES.CREATE_SIGNUP_GROUP.replace(
-        '[registrationId]',
-        router.query.registrationId as string
-      ),
-    },
-  ].filter(skipFalsyType);
-
-  const navigationItems = NAVIGATION_ITEMS.map(
-    ({ labelKey, url, ...rest }) => ({
-      label: t(labelKey),
-      url,
-      ...rest,
-    })
-  );
-
   const goToHomePage = (e?: Event) => {
     e?.preventDefault();
     router.push(ROUTES.HOME);
     setMenuOpen(false);
   };
-
-  const goToPage =
-    (pathname: string) => (e?: React.MouseEvent<HTMLAnchorElement>) => {
-      e?.preventDefault();
-      router.push(pathname);
-      toggleMenu();
-    };
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -95,18 +62,7 @@ const Header: React.FC = () => {
       titleUrl={`/${locale}${ROUTES.HOME}`}
       logoLanguage={locale === 'sv' ? /* istanbul ignore next */ 'sv' : 'fi'}
     >
-      <Navigation.Row>
-        {navigationItems.map((item) => (
-          <Navigation.Item
-            variant="primary"
-            key={item.url}
-            icon={item.icon}
-            href={item.url}
-            label={item.label}
-            onClick={goToPage(item.url)}
-          />
-        ))}
-      </Navigation.Row>
+      <Navigation.Row></Navigation.Row>
 
       <Navigation.Actions>
         <Navigation.User

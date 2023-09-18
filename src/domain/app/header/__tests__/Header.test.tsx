@@ -19,9 +19,7 @@ import {
   userEvent,
   waitFor,
 } from '../../../../utils/testUtils';
-import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { TEST_USER_ID } from '../../../user/constants';
-import { ROUTES } from '../../routes/constants';
 import Header from '../Header';
 
 configure({ defaultHidden: true });
@@ -57,21 +55,12 @@ const getElement = (key: 'enOption' | 'menuButton' | 'svOption') => {
 };
 
 const getElements = (
-  key:
-    | 'appName'
-    | 'backToSignupGroupFormLink'
-    | 'languageSelector'
-    | 'signInButton'
-    | 'signOutLink'
+  key: 'appName' | 'languageSelector' | 'signInButton' | 'signOutLink'
 ) => {
   switch (key) {
     case 'appName':
       return screen.getAllByRole('link', {
         name: /linked registrations/i,
-      });
-    case 'backToSignupGroupFormLink':
-      return screen.getAllByRole('link', {
-        name: /palaa ilmoittautumiskaavakkeeseen/i,
       });
     case 'languageSelector':
       return screen.getAllByRole('button', {
@@ -168,21 +157,4 @@ test('should start logout process', async () => {
   await user.click(signOutLinks[0]);
 
   await waitFor(() => expect(nextAuth.signOut).toBeCalled());
-});
-
-test('should show back to signup group form link', async () => {
-  const user = userEvent.setup();
-
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: TEST_REGISTRATION_ID },
-  });
-  renderComponent();
-
-  const backToSignupGroupFormLinks = getElements('backToSignupGroupFormLink');
-  await user.click(backToSignupGroupFormLinks[0]);
-
-  expect(mockRouter.asPath).toBe(
-    '/registration/registration:1/signup-group/create'
-  );
 });

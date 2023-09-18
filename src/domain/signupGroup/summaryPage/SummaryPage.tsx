@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
 import { Form, Formik } from 'formik';
-import { Notification } from 'hds-react';
+import { IconPen, Notification } from 'hds-react';
 import pick from 'lodash/pick';
 import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import React, { FC, useCallback, useRef } from 'react';
 
-import Button from '../../../common/components/button/Button';
+import ButtonPanel from '../../../common/components/buttonPanel/ButtonPanel';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
+import LoadingButton from '../../../common/components/loadingButton/LoadingButton';
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
@@ -28,7 +29,7 @@ import { SIGNUP_QUERY_PARAMS } from '../../signup/constants';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { SignupServerErrorsProvider } from '../../signup/signupServerErrorsContext/SignupServerErrorsContext';
 import AuthenticationRequiredNotification from '../authenticationRequiredNotification/AuthenticationRequiredNotification';
-import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
+import { SIGNUP_GROUP_ACTIONS } from '../constants';
 import Divider from '../divider/Divider';
 import EventInfo from '../eventInfo/EventInfo';
 import FormContainer from '../formContainer/FormContainer';
@@ -57,7 +58,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     data: ExtendedSession | null;
   };
 
-  const { createSignupGroup } = useSignupGroupActions();
+  const { createSignupGroup, saving } = useSignupGroupActions();
 
   const reservationTimerCallbacksDisabled = useRef(false);
   const disableReservationTimerCallbacks = useCallback(() => {
@@ -79,7 +80,6 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
       ROUTES.SIGNUP_GROUP_COMPLETED.replace('[registrationId]', registration.id)
     );
   };
-
   const goToCreateSignupGroupPage = () => {
     goToPage(
       ROUTES.CREATE_SIGNUP_GROUP.replace(
@@ -104,100 +104,118 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     });
   };
 
+  if (!session) {
+    return (
+      <MainContent className={styles.summaryPage}>
+        <SummaryPageMeta event={event} />
+        <Container>
+          <FormContainer>
+            <AuthenticationRequiredNotification />
+            <EventInfo event={event} registration={registration} />
+          </FormContainer>
+        </Container>
+      </MainContent>
+    );
+  }
   return (
     <MainContent className={styles.summaryPage}>
-      <SummaryPageMeta event={event} />
-      <Container>
-        <FormContainer>
-          <ServerErrorSummary errors={serverErrorItems} />
+      <>
+        <SummaryPageMeta event={event} />
 
-          {!session && (
-            <>
-              <AuthenticationRequiredNotification />
-              <EventInfo event={event} registration={registration} />
-            </>
-          )}
-          {session && (
-            <>
-              <Notification
-                className={styles.notification}
-                label={t('notificationTitle')}
-              >
-                {t('notificationLabel')}
-              </Notification>
-              <SummaryEventInfo registration={registration} />
-              <Formik
-                initialValues={initialValues}
-                onSubmit={/* istanbul ignore next */ () => undefined}
-                validationSchema={() => getSignupGroupSchema(registration)}
-              >
-                {({ values }) => {
-                  const handleSubmit = async () => {
-                    try {
-                      setServerErrorItems([]);
+        <Formik
+          initialValues={initialValues}
+          onSubmit={/* istanbul ignore next */ () => undefined}
+          validationSchema={() => getSignupGroupSchema(registration)}
+        >
+          {({ values }) => {
+            const handleSubmit = async () => {
+              try {
+                setServerErrorItems([]);
 
-                      await getSignupGroupSchema(registration).validate(
-                        values,
-                        { abortEarly: true }
-                      );
+                await getSignupGroupSchema(registration).validate(values, {
+                  abortEarly: true,
+                });
 
-                      const reservationData = getSeatsReservationData(
-                        registration.id
-                      );
-                      const payload = getSignupGroupPayload({
-                        formValues: values,
-                        registration,
-                        reservationCode: reservationData?.code as string,
-                      });
+                const reservationData = getSeatsReservationData(
+                  registration.id
+                );
+                const payload = getSignupGroupPayload({
+                  formValues: values,
+                  registration,
+                  reservationCode: reservationData?.code as string,
+                });
 
-                      createSignupGroup(payload, {
-                        onError: (error) =>
-                          showServerErrors(
-                            { error: JSON.parse(error.message) },
-                            'signup'
-                          ),
-                        onSuccess: goToSignupGroupCompletedPage,
-                      });
-                    } catch (e) {
-                      goToCreateSignupGroupPage();
-                    }
-                  };
+                createSignupGroup(payload, {
+                  onError: (error) =>
+                    showServerErrors(
+                      { error: JSON.parse(error.message) },
+                      'signup'
+                    ),
+                  onSuccess: goToSignupGroupCompletedPage,
+                });
+              } catch (e) {
+                goToCreateSignupGroupPage();
+              }
+            };
 
-                  return (
-                    <Form noValidate>
-                      <FormikPersist
-                        isSessionStorage={true}
-                        name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
-                        savingDisabled={true}
-                      />
+            return (
+              <Form noValidate>
+                <FormikPersist
+                  isSessionStorage={true}
+                  name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
+                  savingDisabled={true}
+                />
 
-                      <Divider />
+                <Container withOffset>
+                  <FormContainer>
+                    <ServerErrorSummary errors={serverErrorItems} />
 
-                      <ReservationTimer
-                        callbacksDisabled={
-                          reservationTimerCallbacksDisabled.current
-                        }
-                        disableCallbacks={disableReservationTimerCallbacks}
-                        initReservationData={false}
-                        onDataNotFound={goToCreateSignupGroupPage}
-                        registration={registration}
-                      />
-                      <Divider />
-                      <Signups />
-                      <InformantInfo values={values} />
-                      <ButtonWrapper>
-                        <Button onClick={handleSubmit}>
-                          {t('buttonSend')}
-                        </Button>
-                      </ButtonWrapper>
-                    </Form>
-                  );
-                }}
-              </Formik>
-            </>
-          )}
-        </FormContainer>
-      </Container>
+                    <Notification
+                      className={styles.notification}
+                      label={t('notificationTitle')}
+                    >
+                      {t('notificationLabel')}
+                    </Notification>
+                    <SummaryEventInfo registration={registration} />
+
+                    <Divider />
+
+                    <ReservationTimer
+                      callbacksDisabled={
+                        reservationTimerCallbacksDisabled.current
+                      }
+                      disableCallbacks={disableReservationTimerCallbacks}
+                      initReservationData={false}
+                      onDataNotFound={goToCreateSignupGroupPage}
+                      registration={registration}
+                    />
+                    <Divider />
+                    <Signups />
+                    <InformantInfo values={values} />
+                  </FormContainer>
+                </Container>
+                <ButtonPanel
+                  backButtonAriaLabel={t(
+                    'common:navigation.backToSignupGroupForm'
+                  )}
+                  onBack={goToCreateSignupGroupPage}
+                  submitButtons={[
+                    <LoadingButton
+                      disabled={Boolean(saving)}
+                      icon={<IconPen aria-hidden={true} />}
+                      loading={saving == SIGNUP_GROUP_ACTIONS.CREATE}
+                      key="save"
+                      onClick={handleSubmit}
+                    >
+                      {t('buttonSend')}
+                    </LoadingButton>,
+                  ]}
+                ></ButtonPanel>
+              </Form>
+            );
+          }}
+        </Formik>
+      </>
     </MainContent>
   );
 };

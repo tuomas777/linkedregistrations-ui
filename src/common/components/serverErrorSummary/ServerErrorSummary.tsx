@@ -13,7 +13,7 @@ interface Props {
   id?: string;
 }
 const ServerErrorSummary: React.FC<Props> = ({ errors, id: _id }) => {
-  const [id] = React.useState(_id || uniqueId('server-error-summary-'));
+  const [id] = React.useState(_id ?? uniqueId('server-error-summary-'));
   const { t } = useTranslation(['common']);
 
   React.useEffect(() => {

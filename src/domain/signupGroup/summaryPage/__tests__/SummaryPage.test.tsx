@@ -64,8 +64,10 @@ const signupGroupValues: SignupGroupFormFields = {
       dateOfBirth: formatDate(subYears(new Date(), 9)),
       extraInfo: '',
       firstName: 'First name',
+      id: null,
       inWaitingList: false,
       lastName: 'Last name',
+      responsibleForGroup: true,
       streetAddress: 'Street address',
       zipcode: '00100',
     },
@@ -78,6 +80,13 @@ const defaultMocks = [
     res(ctx.status(200), ctx.json(registration))
   ),
 ];
+
+const pushSummaryPageRoute = (registrationId: string) => {
+  singletonRouter.push({
+    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
+    query: { registrationId },
+  });
+};
 
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
   render(<SummaryPage />, { session });
@@ -93,11 +102,7 @@ test('should route back to signup form if reservation data is missing', async ()
     registrationId: registration.id,
     signupGroupFormValues: signupGroupValues,
   });
-
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: registration.id },
-  });
+  pushSummaryPageRoute(registration.id);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -119,10 +124,7 @@ test('should route back to signup form after clicking submit button if there are
     signupGroupFormValues: { ...signupGroupValues, email: '' },
   });
 
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: registration.id },
-  });
+  pushSummaryPageRoute(registration.id);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -152,10 +154,7 @@ test('should route to signup completed page', async () => {
     signupGroupFormValues: signupGroupValues,
   });
 
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: registration.id },
-  });
+  pushSummaryPageRoute(registration.id);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -196,10 +195,7 @@ test('should show server errors when post request fails', async () => {
     signupGroupFormValues: signupGroupValues,
   });
 
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: registration.id },
-  });
+  pushSummaryPageRoute(registration.id);
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -217,10 +213,7 @@ test('should show not found page if registration does not exist', async () => {
     )
   );
 
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: 'not-found' },
-  });
+  pushSummaryPageRoute('not-found');
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
@@ -236,10 +229,7 @@ test('should show not found page if registration does not exist', async () => {
 
 test('should show authentication required notification', async () => {
   setQueryMocks(...defaultMocks);
-  singletonRouter.push({
-    pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
-    query: { registrationId: registration.id },
-  });
+  pushSummaryPageRoute(registration.id);
 
   renderComponent(null);
 
@@ -248,5 +238,24 @@ test('should show authentication required notification', async () => {
   await screen.findByRole('heading', { name: 'Kirjaudu sisään' });
   screen.getByText(
     'Sinun täytyy kirjautua sisään ilmoittautuaksesi tähän tapahtumaan.'
+  );
+});
+
+test('should route back to create signup group page', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(...defaultMocks);
+  pushSummaryPageRoute(registration.id);
+
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const backToSignupGroupFormButton = screen.getByRole('button', {
+    name: /palaa ilmoittautumiskaavakkeeseen/i,
+  });
+  await user.click(backToSignupGroupFormButton);
+
+  expect(mockRouter.asPath).toBe(
+    '/registration/registration:1/signup-group/create'
   );
 });
