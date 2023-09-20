@@ -79,7 +79,6 @@ export const shouldRenderSignupFormFields = async () => {
   getSignupFormElement('emailInput');
   getSignupFormElement('phoneInput');
   getSignupFormElement('emailCheckbox');
-  getSignupFormElement('phoneCheckbox');
   getSignupFormElement('nativeLanguageButton');
   getSignupFormElement('serviceLanguageButton');
   getSignupFormElement('cancelButton');
