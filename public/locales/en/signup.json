@@ -69,8 +69,8 @@
   "notificationSignupGroupUpdated": "The signup group has been saved",
   "personsAddedToWaitingListModal": {
     "buttonClose": "Close",
-    "text": "Please note that not all registrants' places are guaranteed. Entrants in the reserve position will only be confirmed if more places become available in the queue. You will receive a separate email from confirmed registration.",
-    "title": "Entrants have been added to the reservation queue"
+    "text": "You will receive a separate confirmation message about your registration to your e-mail, if a place becomes available for you.",
+    "title": "You are registering for the event to the reservation queue"
   },
   "placeholderCity": "Enter city",
   "placeholderDateOfBirth": "D.M.YYYY",
