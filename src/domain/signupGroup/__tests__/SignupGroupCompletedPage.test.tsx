@@ -2,7 +2,11 @@
 import { rest } from 'msw';
 import React from 'react';
 
-import { fakeRegistration } from '../../../utils/mockDataUtils';
+import {
+  fakeRegistration,
+  fakeSignup,
+  fakeSignupGroup,
+} from '../../../utils/mockDataUtils';
 import {
   render,
   screen,
@@ -11,7 +15,9 @@ import {
 } from '../../../utils/testUtils';
 import { event, eventOverrides } from '../../event/__mocks__/event';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
-import { SIGNUP_QUERY_PARAMS } from '../../signup/constants';
+import { ATTENDEE_STATUS, SIGNUP_QUERY_PARAMS } from '../../signup/constants';
+import { signupGroup } from '../__mocks__/signupGroup';
+import { TEST_SIGNUP_GROUP_ID } from '../constants';
 import SignupGroupCompletedPage from '../SignupGroupCompletedPage';
 
 const renderComponent = (query?: {
@@ -48,6 +54,27 @@ const mockedRegistrationWithConfirmationMessageResponse = rest.get(
     res(ctx.status(200), ctx.json(registrationWithConfirmationMessage))
 );
 
+const mockedSignupGroupResponse = rest.get(
+  `*/signup_group/*`,
+  (req, res, ctx) => res(ctx.status(200), ctx.json(signupGroup))
+);
+
+const mockedSignupGroupInWaitingListResponse = rest.get(
+  `*/signup_group/*`,
+  (req, res, ctx) =>
+    res(
+      ctx.status(200),
+      ctx.json(
+        fakeSignupGroup({
+          id: TEST_SIGNUP_GROUP_ID,
+          signups: [
+            fakeSignup({ attendee_status: ATTENDEE_STATUS.Waitlisted }),
+          ],
+        })
+      )
+    )
+);
+
 const { location } = window;
 
 beforeAll((): void => {
@@ -62,7 +89,10 @@ afterAll((): void => {
 });
 
 test('should show default signup completed text', async () => {
-  setQueryMocks(mockedRegistrationWithoutConfirmationMessageResponse);
+  setQueryMocks(
+    mockedRegistrationWithoutConfirmationMessageResponse,
+    mockedSignupGroupResponse
+  );
   renderComponent();
 
   await screen.findByRole('heading', { name: 'Kiitos ilmoittautumisestasi!' });
@@ -71,17 +101,37 @@ test('should show default signup completed text', async () => {
   );
 });
 
+test('should show added to waiting list text', async () => {
+  setQueryMocks(
+    mockedRegistrationWithoutConfirmationMessageResponse,
+    mockedSignupGroupInWaitingListResponse
+  );
+  renderComponent();
+
+  await screen.findByRole('heading', { name: 'Kiitos ilmoittautumisestasi!' });
+  screen.getByText(
+    // eslint-disable-next-line max-len
+    `Olet ilmoittautunut tapahtuman ${eventOverrides.name?.fi} varasijalle. Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.`
+  );
+});
+
 test('should show custom confirmation message', async () => {
-  setQueryMocks(mockedRegistrationWithConfirmationMessageResponse);
+  setQueryMocks(
+    mockedRegistrationWithConfirmationMessageResponse,
+    mockedSignupGroupResponse
+  );
   renderComponent();
 
   await screen.findByRole('heading', { name: 'Kiitos ilmoittautumisestasi!' });
   screen.getByText(confirmationMessage);
 });
 
-test('should sutomatically redirect user', async () => {
+test('should automatically redirect user', async () => {
   const redirectUrl = 'https://www.google.com';
-  setQueryMocks(mockedRegistrationWithoutConfirmationMessageResponse);
+  setQueryMocks(
+    mockedRegistrationWithoutConfirmationMessageResponse,
+    mockedSignupGroupResponse
+  );
   renderComponent({ redirect_url: redirectUrl });
 
   await waitFor(() => expect(window.location.href).toBe(redirectUrl), {

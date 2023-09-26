@@ -13,7 +13,7 @@ import {
 } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
-import { NOTIFICATION_TYPE } from '../signup/constants';
+import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../signup/constants';
 import { Signup, SignupInput } from '../signup/types';
 import { getSignupInitialValues, getSignupPayload } from '../signup/utils';
 
@@ -191,6 +191,13 @@ export const isSignupFieldRequired = (
   registration: Registration,
   fieldId: SIGNUP_FIELDS | SIGNUP_GROUP_FIELDS
 ): boolean => registration.mandatory_fields.includes(snakeCase(fieldId));
+
+export const isAnySignupInWaitingList = (signupGroup: SignupGroup): boolean =>
+  Boolean(
+    signupGroup.signups.find(
+      (su) => su.attendee_status == ATTENDEE_STATUS.Waitlisted
+    )
+  );
 
 export const isDateOfBirthFieldRequired = (
   registration: Registration

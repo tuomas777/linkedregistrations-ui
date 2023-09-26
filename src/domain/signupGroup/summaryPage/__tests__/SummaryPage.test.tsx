@@ -28,7 +28,7 @@ import { ROUTES } from '../../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
-import { NOTIFICATIONS } from '../../constants';
+import { NOTIFICATIONS, TEST_SIGNUP_GROUP_ID } from '../../constants';
 import { SignupGroupFormFields } from '../../types';
 import SummaryPage from '../SummaryPage';
 
@@ -47,7 +47,10 @@ beforeEach(() => {
 
 const signup = fakeSignup();
 
-const signupGroup = fakeSignupGroup({ signups: [signup] });
+const signupGroup = fakeSignupGroup({
+  id: TEST_SIGNUP_GROUP_ID,
+  signups: [signup],
+});
 
 const signupGroupValues: SignupGroupFormFields = {
   accepted: true,
@@ -164,7 +167,7 @@ test('should route to signup completed page', async () => {
 
   await waitFor(() =>
     expect(mockRouter.asPath).toBe(
-      `/registration/${registration.id}/signup-group/completed`
+      `/registration/${registration.id}/signup-group/${TEST_SIGNUP_GROUP_ID}/completed`
     )
   );
 });

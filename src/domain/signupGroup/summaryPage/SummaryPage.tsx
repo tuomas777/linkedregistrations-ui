@@ -65,7 +65,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
-  const goToSignupGroupCompletedPage = () => {
+  const goToSignupGroupCompletedPage = (signupGroupId: string) => {
     // Disable reservation timer callbacks
     // so user is not redirected to create signup page
     disableReservationTimerCallbacks();
@@ -74,7 +74,10 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     clearSeatsReservationData(registration.id);
 
     goToPage(
-      ROUTES.SIGNUP_GROUP_COMPLETED.replace('[registrationId]', registration.id)
+      ROUTES.SIGNUP_GROUP_COMPLETED.replace(
+        '[registrationId]',
+        registration.id
+      ).replace('[signupGroupId]', signupGroupId)
     );
   };
   const goToCreateSignupGroupPage = () => {
@@ -139,7 +142,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                       { error: JSON.parse(error.message) },
                       'signup'
                     ),
-                  onSuccess: goToSignupGroupCompletedPage,
+                  onSuccess: (id) => goToSignupGroupCompletedPage(id as string),
                 });
               } catch (e) {
                 goToCreateSignupGroupPage();
