@@ -24,6 +24,7 @@
   "exclude": [
     "node_modules",
     "**/__mocks__/*",
+    "**/__tests__/*",
     "src/tests/*",
     "src/utils/testUtils.tsx",
     "src/utils/mockDataUtils.ts"
