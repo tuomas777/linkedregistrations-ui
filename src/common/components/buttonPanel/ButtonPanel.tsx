@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '../../../common/components/button/Button';
 import { stringOrNull } from '../../../domain/api/types';
 import Container from '../../../domain/app/layout/container/Container';
+
 import styles from './buttonPanel.module.scss';
 
 export interface ButtonPanelProps {
