@@ -1,5 +1,5 @@
 # ============================================================
-FROM registry.access.redhat.com/ubi8/nodejs-16 AS dependencies
+FROM registry.access.redhat.com/ubi9/nodejs-18 AS dependencies
 # ============================================================
 WORKDIR /app
 
@@ -19,7 +19,7 @@ USER default
 
 RUN yarn --frozen-lockfile
 
-COPY next-i18next.config.js next.config.js sentry.client.config.ts sentry.edge.config.ts sentry.properties sentry.server.config.ts tsconfig.json /app/
+COPY .env* next-i18next.config.js next.config.js sentry.client.config.ts sentry.edge.config.ts sentry.properties sentry.server.config.ts tsconfig.json /app/
 COPY /public/ /app/public
 COPY /src/ /app/src
 
