@@ -13,6 +13,7 @@ import { SeatsReservation } from '../reserveSeats/types';
 import { NOTIFICATION_TYPE } from '../signup/constants';
 import { Signup, SignupInput } from '../signup/types';
 import { getSignupInitialValues } from '../signup/utils';
+
 import {
   NOTIFICATIONS,
   SIGNUP_FIELDS,

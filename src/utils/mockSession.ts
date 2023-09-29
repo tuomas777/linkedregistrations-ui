@@ -15,12 +15,12 @@ export const fakeOidcUser = (overrides?: Partial<OidcUser>): OidcUser =>
   merge<OidcUser, typeof overrides>(
     {
       id: TEST_USER_ID,
-      name: faker.name.firstName(),
+      name: faker.person.firstName(),
       email: faker.internet.email(),
       email_verified: true,
-      family_name: faker.name.lastName(),
-      given_name: faker.name.firstName(),
-      nickname: faker.name.firstName(),
+      family_name: faker.person.lastName(),
+      given_name: faker.person.firstName(),
+      nickname: faker.person.firstName(),
     },
     overrides
   );

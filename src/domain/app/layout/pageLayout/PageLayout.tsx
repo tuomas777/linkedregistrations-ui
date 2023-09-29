@@ -4,6 +4,7 @@ import React from 'react';
 
 import { SIGNUP_QUERY_PARAMS } from '../../../signup/constants';
 import Header from '../../header/Header';
+
 import styles from './pageLayout.module.scss';
 
 const PageLayout: React.FC<React.PropsWithChildren<unknown>> = ({

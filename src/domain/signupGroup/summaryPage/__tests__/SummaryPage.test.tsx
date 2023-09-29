@@ -2,9 +2,9 @@
 /* eslint-disable max-len */
 import subYears from 'date-fns/subYears';
 import { rest } from 'msw';
+import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
-import singletonRouter from 'next/router';
 import React from 'react';
 
 import { ExtendedSession } from '../../../../types';

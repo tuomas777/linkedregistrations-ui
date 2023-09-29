@@ -11,6 +11,7 @@ import { getEventFields } from '../../event/utils';
 import { Registration } from '../../registration/types';
 import { getRegistrationFields } from '../../registration/utils';
 import Instructions from '../instructions/Instructions';
+
 import AudienceAgeText from './AudienceAgeText';
 import DateText from './DateText';
 import styles from './eventInfo.module.scss';

@@ -1,5 +1,6 @@
 import { stringOrNull } from '../api/types';
 import { Signup, SignupInput } from '../signup/types';
+
 import { SIGNUP_FIELDS, SIGNUP_GROUP_FIELDS } from './constants';
 
 export type CreateSignupGroupMutationInput = {

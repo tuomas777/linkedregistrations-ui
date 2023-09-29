@@ -9,6 +9,7 @@ import Divider from '../../../divider/Divider';
 import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
 import { SignupFields } from '../../../types';
 import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
+
 import styles from './signup.module.scss';
 
 export type SignupProps = {

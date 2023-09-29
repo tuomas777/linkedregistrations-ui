@@ -6,6 +6,7 @@ import { scroller } from 'react-scroll';
 
 import { ServerErrorItem } from '../../../types';
 import getPageHeaderHeight from '../../../utils/getPageHeaderHeight';
+
 import styles from './serverErrorSummary.module.scss';
 
 interface Props {

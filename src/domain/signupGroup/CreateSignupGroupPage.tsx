@@ -13,6 +13,7 @@ import useEventAndRegistrationData from '../registration/hooks/useEventAndRegist
 import { Registration } from '../registration/types';
 import SignupPageMeta from '../signup/signupPageMeta/SignupPageMeta';
 import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
+
 import AuthenticationRequiredNotification from './authenticationRequiredNotification/AuthenticationRequiredNotification';
 import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';

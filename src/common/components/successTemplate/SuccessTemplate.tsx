@@ -2,6 +2,7 @@ import { IconCheck } from 'hds-react';
 import React from 'react';
 
 import Container from '../../../domain/app/layout/container/Container';
+
 import styles from './successTemplate.module.scss';
 
 interface Props {

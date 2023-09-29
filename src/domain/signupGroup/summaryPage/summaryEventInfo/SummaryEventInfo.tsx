@@ -10,6 +10,7 @@ import { getRegistrationFields } from '../../../registration/utils';
 import AudienceAgeText from '../../eventInfo/AudienceAgeText';
 import DateText from '../../eventInfo/DateText';
 import PriceText from '../../eventInfo/PriceText';
+
 import styles from './summaryEventInfo.module.scss';
 
 type EventInfoProps = {

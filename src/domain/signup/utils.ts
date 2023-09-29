@@ -5,6 +5,7 @@ import formatDate from '../../utils/formatDate';
 import { callDelete, callGet } from '../app/axios/axiosClient';
 import { NOTIFICATIONS } from '../signupGroup/constants';
 import { SignupFields, SignupGroupFormFields } from '../signupGroup/types';
+
 import { ATTENDEE_STATUS } from './constants';
 import { Signup, SignupQueryVariables } from './types';
 

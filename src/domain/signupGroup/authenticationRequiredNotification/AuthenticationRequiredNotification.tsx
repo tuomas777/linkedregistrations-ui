@@ -1,9 +1,10 @@
 import { Notification } from 'hds-react';
 import { signIn } from 'next-auth/react';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 import Button from '../../../common/components/button/Button';
+
 import styles from './authenticationRequiredNotification.module.scss';
 
 const AuthenticationRequiredNotification: React.FC = () => {

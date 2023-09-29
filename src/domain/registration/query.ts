@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query';
 
 import { ExtendedSession } from '../../types';
+
 import { Registration, RegistrationQueryVariables } from './types';
 import { fetchRegistration } from './utils';
 

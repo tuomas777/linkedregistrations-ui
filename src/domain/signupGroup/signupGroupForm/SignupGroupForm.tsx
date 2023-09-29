@@ -2,9 +2,9 @@
 import { Field, Form, Formik } from 'formik';
 import { IconCross } from 'hds-react';
 import pick from 'lodash/pick';
-import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import React, { useMemo } from 'react';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,6 +54,7 @@ import {
   scrollToFirstError,
   showErrors,
 } from '../validation';
+
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
 import styles from './signupGroupForm.module.scss';
 import Signups from './signups/Signups';
@@ -174,7 +175,10 @@ const SignupGroupForm: React.FC<Props> = ({
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={/* istanbul ignore next */ () => undefined}
+      onSubmit={
+        /* istanbul ignore next */
+        () => undefined
+      }
       validationSchema={
         readOnly ? undefined : () => getSignupGroupSchema(registration)
       }
@@ -408,7 +412,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             __html: t('labelAccepted', {
                               openInNewTab: t('common:openInNewTab'),
                               url: t('linkDataProtectionNotice'),
-                            }),
+                            }) as string,
                           }}
                         />
                       }

@@ -5,6 +5,7 @@ import { OptionType, Language, ExtendedSession } from '../../types';
 import getLocalisedString from '../../utils/getLocalisedString';
 import queryBuilder from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
+
 import {
   LanguagesQueryVariables,
   LanguagesResponse,

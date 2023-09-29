@@ -8,10 +8,10 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import type { AppProps } from 'next/app';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { appWithTranslation, SSRConfig } from 'next-i18next';
-import type { AppProps } from 'next/app';
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 

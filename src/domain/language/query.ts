@@ -2,6 +2,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
 import { ExtendedSession } from '../../types';
+
 import { LanguagesQueryVariables, LanguagesResponse } from './types';
 import { fetchLanguages, languagesPathBuilder } from './utils';
 

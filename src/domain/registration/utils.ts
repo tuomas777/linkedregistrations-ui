@@ -13,6 +13,7 @@ import {
   getSeatsReservationData,
   isSeatsReservationExpired,
 } from '../reserveSeats/utils';
+
 import {
   Registration,
   RegistrationFields,

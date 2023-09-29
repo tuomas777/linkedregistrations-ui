@@ -3,9 +3,9 @@
 import subYears from 'date-fns/subYears';
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
+import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
-import singletonRouter from 'next/router';
 import React from 'react';
 
 import { ExtendedSession } from '../../../types';
@@ -32,6 +32,7 @@ import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import CreateSignupGroupPage from '../CreateSignupGroupPage';
+
 import {
   findFirstNameInput,
   getSignupFormElement,

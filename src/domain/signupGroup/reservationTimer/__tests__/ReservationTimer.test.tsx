@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { rest } from 'msw';
+import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
-import singletonRouter from 'next/router';
 import React from 'react';
 
 import {

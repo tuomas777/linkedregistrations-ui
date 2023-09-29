@@ -2,6 +2,7 @@ import { IconAngleDown, IconAngleUp } from 'hds-react';
 import React, { useRef } from 'react';
 
 import useIdWithPrefix from '../../../hooks/useIdWithPrefix';
+
 import styles from './accordion.module.scss';
 
 export interface AccordionProps {

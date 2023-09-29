@@ -1,6 +1,6 @@
-import { useTranslation } from 'next-i18next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import LoadingSpinner from '../../common/components/loadingSpinner/LoadingSpinner';
@@ -14,6 +14,7 @@ import useEventAndRegistrationData from '../registration/hooks/useEventAndRegist
 import { Registration } from '../registration/types';
 import { getRegistrationFields } from '../registration/utils';
 import { SIGNUP_QUERY_PARAMS } from '../signup/constants';
+
 import ConfirmationMessage from './confirmationMessage/ConfirmationMessage';
 
 type Props = {
@@ -56,7 +57,9 @@ const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
             <p>{t('completedPage.redirectInfo1')}</p>
             <p
               dangerouslySetInnerHTML={{
-                __html: t('completedPage.redirectInfo2', { url: redirectUrl }),
+                __html: t('completedPage.redirectInfo2', {
+                  url: redirectUrl,
+                }) as string,
               }}
             />
           </>

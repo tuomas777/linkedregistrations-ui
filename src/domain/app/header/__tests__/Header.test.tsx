@@ -3,9 +3,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import i18n from 'i18next';
 import { rest } from 'msw';
+import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
-import singletonRouter from 'next/router';
 import React from 'react';
 
 import { ExtendedSession } from '../../../../types';

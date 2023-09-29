@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import React, { FC, PropsWithChildren, useCallback, useMemo } from 'react';
 
 import { ServerErrorItem } from '../../../types';
+
 import {
   parseSeatsReservationServerErrors,
   parseSignupGroupServerErrors,

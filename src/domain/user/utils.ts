@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 
 import { ExtendedSession } from '../../types';
 import { callGet } from '../app/axios/axiosClient';
+
 import { User, UserQueryVariables } from './types';
 
 export const fetchUser = async (

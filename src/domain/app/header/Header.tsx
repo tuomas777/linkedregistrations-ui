@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { IconSignout, Navigation } from 'hds-react';
+import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { MAIN_CONTENT_ID, PAGE_HEADER_ID } from '../../../constants';
@@ -12,6 +12,7 @@ import { ExtendedSession } from '../../../types';
 import { getUserName } from '../../auth/utils';
 import { useUserQuery } from '../../user/query';
 import { ROUTES } from '../routes/constants';
+
 import styles from './header.module.scss';
 
 const Header: React.FC = () => {

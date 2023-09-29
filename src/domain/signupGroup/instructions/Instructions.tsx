@@ -1,5 +1,5 @@
+import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 import useLocale from '../../../hooks/useLocale';
 import { Registration } from '../../registration/types';
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Instructions: React.FC<Props> = ({ registration }) => {
-  const { t } = useTranslation('signup');
+  const { t } = useTranslation(['signup']);
   const locale = useLocale();
   const { instructions } = getRegistrationFields(registration, locale);
   const instructionsParts = instructions.split('\n');
