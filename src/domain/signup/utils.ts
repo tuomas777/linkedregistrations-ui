@@ -3,13 +3,19 @@ import { AxiosError } from 'axios';
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
 import stringToDate from '../../utils/stringToDate';
-import { callDelete, callGet, callPut } from '../app/axios/axiosClient';
+import {
+  callDelete,
+  callGet,
+  callPatch,
+  callPut,
+} from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { NOTIFICATIONS } from '../signupGroup/constants';
 import { SignupFormFields, SignupGroupFormFields } from '../signupGroup/types';
 
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
+  PatchSignupMutationInput,
   Signup,
   SignupInput,
   SignupQueryVariables,
@@ -45,6 +51,25 @@ export const deleteSignup = async ({
 }): Promise<null> => {
   try {
     const { data } = await callDelete({
+      session,
+      url: signupPathBuilder({ id }),
+    });
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
+export const patchSignup = async ({
+  input: { id, ...input },
+  session,
+}: {
+  input: PatchSignupMutationInput;
+  session: ExtendedSession | null;
+}): Promise<Signup> => {
+  try {
+    const { data } = await callPatch({
+      data: JSON.stringify(input),
       session,
       url: signupPathBuilder({ id }),
     });
