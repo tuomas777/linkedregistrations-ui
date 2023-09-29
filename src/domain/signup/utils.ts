@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
+import skipFalsyType from '../../utils/skipFalsyType';
 import stringToDate from '../../utils/stringToDate';
 import {
   callDelete,
@@ -11,7 +12,11 @@ import {
 } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { NOTIFICATIONS } from '../signupGroup/constants';
-import { SignupFormFields, SignupGroupFormFields } from '../signupGroup/types';
+import {
+  SignupFields,
+  SignupFormFields,
+  SignupGroupFormFields,
+} from '../signupGroup/types';
 
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
@@ -195,5 +200,21 @@ export const getUpdateSignupPayload = ({
     }),
     id,
     registration: registration.id,
+  };
+};
+
+export const getSignupFields = ({
+  signup,
+}: {
+  signup: Signup;
+}): SignupFields => {
+  const firstName = signup.first_name ?? '';
+  const lastName = signup.last_name ?? '';
+  const fullName = [firstName, lastName].filter(skipFalsyType).join(' ');
+
+  return {
+    firstName,
+    fullName,
+    lastName,
   };
 };
