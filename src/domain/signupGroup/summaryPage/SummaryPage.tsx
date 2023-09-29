@@ -7,9 +7,9 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React, { FC, useCallback, useRef } from 'react';
 
+import Button from '../../../common/components/button/Button';
 import ButtonPanel from '../../../common/components/buttonPanel/ButtonPanel';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
-import LoadingButton from '../../../common/components/loadingButton/LoadingButton';
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
@@ -201,15 +201,16 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                   )}
                   onBack={goToCreateSignupGroupPage}
                   submitButtons={[
-                    <LoadingButton
+                    <Button
                       disabled={Boolean(saving)}
-                      icon={<IconPen aria-hidden={true} />}
-                      loading={saving == SIGNUP_GROUP_ACTIONS.CREATE}
+                      iconLeft={<IconPen aria-hidden={true} />}
+                      isLoading={saving == SIGNUP_GROUP_ACTIONS.CREATE}
+                      loadingText={t('buttonSend') as string}
                       key="save"
                       onClick={handleSubmit}
                     >
                       {t('buttonSend')}
-                    </LoadingButton>,
+                    </Button>,
                   ]}
                 ></ButtonPanel>
               </Form>
