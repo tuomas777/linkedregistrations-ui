@@ -44,7 +44,7 @@ const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
 const EditSignupPageWrapper: React.FC = () => {
   const {
     event,
-    isLoading: isLoadingEventOrReigstration,
+    isLoading: isLoadingEventOrRegistration,
     registration,
   } = useEventAndRegistrationData();
   const { isLoading: isLoadingSignup, signup } = useSignupData();
@@ -57,7 +57,7 @@ const EditSignupPageWrapper: React.FC = () => {
   }
 
   return (
-    <LoadingSpinner isLoading={isLoadingSignup || isLoadingEventOrReigstration}>
+    <LoadingSpinner isLoading={isLoadingSignup || isLoadingEventOrRegistration}>
       {event && registration && signup ? (
         <SignupGroupFormProvider>
           <SignupServerErrorsProvider>
