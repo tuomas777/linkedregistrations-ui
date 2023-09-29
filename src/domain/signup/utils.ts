@@ -6,7 +6,7 @@ import stringToDate from '../../utils/stringToDate';
 import { callDelete, callGet, callPut } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { NOTIFICATIONS } from '../signupGroup/constants';
-import { SignupFields, SignupGroupFormFields } from '../signupGroup/types';
+import { SignupFormFields, SignupGroupFormFields } from '../signupGroup/types';
 
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
@@ -73,7 +73,7 @@ export const updateSignup = async ({
   }
 };
 
-export const getSignupInitialValues = (signup: Signup): SignupFields => ({
+export const getSignupInitialValues = (signup: Signup): SignupFormFields => ({
   city: signup.city ?? '',
   dateOfBirth: signup.date_of_birth
     ? formatDate(new Date(signup.date_of_birth))
@@ -111,7 +111,7 @@ export const getSignupPayload = ({
 }: {
   formValues: SignupGroupFormFields;
   responsibleForGroup: boolean;
-  signupData: SignupFields;
+  signupData: SignupFormFields;
 }): SignupInput => {
   const {
     email,

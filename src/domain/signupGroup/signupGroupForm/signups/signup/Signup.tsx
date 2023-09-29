@@ -15,7 +15,7 @@ import { Registration } from '../../../../registration/types';
 import { SIGNUP_FIELDS } from '../../../constants';
 import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
 import { useSignupGroupFormContext } from '../../../signupGroupFormContext/hooks/useSignupGroupFormContext';
-import { SignupFields } from '../../../types';
+import { SignupFormFields } from '../../../types';
 import {
   isDateOfBirthFieldRequired,
   isSignupFieldRequired,
@@ -29,7 +29,7 @@ type Props = {
   onDelete: () => void;
   registration: Registration;
   showDelete: boolean;
-  signup: SignupFields;
+  signup: SignupFormFields;
   signupPath: string;
 };
 
