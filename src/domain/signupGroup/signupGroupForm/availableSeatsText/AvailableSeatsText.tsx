@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import { useTranslation } from 'next-i18next';
 import { FC, useMemo } from 'react';
 
@@ -12,6 +13,9 @@ import {
   isSeatsReservationExpired,
 } from '../../../reserveSeats/utils';
 
+// Lazy load SeatsCount to avoid conflict between client and server
+const SeatsCount = dynamic(() => import('./SeatsCount'), { ssr: false });
+
 type Props = {
   registration: Registration;
 };
@@ -23,7 +27,7 @@ const AvailableSeatsText: FC<Props> = ({ registration }) => {
   const freeWaitingListCapacity = getFreeWaitingListCapacity(registration);
 
   const reservedSeats = useMemo(() => {
-    const data = getSeatsReservationData(registration.id as string);
+    const data = getSeatsReservationData(registration.id);
     return data && !isSeatsReservationExpired(data) ? data.seats : 0;
   }, [registration.id]);
   return (
@@ -31,13 +35,13 @@ const AvailableSeatsText: FC<Props> = ({ registration }) => {
       {typeof freeAttendeeCapacity === 'number' && !attendeeCapacityUsed && (
         <p>
           {t('freeAttendeeCapacity')}{' '}
-          <strong>{freeAttendeeCapacity + reservedSeats}</strong>
+          <SeatsCount seats={freeAttendeeCapacity + reservedSeats} />
         </p>
       )}
       {attendeeCapacityUsed && typeof freeWaitingListCapacity === 'number' && (
         <p>
           {t('freeWaitingListCapacity')}{' '}
-          <strong>{freeWaitingListCapacity + reservedSeats}</strong>
+          <SeatsCount seats={freeWaitingListCapacity + reservedSeats} />
         </p>
       )}
     </>

@@ -20,7 +20,7 @@ const RegistrationWarning: React.FC<Props> = ({ registration }) => {
   const registrationWarning = getRegistrationWarning(registration, t);
 
   const hasReservation = useMemo(() => {
-    const data = getSeatsReservationData(registration.id as string);
+    const data = getSeatsReservationData(registration.id);
     return Boolean(data && !isSeatsReservationExpired(data));
   }, [registration.id]);
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 
 import {
@@ -15,7 +16,7 @@ configure({ defaultHidden: true });
 const renderComponent = (registration: Registration) =>
   render(<AvailableSeatsText registration={registration} />);
 
-test('should show amount of free seats', () => {
+test('should show amount of free seats', async () => {
   renderComponent(
     fakeRegistration({
       maximum_attendee_capacity: 10,
@@ -25,10 +26,10 @@ test('should show amount of free seats', () => {
   );
 
   screen.getByText('Saatavilla olevia paikkoja');
-  screen.getByText('7');
+  await screen.findByText('7');
 });
 
-test('should show amount of remaining seats', () => {
+test('should show amount of remaining seats', async () => {
   renderComponent(
     fakeRegistration({
       maximum_attendee_capacity: 10,
@@ -38,10 +39,10 @@ test('should show amount of remaining seats', () => {
   );
 
   screen.getByText('Saatavilla olevia paikkoja');
-  screen.getByText('0');
+  await screen.findByText('0');
 });
 
-test('should show amount of remaining seats if there is reservation stored to session storage', () => {
+test('should show amount of remaining seats if there is reservation stored to session storage', async () => {
   const registration = fakeRegistration({
     id: TEST_REGISTRATION_ID,
     maximum_attendee_capacity: 10,
@@ -53,10 +54,10 @@ test('should show amount of remaining seats if there is reservation stored to se
   renderComponent(registration);
 
   screen.getByText('Saatavilla olevia paikkoja');
-  screen.getByText(reservation.seats);
+  await screen.findByText(reservation.seats);
 });
 
-test('should show amount of free waiting list seats', () => {
+test('should show amount of free waiting list seats', async () => {
   renderComponent(
     fakeRegistration({
       maximum_attendee_capacity: 10,
@@ -69,10 +70,10 @@ test('should show amount of free waiting list seats', () => {
   );
 
   screen.getByText('Saatavilla olevia jonopaikkoja');
-  screen.getByText('7');
+  await screen.findByText('7');
 });
 
-test('should show amount of remaining waiting list seats ', () => {
+test('should show amount of remaining waiting list seats ', async () => {
   renderComponent(
     fakeRegistration({
       maximum_attendee_capacity: 10,
@@ -85,10 +86,10 @@ test('should show amount of remaining waiting list seats ', () => {
   );
 
   screen.getByText('Saatavilla olevia jonopaikkoja');
-  screen.getByText('0');
+  await screen.findByText('0');
 });
 
-test('should show amount of remaining waiting list seats if there is reservation stored to session storage', () => {
+test('should show amount of remaining waiting list seats if there is reservation stored to session storage', async () => {
   const registration = fakeRegistration({
     id: TEST_REGISTRATION_ID,
     maximum_attendee_capacity: 10,
@@ -103,5 +104,5 @@ test('should show amount of remaining waiting list seats if there is reservation
   renderComponent(registration);
 
   screen.getByText('Saatavilla olevia jonopaikkoja');
-  screen.getByText(reservation.seats);
+  await screen.findByText(reservation.seats);
 });
