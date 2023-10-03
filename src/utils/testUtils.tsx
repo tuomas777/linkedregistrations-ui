@@ -20,6 +20,7 @@ import React, { useMemo } from 'react';
 import wait from 'waait';
 
 import { testId } from '../common/components/loadingSpinner/LoadingSpinner';
+import { registration } from '../domain/registration/__mocks__/registration';
 import { SignupGroupFormProvider } from '../domain/signupGroup/signupGroupFormContext/SignupGroupFormContext';
 import { server } from '../tests/msw/server';
 import { ExtendedSession } from '../types';
@@ -123,7 +124,7 @@ export const getQueryWrapper = (session: ExtendedSession | null = null) => {
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <SessionProvider session={session}>
-      <SignupGroupFormProvider>
+      <SignupGroupFormProvider registration={registration}>
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>

@@ -44,7 +44,7 @@ const renderComponent = (
   serverErrorProps?: Partial<SignupServerErrorsContextProps>
 ) =>
   render(
-    <SignupGroupFormProvider>
+    <SignupGroupFormProvider registration={registration}>
       <SignupServerErrorsContext.Provider
         value={{ ...defaultServerErrorsProps, ...serverErrorProps }}
       >

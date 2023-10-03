@@ -14,6 +14,7 @@ import {
 import { useSignupServerErrorsContext } from '../../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { SIGNUP_GROUP_FIELDS } from '../../constants';
 import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
+import { useSignupGroupFormContext } from '../../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFormFields } from '../../types';
 import { getNewSignups } from '../../utils';
 
@@ -40,6 +41,7 @@ const Signups: React.FC<Props> = ({
   const [openModalIndex, setOpenModalIndex] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const { setParticipantAmount } = useSignupGroupFormContext();
   const { setServerErrorItems, showServerErrors } =
     useSignupServerErrorsContext();
 
@@ -80,7 +82,7 @@ const Signups: React.FC<Props> = ({
         });
 
         setSignups(newSignups);
-
+        setParticipantAmount(newSignups.length);
         setSeatsReservationData(registration.id, seatsReservation);
 
         setSaving(false);
