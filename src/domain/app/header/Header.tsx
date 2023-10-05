@@ -10,21 +10,15 @@ import useLocale from '../../../hooks/useLocale';
 import useSelectLanguage from '../../../hooks/useSelectLanguage';
 import { ExtendedSession } from '../../../types';
 import { getUserName } from '../../auth/utils';
-import { useUserQuery } from '../../user/query';
+import useUser from '../../user/hooks/useUser';
 import { ROUTES } from '../routes/constants';
 
 import styles from './header.module.scss';
 
 const Header: React.FC = () => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
-  const userId = session?.user?.id ?? '';
   const linkedEventsApiToken = session?.apiTokens?.linkedevents;
-
-  const { data: user } = useUserQuery({
-    args: { username: userId },
-    options: { enabled: Boolean(userId && linkedEventsApiToken) },
-    session,
-  });
+  const { user } = useUser();
 
   const locale = useLocale();
   const router = useRouter();

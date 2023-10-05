@@ -139,6 +139,7 @@ const signupGroupValues: SignupGroupFormFields = {
 
 const mocks = [
   ...mockedLanguagesResponses,
+  mockedUserResponse,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),

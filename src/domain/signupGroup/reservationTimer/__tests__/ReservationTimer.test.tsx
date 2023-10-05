@@ -27,6 +27,7 @@ import {
   SignupServerErrorsContext,
   SignupServerErrorsContextProps,
 } from '../../../signup/signupServerErrorsContext/SignupServerErrorsContext';
+import { mockedUserResponse } from '../../../user/__mocks__/user';
 import { SignupGroupFormProvider } from '../../signupGroupFormContext/SignupGroupFormContext';
 import ReservationTimer from '../ReservationTimer';
 
@@ -74,6 +75,7 @@ test('should show server errors when creating seats reservation fails', async ()
   const showServerErrors = jest.fn();
 
   setQueryMocks(
+    mockedUserResponse,
     rest.post(`*/seats_reservation/`, (req, res, ctx) =>
       res(ctx.status(400), ctx.json({}))
     )
@@ -92,6 +94,7 @@ test('should show server errors when creating seats reservation fails', async ()
 test('should show modal if reserved seats are in waiting list', async () => {
   const user = userEvent.setup();
   setQueryMocks(
+    mockedUserResponse,
     rest.post(`*/seats_reservation/`, (req, res, ctx) =>
       res(
         ctx.status(201),
@@ -122,6 +125,7 @@ test('should route to create signup group page if reservation is expired', async
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
 
+  setQueryMocks(mockedUserResponse);
   singletonRouter.push({
     pathname: ROUTES.CREATE_SIGNUP_GROUP_SUMMARY,
     query: { registrationId: registration.id },
@@ -155,6 +159,7 @@ test('should reload page if reservation is expired and route is create signup gr
     seatsReservation: getMockedSeatsReservationData(-1000),
   });
 
+  setQueryMocks(mockedUserResponse);
   singletonRouter.push({
     pathname: ROUTES.CREATE_SIGNUP_GROUP,
     query: { registrationId: registration.id },

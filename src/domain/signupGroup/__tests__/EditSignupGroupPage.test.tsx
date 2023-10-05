@@ -23,6 +23,7 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { mockedUserResponse } from '../../user/__mocks__/user';
 import { signupGroup } from '../__mocks__/signupGroup';
 import { TEST_SIGNUP_GROUP_ID } from '../constants';
 import EditSignupGroupPage from '../EditSignupGroupPage';
@@ -53,6 +54,7 @@ test.skip('page is accessible', async () => {
 
 const defaultMocks = [
   ...mockedLanguagesResponses,
+  mockedUserResponse,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),

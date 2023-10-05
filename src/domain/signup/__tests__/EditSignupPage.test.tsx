@@ -29,6 +29,7 @@ import {
   tryToCancel,
   tryToUpdate,
 } from '../../signupGroup/testUtils';
+import { mockedUserResponse } from '../../user/__mocks__/user';
 import { signup } from '../__mocks__/signup';
 import { TEST_SIGNUP_ID } from '../constants';
 import EditSignupPage from '../EditSignupPage';
@@ -53,6 +54,7 @@ test.skip('page is accessible', async () => {
 
 const defaultMocks = [
   ...mockedLanguagesResponses,
+  mockedUserResponse,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),
