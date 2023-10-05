@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import { Field, Form, Formik } from 'formik';
-import { IconCross } from 'hds-react';
 import pick from 'lodash/pick';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useMemo } from 'react';
+import { toast } from 'react-toastify';
 import { ValidationError } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -22,7 +22,9 @@ import FormikPersist from '../../../common/components/formikPersist/FormikPersis
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
+import Container from '../../app/layout/container/Container';
 import { ROUTES } from '../../app/routes/constants';
+import { Event } from '../../event/types';
 import useLanguageOptions from '../../language/hooks/useLanguageOptions';
 import { Registration } from '../../registration/types';
 import { isRegistrationPossible } from '../../registration/utils';
@@ -38,10 +40,13 @@ import { Signup } from '../../signup/types';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   NOTIFICATIONS,
-  READ_ONLY_PLACEHOLDER,
+  SIGNUP_GROUP_ACTIONS,
   SIGNUP_GROUP_FIELDS,
 } from '../constants';
 import Divider from '../divider/Divider';
+import EditButtonPanel from '../editButtonPanel/EditButtonPanel';
+import EventInfo from '../eventInfo/EventInfo';
+import FormContainer from '../formContainer/FormContainer';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import useSignupGroupActions from '../hooks/useSignupGroupActions';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
@@ -65,26 +70,42 @@ const RegistrationWarning = dynamic(
 );
 
 type Props = {
+  event: Event;
   initialValues: SignupGroupFormFields;
-  readOnly?: boolean;
+  mode: 'create-signup-group' | 'update-signup' | 'update-signup-group';
   registration: Registration;
   signup?: Signup;
   signupGroup?: SignupGroup;
 };
 
 const SignupGroupForm: React.FC<Props> = ({
+  event,
   initialValues,
-  readOnly,
+  mode,
   registration,
   signup,
   signupGroup,
 }) => {
+  const isEditingMode =
+    mode === 'update-signup' || mode === 'update-signup-group';
   const { t } = useTranslation(['signup', 'common']);
-  const { deleteSignup } = useSignupActions({ registration, signup });
-  const { deleteSignupGroup } = useSignupGroupActions({
+  const {
+    deleteSignup,
+    saving: savingSignup,
+    updateSignup,
+  } = useSignupActions({
+    registration,
+    signup,
+  });
+  const {
+    deleteSignupGroup,
+    saving: savingSignupGroup,
+    updateSignupGroup,
+  } = useSignupGroupActions({
+    registration,
     signupGroup,
   });
-  const formSavingDisabled = React.useRef(!!readOnly);
+  const formSavingDisabled = React.useRef(isEditingMode);
 
   const reservationTimerCallbacksDisabled = React.useRef(false);
   const disableReservationTimerCallbacks = React.useCallback(() => {
@@ -167,9 +188,31 @@ const SignupGroupForm: React.FC<Props> = ({
     }
   };
 
+  const handleUpdate = (values: SignupGroupFormFields) => {
+    if (signupGroup) {
+      updateSignupGroup(values, {
+        onError: (error) =>
+          showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+        onSuccess: () => {
+          window.scrollTo(0, 0);
+          toast.success(t('signup:notificationSignupGroupUpdated'));
+        },
+      });
+    } else {
+      updateSignup(values, {
+        onError: (error) =>
+          showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+        onSuccess: () => {
+          window.scrollTo(0, 0);
+          toast.success(t('signup:notificationSignupUpdated'));
+        },
+      });
+    }
+  };
+
   const isRestoringDisabled = () => {
     const data = getSeatsReservationData(registration.id);
-    return !readOnly && (!data || isSeatsReservationExpired(data));
+    return !isEditingMode && (!data || isSeatsReservationExpired(data));
   };
 
   return (
@@ -179,9 +222,7 @@ const SignupGroupForm: React.FC<Props> = ({
         /* istanbul ignore next */
         () => undefined
       }
-      validationSchema={
-        readOnly ? undefined : () => getSignupGroupSchema(registration)
-      }
+      validationSchema={getSignupGroupSchema(registration)}
     >
       {({ setErrors, setFieldValue, setTouched, values }) => {
         const clearErrors = () => setErrors({});
@@ -199,7 +240,11 @@ const SignupGroupForm: React.FC<Props> = ({
               abortEarly: false,
             });
 
-            goToSignupGroupSummaryPage();
+            if (signup || signupGroup) {
+              handleUpdate(values);
+            } else {
+              goToSignupGroupSummaryPage();
+            }
           } catch (error) {
             showErrors({
               error: error as ValidationError,
@@ -218,11 +263,12 @@ const SignupGroupForm: React.FC<Props> = ({
           <>
             <ConfirmDeleteSignupModal
               isOpen={openModal === SIGNUP_MODALS.DELETE}
-              onCancel={handleDelete}
+              isSaving={savingSignupGroup === SIGNUP_GROUP_ACTIONS.DELETE}
+              onDelete={handleDelete}
               onClose={closeModal}
             />
             <Form noValidate>
-              {!signup && !signupGroup && (
+              {!isEditingMode && (
                 <FormikPersist
                   isSessionStorage={true}
                   name={`${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registration.id}`}
@@ -230,215 +276,191 @@ const SignupGroupForm: React.FC<Props> = ({
                   savingDisabled={formSavingDisabled.current}
                 />
               )}
+              <Container withOffset>
+                <FormContainer>
+                  <EventInfo event={event} registration={registration} />
+                  <ServerErrorSummary errors={serverErrorItems} />
+                  <RegistrationWarning registration={registration} />
 
-              <ServerErrorSummary errors={serverErrorItems} />
-              <RegistrationWarning registration={registration} />
-
-              {!signup && !signupGroup ? (
-                <>
-                  {isRegistrationPossible(registration) && (
+                  {!isEditingMode ? (
                     <>
+                      {isRegistrationPossible(registration) && (
+                        <>
+                          <Divider />
+                          <ReservationTimer
+                            callbacksDisabled={
+                              reservationTimerCallbacksDisabled.current
+                            }
+                            disableCallbacks={disableReservationTimerCallbacks}
+                            initReservationData={true}
+                            registration={registration}
+                            setSignups={setSignups}
+                            signups={values.signups}
+                          />
+                        </>
+                      )}
                       <Divider />
-                      <ReservationTimer
-                        callbacksDisabled={
-                          reservationTimerCallbacksDisabled.current
-                        }
-                        disableCallbacks={disableReservationTimerCallbacks}
-                        initReservationData={true}
+                      <h2>{t('titleRegistration')}</h2>
+
+                      <AvailableSeatsText registration={registration} />
+                      <ParticipantAmountSelector
+                        disabled={formDisabled}
                         registration={registration}
-                        setSignups={setSignups}
-                        signups={values.signups}
                       />
                     </>
+                  ) : (
+                    <h2>{t('titleSignups')}</h2>
                   )}
-                  <Divider />
-                  <h2>{t('titleRegistration')}</h2>
 
-                  <AvailableSeatsText registration={registration} />
-                  <ParticipantAmountSelector
-                    disabled={formDisabled || !!readOnly}
+                  <Signups
+                    formDisabled={formDisabled}
+                    isEditingMode={isEditingMode}
                     registration={registration}
                   />
-                </>
-              ) : (
-                <h2>{t('titleSignups')}</h2>
-              )}
 
-              <Signups
-                formDisabled={formDisabled}
-                readOnly={readOnly}
-                registration={registration}
-              />
+                  <h2 className={styles.sectionTitle}>
+                    {t('titleInformantInfo')}
+                  </h2>
+                  <Divider />
 
-              <h2 className={styles.sectionTitle}>{t('titleInformantInfo')}</h2>
-              <Divider />
-
-              <Fieldset heading={t(`titleContactInfo`)}>
-                <FormGroup>
-                  <div className={styles.emailRow}>
-                    <Field
-                      name={SIGNUP_GROUP_FIELDS.EMAIL}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelEmail`)}
-                      placeholder={
-                        readOnly ? READ_ONLY_PLACEHOLDER : t(`placeholderEmail`)
-                      }
-                      readOnly={readOnly}
-                      required
-                    />
-                    <Field
-                      name={SIGNUP_GROUP_FIELDS.PHONE_NUMBER}
-                      component={PhoneInputField}
-                      disabled={formDisabled}
-                      label={t(`labelPhoneNumber`)}
-                      placeholder={
-                        readOnly
-                          ? READ_ONLY_PLACEHOLDER
-                          : t(`placeholderPhoneNumber`)
-                      }
-                      readOnly={readOnly}
-                      required={
-                        values.notifications.includes(NOTIFICATIONS.SMS) ||
-                        isSignupFieldRequired(
-                          registration,
-                          SIGNUP_GROUP_FIELDS.PHONE_NUMBER
-                        )
-                      }
-                      type="tel"
-                    />
-                  </div>
-                </FormGroup>
-              </Fieldset>
-
-              <Fieldset heading={t(`titleNotifications`)}>
-                <FormGroup>
-                  <Field
-                    name={SIGNUP_GROUP_FIELDS.NOTIFICATIONS}
-                    className={styles.notifications}
-                    component={CheckboxGroupField}
-                    // TODO: At the moment only email notifications are supported
-                    disabled={true}
-                    // disabled={formDisabled || readOnly}
-                    label={t(`titleNotifications`)}
-                    options={notificationOptions}
-                    required
-                  />
-                </FormGroup>
-              </Fieldset>
-
-              <Fieldset heading={t(`titleAdditionalInfo`)}>
-                <FormGroup>
-                  <div className={styles.membershipNumberRow}>
-                    <Field
-                      name={SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER}
-                      component={TextInputField}
-                      disabled={formDisabled}
-                      label={t(`labelMembershipNumber`)}
-                      placeholder={
-                        readOnly
-                          ? READ_ONLY_PLACEHOLDER
-                          : t(`placeholderMembershipNumber`)
-                      }
-                      readOnly={readOnly}
-                      required={isSignupFieldRequired(
-                        registration,
-                        SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER
-                      )}
-                    />
-                  </div>
-                </FormGroup>
-                <FormGroup>
-                  <div className={styles.nativeLanguageRow}>
-                    <Field
-                      component={SingleSelectField}
-                      name={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
-                      disabled={formDisabled || readOnly}
-                      label={t(`labelNativeLanguage`)}
-                      options={languageOptions}
-                      placeholder={
-                        readOnly
-                          ? READ_ONLY_PLACEHOLDER
-                          : t(`placeholderNativeLanguage`)
-                      }
-                      readOnly={readOnly}
-                      required
-                    />
-                    <Field
-                      component={SingleSelectField}
-                      name={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
-                      disabled={formDisabled || readOnly}
-                      label={t(`labelServiceLanguage`)}
-                      options={serviceLanguageOptions}
-                      placeholder={
-                        readOnly
-                          ? READ_ONLY_PLACEHOLDER
-                          : t(`placeholderServiceLanguage`)
-                      }
-                      required
-                    />
-                  </div>
-                </FormGroup>
-                {/* Don't show group extra info field when editing a single signup */}
-                {!signup && (
-                  <FormGroup>
-                    <Field
-                      name={SIGNUP_GROUP_FIELDS.EXTRA_INFO}
-                      component={TextAreaField}
-                      disabled={formDisabled}
-                      label={t(`labelExtraInfo`)}
-                      placeholder={
-                        readOnly
-                          ? READ_ONLY_PLACEHOLDER
-                          : t(`placeholderExtraInfo`)
-                      }
-                      readOnly={readOnly}
-                      required={isSignupFieldRequired(
-                        registration,
-                        SIGNUP_GROUP_FIELDS.EXTRA_INFO
-                      )}
-                    />
-                  </FormGroup>
-                )}
-              </Fieldset>
-              {!readOnly && (
-                <>
-                  <FormGroup>
-                    <Field
-                      disabled={formDisabled}
-                      label={
-                        <span
-                          dangerouslySetInnerHTML={{
-                            __html: t('labelAccepted', {
-                              openInNewTab: t('common:openInNewTab'),
-                              url: t('linkDataProtectionNotice'),
-                            }) as string,
-                          }}
+                  <Fieldset heading={t(`titleContactInfo`)}>
+                    <FormGroup>
+                      <div className={styles.emailRow}>
+                        <Field
+                          name={SIGNUP_GROUP_FIELDS.EMAIL}
+                          component={TextInputField}
+                          disabled={formDisabled}
+                          label={t(`labelEmail`)}
+                          placeholder={t(`placeholderEmail`)}
+                          required
                         />
-                      }
-                      name={SIGNUP_GROUP_FIELDS.ACCEPTED}
-                      component={CheckboxField}
-                    />
-                  </FormGroup>
+                        <Field
+                          name={SIGNUP_GROUP_FIELDS.PHONE_NUMBER}
+                          component={PhoneInputField}
+                          disabled={formDisabled}
+                          label={t(`labelPhoneNumber`)}
+                          placeholder={t(`placeholderPhoneNumber`)}
+                          required={
+                            values.notifications.includes(NOTIFICATIONS.SMS) ||
+                            isSignupFieldRequired(
+                              registration,
+                              SIGNUP_GROUP_FIELDS.PHONE_NUMBER
+                            )
+                          }
+                          type="tel"
+                        />
+                      </div>
+                    </FormGroup>
+                  </Fieldset>
 
-                  <ButtonWrapper>
-                    <Button disabled={formDisabled} onClick={handleSubmit}>
-                      {t('buttonGoToSummary')}
-                    </Button>
-                  </ButtonWrapper>
-                </>
-              )}
-              {readOnly && (
-                <ButtonWrapper>
-                  <Button
-                    disabled={formDisabled}
-                    iconLeft={<IconCross aria-hidden={true} />}
-                    onClick={() => setOpenModal(SIGNUP_MODALS.DELETE)}
-                    variant={'danger'}
-                  >
-                    {t('buttonCancel')}
-                  </Button>
-                </ButtonWrapper>
+                  <Fieldset heading={t(`titleNotifications`)}>
+                    <FormGroup>
+                      <Field
+                        name={SIGNUP_GROUP_FIELDS.NOTIFICATIONS}
+                        className={styles.notifications}
+                        component={CheckboxGroupField}
+                        disabled={true}
+                        label={t(`titleNotifications`)}
+                        options={notificationOptions}
+                        required
+                      />
+                    </FormGroup>
+                  </Fieldset>
+
+                  <Fieldset heading={t(`titleAdditionalInfo`)}>
+                    <FormGroup>
+                      <div className={styles.membershipNumberRow}>
+                        <Field
+                          name={SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER}
+                          component={TextInputField}
+                          disabled={formDisabled}
+                          label={t(`labelMembershipNumber`)}
+                          placeholder={t(`placeholderMembershipNumber`)}
+                          required={isSignupFieldRequired(
+                            registration,
+                            SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER
+                          )}
+                        />
+                      </div>
+                    </FormGroup>
+                    <FormGroup>
+                      <div className={styles.nativeLanguageRow}>
+                        <Field
+                          component={SingleSelectField}
+                          name={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
+                          disabled={formDisabled}
+                          label={t(`labelNativeLanguage`)}
+                          options={languageOptions}
+                          placeholder={t(`placeholderNativeLanguage`)}
+                          required
+                        />
+                        <Field
+                          component={SingleSelectField}
+                          name={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
+                          disabled={formDisabled}
+                          label={t(`labelServiceLanguage`)}
+                          options={serviceLanguageOptions}
+                          placeholder={t(`placeholderServiceLanguage`)}
+                          required
+                        />
+                      </div>
+                    </FormGroup>
+                    {/* Don't show group extra info field when editing a single signup */}
+                    {!signup && (
+                      <FormGroup>
+                        <Field
+                          name={SIGNUP_GROUP_FIELDS.EXTRA_INFO}
+                          component={TextAreaField}
+                          disabled={formDisabled}
+                          label={t(`labelExtraInfo`)}
+                          placeholder={t(`placeholderExtraInfo`)}
+                          required={isSignupFieldRequired(
+                            registration,
+                            SIGNUP_GROUP_FIELDS.EXTRA_INFO
+                          )}
+                        />
+                      </FormGroup>
+                    )}
+                  </Fieldset>
+
+                  {!isEditingMode && (
+                    <>
+                      <FormGroup>
+                        <Field
+                          disabled={formDisabled}
+                          label={
+                            <span
+                              dangerouslySetInnerHTML={{
+                                __html: t('labelAccepted', {
+                                  openInNewTab: t('common:openInNewTab'),
+                                  url: t('linkDataProtectionNotice'),
+                                }),
+                              }}
+                            />
+                          }
+                          name={SIGNUP_GROUP_FIELDS.ACCEPTED}
+                          component={CheckboxField}
+                        />
+                      </FormGroup>
+
+                      <ButtonWrapper>
+                        <Button disabled={formDisabled} onClick={handleSubmit}>
+                          {t('buttonGoToSummary')}
+                        </Button>
+                      </ButtonWrapper>
+                    </>
+                  )}
+                </FormContainer>
+              </Container>
+
+              {isEditingMode && (
+                <EditButtonPanel
+                  disabled={formDisabled}
+                  onCancel={() => setOpenModal(SIGNUP_MODALS.DELETE)}
+                  onUpdate={handleSubmit}
+                  savingSignup={savingSignup}
+                  savingSignupGroup={savingSignupGroup}
+                />
               )}
             </Form>
           </>

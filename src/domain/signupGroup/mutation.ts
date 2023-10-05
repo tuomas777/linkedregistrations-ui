@@ -8,23 +8,28 @@ import { ExtendedSession } from '../../types';
 
 import {
   CreateSignupGroupMutationInput,
-  CreateSignupGroupResponse,
+  CreateOrUpdateSignupGroupResponse,
   DeleteSignupGroupMutationInput,
+  UpdateSignupGroupMutationInput,
 } from './types';
-import { createSignupGroup, deleteSignupGroup } from './utils';
+import {
+  createSignupGroup,
+  deleteSignupGroup,
+  updateSignupGroup,
+} from './utils';
 
 export const useCreateSignupGroupMutation = ({
   options,
   session,
 }: {
   options?: UseMutationOptions<
-    CreateSignupGroupResponse,
+    CreateOrUpdateSignupGroupResponse,
     Error,
     CreateSignupGroupMutationInput
   >;
   session: ExtendedSession | null;
 }): UseMutationResult<
-  CreateSignupGroupResponse,
+  CreateOrUpdateSignupGroupResponse,
   Error,
   CreateSignupGroupMutationInput
 > => {
@@ -42,6 +47,31 @@ export const useDeleteSignupGroupMutation = ({
     ({ id }) =>
       deleteSignupGroup({
         id,
+        session,
+      }),
+    options
+  );
+};
+
+export const useUpdateSignupGroupMutation = ({
+  options,
+  session,
+}: {
+  options?: UseMutationOptions<
+    CreateOrUpdateSignupGroupResponse,
+    Error,
+    UpdateSignupGroupMutationInput
+  >;
+  session: ExtendedSession | null;
+}): UseMutationResult<
+  CreateOrUpdateSignupGroupResponse,
+  Error,
+  UpdateSignupGroupMutationInput
+> => {
+  return useMutation(
+    (input) =>
+      updateSignupGroup({
+        input,
         session,
       }),
     options

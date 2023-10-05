@@ -63,8 +63,7 @@ export const SIGNUP_GROUP_FORM_SELECT_FIELDS = [
 export enum SIGNUP_GROUP_ACTIONS {
   CREATE = 'create',
   DELETE = 'delete',
+  UPDATE = 'update',
 }
-
-export const READ_ONLY_PLACEHOLDER = '-';
 
 export const TEST_SIGNUP_GROUP_ID = 'signupGroup:1';
