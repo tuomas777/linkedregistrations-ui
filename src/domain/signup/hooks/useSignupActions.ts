@@ -11,9 +11,13 @@ import { useDeleteSignupMutation, useUpdateSignupMutation } from '../mutation';
 import {
   DeleteSignupMutationInput,
   Signup,
+  SignupInput,
   UpdateSignupMutationInput,
 } from '../types';
-import { getUpdateSignupPayload } from '../utils';
+import {
+  getUpdateSignupPayload,
+  omitSensitiveDataFromSignupPayload,
+} from '../utils';
 
 interface Props {
   registration: Registration;
@@ -49,7 +53,9 @@ const useSignupActions = ({
   };
 
   const { handleError } = useHandleError<
-    DeleteSignupMutationInput | UpdateSignupMutationInput,
+    | DeleteSignupMutationInput
+    | Partial<UpdateSignupMutationInput>
+    | Partial<SignupInput>,
     Signup
   >();
 
@@ -102,8 +108,7 @@ const useSignupActions = ({
           callbacks,
           error,
           message: 'Failed to update signup',
-          object: signup,
-          payload: variables,
+          payload: omitSensitiveDataFromSignupPayload(variables),
           savingFinished,
         });
       },

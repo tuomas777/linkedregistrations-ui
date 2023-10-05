@@ -5,11 +5,12 @@ import {
   SIGNUP_GROUP_INITIAL_VALUES,
 } from '../../signupGroup/constants';
 import { NOTIFICATION_TYPE, TEST_SIGNUP_ID } from '../constants';
-import { SignupQueryVariables } from '../types';
+import { SignupInput, SignupQueryVariables } from '../types';
 import {
   getSignupFields,
   getSignupGroupInitialValuesFromSignup,
   getUpdateSignupPayload,
+  omitSensitiveDataFromSignupPayload,
   signupPathBuilder,
 } from '../utils';
 
@@ -253,5 +254,48 @@ describe('getUpdateSignupPayload function', () => {
       street_address: streetAddress,
       zipcode,
     });
+  });
+});
+
+describe('omitSensitiveDataFromSignupPayload', () => {
+  it('should omit sensitive data from payload', () => {
+    const payload: SignupInput = {
+      city: 'Helsinki',
+      date_of_birth: '1999-10-10',
+      email: 'test@email.com',
+      extra_info: 'Signup entra info',
+      first_name: 'First name',
+      id: '1',
+      last_name: 'Last name',
+      membership_number: 'XYZ',
+      native_language: 'fi',
+      notifications: NOTIFICATION_TYPE.EMAIL,
+      phone_number: '0441234567',
+      responsible_for_group: true,
+      service_language: 'fi',
+      street_address: 'Address',
+      zipcode: '123456',
+    };
+
+    const filteredPayload = omitSensitiveDataFromSignupPayload(
+      payload
+    ) as SignupInput;
+    expect(filteredPayload).toEqual({
+      city: 'Helsinki',
+      id: '1',
+      membership_number: 'XYZ',
+      native_language: 'fi',
+      notifications: NOTIFICATION_TYPE.EMAIL,
+      responsible_for_group: true,
+      service_language: 'fi',
+      street_address: 'Address',
+      zipcode: '123456',
+    });
+    expect(filteredPayload.extra_info).toBeUndefined();
+    expect(filteredPayload.email).toBeUndefined();
+    expect(filteredPayload.extra_info).toBeUndefined();
+    expect(filteredPayload.first_name).toBeUndefined();
+    expect(filteredPayload.last_name).toBeUndefined();
+    expect(filteredPayload.phone_number).toBeUndefined();
   });
 });

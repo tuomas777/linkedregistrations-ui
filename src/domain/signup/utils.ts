@@ -1,4 +1,5 @@
 import { AxiosError } from 'axios';
+import omit from 'lodash/omit';
 
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
@@ -218,3 +219,14 @@ export const getSignupFields = ({
     lastName,
   };
 };
+export const omitSensitiveDataFromSignupPayload = (
+  payload: SignupInput | UpdateSignupMutationInput
+) =>
+  omit(payload, [
+    'date_of_birth',
+    'email',
+    'extra_info',
+    'first_name',
+    'last_name',
+    'phone_number',
+  ]);

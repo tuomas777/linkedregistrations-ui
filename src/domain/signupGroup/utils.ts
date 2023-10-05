@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import isEqual from 'lodash/isEqual';
+import omit from 'lodash/omit';
 import snakeCase from 'lodash/snakeCase';
 
 import { FORM_NAMES } from '../../constants';
@@ -15,7 +16,11 @@ import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../signup/constants';
 import { Signup, SignupInput } from '../signup/types';
-import { getSignupInitialValues, getSignupPayload } from '../signup/utils';
+import {
+  getSignupInitialValues,
+  getSignupPayload,
+  omitSensitiveDataFromSignupPayload,
+} from '../signup/utils';
 
 import {
   NOTIFICATIONS,
@@ -281,3 +286,10 @@ export const updateSignupGroup = async ({
     throw Error(JSON.stringify((error as AxiosError).response?.data));
   }
 };
+
+export const omitSensitiveDataFromSignupGroupPayload = (
+  payload: CreateSignupGroupMutationInput | UpdateSignupGroupMutationInput
+) => ({
+  ...omit(payload, ['extra_info']),
+  signups: payload.signups.map((s) => omitSensitiveDataFromSignupPayload(s)),
+});
