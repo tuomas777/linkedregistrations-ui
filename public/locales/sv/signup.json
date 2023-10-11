@@ -12,6 +12,7 @@
     "redirectInfo1": "Du kommer automatiskt att omdirigeras till tjänsteleverantörens sida.",
     "redirectInfo2": "Om omdirigeringen inte fungerar kan du komma åt sidan <a href=\"{{url}}\">här</a>.",
     "text": "Du har registrerat dig för vårt evenemang {{name}} - välkommen!",
+    "textWaitingList": "Du har registrerat dig för {{name}} reservplats. Om en plats blir ledig för dig får du ett separat bekräftelsemeddelande till din e-post om din anmälan.",
     "title": "Tack för din registrering!"
   },
   "deleteSignupFromFormModal": {
@@ -69,8 +70,8 @@
   "notificationSignupGroupUpdated": "Deltagarinformation har sparad",
   "personsAddedToWaitingListModal": {
     "buttonClose": "Stänga",
-    "text": "Observera att inte alla anmäldas platser är garanterade. Deltagare på reservplatsen bekräftas endast om fler platser blir lediga i kön. Du kommer att få ett separat e-postmeddelande från bekräftad registrering.",
-    "title": "Deltagare har lagts till i bokningskön"
+    "text": "Du kommer att få ett separat bekräftelsemeddelande om din anmälan till din e-post, om en plats blir ledig för dig.",
+    "title": "Du anmäler dig till evenemanget till bokningskön"
   },
   "placeholderCity": "Ange staden",
   "placeholderDateOfBirth": "D.M.YYYY",

@@ -31,7 +31,7 @@ type UseSignupActionsState = {
     values: SignupGroupFormFields,
     callbacks?: MutationCallbacks
   ) => Promise<void>;
-  deleteSignupGroup: (callbacks?: MutationCallbacks) => Promise<void>;
+  deleteSignupGroup: (callbacks?: MutationCallbacks<string>) => Promise<void>;
   saving: SIGNUP_GROUP_ACTIONS | null;
   updateSignupGroup: (
     values: SignupGroupFormFields,
@@ -52,11 +52,14 @@ const useSignupGroupActions = ({
     setSaving(null);
   };
 
-  const cleanAfterUpdate = async (callbacks?: MutationCallbacks) => {
+  const cleanAfterUpdate = async (
+    id: string,
+    callbacks?: MutationCallbacks<string>
+  ) => {
     savingFinished();
     closeModal();
     // Call callback function if defined
-    await (callbacks?.onSuccess && callbacks.onSuccess());
+    await (callbacks?.onSuccess && callbacks.onSuccess(id));
   };
 
   const { handleError } = useHandleError<
@@ -96,19 +99,19 @@ const useSignupGroupActions = ({
           savingFinished,
         });
       },
-      onSuccess: () => {
-        cleanAfterUpdate(callbacks);
+      onSuccess: (data) => {
+        cleanAfterUpdate(data.id, callbacks);
       },
     });
   };
 
-  const deleteSignupGroup = async (callbacks?: MutationCallbacks) => {
+  const deleteSignupGroup = async (callbacks?: MutationCallbacks<string>) => {
+    const id = signupGroup?.id as string;
+
     setSaving(SIGNUP_GROUP_ACTIONS.DELETE);
 
     deleteSignupGroupMutation.mutate(
-      {
-        id: signupGroup?.id as string,
-      },
+      { id },
       {
         onError: (error, variables) => {
           handleError({
@@ -121,7 +124,7 @@ const useSignupGroupActions = ({
           });
         },
         onSuccess: () => {
-          cleanAfterUpdate(callbacks);
+          cleanAfterUpdate(id, callbacks);
         },
       }
     );
@@ -129,13 +132,16 @@ const useSignupGroupActions = ({
 
   const updateSignupGroup = async (
     values: SignupGroupFormFields,
-    callbacks?: MutationCallbacks
+    callbacks?: MutationCallbacks<string>
   ) => {
+    const id = signupGroup?.id as string;
+
     setSaving(SIGNUP_GROUP_ACTIONS.UPDATE);
+
     const payload: UpdateSignupGroupMutationInput = getUpdateSignupGroupPayload(
       {
         formValues: values,
-        id: signupGroup?.id as string,
+        id,
         registration: registration,
       }
     );
@@ -152,7 +158,7 @@ const useSignupGroupActions = ({
         });
       },
       onSuccess: () => {
-        cleanAfterUpdate(callbacks);
+        cleanAfterUpdate(id, callbacks);
       },
     });
   };

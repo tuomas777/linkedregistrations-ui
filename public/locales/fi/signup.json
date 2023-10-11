@@ -12,6 +12,7 @@
     "redirectInfo1": "Sinut ohjataan automaattisesti palveluntarjoajan sivulle.",
     "redirectInfo2": "Jos uudelleenohjaus ei toimi, pääset sivulle <a href=\"{{url}}\">tästä</a>.",
     "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
+    "textWaitingList": "Olet ilmoittautunut tapahtuman {{name}} varasijalle. Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.",
     "title": "Kiitos ilmoittautumisestasi!"
   },
   "deleteSignupFromFormModal": {
@@ -69,8 +70,8 @@
   "notificationSignupGroupUpdated": "Osallistujien tiedot on tallennettu",
   "personsAddedToWaitingListModal": {
     "buttonClose": "Sulje",
-    "text": "Huomioi, että kaikki ilmoittautujien paikat eivät ole varmistettuja. Varasijalla olevat ilmoittautujat varmistuvat vain, jos jonosta vapautuu lisää paikkoja. Varmistuneesta ilmoittautumisesta saat erillisen sähköpostin.",
-    "title": "Ilmoittautujia on lisätty varausjonoon"
+    "text": "Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.",
+    "title": "Olet ilmoittautumassa tapahtumaan varasijalle"
   },
   "placeholderCity": "Syötä kaupunki",
   "placeholderDateOfBirth": "P.K.VVVV",

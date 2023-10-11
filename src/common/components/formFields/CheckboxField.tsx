@@ -16,7 +16,7 @@ const CheckboxField: React.FC<Props> = ({
   ...rest
 }) => {
   const locale = useLocale();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   return (
     <div>

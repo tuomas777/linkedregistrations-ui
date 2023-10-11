@@ -16,13 +16,21 @@ import { getRegistrationFields } from '../registration/utils';
 import { SIGNUP_QUERY_PARAMS } from '../signup/constants';
 
 import ConfirmationMessage from './confirmationMessage/ConfirmationMessage';
+import useSignupGroupData from './hooks/useSignupGroupData';
+import { SignupGroup } from './types';
+import { isAnySignupInWaitingList } from './utils';
 
 type Props = {
   event: Event;
   registration: Registration;
+  signupGroup: SignupGroup;
 };
 
-const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
+const SignupGroupCompletedPage: React.FC<Props> = ({
+  event,
+  registration,
+  signupGroup,
+}) => {
   const { query } = useRouter();
   const { [SIGNUP_QUERY_PARAMS.REDIRECT_URL]: redirectUrl } = query;
   const { t } = useTranslation(['signup']);
@@ -30,6 +38,7 @@ const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
 
   const { name } = getEventFields(event, locale);
   const { confirmationMessage } = getRegistrationFields(registration, locale);
+  const inWaitingList = isAnySignupInWaitingList(signupGroup);
 
   React.useEffect(() => {
     if (typeof redirectUrl === 'string') {
@@ -46,10 +55,13 @@ const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
         <title>{t('completedPage.title')}</title>
       </Head>
       <SuccessTemplate title={t('completedPage.title')}>
-        {confirmationMessage ? (
+        <p>
+          {inWaitingList
+            ? t('completedPage.textWaitingList', { name })
+            : t('completedPage.text', { name })}
+        </p>
+        {confirmationMessage && (
           <ConfirmationMessage registration={registration} />
-        ) : (
-          <p>{t('completedPage.text', { name })}</p>
         )}
         {redirectUrl && (
           <>
@@ -71,11 +83,16 @@ const SignupGroupCompletedPage: React.FC<Props> = ({ event, registration }) => {
 
 const SignupGroupCompletedPageWrapper: React.FC = () => {
   const { event, isLoading, registration } = useEventAndRegistrationData();
+  const { isLoading: isLoadingSignupGroup, signupGroup } = useSignupGroupData();
 
   return (
-    <LoadingSpinner isLoading={isLoading}>
-      {event && registration ? (
-        <SignupGroupCompletedPage event={event} registration={registration} />
+    <LoadingSpinner isLoading={isLoading || isLoadingSignupGroup}>
+      {event && registration && signupGroup ? (
+        <SignupGroupCompletedPage
+          event={event}
+          registration={registration}
+          signupGroup={signupGroup}
+        />
       ) : (
         <NotFound />
       )}

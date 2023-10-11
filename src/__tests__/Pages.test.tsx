@@ -28,15 +28,15 @@ import EditSignupPage, {
 import SignupCancelledPage, {
   getServerSideProps as getSignupCancelledPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup/cancelled/index';
+import SignupGroupCompletedPage, {
+  getServerSideProps as getSignupGroupCompletedPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup-group/[signupGroupId]/completed';
 import EditSignupGroupPage, {
   getServerSideProps as getEditSignupGroupPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/[signupGroupId]/edit/index';
 import SignupGroupCancelledPage, {
   getServerSideProps as getSignupGroupCancelledPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/cancelled/index';
-import SignupGroupCompletedPage, {
-  getServerSideProps as getSignupGroupCompletedPageServerSideProps,
-} from '../pages/registration/[registrationId]/signup-group/completed/index';
 import CreateSignupGroupPage, {
   getServerSideProps as getCreateSignupGroupPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup-group/create/index';
@@ -268,7 +268,7 @@ describe('SignupGroupCompletedPage', () => {
   it('should render heading', async () => {
     singletonRouter.push({
       pathname: ROUTES.SIGNUP_GROUP_COMPLETED,
-      query: { signupId: signup.id, registrationId: registration.id },
+      query: { signupGroupId: signupGroup.id, registrationId: registration.id },
     });
 
     render(<SignupGroupCompletedPage />);
