@@ -23,8 +23,12 @@ import {
   RegistrationsResponse,
 } from '../domain/registration/types';
 import { SeatsReservation } from '../domain/reserveSeats/types';
-import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../domain/signup/constants';
-import { Signup } from '../domain/signup/types';
+import {
+  ATTENDEE_STATUS,
+  NOTIFICATION_TYPE,
+  PRESENCE_STATUS,
+} from '../domain/signup/constants';
+import { Signup, SignupsResponse } from '../domain/signup/types';
 import { SIGNUP_GROUP_INITIAL_VALUES } from '../domain/signupGroup/constants';
 import {
   SignupGroup,
@@ -255,6 +259,7 @@ export const fakeRegistration = (
       enrolment_end_time: '2020-09-30T16:00:00.000000Z',
       enrolment_start_time: '2020-09-27T15:00:00.000000Z',
       event,
+      has_registration_user_access: true,
       instructions: fakeLocalisedObject(faker.lorem.paragraph()),
       last_modified_at: '2020-09-12T15:00:00.000000Z',
       last_modified_by: '',
@@ -265,6 +270,7 @@ export const fakeRegistration = (
       publisher: event.publisher,
       remaining_attendee_capacity: null,
       remaining_waiting_list_capacity: null,
+      signups: [],
       waiting_list_capacity: null,
     },
     overrides
@@ -292,6 +298,14 @@ export const fakeSeatsReservation = (
   );
 };
 
+export const fakeSignups = (
+  count = 1,
+  signups?: Partial<Signup>[]
+): SignupsResponse => ({
+  data: generateNodeArray((i) => fakeSignup(signups?.[i]), count),
+  meta: fakeMeta(count),
+});
+
 export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
   const id = overrides?.id || faker.string.uuid();
 
@@ -313,6 +327,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       native_language: 'fi',
       notifications: NOTIFICATION_TYPE.SMS_EMAIL,
       phone_number: faker.phone.number(),
+      presence_status: PRESENCE_STATUS.NotPresent,
       registration: TEST_REGISTRATION_ID,
       responsible_for_group: false,
       service_language: 'fi',
@@ -353,7 +368,9 @@ export const fakeUser = (overrides?: Partial<User>): User => {
       display_name: faker.lorem.words(),
       email: faker.internet.email(),
       first_name: faker.person.firstName(),
+      is_external: false,
       is_staff: false,
+      is_strongly_identified: true,
       last_login: '',
       last_name: faker.person.lastName(),
       organization: faker.lorem.words(),

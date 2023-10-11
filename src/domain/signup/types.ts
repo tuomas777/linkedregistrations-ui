@@ -1,6 +1,10 @@
-import { stringOrNull } from '../api/types';
+import { Meta, stringOrNull } from '../api/types';
 
-import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
+import {
+  ATTENDEE_STATUS,
+  NOTIFICATION_TYPE,
+  PRESENCE_STATUS,
+} from './constants';
 
 export type SignupInput = {
   city?: stringOrNull;
@@ -14,16 +18,12 @@ export type SignupInput = {
   native_language?: stringOrNull;
   notifications?: NOTIFICATION_TYPE;
   phone_number?: stringOrNull;
+  presence_status?: PRESENCE_STATUS;
   responsible_for_group: boolean;
   service_language?: stringOrNull;
   street_address?: stringOrNull;
   zipcode?: stringOrNull;
 };
-
-export type UpdateSignupMutationInput = {
-  id: string;
-  registration: string;
-} & SignupInput;
 
 export type Signup = {
   id: string;
@@ -42,6 +42,7 @@ export type Signup = {
   native_language?: stringOrNull;
   notifications?: NOTIFICATION_TYPE;
   phone_number?: stringOrNull;
+  presence_status?: PRESENCE_STATUS;
   registration: string;
   responsible_for_group: boolean;
   service_language?: stringOrNull;
@@ -49,10 +50,24 @@ export type Signup = {
   zipcode?: stringOrNull;
 };
 
+export type SignupsResponse = {
+  data: Array<Signup>;
+  meta: Meta;
+};
+
 export type DeleteSignupMutationInput = {
   registrationId: string;
   signupId: string;
 };
+
+export type UpdateSignupMutationInput = {
+  id: string;
+  registration: string;
+} & SignupInput;
+
+export type PatchSignupMutationInput = {
+  id: string;
+} & Partial<UpdateSignupMutationInput>;
 
 export type SignupQueryVariables = {
   id: string;

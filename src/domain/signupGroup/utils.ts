@@ -27,7 +27,7 @@ import {
 import {
   CreateSignupGroupMutationInput,
   CreateOrUpdateSignupGroupResponse,
-  SignupFields,
+  SignupFormFields,
   SignupGroup,
   SignupGroupFormFields,
   SignupGroupQueryVariables,
@@ -120,7 +120,7 @@ export const getUpdateSignupGroupPayload = ({
   };
 };
 
-export const getSignupDefaultInitialValues = (): SignupFields => ({
+export const getSignupDefaultInitialValues = (): SignupFormFields => ({
   ...SIGNUP_INITIAL_VALUES,
 });
 
@@ -172,7 +172,7 @@ export const getNewSignups = ({
   signups,
 }: {
   seatsReservation: SeatsReservation;
-  signups: SignupFields[];
+  signups: SignupFormFields[];
 }) => {
   const { in_waitlist, seats } = seatsReservation;
   const signupInitialValues = getSignupDefaultInitialValues();

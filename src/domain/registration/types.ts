@@ -5,6 +5,7 @@ import {
   stringOrNull,
 } from '../api/types';
 import { Event } from '../event/types';
+import { Signup } from '../signup/types';
 
 export type Registration = {
   id: string;
@@ -19,6 +20,7 @@ export type Registration = {
   enrolment_end_time: string;
   enrolment_start_time: string;
   event: Event;
+  has_registration_user_access: boolean;
   instructions: LocalisedObject;
   last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
@@ -29,6 +31,7 @@ export type Registration = {
   publisher: string;
   remaining_attendee_capacity: numberOrNull;
   remaining_waiting_list_capacity: numberOrNull;
+  signups: Signup[] | null;
   waiting_list_capacity: numberOrNull;
 };
 

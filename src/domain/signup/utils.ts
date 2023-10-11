@@ -2,14 +2,25 @@ import { AxiosError } from 'axios';
 
 import { ExtendedSession } from '../../types';
 import formatDate from '../../utils/formatDate';
+import skipFalsyType from '../../utils/skipFalsyType';
 import stringToDate from '../../utils/stringToDate';
-import { callDelete, callGet, callPut } from '../app/axios/axiosClient';
+import {
+  callDelete,
+  callGet,
+  callPatch,
+  callPut,
+} from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import { NOTIFICATIONS } from '../signupGroup/constants';
-import { SignupFields, SignupGroupFormFields } from '../signupGroup/types';
+import {
+  SignupFields,
+  SignupFormFields,
+  SignupGroupFormFields,
+} from '../signupGroup/types';
 
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
+  PatchSignupMutationInput,
   Signup,
   SignupInput,
   SignupQueryVariables,
@@ -54,6 +65,25 @@ export const deleteSignup = async ({
   }
 };
 
+export const patchSignup = async ({
+  input: { id, ...input },
+  session,
+}: {
+  input: PatchSignupMutationInput;
+  session: ExtendedSession | null;
+}): Promise<Signup> => {
+  try {
+    const { data } = await callPatch({
+      data: JSON.stringify(input),
+      session,
+      url: signupPathBuilder({ id }),
+    });
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
 export const updateSignup = async ({
   input: { id, ...input },
   session,
@@ -73,7 +103,7 @@ export const updateSignup = async ({
   }
 };
 
-export const getSignupInitialValues = (signup: Signup): SignupFields => ({
+export const getSignupInitialValues = (signup: Signup): SignupFormFields => ({
   city: signup.city ?? '',
   dateOfBirth: signup.date_of_birth
     ? formatDate(new Date(signup.date_of_birth))
@@ -111,7 +141,7 @@ export const getSignupPayload = ({
 }: {
   formValues: SignupGroupFormFields;
   responsibleForGroup: boolean;
-  signupData: SignupFields;
+  signupData: SignupFormFields;
 }): SignupInput => {
   const {
     email,
@@ -170,5 +200,21 @@ export const getUpdateSignupPayload = ({
     }),
     id,
     registration: registration.id,
+  };
+};
+
+export const getSignupFields = ({
+  signup,
+}: {
+  signup: Signup;
+}): SignupFields => {
+  const firstName = signup.first_name ?? '';
+  const lastName = signup.last_name ?? '';
+  const fullName = [firstName, lastName].filter(skipFalsyType).join(' ');
+
+  return {
+    firstName,
+    fullName,
+    lastName,
   };
 };

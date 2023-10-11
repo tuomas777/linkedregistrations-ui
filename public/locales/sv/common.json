@@ -2,6 +2,7 @@
   "appName": "Linked Registrations",
   "buttonBack": "Tillbaka",
   "cancel": "Ångra",
+  "clear": "Klar",
   "cookieConsent": {
     "expiration": {
       "session": "Session"
@@ -37,11 +38,13 @@
     "menuToggleAriaLabel": "Menyn",
     "skipToContentLabel": "Gå till innehållet"
   },
+  "noResults": "Inga resultat",
   "numberInput": {
     "minusStepButtonAriaLabel": "Minska",
     "plusStepButtonAriaLabel": "Öka"
   },
   "openInNewTab": "(öppnas i en ny flik)",
+  "search": "Sök",
   "serverError": {
     "emailMustBeUnique": "E-post har redan registrering.",
     "endTimeInPast": "Sluttiden kan inte vara tidigare. Ange en framtida sluttid.",
@@ -72,6 +75,10 @@
   },
   "signInToEnrol": "Du måste vara inloggad för att registrera dig för detta evenemang.",
   "signOut": "Logga ut",
+  "strongIdentificationRequired": {
+    "text": "Att se detta innehåll kräver stark identifiering. Logga ut och prova en annan inloggningsmetod.",
+    "title": "Stark identifiering krävs"
+  },
   "titleServerErrorSummary": "Formuläret innehåller följande fel",
   "validation": {
     "age": {
