@@ -55,7 +55,7 @@ const Signup: React.FC<Props> = ({
       deleteButton={
         showDelete && !formDisabled ? (
           <button
-            aria-label={t('buttonDeleteSignup') as string}
+            aria-label={t('buttonDeleteSignup')}
             className={styles.deleteButton}
             onClick={onDelete}
             type="button"

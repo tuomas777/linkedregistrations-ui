@@ -63,7 +63,7 @@ const EditSignupGroupPageWrapper: React.FC = () => {
   return (
     <LoadingSpinner isLoading={isLoadingSignup || isLoadingEventOrRegistration}>
       {event && registration && signupGroup ? (
-        <SignupGroupFormProvider>
+        <SignupGroupFormProvider registration={registration}>
           <SignupServerErrorsProvider>
             <EditSignupGroupPage
               event={event}

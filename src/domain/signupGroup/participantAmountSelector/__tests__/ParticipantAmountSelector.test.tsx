@@ -23,7 +23,7 @@ import ParticipantAmountSelector from '../ParticipantAmountSelector';
 
 const renderComponent = () =>
   render(
-    <SignupGroupFormProvider>
+    <SignupGroupFormProvider registration={registration}>
       <SignupServerErrorsProvider>
         <Formik
           initialValues={{ signups: [{ ...SIGNUP_INITIAL_VALUES }] }}

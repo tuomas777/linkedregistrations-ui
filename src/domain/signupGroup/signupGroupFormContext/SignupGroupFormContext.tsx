@@ -9,6 +9,8 @@ import React, {
 } from 'react';
 
 import useMountedState from '../../../hooks/useMountedState';
+import { Registration } from '../../registration/types';
+import { getSeatsReservationData } from '../../reserveSeats/utils';
 import { SIGNUP_MODALS } from '../../signup/constants';
 import PersonsAddedToWaitingListModal from '../modals/personsAddedToWaitingListModal/PersonsAddedToWaitingListModal';
 
@@ -16,8 +18,10 @@ export type SignupGroupFormContextProps = {
   closeModal: () => void;
   openModal: SIGNUP_MODALS | null;
   openParticipant: number | null;
+  participantAmount: number;
   setOpenModal: (state: SIGNUP_MODALS | null) => void;
   setOpenParticipant: (index: number | null) => void;
+  setParticipantAmount: (amount: number) => void;
   toggleOpenParticipant: (index: number) => void;
 };
 
@@ -25,10 +29,13 @@ export const SignupGroupFormContext = createContext<
   SignupGroupFormContextProps | undefined
 >(undefined);
 
-export const SignupGroupFormProvider: FC<PropsWithChildren> = ({
-  children,
-}) => {
+export const SignupGroupFormProvider: FC<
+  PropsWithChildren<{ registration: Registration }>
+> = ({ children, registration }) => {
   const [openParticipant, setOpenParticipant] = useState<number | null>(0);
+  const [participantAmount, setParticipantAmount] = useState(
+    Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)
+  );
 
   const [openModal, setOpenModal] = useMountedState<SIGNUP_MODALS | null>(null);
 
@@ -44,11 +51,19 @@ export const SignupGroupFormProvider: FC<PropsWithChildren> = ({
       closeModal: () => setOpenModal(null),
       openModal,
       openParticipant,
+      participantAmount,
       setOpenModal,
       setOpenParticipant,
+      setParticipantAmount,
       toggleOpenParticipant,
     }),
-    [openModal, openParticipant, setOpenModal, toggleOpenParticipant]
+    [
+      openModal,
+      openParticipant,
+      participantAmount,
+      setOpenModal,
+      toggleOpenParticipant,
+    ]
   );
 
   return (

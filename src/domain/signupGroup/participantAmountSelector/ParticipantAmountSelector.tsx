@@ -10,7 +10,6 @@ import {
   getAttendeeCapacityError,
   getMaxSeatsAmount,
 } from '../../registration/utils';
-import { getSeatsReservationData } from '../../reserveSeats/utils';
 import { SIGNUP_MODALS } from '../../signup/constants';
 import useSeatsReservationActions from '../../signup/hooks/useSeatsReservationActions';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
@@ -32,7 +31,13 @@ const ParticipantAmountSelector: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation(['signup', 'common']);
 
-  const { closeModal, openModal, setOpenModal } = useSignupGroupFormContext();
+  const {
+    closeModal,
+    openModal,
+    participantAmount,
+    setOpenModal,
+    setParticipantAmount,
+  } = useSignupGroupFormContext();
   const { setServerErrorItems, showServerErrors } =
     useSignupServerErrorsContext();
 
@@ -41,10 +46,6 @@ const ParticipantAmountSelector: React.FC<Props> = ({
   const [{ value: signups }, , { setValue: setSignups }] = useField<
     SignupFormFields[]
   >({ name: SIGNUP_GROUP_FIELDS.SIGNUPS });
-
-  const [participantAmount, setParticipantAmount] = useState(
-    Math.max(getSeatsReservationData(registration.id)?.seats ?? 0, 1)
-  );
 
   const handleParticipantAmountChange: React.ChangeEventHandler<
     HTMLInputElement
@@ -107,12 +108,12 @@ const ParticipantAmountSelector: React.FC<Props> = ({
       <div className={styles.participantAmountSelector}>
         <NumberInput
           id="participant-amount-field"
-          minusStepButtonAriaLabel={
-            t('common:numberInput.minusStepButtonAriaLabel') as string
-          }
-          plusStepButtonAriaLabel={
-            t('common:numberInput.plusStepButtonAriaLabel') as string
-          }
+          minusStepButtonAriaLabel={t(
+            'common:numberInput.minusStepButtonAriaLabel'
+          )}
+          plusStepButtonAriaLabel={t(
+            'common:numberInput.plusStepButtonAriaLabel'
+          )}
           disabled={disabled}
           errorText={attendeeCapacityError}
           invalid={!!attendeeCapacityError}

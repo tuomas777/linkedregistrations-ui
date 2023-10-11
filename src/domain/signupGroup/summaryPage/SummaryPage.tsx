@@ -221,7 +221,7 @@ const SummaryPageWrapper: React.FC = () => {
   return (
     <LoadingSpinner isLoading={isLoading}>
       {event && registration ? (
-        <SignupGroupFormProvider>
+        <SignupGroupFormProvider registration={registration}>
           <SignupServerErrorsProvider>
             <SummaryPage event={event} registration={registration} />
           </SignupServerErrorsProvider>
