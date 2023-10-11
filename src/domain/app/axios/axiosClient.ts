@@ -1,7 +1,14 @@
-import axios, { AxiosRequestConfig } from 'axios';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from 'axios';
+import * as AxiosLogger from 'axios-logger';
 
 import { ExtendedSession } from '../../../types';
 import getPublicRuntimeConfig from '../../../utils/getPublicRuntimeConfig';
+import isTestEnv from '../../../utils/isTestEnv';
 
 const getAxiosClient = () => {
   const { linkedEventsApiBaseUrl } = getPublicRuntimeConfig();
@@ -13,6 +20,37 @@ const getAxiosClient = () => {
 };
 
 const axiosClient = getAxiosClient();
+/* istanbul ignore next */
+if (!isTestEnv) {
+  const loggerConfig = {
+    data: false,
+    dateFormat: 'isoDateTime',
+  };
+
+  // Add a request interceptor
+  axiosClient.interceptors.request.use((request) => {
+    return typeof window === 'undefined'
+      ? (AxiosLogger.requestLogger(
+          request,
+          loggerConfig
+        ) as InternalAxiosRequestConfig)
+      : request;
+  });
+
+  // Add a response interceptor
+  axiosClient.interceptors.response.use(
+    (response) => {
+      return typeof window === 'undefined'
+        ? AxiosLogger.responseLogger(response, loggerConfig)
+        : response;
+    },
+    (err: AxiosError) => {
+      return typeof window === 'undefined'
+        ? AxiosLogger.errorLogger(err, loggerConfig)
+        : err;
+    }
+  );
+}
 
 const getLinkedEventsApiToken = (session: ExtendedSession | null) =>
   session?.apiTokens?.linkedevents;
