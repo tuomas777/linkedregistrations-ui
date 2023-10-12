@@ -16,7 +16,10 @@ import {
   SIGNUP_INITIAL_VALUES,
   TEST_SIGNUP_GROUP_ID,
 } from '../constants';
-import { SignupGroupQueryVariables } from '../types';
+import {
+  CreateSignupGroupMutationInput,
+  SignupGroupQueryVariables,
+} from '../types';
 import {
   getSignupDefaultInitialValues,
   getSignupGroupDefaultInitialValues,
@@ -25,6 +28,7 @@ import {
   getSignupNotificationTypes,
   getSignupNotificationsCode,
   getUpdateSignupGroupPayload,
+  omitSensitiveDataFromSignupGroupPayload,
   isSignupFieldRequired,
   signupGroupPathBuilder,
 } from '../utils';
@@ -534,5 +538,61 @@ describe('getUpdateSignupGroupPayload function', () => {
         },
       ],
     });
+  });
+});
+
+describe('omitSensitiveDataFromSignupGroupPayload', () => {
+  it('should omit sensitive data from payload', () => {
+    const payload: CreateSignupGroupMutationInput = {
+      extra_info: 'Extra info',
+      registration: registration.id,
+      reservation_code: 'xxx',
+      signups: [
+        {
+          city: 'Helsinki',
+          date_of_birth: '1999-10-10',
+          email: 'test@email.com',
+          extra_info: 'Signup entra info',
+          first_name: 'First name',
+          id: '1',
+          last_name: 'Last name',
+          membership_number: 'XYZ',
+          native_language: 'fi',
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          phone_number: '0441234567',
+          responsible_for_group: true,
+          service_language: 'fi',
+          street_address: 'Address',
+          zipcode: '123456',
+        },
+      ],
+    };
+
+    const filteredPayload = omitSensitiveDataFromSignupGroupPayload(
+      payload
+    ) as CreateSignupGroupMutationInput;
+    expect(filteredPayload).toEqual({
+      registration: registration.id,
+      reservation_code: 'xxx',
+      signups: [
+        {
+          city: 'Helsinki',
+          id: '1',
+          membership_number: 'XYZ',
+          native_language: 'fi',
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          responsible_for_group: true,
+          service_language: 'fi',
+          street_address: 'Address',
+          zipcode: '123456',
+        },
+      ],
+    });
+    expect(filteredPayload.extra_info).toBeUndefined();
+    expect(filteredPayload.signups[0].email).toBeUndefined();
+    expect(filteredPayload.signups[0].extra_info).toBeUndefined();
+    expect(filteredPayload.signups[0].first_name).toBeUndefined();
+    expect(filteredPayload.signups[0].last_name).toBeUndefined();
+    expect(filteredPayload.signups[0].phone_number).toBeUndefined();
   });
 });

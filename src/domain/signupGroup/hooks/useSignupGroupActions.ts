@@ -19,7 +19,11 @@ import {
   SignupGroupFormFields,
   UpdateSignupGroupMutationInput,
 } from '../types';
-import { getSignupGroupPayload, getUpdateSignupGroupPayload } from '../utils';
+import {
+  getSignupGroupPayload,
+  getUpdateSignupGroupPayload,
+  omitSensitiveDataFromSignupGroupPayload,
+} from '../utils';
 
 interface Props {
   registration: Registration;
@@ -63,7 +67,7 @@ const useSignupGroupActions = ({
   };
 
   const { handleError } = useHandleError<
-    CreateSignupGroupMutationInput | DeleteSignupGroupMutationInput,
+    Partial<CreateSignupGroupMutationInput> | DeleteSignupGroupMutationInput,
     SignupGroup
   >();
 
@@ -95,7 +99,7 @@ const useSignupGroupActions = ({
           callbacks,
           error,
           message: 'Failed to create signup group',
-          payload: variables,
+          payload: omitSensitiveDataFromSignupGroupPayload(variables),
           savingFinished,
         });
       },
@@ -118,7 +122,6 @@ const useSignupGroupActions = ({
             callbacks,
             error,
             message: 'Failed to delete signup',
-            object: signupGroup,
             payload: variables,
             savingFinished,
           });
@@ -152,8 +155,7 @@ const useSignupGroupActions = ({
           callbacks,
           error,
           message: 'Failed to update signup group',
-          object: signupGroup,
-          payload: variables,
+          payload: omitSensitiveDataFromSignupGroupPayload(variables),
           savingFinished,
         });
       },

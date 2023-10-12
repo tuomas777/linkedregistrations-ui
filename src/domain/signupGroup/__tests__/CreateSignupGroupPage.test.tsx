@@ -31,6 +31,7 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { mockedUserResponse } from '../../user/__mocks__/user';
 import CreateSignupGroupPage from '../CreateSignupGroupPage';
 import { findFirstNameInput, getSignupFormElement } from '../testUtils';
 
@@ -68,6 +69,7 @@ beforeEach(() => {
 
 const defaultMocks = [
   ...mockedLanguagesResponses,
+  mockedUserResponse,
   rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
     res(ctx.status(200), ctx.json(registration))
   ),

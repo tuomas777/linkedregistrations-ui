@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { reportError } from '../domain/app/sentry/utils';
+import useUser from '../domain/user/hooks/useUser';
 import { MutationCallbacks } from '../types';
 
 type UseHandleErrorState<PayloadType, ObjectType> = {
@@ -25,6 +26,7 @@ function useHandleError<PayloadType, ObjectType>(): UseHandleErrorState<
   PayloadType,
   ObjectType
 > {
+  const { user } = useUser();
   const handleError = ({
     callbacks,
     error,
@@ -49,6 +51,7 @@ function useHandleError<PayloadType, ObjectType>(): UseHandleErrorState<
         error,
         payloadAsString: payload && JSON.stringify(payload),
         object,
+        user: user?.username,
       },
       message,
     });
