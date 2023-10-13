@@ -6,7 +6,6 @@ import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
 import React from 'react';
-import { toast } from 'react-toastify';
 
 import { ExtendedSession } from '../../../types';
 import { fakeAuthenticatedSession } from '../../../utils/mockSession';
@@ -123,7 +122,6 @@ test('should show error message when cancelling signup fails', async () => {
 });
 
 test('should update signup', async () => {
-  toast.success = jest.fn();
   setQueryMocks(
     ...defaultMocks,
     rest.put(`*/signup/${TEST_SIGNUP_ID}`, (req, res, ctx) =>
@@ -136,9 +134,9 @@ test('should update signup', async () => {
   await findFirstNameInput();
   await tryToUpdate();
 
-  await waitFor(() =>
-    expect(toast.success).toBeCalledWith('Osallistujan tiedot on tallennettu')
-  );
+  await screen.findByRole('alert', {
+    name: 'Osallistujan tiedot on tallennettu',
+  });
 });
 
 test('should show error message when updating signup fails', async () => {

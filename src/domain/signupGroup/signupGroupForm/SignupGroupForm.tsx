@@ -5,9 +5,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import React, { useMemo } from 'react';
-import { toast } from 'react-toastify';
 import { ValidationError } from 'yup';
-import 'react-toastify/dist/ReactToastify.css';
 
 import Button from '../../../common/components/button/Button';
 import Fieldset from '../../../common/components/fieldset/Fieldset';
@@ -19,6 +17,7 @@ import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
+import { useNotificationsContext } from '../../../common/components/notificationsContext/hooks/useNotificationsContext';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
@@ -106,6 +105,8 @@ const SignupGroupForm: React.FC<Props> = ({
     signupGroup,
   });
   const formSavingDisabled = React.useRef(isEditingMode);
+
+  const { addNotification } = useNotificationsContext();
 
   const reservationTimerCallbacksDisabled = React.useRef(false);
   const disableReservationTimerCallbacks = React.useCallback(() => {
@@ -195,7 +196,10 @@ const SignupGroupForm: React.FC<Props> = ({
           showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
         onSuccess: () => {
           window.scrollTo(0, 0);
-          toast.success(t('signup:notificationSignupGroupUpdated'));
+          addNotification({
+            type: 'success',
+            label: t('signup:notificationSignupGroupUpdated'),
+          });
         },
       });
     } else {
@@ -204,7 +208,10 @@ const SignupGroupForm: React.FC<Props> = ({
           showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
         onSuccess: () => {
           window.scrollTo(0, 0);
-          toast.success(t('signup:notificationSignupUpdated'));
+          addNotification({
+            type: 'success',
+            label: t('signup:notificationSignupUpdated'),
+          });
         },
       });
     }

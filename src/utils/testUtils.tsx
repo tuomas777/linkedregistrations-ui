@@ -20,6 +20,7 @@ import React, { useMemo } from 'react';
 import wait from 'waait';
 
 import { testId } from '../common/components/loadingSpinner/LoadingSpinner';
+import { NotificationsProvider } from '../common/components/notificationsContext/NotificationsContext';
 import { registration } from '../domain/registration/__mocks__/registration';
 import { SignupGroupFormProvider } from '../domain/signupGroup/signupGroupFormContext/SignupGroupFormContext';
 import { server } from '../tests/msw/server';
@@ -64,14 +65,16 @@ const customRender: CustomRender = (
     );
 
     return (
-      <RouterContext.Provider value={value}>
-        <SessionProvider session={session}>
-          {/* @ts-ignore */}
-          <QueryClientProvider client={queryClient}>
-            {children as React.ReactElement}
-          </QueryClientProvider>
-        </SessionProvider>
-      </RouterContext.Provider>
+      <NotificationsProvider>
+        <RouterContext.Provider value={value}>
+          <SessionProvider session={session}>
+            {/* @ts-ignore */}
+            <QueryClientProvider client={queryClient}>
+              {children as React.ReactElement}
+            </QueryClientProvider>
+          </SessionProvider>
+        </RouterContext.Provider>
+      </NotificationsProvider>
     );
   };
 

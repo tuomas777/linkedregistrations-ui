@@ -3,9 +3,9 @@ import orderBy from 'lodash/orderBy';
 import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
 
 import Checkbox from '../../../common/components/checkbox/Checkbox';
+import { useNotificationsContext } from '../../../common/components/notificationsContext/hooks/useNotificationsContext';
 import SearchRow from '../../../common/components/searchRow/SearchRow';
 import useHandleError from '../../../hooks/useHandleError';
 import { ExtendedSession } from '../../../types';
@@ -26,6 +26,8 @@ const AttendeeList: React.FC<Props> = ({ registration }) => {
 
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState('');
+
+  const { addNotification } = useNotificationsContext();
 
   const queryClient = useQueryClient();
   const { data: session } = useSession() as { data: ExtendedSession | null };
@@ -77,7 +79,10 @@ const AttendeeList: React.FC<Props> = ({ registration }) => {
           object: signup,
           savingFinished,
         });
-        toast.error(t('attendanceList:errors.presenceStatusUpdateFails'));
+        addNotification({
+          type: 'error',
+          label: t('attendanceList:errors.presenceStatusUpdateFails'),
+        });
       },
       onSuccess: (data) => {
         queryClient.setQueryData(
