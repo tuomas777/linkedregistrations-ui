@@ -1,9 +1,9 @@
-import { Notification } from 'hds-react';
 import { signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import Button from '../../../common/components/button/Button';
+import Notification from '../../../common/components/notification/Notification';
 
 import styles from './authenticationRequiredNotification.module.scss';
 

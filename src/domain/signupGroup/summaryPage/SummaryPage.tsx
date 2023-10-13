@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { Form, Formik } from 'formik';
-import { IconPen, Notification } from 'hds-react';
+import { IconPen } from 'hds-react';
 import pick from 'lodash/pick';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
@@ -11,6 +11,7 @@ import Button from '../../../common/components/button/Button';
 import ButtonPanel from '../../../common/components/buttonPanel/ButtonPanel';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
+import Notification from '../../../common/components/notification/Notification';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES } from '../../../constants';
 import { ExtendedSession } from '../../../types';
