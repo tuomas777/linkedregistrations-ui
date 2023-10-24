@@ -117,7 +117,7 @@ export const getAttendeeCapacityError = (
   if (participantAmount < 1) {
     return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MIN}`, {
       min: 1,
-    }) as string;
+    });
   }
 
   const freeCapacity = getFreeAttendeeOrWaitingListCapacity(registration);
@@ -125,7 +125,7 @@ export const getAttendeeCapacityError = (
   if (freeCapacity && participantAmount > freeCapacity) {
     return t(`common:${VALIDATION_MESSAGE_KEYS.CAPACITY_MAX}`, {
       max: freeCapacity,
-    }) as string;
+    });
   }
 
   return undefined;
@@ -145,6 +145,13 @@ export const isRegistrationOpen = (registration: Registration): boolean => {
   }
 
   return true;
+};
+
+export const isSignupEnded = (registration: Registration): boolean => {
+  const enrolmentEndTime = registration.enrolment_end_time;
+
+  // Signup is ended if enrolment end time is defined and in the past
+  return Boolean(enrolmentEndTime && isPast(new Date(enrolmentEndTime)));
 };
 
 export const isRegistrationPossible = (registration: Registration): boolean => {

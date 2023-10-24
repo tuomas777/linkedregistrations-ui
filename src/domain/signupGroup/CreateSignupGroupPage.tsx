@@ -11,6 +11,7 @@ import { Event } from '../event/types';
 import NotFound from '../notFound/NotFound';
 import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../registration/types';
+import { isSignupEnded } from '../registration/utils';
 import SignupPageMeta from '../signup/signupPageMeta/SignupPageMeta';
 import { SignupServerErrorsProvider } from '../signup/signupServerErrorsContext/SignupServerErrorsContext';
 
@@ -19,6 +20,7 @@ import EventInfo from './eventInfo/EventInfo';
 import FormContainer from './formContainer/FormContainer';
 import SignupGroupForm from './signupGroupForm/SignupGroupForm';
 import { SignupGroupFormProvider } from './signupGroupFormContext/SignupGroupFormContext';
+import SignupIsEnded from './signupIsEnded/SignupIsEnded';
 import { getSignupGroupDefaultInitialValues } from './utils';
 
 type Props = {
@@ -62,11 +64,20 @@ const CreateSignupGroupPageWrapper: React.FC = () => {
   return (
     <LoadingSpinner isLoading={isLoading}>
       {registration && event ? (
-        <SignupGroupFormProvider registration={registration}>
-          <SignupServerErrorsProvider>
-            <CreateSignupGroupPage event={event} registration={registration} />
-          </SignupServerErrorsProvider>
-        </SignupGroupFormProvider>
+        <>
+          {isSignupEnded(registration) ? (
+            <SignupIsEnded event={event} />
+          ) : (
+            <SignupGroupFormProvider registration={registration}>
+              <SignupServerErrorsProvider>
+                <CreateSignupGroupPage
+                  event={event}
+                  registration={registration}
+                />
+              </SignupServerErrorsProvider>
+            </SignupGroupFormProvider>
+          )}
+        </>
       ) : (
         <NotFound />
       )}

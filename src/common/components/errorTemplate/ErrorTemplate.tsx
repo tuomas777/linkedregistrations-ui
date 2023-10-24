@@ -7,7 +7,7 @@ import styles from './errorTemplate.module.scss';
 
 interface Props {
   buttons?: React.ReactElement;
-  text: string;
+  text?: string;
   title: string;
 }
 
@@ -17,7 +17,7 @@ const ErrorTemplate: React.FC<Props> = ({ buttons, text, title }) => {
       <div className={styles.content}>
         <IconAlertCircle className={styles.icon} />
         <h1>{title}</h1>
-        <p>{text}</p>
+        {text && <p>{text}</p>}
         {buttons && <div className={styles.buttonsWrapper}>{buttons}</div>}
       </div>
     </Container>

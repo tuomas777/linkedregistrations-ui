@@ -22,6 +22,7 @@ import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
 import useEventAndRegistrationData from '../../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../../registration/types';
+import { isSignupEnded } from '../../registration/utils';
 import { clearSeatsReservationData } from '../../reserveSeats/utils';
 import { SIGNUP_QUERY_PARAMS } from '../../signup/constants';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
@@ -34,6 +35,7 @@ import FormContainer from '../formContainer/FormContainer';
 import useSignupGroupActions from '../hooks/useSignupGroupActions';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { SignupGroupFormProvider } from '../signupGroupFormContext/SignupGroupFormContext';
+import SignupIsEnded from '../signupIsEnded/SignupIsEnded';
 import {
   clearCreateSignupGroupFormData,
   getSignupGroupDefaultInitialValues,
@@ -222,11 +224,17 @@ const SummaryPageWrapper: React.FC = () => {
   return (
     <LoadingSpinner isLoading={isLoading}>
       {event && registration ? (
-        <SignupGroupFormProvider registration={registration}>
-          <SignupServerErrorsProvider>
-            <SummaryPage event={event} registration={registration} />
-          </SignupServerErrorsProvider>
-        </SignupGroupFormProvider>
+        <>
+          {isSignupEnded(registration) ? (
+            <SignupIsEnded event={event} />
+          ) : (
+            <SignupGroupFormProvider registration={registration}>
+              <SignupServerErrorsProvider>
+                <SummaryPage event={event} registration={registration} />
+              </SignupServerErrorsProvider>
+            </SignupGroupFormProvider>
+          )}
+        </>
       ) : (
         <NotFound />
       )}

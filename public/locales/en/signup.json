@@ -87,6 +87,7 @@
   "placeholderStreetAddress": "Enter a street address",
   "placeholderZipcode": "Enter postcode",
   "signupDefaultTitle": "Participant {{index}}",
+  "signupIsEnded": "Registration for the event has ended",
   "timeLeft": "Time left to register",
   "titleAdditionalInfo": "Additional information",
   "titleBasicInfo": "Basic information of the registrant",

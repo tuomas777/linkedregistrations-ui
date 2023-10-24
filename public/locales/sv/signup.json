@@ -87,6 +87,7 @@
   "placeholderStreetAddress": "Ange en gatuadress",
   "placeholderZipcode": "Ange postnummer",
   "signupDefaultTitle": "Deltagare {{index}}",
+  "signupIsEnded": "Anmälan till evenemanget är avslutad",
   "timeLeft": "Tid kvar att registrera sig",
   "titleAdditionalInfo": "Ytterligare information",
   "titleBasicInfo": "Grundläggande information om registranten",
