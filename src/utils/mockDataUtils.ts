@@ -331,6 +331,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       registration: TEST_REGISTRATION_ID,
       responsible_for_group: false,
       service_language: 'fi',
+      signup_group: null,
       street_address: faker.location.streetAddress(),
       user_consent: false,
       zipcode: faker.location.zipCode('#####'),

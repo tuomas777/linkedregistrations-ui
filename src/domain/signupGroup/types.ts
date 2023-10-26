@@ -66,6 +66,7 @@ export type SignupFields = {
   fullName: string;
   lastName: string;
   phoneNumber: string;
+  signupGroup: string | null;
 };
 
 export type DeleteSignupGroupMutationInput = {

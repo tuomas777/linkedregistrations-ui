@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
+import { NextParsedUrlQuery } from 'next/dist/server/request-meta';
 import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import mockRouter from 'next-router-mock';
@@ -16,12 +17,14 @@ import {
   render,
   screen,
   setQueryMocks,
+  userEvent,
   waitFor,
 } from '../../../utils/testUtils';
 import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { SIGNUPS_SEARCH_PARAMS } from '../../singups/constants';
 import { mockedUserResponse } from '../../user/__mocks__/user';
 import { signupGroup } from '../__mocks__/signupGroup';
 import { TEST_SIGNUP_GROUP_ID } from '../constants';
@@ -62,10 +65,14 @@ const defaultMocks = [
   ),
 ];
 
-const pushEditSignupGroupRoute = (registrationId: string) => {
+const pushEditSignupGroupRoute = (
+  registrationId: string,
+  query?: NextParsedUrlQuery
+) => {
   singletonRouter.push({
     pathname: ROUTES.EDIT_SIGNUP,
     query: {
+      ...query,
       registrationId: registrationId,
       signupId: TEST_SIGNUP_GROUP_ID,
     },
@@ -137,6 +144,55 @@ test('should update signup group', async () => {
   await screen.findByRole('alert', {
     name: 'Osallistujien tiedot on tallennettu',
   });
+});
+
+test('should not show back button if returnPath is not defined', async () => {
+  setQueryMocks(...defaultMocks);
+  pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await findFirstNameInput();
+  expect(
+    screen.queryByRole('button', { name: 'Takaisin' })
+  ).not.toBeInTheDocument();
+});
+
+test('should route to page defined in returnPath when clicking back button', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(...defaultMocks);
+  pushEditSignupGroupRoute(TEST_REGISTRATION_ID, {
+    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: ROUTES.SIGNUPS.replace(
+      '[registrationId]',
+      TEST_REGISTRATION_ID
+    ),
+  });
+  renderComponent();
+
+  await findFirstNameInput();
+  const backButton = screen.getByRole('button', { name: 'Takaisin' });
+  await user.click(backButton);
+  expect(mockRouter.asPath).toBe(
+    `/registration/${TEST_REGISTRATION_ID}/signup`
+  );
+});
+
+test('should route to the first page defined in returnPath when clicking back button', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(...defaultMocks);
+  pushEditSignupGroupRoute(TEST_REGISTRATION_ID, {
+    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: [
+      ROUTES.SIGNUPS.replace('[registrationId]', TEST_REGISTRATION_ID),
+      'test',
+    ],
+  });
+  renderComponent();
+
+  await findFirstNameInput();
+  const backButton = screen.getByRole('button', { name: 'Takaisin' });
+  await user.click(backButton);
+  expect(mockRouter.asPath).toBe(
+    `/registration/${TEST_REGISTRATION_ID}/signup`
+  );
 });
 
 test('should show error message when updating signup group fails', async () => {

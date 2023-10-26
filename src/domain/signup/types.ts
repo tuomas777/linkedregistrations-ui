@@ -47,6 +47,7 @@ export type Signup = {
   registration: string;
   responsible_for_group: boolean;
   service_language?: stringOrNull;
+  signup_group: stringOrNull;
   street_address?: stringOrNull;
   user_consent?: boolean;
   zipcode?: stringOrNull;

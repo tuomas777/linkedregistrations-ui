@@ -211,6 +211,7 @@ export const getSignupFields = ({
 }: {
   signup: Signup;
 }): SignupFields => {
+  const signupGroup = signup.signup_group ?? null;
   const firstName = signup.first_name ?? '';
   const lastName = signup.last_name ?? '';
   const fullName = [firstName, lastName].filter(skipFalsyType).join(' ');
@@ -222,6 +223,7 @@ export const getSignupFields = ({
     fullName,
     lastName,
     phoneNumber: signup.phone_number ?? '',
+    signupGroup,
   };
 };
 

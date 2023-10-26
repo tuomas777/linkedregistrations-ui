@@ -1,8 +1,10 @@
 import { Button, IconCross, IconPen } from 'hds-react';
+import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 
 import ButtonPanel from '../../../common/components/buttonPanel/ButtonPanel';
 import { SIGNUP_ACTIONS } from '../../signup/constants';
+import { SIGNUPS_SEARCH_PARAMS } from '../../singups/constants';
 import { SIGNUP_GROUP_ACTIONS } from '../constants';
 
 type EditButtonPanelProps = {
@@ -20,9 +22,26 @@ const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
   savingSignup,
   savingSignupGroup,
 }) => {
-  const { t } = useTranslation('signup');
+  const { t } = useTranslation(['signup', 'common']);
+  const router = useRouter();
+
+  const handleBack = () => {
+    const returnPathQuery = router.query[SIGNUPS_SEARCH_PARAMS.RETURN_PATH];
+    /* istanbul ignore next */
+    if (!returnPathQuery) return;
+
+    const returnPath =
+      typeof returnPathQuery == 'string' ? returnPathQuery : returnPathQuery[0];
+
+    router.push(returnPath);
+  };
+
   return (
     <ButtonPanel
+      backButtonAriaLabel={t('common:buttonBack')}
+      onBack={
+        router.query[SIGNUPS_SEARCH_PARAMS.RETURN_PATH] ? handleBack : undefined
+      }
       submitButtons={[
         <Button
           key="cancel"
@@ -45,7 +64,7 @@ const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
             savingSignup === SIGNUP_ACTIONS.UPDATE ||
             savingSignupGroup === SIGNUP_GROUP_ACTIONS.UPDATE
           }
-          loadingText={t('buttonUpdate') as string}
+          loadingText={t('buttonUpdate')}
           onClick={onUpdate}
           variant="primary"
         >
