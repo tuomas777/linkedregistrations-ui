@@ -1,6 +1,7 @@
 {
   "appName": "Linked Registrations",
   "ariaLogo": "Palvelun logo",
+  "buttonActions": "Valinnat",
   "buttonBack": "Takaisin",
   "cancel": "Peruuta",
   "clear": "Tyhjennä",
