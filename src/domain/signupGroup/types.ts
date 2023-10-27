@@ -24,13 +24,13 @@ export type CreateOrUpdateSignupGroupResponse = {
 };
 
 export type SignupGroup = {
-  created_at: stringOrNull;
   created_by: stringOrNull;
+  created_time: stringOrNull;
   extra_info: stringOrNull;
   id: string;
   is_created_by_current_user: boolean;
-  last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
+  last_modified_time: stringOrNull;
   registration: string;
   signups: Signup[];
 };
