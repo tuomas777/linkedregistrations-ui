@@ -1,7 +1,7 @@
-import { Notification } from 'hds-react';
 import { useTranslation } from 'next-i18next';
 import React, { useMemo } from 'react';
 
+import Notification from '../../../common/components/notification/Notification';
 import { Registration } from '../../registration/types';
 import { getRegistrationWarning } from '../../registration/utils';
 import {

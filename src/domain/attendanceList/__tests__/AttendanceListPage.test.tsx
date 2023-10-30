@@ -4,7 +4,6 @@ import { rest } from 'msw';
 import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
 import React from 'react';
-import { toast } from 'react-toastify';
 
 import { ExtendedSession } from '../../../types';
 import { fakeAuthenticatedSession } from '../../../utils/mockSession';
@@ -155,7 +154,6 @@ test('should mark signup as present', async () => {
 });
 
 test('should show toast message if updating presence status fails', async () => {
-  toast.error = jest.fn();
   const user = userEvent.setup();
 
   setQueryMocks(
@@ -173,11 +171,9 @@ test('should show toast message if updating presence status fails', async () => 
 
   const signupCheckbox = screen.getByRole('checkbox', { name: signUpName });
   user.click(signupCheckbox);
-  await waitFor(() =>
-    expect(toast.error).toBeCalledWith(
-      'Läsnäolotiedon päivittäminen epäonnistui'
-    )
-  );
+  await screen.findByRole('alert', {
+    name: 'Läsnäolotiedon päivittäminen epäonnistui',
+  });
 });
 
 test('should show authentication required page if user is not authenticated', async () => {

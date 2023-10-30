@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import 'hds-core/lib/base.min.css';
 import '../styles/main.scss';
-import 'react-toastify/dist/ReactToastify.css';
 
 import {
   Hydrate,
@@ -13,8 +12,8 @@ import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { appWithTranslation, SSRConfig } from 'next-i18next';
 import React from 'react';
-import { ToastContainer } from 'react-toastify';
 
+import { NotificationsProvider } from '../common/components/notificationsContext/NotificationsContext';
 import CookieConsent from '../domain/app/cookieConsent/CookieConsent';
 import PageLayout from '../domain/app/layout/pageLayout/PageLayout';
 
@@ -30,17 +29,21 @@ const MyApp = ({
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
-    <SessionProvider session={session} refetchInterval={/* 5 minutes */ 5 * 60}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <CookieConsent />
-          <ToastContainer hideProgressBar={true} theme="colored" />
-          <PageLayout {...pageProps}>
-            <Component {...pageProps} />
-          </PageLayout>
-        </Hydrate>
-      </QueryClientProvider>
-    </SessionProvider>
+    <NotificationsProvider>
+      <SessionProvider
+        session={session}
+        refetchInterval={/* 5 minutes */ 5 * 60}
+      >
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <CookieConsent />
+            <PageLayout {...pageProps}>
+              <Component {...pageProps} />
+            </PageLayout>
+          </Hydrate>
+        </QueryClientProvider>
+      </SessionProvider>
+    </NotificationsProvider>
   );
 };
 
