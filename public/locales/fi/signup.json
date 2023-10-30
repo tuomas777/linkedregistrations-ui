@@ -12,7 +12,7 @@
     "redirectInfo1": "Sinut ohjataan automaattisesti palveluntarjoajan sivulle.",
     "redirectInfo2": "Jos uudelleenohjaus ei toimi, pääset sivulle <a href=\"{{url}}\">tästä</a>.",
     "text": "Olet ilmoittanut tapahtumaamme {{name}} – sydämellisesti tervetuloa!",
-    "textWaitingList": "Olet ilmoittautunut tapahtuman {{name}} varasijalle. Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.",
+    "textWaitingList": "Olet ilmoittautunut tapahtuman {{name}} jonoon. Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.",
     "title": "Kiitos ilmoittautumisestasi!"
   },
   "deleteSignupFromFormModal": {
@@ -42,8 +42,8 @@
   "freeWaitingListCapacity": "Saatavilla olevia jonopaikkoja",
   "instructions": "Ilmoittautumisohjeet",
   "inWaitingList": {
-    "text": "Varasija",
-    "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon varasijalla. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
+    "text": "Jonopaikka",
+    "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
   },
   "labelAccepted": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Tietosuojaseloste {{openInNewTab}}\">Tietosuojaseloste</a>",
   "labelAttendeeExtraInfo": "Lisätietoa (valinnainen)",
@@ -71,7 +71,7 @@
   "personsAddedToWaitingListModal": {
     "buttonClose": "Sulje",
     "text": "Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.",
-    "title": "Olet ilmoittautumassa tapahtumaan varasijalle"
+    "title": "Olet ilmoittautumassa tapahtuman jonoon"
   },
   "placeholderCity": "Syötä kaupunki",
   "placeholderDateOfBirth": "P.K.VVVV",

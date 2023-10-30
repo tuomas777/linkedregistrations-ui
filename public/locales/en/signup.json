@@ -70,8 +70,8 @@
   "notificationSignupGroupUpdated": "The signup group has been saved",
   "personsAddedToWaitingListModal": {
     "buttonClose": "Close",
-    "text": "You will receive a separate confirmation message about your registration to your e-mail, if a place becomes available for you.",
-    "title": "You are registering for the event to the reservation queue"
+    "text": "You will receive a separate confirmation message about your registration to your e-mail if a place becomes available for you.",
+    "title": "You are registering to the event's reservation queue"
   },
   "placeholderCity": "Enter city",
   "placeholderDateOfBirth": "D.M.YYYY",

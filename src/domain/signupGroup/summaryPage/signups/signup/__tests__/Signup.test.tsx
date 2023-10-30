@@ -19,11 +19,11 @@ const renderComponent = (props?: Partial<SignupProps>) =>
 test('should not show in waiting list text if signup is not in waiting list', async () => {
   renderComponent({ signup: { ...signup, inWaitingList: false } });
 
-  expect(screen.queryByText('Varasija')).not.toBeInTheDocument();
+  expect(screen.queryByText('Jonopaikka')).not.toBeInTheDocument();
 });
 
 test('should show in waiting list text if signup is in waiting list', async () => {
   renderComponent({ signup: { ...signup, inWaitingList: true } });
 
-  screen.getByText('Varasija');
+  screen.getByText('Jonopaikka');
 });

@@ -109,7 +109,7 @@ test('should show modal if reserved seats are in waiting list', async () => {
   renderComponent();
 
   const modal = await screen.findByRole('dialog', {
-    name: 'Olet ilmoittautumassa tapahtumaan varasijalle',
+    name: 'Olet ilmoittautumassa tapahtuman jonoon',
   });
 
   await user.click(within(modal).getByRole('button', { name: 'Sulje' }));

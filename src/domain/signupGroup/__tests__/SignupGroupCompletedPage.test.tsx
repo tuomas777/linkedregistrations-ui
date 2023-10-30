@@ -111,7 +111,7 @@ test('should show added to waiting list text', async () => {
   await screen.findByRole('heading', { name: 'Kiitos ilmoittautumisestasi!' });
   screen.getByText(
     // eslint-disable-next-line max-len
-    `Olet ilmoittautunut tapahtuman ${eventOverrides.name?.fi} varasijalle. Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.`
+    `Olet ilmoittautunut tapahtuman ${eventOverrides.name?.fi} jonoon. Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.`
   );
 });
 
