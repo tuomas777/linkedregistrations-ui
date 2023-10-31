@@ -94,7 +94,7 @@
       "max": "Max antal deltagare är {{max}}.",
       "min": "Minsta antal deltagare är {{min}}."
     },
-    "signupAccepted": "Dela information med arrangören måste godkännas",
+    "signupUserConsent": "Dela information med arrangören måste godkännas",
     "string": {
       "charsLeft": "{{count}} tecken kvar",
       "charsLeft_other": "{{count}} tecken kvar",

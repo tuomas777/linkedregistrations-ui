@@ -45,7 +45,6 @@
     "text": "På väntelista",
     "tooltip": "Deltagare har lagts till i kön av anmälda med reservplats. Anmälan bekräftas först när en plats i kön blir ledig. Du får ett meddelande via e-post om att platsen är bekräftad."
   },
-  "labelAccepted": "Jag godkänner att dela min information med arrangören. Vi använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registerbeskrivningen {{openInNewTab}}\">Registerbeskrivningen</a>",
   "labelAttendeeExtraInfo": "Ytterligare information (valfritt)",
   "labelCity": "Staden",
   "labelDateOfBirth": "Födelsedatum",
@@ -61,6 +60,7 @@
   "labelSignupExtraInfo": "Ytterligare information (valfritt)",
   "labelStreetAddress": "Gatuadress",
   "labelZipcode": "Postnummer",
+  "labelUserConsent": "Jag godkänner att dela min information med arrangören. Vi använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registerbeskrivningen {{openInNewTab}}\">Registerbeskrivningen</a>",
   "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notifications": {
     "email": "Via e-post",

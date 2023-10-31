@@ -94,7 +94,7 @@
       "max": "Osallistujien enimmäismäärä on {{max}}.",
       "min": "Osallistujien vähimmäismäärä on {{min}}."
     },
-    "signupAccepted": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
+    "signupUserConsent": "Tietojen jakaminen järjestäjän kanssa tulee olla hyväksytty",
     "string": {
       "charsLeft": "{{count}} merkki jäljellä",
       "charsLeft_other": "{{count}} merkkiä jäljellä",

@@ -66,6 +66,7 @@ describe('getSignupGroupPayload function', () => {
           service_language: null,
           street_address: null,
           zipcode: null,
+          user_consent: false,
         },
       ],
     });
@@ -83,6 +84,7 @@ describe('getSignupGroupPayload function', () => {
       phoneNumber = '0441234567',
       serviceLanguage = 'sv',
       streetAddress = 'Street address',
+      userConsent = true,
       zipcode = '00100';
     const payload = getSignupGroupPayload({
       formValues: {
@@ -93,7 +95,7 @@ describe('getSignupGroupPayload function', () => {
             dateOfBirth,
             extraInfo,
             firstName,
-            id: null,
+            id: TEST_SIGNUP_ID,
             inWaitingList: false,
             lastName,
             responsibleForGroup: false,
@@ -108,6 +110,7 @@ describe('getSignupGroupPayload function', () => {
         notifications,
         phoneNumber,
         serviceLanguage,
+        userConsent,
       },
       registration,
       reservationCode,
@@ -124,6 +127,7 @@ describe('getSignupGroupPayload function', () => {
           email,
           extra_info: extraInfo,
           first_name: firstName,
+          id: TEST_SIGNUP_ID,
           last_name: lastName,
           membership_number: membershipNumber,
           native_language: nativeLanguage,
@@ -132,6 +136,7 @@ describe('getSignupGroupPayload function', () => {
           responsible_for_group: true,
           service_language: serviceLanguage,
           street_address: streetAddress,
+          user_consent: userConsent,
           zipcode,
         },
       ],
@@ -194,7 +199,6 @@ describe('getSignupDefaultInitialValues function', () => {
 describe('getSignupGroupDefaultInitialValues function', () => {
   it('should return signup group default initial values', () => {
     expect(getSignupGroupDefaultInitialValues()).toEqual({
-      accepted: false,
       email: '',
       extraInfo: '',
       membershipNumber: '',
@@ -216,6 +220,7 @@ describe('getSignupGroupDefaultInitialValues function', () => {
           zipcode: '',
         },
       ],
+      userConsent: false,
     });
   });
 });
@@ -373,6 +378,28 @@ describe('getSignupGroupInitialValues function', () => {
     expect(initialValues.signups[2].id).toEqual(signup1.id);
     expect(initialValues.signups[3].id).toEqual(signup4.id);
   });
+
+  it('should set userConsent false if any signups has user_consent false', () => {
+    const signup1 = fakeSignup({ user_consent: false });
+    const signup2 = fakeSignup({ user_consent: true });
+    const signupGroup = fakeSignupGroup({
+      signups: [signup1, signup2],
+    });
+
+    const { userConsent } = getSignupGroupInitialValues(signupGroup);
+    expect(userConsent).toBeFalsy();
+  });
+
+  it('should set userConsent true if all signups has user_consent true', () => {
+    const signup1 = fakeSignup({ user_consent: true });
+    const signup2 = fakeSignup({ user_consent: true });
+    const signupGroup = fakeSignupGroup({
+      signups: [signup1, signup2],
+    });
+
+    const { userConsent } = getSignupGroupInitialValues(signupGroup);
+    expect(userConsent).toBeTruthy();
+  });
 });
 
 describe('isSignupFieldRequired', () => {
@@ -453,7 +480,6 @@ describe('getUpdateSignupGroupPayload function', () => {
           email: null,
           extra_info: '',
           first_name: '',
-          id: undefined,
           last_name: '',
           membership_number: '',
           native_language: null,
@@ -463,6 +489,7 @@ describe('getUpdateSignupGroupPayload function', () => {
           service_language: null,
           street_address: null,
           zipcode: null,
+          user_consent: false,
         },
       ],
     });
@@ -482,6 +509,7 @@ describe('getUpdateSignupGroupPayload function', () => {
       phoneNumber = '0441234567',
       serviceLanguage = 'sv',
       streetAddress = 'Street address',
+      userConsent = true,
       zipcode = '00100';
     const signups = [
       {
@@ -509,6 +537,7 @@ describe('getUpdateSignupGroupPayload function', () => {
         phoneNumber,
         serviceLanguage,
         signups,
+        userConsent,
       },
       id: TEST_SIGNUP_GROUP_ID,
       registration,
@@ -535,6 +564,7 @@ describe('getUpdateSignupGroupPayload function', () => {
           service_language: serviceLanguage,
           street_address: streetAddress,
           zipcode,
+          user_consent: userConsent,
         },
       ],
     });
@@ -564,6 +594,7 @@ describe('omitSensitiveDataFromSignupGroupPayload', () => {
           service_language: 'fi',
           street_address: 'Address',
           zipcode: '123456',
+          user_consent: true,
         },
       ],
     };
@@ -579,6 +610,7 @@ describe('omitSensitiveDataFromSignupGroupPayload', () => {
           id: '1',
           notifications: NOTIFICATION_TYPE.EMAIL,
           responsible_for_group: true,
+          user_consent: true,
         },
       ],
     });

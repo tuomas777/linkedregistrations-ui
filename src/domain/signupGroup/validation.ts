@@ -146,9 +146,9 @@ export const getSignupGroupSchema = (registration: Registration) => {
     [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.EXTRA_INFO)
     ),
-    [SIGNUP_GROUP_FIELDS.ACCEPTED]: Yup.bool().oneOf(
+    [SIGNUP_GROUP_FIELDS.USER_CONSENT]: Yup.bool().oneOf(
       [true],
-      VALIDATION_MESSAGE_KEYS.SIGNUP_ACCEPTED
+      VALIDATION_MESSAGE_KEYS.SIGNUP_USER_CONSENT
     ),
   });
 };

@@ -430,7 +430,7 @@ const SignupGroupForm: React.FC<Props> = ({
                     )}
                   </Fieldset>
 
-                  {!isEditingMode && (
+                  {!initialValues.userConsent && (
                     <>
                       <FormGroup>
                         <Field
@@ -438,14 +438,14 @@ const SignupGroupForm: React.FC<Props> = ({
                           label={
                             <span
                               dangerouslySetInnerHTML={{
-                                __html: t('labelAccepted', {
+                                __html: t('labelUserConsent', {
                                   openInNewTab: t('common:openInNewTab'),
                                   url: t('linkDataProtectionNotice'),
                                 }),
                               }}
                             />
                           }
-                          name={SIGNUP_GROUP_FIELDS.ACCEPTED}
+                          name={SIGNUP_GROUP_FIELDS.USER_CONSENT}
                           component={CheckboxField}
                         />
                       </FormGroup>

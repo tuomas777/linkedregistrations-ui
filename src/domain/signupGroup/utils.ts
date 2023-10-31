@@ -152,7 +152,6 @@ export const getSignupGroupInitialValues = (
   const responsibleSignup = signups[0];
 
   return {
-    accepted: true,
     email: responsibleSignup?.email ?? '',
     extraInfo: signupGroup.extra_info ?? '',
     membershipNumber: responsibleSignup?.membership_number ?? '',
@@ -161,6 +160,7 @@ export const getSignupGroupInitialValues = (
     phoneNumber: responsibleSignup?.phone_number ?? '',
     serviceLanguage: responsibleSignup?.service_language ?? '',
     signups: signups.map((su) => getSignupInitialValues(su)),
+    userConsent: signups.every((su) => su.user_consent),
   };
 };
 

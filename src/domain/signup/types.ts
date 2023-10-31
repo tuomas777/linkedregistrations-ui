@@ -22,6 +22,7 @@ export type SignupInput = {
   responsible_for_group: boolean;
   service_language?: stringOrNull;
   street_address?: stringOrNull;
+  user_consent: boolean;
   zipcode?: stringOrNull;
 };
 
@@ -47,6 +48,7 @@ export type Signup = {
   responsible_for_group: boolean;
   service_language?: stringOrNull;
   street_address?: stringOrNull;
+  user_consent?: boolean;
   zipcode?: stringOrNull;
 };
 
