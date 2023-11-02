@@ -66,7 +66,7 @@ const Header: React.FC = () => {
         frontPageLabel={t('frontPage')}
         titleAriaLabel={t('appName')}
         titleHref={`/${locale}`}
-        logo={<Logo src={logoSrcFromLanguage(locale)} alt={t('headerTitle')} />}
+        logo={<Logo src={logoSrcFromLanguage(locale)} alt={t('logo')} />}
         logoAriaLabel={t('ariaLogo')}
         logoHref={`/${locale}`}
       >

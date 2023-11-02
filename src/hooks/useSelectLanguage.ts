@@ -5,8 +5,6 @@ import React from 'react';
 import { SUPPORTED_LANGUAGES } from '../constants';
 import { OptionType } from '../types';
 
-import useLocale from './useLocale';
-
 type UseSelectLanguageState = {
   languageOptions: OptionType[];
   changeLanguage: (language: string) => void;
@@ -14,7 +12,6 @@ type UseSelectLanguageState = {
 
 const useSelectLanguage = (): UseSelectLanguageState => {
   const { t } = useTranslation('common');
-  const locale = useLocale();
   const router = useRouter();
 
   const languageOptions: OptionType[] = React.useMemo(() => {
@@ -25,11 +22,9 @@ const useSelectLanguage = (): UseSelectLanguageState => {
   }, [t]);
 
   const changeLanguage = (newLanguage: string) => {
-    if (newLanguage !== locale) {
-      router.push(router.asPath, router.asPath, {
-        locale: newLanguage,
-      });
-    }
+    router.push(router.asPath, router.asPath, {
+      locale: newLanguage,
+    });
   };
 
   return { changeLanguage, languageOptions };

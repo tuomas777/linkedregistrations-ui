@@ -1,6 +1,6 @@
 {
   "appName": "Linked Registrations",
-  "ariaLogo": "Service logo",
+  "ariaLogo": "Tjänstens logo",
   "buttonBack": "Tillbaka",
   "cancel": "Ångra",
   "clear": "Klar",
@@ -32,6 +32,7 @@
   "helsinkiProfile": "Helsingfors profil",
   "loading": "Laddar...",
   "loadingFinished": "Laddningen är klar",
+  "logo": "Helsingfors stad - logo",
   "navigation": {
     "ariaLanguageSelection": "Välja spräk",
     "backToSignupGroupForm": "Återgå till registreringsformuläret",
