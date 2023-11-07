@@ -8,6 +8,7 @@ import { SIGNUPS_SEARCH_PARAMS } from '../../singups/constants';
 import { SIGNUP_GROUP_ACTIONS } from '../constants';
 
 type EditButtonPanelProps = {
+  allowToEdit: boolean;
   disabled: boolean;
   onCancel: () => void;
   onUpdate: () => void;
@@ -16,6 +17,7 @@ type EditButtonPanelProps = {
 };
 
 const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
+  allowToEdit,
   disabled,
   onCancel,
   onUpdate,
@@ -24,9 +26,9 @@ const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
 }) => {
   const { t } = useTranslation(['signup', 'common']);
   const router = useRouter();
+  const returnPathQuery = router.query[SIGNUPS_SEARCH_PARAMS.RETURN_PATH];
 
   const handleBack = () => {
-    const returnPathQuery = router.query[SIGNUPS_SEARCH_PARAMS.RETURN_PATH];
     /* istanbul ignore next */
     if (!returnPathQuery) return;
 
@@ -36,41 +38,49 @@ const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
     router.push(returnPath);
   };
 
+  if (!allowToEdit && !returnPathQuery) {
+    return null;
+  }
+
   return (
     <ButtonPanel
       backButtonAriaLabel={t('common:buttonBack')}
       onBack={
         router.query[SIGNUPS_SEARCH_PARAMS.RETURN_PATH] ? handleBack : undefined
       }
-      submitButtons={[
-        <Button
-          key="cancel"
-          iconLeft={<IconCross aria-hidden={true} />}
-          onClick={onCancel}
-          variant="danger"
-        >
-          {t('buttonCancel')}
-        </Button>,
+      submitButtons={
+        allowToEdit
+          ? [
+              <Button
+                key="cancel"
+                iconLeft={<IconCross aria-hidden={true} />}
+                onClick={onCancel}
+                variant="danger"
+              >
+                {t('buttonCancel')}
+              </Button>,
 
-        <Button
-          key="update"
-          disabled={Boolean(
-            disabled ||
-              savingSignup === SIGNUP_ACTIONS.UPDATE ||
-              savingSignupGroup === SIGNUP_GROUP_ACTIONS.UPDATE
-          )}
-          iconLeft={<IconPen aria-hidden={true} />}
-          isLoading={
-            savingSignup === SIGNUP_ACTIONS.UPDATE ||
-            savingSignupGroup === SIGNUP_GROUP_ACTIONS.UPDATE
-          }
-          loadingText={t('buttonUpdate')}
-          onClick={onUpdate}
-          variant="primary"
-        >
-          {t('buttonUpdate')}
-        </Button>,
-      ]}
+              <Button
+                key="update"
+                disabled={Boolean(
+                  disabled ||
+                    savingSignup === SIGNUP_ACTIONS.UPDATE ||
+                    savingSignupGroup === SIGNUP_GROUP_ACTIONS.UPDATE
+                )}
+                iconLeft={<IconPen aria-hidden={true} />}
+                isLoading={
+                  savingSignup === SIGNUP_ACTIONS.UPDATE ||
+                  savingSignupGroup === SIGNUP_GROUP_ACTIONS.UPDATE
+                }
+                loadingText={t('buttonUpdate')}
+                onClick={onUpdate}
+                variant="primary"
+              >
+                {t('buttonUpdate')}
+              </Button>,
+            ]
+          : []
+      }
     ></ButtonPanel>
   );
 };

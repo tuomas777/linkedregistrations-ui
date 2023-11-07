@@ -320,6 +320,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       email: faker.internet.email(),
       extra_info: faker.lorem.paragraph(),
       first_name: faker.person.firstName(),
+      is_created_by_current_user: false,
       last_modified_at: null,
       last_modified_by: null,
       last_name: faker.person.lastName(),

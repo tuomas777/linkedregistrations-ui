@@ -19,7 +19,7 @@ import FormGroup from '../../../common/components/formGroup/FormGroup';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
 import { useNotificationsContext } from '../../../common/components/notificationsContext/hooks/useNotificationsContext';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
-import { FORM_NAMES } from '../../../constants';
+import { FORM_NAMES, READ_ONLY_PLACEHOLDER } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import Container from '../../app/layout/container/Container';
 import { ROUTES } from '../../app/routes/constants';
@@ -87,6 +87,21 @@ const SignupGroupForm: React.FC<Props> = ({
 }) => {
   const isEditingMode =
     mode === 'update-signup' || mode === 'update-signup-group';
+  const allowToEdit = useMemo((): boolean => {
+    if (mode === 'update-signup') {
+      return !!signup?.is_created_by_current_user;
+    } else if (mode === 'update-signup-group') {
+      return !!signupGroup?.is_created_by_current_user;
+    }
+    return true;
+  }, [
+    mode,
+    signup?.is_created_by_current_user,
+    signupGroup?.is_created_by_current_user,
+  ]);
+
+  const readOnly = !allowToEdit;
+
   const { t } = useTranslation(['signup', 'common']);
   const {
     deleteSignup,
@@ -222,6 +237,9 @@ const SignupGroupForm: React.FC<Props> = ({
     return !isEditingMode && (!data || isSeatsReservationExpired(data));
   };
 
+  const getPlaceholder = (placeholder: string) =>
+    readOnly ? READ_ONLY_PLACEHOLDER : placeholder;
+
   return (
     <Formik
       initialValues={initialValues}
@@ -229,7 +247,9 @@ const SignupGroupForm: React.FC<Props> = ({
         /* istanbul ignore next */
         () => undefined
       }
-      validationSchema={getSignupGroupSchema(registration)}
+      validationSchema={
+        readOnly ? undefined : getSignupGroupSchema(registration)
+      }
     >
       {({ setErrors, setFieldValue, setTouched, values }) => {
         const clearErrors = () => setErrors({});
@@ -311,7 +331,7 @@ const SignupGroupForm: React.FC<Props> = ({
 
                       <AvailableSeatsText registration={registration} />
                       <ParticipantAmountSelector
-                        disabled={formDisabled}
+                        disabled={formDisabled || readOnly}
                         registration={registration}
                       />
                     </>
@@ -322,6 +342,7 @@ const SignupGroupForm: React.FC<Props> = ({
                   <Signups
                     formDisabled={formDisabled}
                     isEditingMode={isEditingMode}
+                    readOnly={readOnly}
                     registration={registration}
                   />
 
@@ -338,7 +359,8 @@ const SignupGroupForm: React.FC<Props> = ({
                           component={TextInputField}
                           disabled={formDisabled}
                           label={t(`labelEmail`)}
-                          placeholder={t(`placeholderEmail`)}
+                          placeholder={getPlaceholder(t(`placeholderEmail`))}
+                          readOnly={readOnly}
                           required
                         />
                         <Field
@@ -346,7 +368,10 @@ const SignupGroupForm: React.FC<Props> = ({
                           component={PhoneInputField}
                           disabled={formDisabled}
                           label={t(`labelPhoneNumber`)}
-                          placeholder={t(`placeholderPhoneNumber`)}
+                          placeholder={getPlaceholder(
+                            t(`placeholderPhoneNumber`)
+                          )}
+                          readOnly={readOnly}
                           required={
                             values.notifications.includes(NOTIFICATIONS.SMS) ||
                             isSignupFieldRequired(
@@ -367,7 +392,7 @@ const SignupGroupForm: React.FC<Props> = ({
                         className={styles.notifications}
                         component={CheckboxGroupField}
                         disabled={true}
-                        label={t(`titleNotifications`)}
+                        label={getPlaceholder(t(`titleNotifications`))}
                         options={notificationOptions}
                         required
                       />
@@ -382,7 +407,10 @@ const SignupGroupForm: React.FC<Props> = ({
                           component={TextInputField}
                           disabled={formDisabled}
                           label={t(`labelMembershipNumber`)}
-                          placeholder={t(`placeholderMembershipNumber`)}
+                          placeholder={getPlaceholder(
+                            t(`placeholderMembershipNumber`)
+                          )}
+                          readOnly={readOnly}
                           required={isSignupFieldRequired(
                             registration,
                             SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER
@@ -395,19 +423,23 @@ const SignupGroupForm: React.FC<Props> = ({
                         <Field
                           component={SingleSelectField}
                           name={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
-                          disabled={formDisabled}
+                          disabled={formDisabled || readOnly}
                           label={t(`labelNativeLanguage`)}
                           options={languageOptions}
-                          placeholder={t(`placeholderNativeLanguage`)}
+                          placeholder={getPlaceholder(
+                            t(`placeholderNativeLanguage`)
+                          )}
                           required
                         />
                         <Field
                           component={SingleSelectField}
                           name={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
-                          disabled={formDisabled}
+                          disabled={formDisabled || readOnly}
                           label={t(`labelServiceLanguage`)}
                           options={serviceLanguageOptions}
-                          placeholder={t(`placeholderServiceLanguage`)}
+                          placeholder={getPlaceholder(
+                            t(`placeholderServiceLanguage`)
+                          )}
                           required
                         />
                       </div>
@@ -420,7 +452,10 @@ const SignupGroupForm: React.FC<Props> = ({
                           component={TextAreaField}
                           disabled={formDisabled}
                           label={t(`labelExtraInfo`)}
-                          placeholder={t(`placeholderExtraInfo`)}
+                          placeholder={getPlaceholder(
+                            t(`placeholderExtraInfo`)
+                          )}
+                          readOnly={readOnly}
                           required={isSignupFieldRequired(
                             registration,
                             SIGNUP_GROUP_FIELDS.EXTRA_INFO
@@ -434,7 +469,7 @@ const SignupGroupForm: React.FC<Props> = ({
                     <>
                       <FormGroup>
                         <Field
-                          disabled={formDisabled}
+                          disabled={formDisabled || readOnly}
                           label={
                             <span
                               dangerouslySetInnerHTML={{
@@ -451,7 +486,10 @@ const SignupGroupForm: React.FC<Props> = ({
                       </FormGroup>
 
                       <ButtonWrapper>
-                        <Button disabled={formDisabled} onClick={handleSubmit}>
+                        <Button
+                          disabled={formDisabled || readOnly}
+                          onClick={handleSubmit}
+                        >
                           {t('buttonGoToSummary')}
                         </Button>
                       </ButtonWrapper>
@@ -462,7 +500,8 @@ const SignupGroupForm: React.FC<Props> = ({
 
               {isEditingMode && (
                 <EditButtonPanel
-                  disabled={formDisabled}
+                  allowToEdit={allowToEdit}
+                  disabled={formDisabled || readOnly}
                   onCancel={() => setOpenModal(SIGNUP_MODALS.DELETE)}
                   onUpdate={handleSubmit}
                   savingSignup={savingSignup}

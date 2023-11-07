@@ -27,6 +27,7 @@ import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import {
   findFirstNameInput,
   shouldRenderSignupFormFields,
+  shouldRenderSignupFormReadOnlyFields,
   tryToCancel,
   tryToUpdate,
 } from '../../signupGroup/testUtils';
@@ -54,15 +55,27 @@ test.skip('page is accessible', async () => {
   expect(await axe(container)).toHaveNoViolations();
 });
 
+const mockedRegistrationResponse = rest.get(
+  `*/registration/${TEST_REGISTRATION_ID}/`,
+  (req, res, ctx) => res(ctx.status(200), ctx.json(registration))
+);
+const mockedSignupResponse = rest.get(`*/signup/*`, (req, res, ctx) =>
+  res(ctx.status(200), ctx.json(signup))
+);
+const mockedSignupNotCreatedByUserResponse = rest.get(
+  `*/signup/*`,
+  (req, res, ctx) =>
+    res(
+      ctx.status(200),
+      ctx.json({ ...signup, is_created_by_current_user: false })
+    )
+);
+
 const defaultMocks = [
   ...mockedLanguagesResponses,
   mockedUserResponse,
-  rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(registration))
-  ),
-  rest.get(`*/signup/*`, (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(signup))
-  ),
+  mockedRegistrationResponse,
+  mockedSignupResponse,
 ];
 
 const pushEditSignupRoute = (
@@ -157,9 +170,31 @@ test('should not show back button if returnPath is not defined', async () => {
   ).not.toBeInTheDocument();
 });
 
+test('all fields should be read-only if signup is not created by user', async () => {
+  setQueryMocks(
+    ...mockedLanguagesResponses,
+    mockedUserResponse,
+    mockedRegistrationResponse,
+    mockedSignupNotCreatedByUserResponse
+  );
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await shouldRenderSignupFormReadOnlyFields();
+
+  expect(
+    screen.queryByRole('button', { name: /tallenna/i })
+  ).not.toBeInTheDocument();
+});
+
 test('should route to page defined in returnPath when clicking back button', async () => {
   const user = userEvent.setup();
-  setQueryMocks(...defaultMocks);
+  setQueryMocks(
+    ...mockedLanguagesResponses,
+    mockedUserResponse,
+    mockedRegistrationResponse,
+    mockedSignupNotCreatedByUserResponse
+  );
   pushEditSignupRoute(TEST_REGISTRATION_ID, {
     [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: ROUTES.SIGNUPS.replace(
       '[registrationId]',

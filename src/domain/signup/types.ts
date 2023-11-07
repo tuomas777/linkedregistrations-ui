@@ -36,6 +36,7 @@ export type Signup = {
   email?: stringOrNull;
   extra_info?: stringOrNull;
   first_name?: stringOrNull;
+  is_created_by_current_user: boolean;
   last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
   last_name?: stringOrNull;

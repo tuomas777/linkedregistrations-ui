@@ -33,3 +33,5 @@ export enum RESERVATION_NAMES {
 export enum FORM_NAMES {
   CREATE_SIGNUP_GROUP_FORM = 'create-signup-group-form',
 }
+
+export const READ_ONLY_PLACEHOLDER = '-';

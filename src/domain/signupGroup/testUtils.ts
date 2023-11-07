@@ -14,6 +14,7 @@ export const getSignupFormElement = (
     | 'emailInput'
     | 'firstNameInput'
     | 'lastNameInput'
+    | 'membershipNumberInput'
     | 'nativeLanguageButton'
     | 'participantAmountInput'
     | 'phoneCheckbox'
@@ -44,6 +45,8 @@ export const getSignupFormElement = (
       return screen.getByLabelText(/etunimi/i);
     case 'lastNameInput':
       return screen.getByLabelText(/sukunimi/i);
+    case 'membershipNumberInput':
+      return screen.getByLabelText(/jäsenkortin numero/i);
     case 'nativeLanguageButton':
       return screen.getByRole('button', { name: /äidinkieli/i });
     case 'participantAmountInput':
@@ -79,10 +82,36 @@ export const shouldRenderSignupFormFields = async () => {
   getSignupFormElement('emailInput');
   getSignupFormElement('phoneInput');
   getSignupFormElement('emailCheckbox');
+  getSignupFormElement('membershipNumberInput');
   getSignupFormElement('nativeLanguageButton');
   getSignupFormElement('serviceLanguageButton');
   getSignupFormElement('cancelButton');
   getSignupFormElement('updateButton');
+};
+
+export const shouldRenderSignupFormReadOnlyFields = async () => {
+  const firstNameInput = await findFirstNameInput();
+  const lastNameInput = getSignupFormElement('lastNameInput');
+  const streetAddressInput = getSignupFormElement('streetAddressInput');
+  const dateOfBirthInput = getSignupFormElement('dateOfBirthInput');
+  const zipInput = getSignupFormElement('zipInput');
+  const cityInput = getSignupFormElement('cityInput');
+  const emailInput = getSignupFormElement('emailInput');
+  const phoneInput = getSignupFormElement('phoneInput');
+  const membershipNumberInput = getSignupFormElement('membershipNumberInput');
+  const nativeLanguageButton = getSignupFormElement('nativeLanguageButton');
+  const serviceLanguageButton = getSignupFormElement('serviceLanguageButton');
+  expect(firstNameInput).toHaveAttribute('readOnly');
+  expect(lastNameInput).toHaveAttribute('readOnly');
+  expect(streetAddressInput).toHaveAttribute('readOnly');
+  expect(dateOfBirthInput).toHaveAttribute('readOnly');
+  expect(zipInput).toHaveAttribute('readOnly');
+  expect(cityInput).toHaveAttribute('readOnly');
+  expect(emailInput).toHaveAttribute('readOnly');
+  expect(phoneInput).toHaveAttribute('readOnly');
+  expect(membershipNumberInput).toHaveAttribute('readOnly');
+  expect(nativeLanguageButton).toBeDisabled();
+  expect(serviceLanguageButton).toBeDisabled();
 };
 
 export const tryToCancel = async () => {

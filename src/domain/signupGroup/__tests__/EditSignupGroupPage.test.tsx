@@ -32,6 +32,7 @@ import EditSignupGroupPage from '../EditSignupGroupPage';
 import {
   findFirstNameInput,
   shouldRenderSignupFormFields,
+  shouldRenderSignupFormReadOnlyFields,
   tryToCancel,
   tryToUpdate,
 } from '../testUtils';
@@ -54,15 +55,28 @@ test.skip('page is accessible', async () => {
   expect(await axe(container)).toHaveNoViolations();
 });
 
+const mockedRegistrationResponse = rest.get(
+  `*/registration/${TEST_REGISTRATION_ID}/`,
+  (req, res, ctx) => res(ctx.status(200), ctx.json(registration))
+);
+const mockedSignupsGroupResponse = rest.get(
+  `*/signup_group/*`,
+  (req, res, ctx) => res(ctx.status(200), ctx.json(signupGroup))
+);
+const mockedSignupGroupNotCreatedByUserResponse = rest.get(
+  `*/signup_group/*`,
+  (req, res, ctx) =>
+    res(
+      ctx.status(200),
+      ctx.json({ ...signupGroup, is_created_by_current_user: false })
+    )
+);
+
 const defaultMocks = [
   ...mockedLanguagesResponses,
   mockedUserResponse,
-  rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(registration))
-  ),
-  rest.get(`*/signup_group/*`, (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(signupGroup))
-  ),
+  mockedRegistrationResponse,
+  mockedSignupsGroupResponse,
 ];
 
 const pushEditSignupGroupRoute = (
@@ -174,6 +188,23 @@ test('should route to page defined in returnPath when clicking back button', asy
   expect(mockRouter.asPath).toBe(
     `/registration/${TEST_REGISTRATION_ID}/signup`
   );
+});
+
+test('all fields should be read-only if signup is not created by user', async () => {
+  setQueryMocks(
+    ...mockedLanguagesResponses,
+    mockedUserResponse,
+    mockedRegistrationResponse,
+    mockedSignupGroupNotCreatedByUserResponse
+  );
+  pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await shouldRenderSignupFormReadOnlyFields();
+
+  expect(
+    screen.queryByRole('button', { name: /tallenna/i })
+  ).not.toBeInTheDocument();
 });
 
 test('should route to the first page defined in returnPath when clicking back button', async () => {
