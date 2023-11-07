@@ -71,6 +71,14 @@ export type SignupsResponse = {
   meta: Meta;
 };
 
+export type CreateSignupsResponse = Signup[];
+
+export type CreateSignupsMutationInput = {
+  registration: string;
+  reservation_code: string;
+  signups: SignupInput[];
+};
+
 export type DeleteSignupMutationInput = {
   registrationId: string;
   signupId: string;

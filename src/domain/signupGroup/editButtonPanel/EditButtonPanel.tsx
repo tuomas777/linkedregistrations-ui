@@ -33,7 +33,9 @@ const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
     if (!returnPathQuery) return;
 
     const returnPath =
-      typeof returnPathQuery == 'string' ? returnPathQuery : returnPathQuery[0];
+      typeof returnPathQuery === 'string'
+        ? returnPathQuery
+        : returnPathQuery[0];
 
     router.push(returnPath);
   };

@@ -248,7 +248,7 @@ export const isSignupFieldRequired = (
 export const isAnySignupInWaitingList = (signupGroup: SignupGroup): boolean =>
   Boolean(
     signupGroup.signups.find(
-      (su) => su.attendee_status == ATTENDEE_STATUS.Waitlisted
+      (su) => su.attendee_status === ATTENDEE_STATUS.Waitlisted
     )
   );
 
