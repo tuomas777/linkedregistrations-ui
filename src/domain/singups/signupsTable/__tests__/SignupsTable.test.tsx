@@ -18,6 +18,7 @@ import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { TEST_SIGNUP_GROUP_ID } from '../../../signupGroup/constants';
 import {
+  signupGroup,
   signupNames,
   signupNamesPage2,
   signups,
@@ -90,6 +91,14 @@ test('should navigate between pages', async () => {
 
   // Page 1 signup should be visible.
   screen.getByText(signupName);
+  const emailColumn = await screen.findByText(
+    signups.data[0].contact_person?.email as string
+  );
+  const phoneColumn = await screen.findByText(
+    signups.data[0].contact_person?.phone_number as string
+  );
+  expect(emailColumn).toBeInTheDocument();
+  expect(phoneColumn).toBeInTheDocument();
   expect(screen.queryByText(page2SignupName)).not.toBeInTheDocument();
 
   const page2Button = screen.getByRole('link', { name: 'Sivu 2' });
@@ -132,13 +141,24 @@ test('should route to edit signup group page when clicking signup name and signu
   setQueryMocks(
     rest.get(`*/signup/`, (req, res, ctx) =>
       res(ctx.status(200), ctx.json(signupsWithGroup))
+    ),
+    rest.get(`*/signup_group/${TEST_SIGNUP_GROUP_ID}`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(signupGroup))
     )
   );
 
   renderComponent();
 
-  await loadingSpinnerIsNotInDocument();
+  await loadingSpinnerIsNotInDocument(5000);
   const signupLink = screen.getByRole('link', { name: signupName });
+  const emailColumn = await screen.findByText(
+    signupGroup.contact_person?.email as string
+  );
+  const phoneColumn = await screen.findByText(
+    signupGroup.contact_person?.phone_number as string
+  );
+  expect(emailColumn).toBeInTheDocument();
+  expect(phoneColumn).toBeInTheDocument();
   expect(signupLink).toHaveAttribute(
     'href',
     `/registration/${encodeURIComponent(

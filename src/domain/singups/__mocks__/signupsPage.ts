@@ -1,6 +1,10 @@
 import range from 'lodash/range';
 
-import { fakeSignups } from '../../../utils/mockDataUtils';
+import {
+  fakeContactPerson,
+  fakeSignupGroup,
+  fakeSignups,
+} from '../../../utils/mockDataUtils';
 import { Meta } from '../../api/types';
 import { TEST_SIGNUP_GROUP_ID } from '../../signupGroup/constants';
 
@@ -12,20 +16,22 @@ const signupNames = range(1, TEST_PAGE_SIZE + 1).map((n) => ({
 }));
 const signups = fakeSignups(
   TEST_PAGE_SIZE,
-  signupNames.map((name) => ({ ...name }))
+  signupNames.map((name, index) => ({
+    ...name,
+    contact_person: fakeContactPerson({ phone_number: `044123456${index}` }),
+  }))
 );
 const count = 30;
 const meta: Meta = { ...signups.meta, count };
 signups.meta = meta;
 
-const signupsWithGroup = fakeSignups(
-  signupNames.length,
-  signupNames.map((name, index) => ({
-    ...name,
-    id: `attending:${index}`,
-    signup_group: TEST_SIGNUP_GROUP_ID,
-  }))
-);
+const signupGroup = fakeSignupGroup({
+  contact_person: fakeContactPerson({ phone_number: '044 1234567' }),
+  id: TEST_SIGNUP_GROUP_ID,
+});
+const signupsWithGroup = fakeSignups(1, [
+  { ...signupNames[0], id: `attending:1`, signup_group: signupGroup.id },
+]);
 
 const signupNamesPage2 = range(1, TEST_PAGE_SIZE + 1).map((n) => ({
   first_name: 'Page 2 user',
@@ -38,6 +44,7 @@ const signupsPage2 = fakeSignups(
 );
 
 export {
+  signupGroup,
   signupNames,
   signupNamesPage2,
   signups,

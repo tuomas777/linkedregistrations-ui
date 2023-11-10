@@ -16,6 +16,7 @@ import { Registration } from '../../registration/types';
 import { ATTENDEE_STATUS } from '../../signup/constants';
 import { Signup } from '../../signup/types';
 import { getSignupFields } from '../../signup/utils';
+import { useSignupGroupQuery } from '../../signupGroup/query';
 import { SIGNUPS_PAGE_SIZE, SIGNUPS_SEARCH_PARAMS } from '../constants';
 import { useSignupsQuery } from '../query';
 import { getSignupsSearchInitialValues } from '../utils';
@@ -59,26 +60,42 @@ const NameColumn: FC<ColumnProps> = ({ signup }) => {
 };
 
 const EmailColumn: FC<ColumnProps> = ({ signup }) => {
-  const { email } = getSignupFields({ signup });
+  const { data: session } = useSession() as { data: ExtendedSession | null };
+  const { data, isFetching } = useSignupGroupQuery({
+    args: { id: signup.signup_group as string },
+    options: { enabled: !!signup.signup_group },
+    session,
+  });
 
   return (
-    <>
-      {email ||
-        /* istanbul ignore next */
-        '-'}
-    </>
+    <LoadingSpinner
+      className={styles.columnLoadingSpinner}
+      isLoading={isFetching}
+      small
+    >
+      {data?.contact_person?.email || signup.contact_person?.email || '-'}
+    </LoadingSpinner>
   );
 };
 
 const PhoneColumn: FC<ColumnProps> = ({ signup }) => {
-  const { phoneNumber } = getSignupFields({ signup });
+  const { data: session } = useSession() as { data: ExtendedSession | null };
+  const { data, isFetching } = useSignupGroupQuery({
+    args: { id: signup.signup_group as string },
+    options: { enabled: !!signup.signup_group },
+    session,
+  });
 
   return (
-    <>
-      {phoneNumber ||
-        /* istanbul ignore next */
+    <LoadingSpinner
+      className={styles.columnLoadingSpinner}
+      isLoading={isFetching}
+      small
+    >
+      {data?.contact_person?.phone_number ||
+        signup.contact_person?.phone_number ||
         '-'}
-    </>
+    </LoadingSpinner>
   );
 };
 
