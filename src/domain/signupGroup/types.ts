@@ -1,6 +1,6 @@
 import { stringOrNull } from '../api/types';
 import { ATTENDEE_STATUS } from '../signup/constants';
-import { Signup, SignupInput } from '../signup/types';
+import { ContactPerson, Signup, SignupInput } from '../signup/types';
 
 import { SIGNUP_FIELDS, SIGNUP_GROUP_FIELDS } from './constants';
 
@@ -24,6 +24,7 @@ export type CreateOrUpdateSignupGroupResponse = {
 };
 
 export type SignupGroup = {
+  contact_person?: ContactPerson | null;
   created_by: stringOrNull;
   created_time: stringOrNull;
   extra_info: stringOrNull;
