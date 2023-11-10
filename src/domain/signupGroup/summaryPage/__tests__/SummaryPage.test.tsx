@@ -55,13 +55,18 @@ const signupGroup = fakeSignupGroup({
 });
 
 const signupGroupValues: SignupGroupFormFields = {
-  email: 'participant@email.com',
+  contactPerson: {
+    email: 'participant@email.com',
+    firstName: 'First name',
+    id: null,
+    lastName: 'Last name',
+    membershipNumber: '',
+    nativeLanguage: 'fi',
+    notifications: [NOTIFICATIONS.EMAIL],
+    phoneNumber: '+358 44 123 4567',
+    serviceLanguage: 'fi',
+  },
   extraInfo: '',
-  membershipNumber: '',
-  nativeLanguage: 'fi',
-  notifications: [NOTIFICATIONS.EMAIL],
-  phoneNumber: '+358 44 123 4567',
-  serviceLanguage: 'fi',
   signups: [
     {
       city: 'City',
@@ -127,7 +132,10 @@ test('should route back to signup form after clicking submit button if there are
   setSignupGroupFormSessionStorageValues({
     registrationId: registration.id,
     seatsReservation: getMockedSeatsReservationData(1000),
-    signupGroupFormValues: { ...signupGroupValues, email: '' },
+    signupGroupFormValues: {
+      ...signupGroupValues,
+      contactPerson: { ...signupGroupValues.contactPerson, email: '' },
+    },
   });
 
   pushSummaryPageRoute(registration.id);

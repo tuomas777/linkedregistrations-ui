@@ -15,7 +15,7 @@ import {
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../signup/constants';
-import { Signup, SignupInput } from '../signup/types';
+import { ContactPerson, Signup, SignupInput } from '../signup/types';
 import {
   getSignupInitialValues,
   getSignupPayload,
@@ -23,6 +23,7 @@ import {
 } from '../signup/utils';
 
 import {
+  CONTACT_PERSON_FIELDS,
   NOTIFICATIONS,
   SIGNUP_FIELDS,
   SIGNUP_GROUP_FIELDS,
@@ -37,6 +38,7 @@ import {
   SignupGroupFormFields,
   SignupGroupQueryVariables,
   UpdateSignupGroupMutationInput,
+  ContactPersonFormFields,
 } from './types';
 
 export const getSignupNotificationsCode = (
@@ -135,6 +137,20 @@ export const getSignupGroupDefaultInitialValues =
     signups: [getSignupDefaultInitialValues()],
   });
 
+export const getContactPersonInitialValues = (
+  contactPerson: Partial<ContactPerson>
+): ContactPersonFormFields => ({
+  email: contactPerson.email ?? '',
+  firstName: contactPerson.first_name ?? '',
+  id: contactPerson.id ?? null,
+  lastName: contactPerson.last_name ?? '',
+  membershipNumber: contactPerson.membership_number ?? '',
+  nativeLanguage: contactPerson.native_language ?? '',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: contactPerson.phone_number ?? '',
+  serviceLanguage: contactPerson.service_language ?? '',
+});
+
 export const getSignupGroupInitialValues = (
   signupGroup: SignupGroup
 ): SignupGroupFormFields => {
@@ -149,16 +165,11 @@ export const getSignupGroupInitialValues = (
       return a.responsible_for_group === true ? -1 : 1;
     });
 
-  const responsibleSignup = signups[0];
-
   return {
-    email: responsibleSignup?.email ?? '',
+    contactPerson: getContactPersonInitialValues(
+      signupGroup.contact_person ?? {}
+    ),
     extraInfo: signupGroup.extra_info ?? '',
-    membershipNumber: responsibleSignup?.membership_number ?? '',
-    nativeLanguage: responsibleSignup?.native_language ?? '',
-    notifications: [NOTIFICATIONS.EMAIL],
-    phoneNumber: responsibleSignup?.phone_number ?? '',
-    serviceLanguage: responsibleSignup?.service_language ?? '',
     signups: signups.map((su) => getSignupInitialValues(su)),
     userConsent: signups.every((su) => su.user_consent),
   };
@@ -194,7 +205,7 @@ export const getNewSignups = ({
 
 export const isSignupFieldRequired = (
   registration: Registration,
-  fieldId: SIGNUP_FIELDS | SIGNUP_GROUP_FIELDS
+  fieldId: CONTACT_PERSON_FIELDS | SIGNUP_FIELDS | SIGNUP_GROUP_FIELDS
 ): boolean => registration.mandatory_fields.includes(snakeCase(fieldId));
 
 export const isAnySignupInWaitingList = (signupGroup: SignupGroup): boolean =>
@@ -293,3 +304,6 @@ export const omitSensitiveDataFromSignupGroupPayload = (
   ...omit(payload, ['extra_info']),
   signups: payload.signups.map((s) => omitSensitiveDataFromSignupPayload(s)),
 });
+
+export const getContactPersonFieldName = (name: string) =>
+  `${SIGNUP_GROUP_FIELDS.CONTACT_PERSON}.${name}`;

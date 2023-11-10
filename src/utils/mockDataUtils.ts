@@ -28,7 +28,7 @@ import {
   NOTIFICATION_TYPE,
   PRESENCE_STATUS,
 } from '../domain/signup/constants';
-import { Signup, SignupsResponse } from '../domain/signup/types';
+import { ContactPerson, Signup, SignupsResponse } from '../domain/signup/types';
 import { SIGNUP_GROUP_INITIAL_VALUES } from '../domain/signupGroup/constants';
 import {
   SignupGroup,
@@ -37,6 +37,27 @@ import {
 import { User } from '../domain/user/types';
 
 import generateAtId from './generateAtId';
+
+export const fakeContactPerson = (
+  overrides?: Partial<ContactPerson>
+): ContactPerson => {
+  const id = overrides?.id || faker.string.uuid();
+
+  return merge<ContactPerson, typeof overrides>(
+    {
+      id,
+      email: faker.internet.email(),
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
+      membership_number: faker.string.uuid(),
+      native_language: 'fi',
+      notifications: NOTIFICATION_TYPE.SMS_EMAIL,
+      phone_number: null,
+      service_language: 'fi',
+    },
+    overrides
+  );
+};
 
 export const fakeEvent = (overrides?: Partial<Event>): Event => {
   const id = overrides?.id || faker.string.uuid();
@@ -314,24 +335,19 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       id,
       attendee_status: ATTENDEE_STATUS.Attending,
       city: faker.location.city(),
+      contact_person: fakeContactPerson(),
       created_by: null,
       created_time: null,
       date_of_birth: '1990-10-10',
-      email: faker.internet.email(),
       extra_info: faker.lorem.paragraph(),
       first_name: faker.person.firstName(),
       is_created_by_current_user: false,
       last_modified_by: null,
       last_modified_time: null,
       last_name: faker.person.lastName(),
-      membership_number: faker.string.uuid(),
-      native_language: 'fi',
-      notifications: NOTIFICATION_TYPE.SMS_EMAIL,
-      phone_number: faker.phone.number(),
       presence_status: PRESENCE_STATUS.NotPresent,
       registration: TEST_REGISTRATION_ID,
       responsible_for_group: false,
-      service_language: 'fi',
       signup_group: null,
       street_address: faker.location.streetAddress(),
       user_consent: false,
@@ -349,6 +365,7 @@ export const fakeSignupGroup = (
   return merge<SignupGroup, typeof overrides>(
     {
       id,
+      contact_person: fakeContactPerson(),
       created_by: null,
       created_time: null,
       extra_info: '',

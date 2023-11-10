@@ -42,7 +42,7 @@ import {
 } from '../utils';
 import { getSignupGroupSchema } from '../validation';
 
-import InformantInfo from './informantInfo/InformantInfo';
+import ContactPersonInfo from './contactPersonInfo/ContactPersonInfo';
 import Signups from './signups/Signups';
 import SummaryEventInfo from './summaryEventInfo/SummaryEventInfo';
 import styles from './summaryPage.module.scss';
@@ -188,7 +188,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                     />
                     <Divider />
                     <Signups />
-                    <InformantInfo values={values} />
+                    <ContactPersonInfo values={values} />
                   </FormContainer>
                 </Container>
                 <ButtonPanel

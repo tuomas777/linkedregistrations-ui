@@ -25,7 +25,7 @@ import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import {
-  findFirstNameInput,
+  findFirstNameInputs,
   shouldRenderSignupFormFields,
   shouldRenderSignupFormReadOnlyFields,
   tryToCancel,
@@ -51,7 +51,7 @@ const renderComponent = (session: ExtendedSession | null = defaultSession) =>
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   expect(await axe(container)).toHaveNoViolations();
 });
 
@@ -111,7 +111,7 @@ test('should cancel signup', async () => {
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToCancel();
 
   await waitFor(() =>
@@ -131,7 +131,7 @@ test('should show error message when cancelling signup fails', async () => {
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToCancel();
 
   await screen.findByRole(
@@ -151,7 +151,7 @@ test('should update signup', async () => {
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToUpdate();
 
   await screen.findByRole('alert', {
@@ -164,7 +164,7 @@ test('should not show back button if returnPath is not defined', async () => {
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   expect(
     screen.queryByRole('button', { name: 'Takaisin' })
   ).not.toBeInTheDocument();
@@ -203,7 +203,7 @@ test('should route to page defined in returnPath when clicking back button', asy
   });
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   const backButton = screen.getByRole('button', { name: 'Takaisin' });
   await user.click(backButton);
   expect(mockRouter.asPath).toBe(
@@ -216,7 +216,7 @@ test('should not show back button if returnPath is not defined', async () => {
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   expect(
     screen.queryByRole('button', { name: 'Takaisin' })
   ).not.toBeInTheDocument();
@@ -255,7 +255,7 @@ test('should route to page defined in returnPath when clicking back button', asy
   });
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   const backButton = screen.getByRole('button', { name: 'Takaisin' });
   await user.click(backButton);
   expect(mockRouter.asPath).toBe(
@@ -273,7 +273,7 @@ test('should show error message when updating signup fails', async () => {
   pushEditSignupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToUpdate();
 
   await screen.findByRole(

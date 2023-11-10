@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fakeSignup } from '../../../utils/mockDataUtils';
+import { fakeContactPerson, fakeSignup } from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import {
   NOTIFICATIONS,
@@ -8,6 +8,7 @@ import {
 import {
   ATTENDEE_STATUS,
   NOTIFICATION_TYPE,
+  TEST_CONTACT_PERSON_ID,
   TEST_SIGNUP_ID,
 } from '../constants';
 import { SignupInput, SignupQueryVariables } from '../types';
@@ -41,10 +42,12 @@ describe('getSignupFields function', () => {
     } = getSignupFields({
       signup: fakeSignup({
         attendee_status: null as any,
-        email: null,
+        contact_person: fakeContactPerson({
+          email: null,
+          phone_number: null,
+        }),
         first_name: null,
         last_name: null,
-        phone_number: null,
       }),
     });
     expect(attendeeStatus).toBe(ATTENDEE_STATUS.Attending);
@@ -66,10 +69,12 @@ describe('getSignupFields function', () => {
     } = getSignupFields({
       signup: fakeSignup({
         attendee_status: ATTENDEE_STATUS.Waitlisted,
-        email: 'test@email.com',
+        contact_person: fakeContactPerson({
+          email: 'test@email.com',
+          phone_number: '+358 44 1234567',
+        }),
         first_name: 'Test',
         last_name: 'User',
-        phone_number: '+358 44 1234567',
       }),
     });
     expect(attendeeStatus).toBe(ATTENDEE_STATUS.Waitlisted);
@@ -84,29 +89,38 @@ describe('getSignupFields function', () => {
 describe('getSignupGroupInitialValuesFromSignup function', () => {
   it('should return default values if value is not set', () => {
     const {
-      email,
+      contactPerson: {
+        email,
+        firstName: contactPersonFirstName,
+        lastName: contactPersonLastName,
+        membershipNumber,
+        nativeLanguage,
+        notifications,
+        phoneNumber,
+        serviceLanguage,
+      },
       extraInfo,
-      membershipNumber,
-      nativeLanguage,
-      notifications,
-      phoneNumber,
-      serviceLanguage,
       signups,
     } = getSignupGroupInitialValuesFromSignup(
       fakeSignup({
         city: null,
+        contact_person: {
+          email: null,
+          first_name: null,
+          id: TEST_CONTACT_PERSON_ID,
+          last_name: null,
+          membership_number: null,
+          native_language: null,
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          phone_number: null,
+          service_language: null,
+        },
         date_of_birth: null,
-        email: null,
         extra_info: null,
         first_name: null,
         id: TEST_SIGNUP_ID,
         last_name: null,
-        membership_number: null,
-        native_language: null,
-        notifications: NOTIFICATION_TYPE.EMAIL,
-        phone_number: null,
         responsible_for_group: true,
-        service_language: null,
         street_address: null,
         zipcode: null,
       })
@@ -127,6 +141,8 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
       },
     ]);
     expect(email).toBe('');
+    expect(contactPersonFirstName).toBe('');
+    expect(contactPersonLastName).toBe('');
     expect(extraInfo).toBe('');
     expect(membershipNumber).toBe('');
     expect(nativeLanguage).toBe('');
@@ -137,6 +153,8 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
 
   it('should return signup group initial values', () => {
     const expectedCity = 'City';
+    const expectedContactPersonFirstName = 'Contact first name';
+    const expectedContactPersonLastName = 'Contact last name';
     const expectedDateOfBirth = '10.10.2021';
     const expectedEmail = 'user@email.com';
     const expectedExtraInfo = 'Extra info';
@@ -152,30 +170,42 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
     const expectedZip = '12345';
 
     const {
-      email,
+      contactPerson: {
+        email,
+        firstName: contactPersonFirstName,
+        lastName: contactPersonLastName,
+        membershipNumber,
+        nativeLanguage,
+        notifications,
+        phoneNumber,
+        serviceLanguage,
+      },
+
       extraInfo,
-      membershipNumber,
-      nativeLanguage,
-      notifications,
-      phoneNumber,
-      serviceLanguage,
+
       signups,
       userConsent,
     } = getSignupGroupInitialValuesFromSignup(
       fakeSignup({
         city: expectedCity,
+        contact_person: {
+          email: expectedEmail,
+          first_name: expectedContactPersonFirstName,
+          id: TEST_SIGNUP_ID,
+          last_name: expectedContactPersonLastName,
+          membership_number: expectedMembershipNumber,
+          native_language: expectedNativeLanguage,
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          phone_number: expectedPhoneNumber,
+          service_language: expectedServiceLanguage,
+        },
         date_of_birth: '2021-10-10',
-        email: expectedEmail,
         extra_info: expectedExtraInfo,
         first_name: expectedFirstName,
         id: TEST_SIGNUP_ID,
         last_name: expectedLastName,
-        membership_number: expectedMembershipNumber,
-        native_language: expectedNativeLanguage,
-        notifications: NOTIFICATION_TYPE.EMAIL,
-        phone_number: expectedPhoneNumber,
         responsible_for_group: true,
-        service_language: expectedServiceLanguage,
+
         street_address: expectedStreetAddress,
         user_consent: expectedUserConsent,
         zipcode: expectedZip,
@@ -197,6 +227,8 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
       },
     ]);
     expect(email).toBe(expectedEmail);
+    expect(contactPersonFirstName).toBe(expectedContactPersonFirstName);
+    expect(contactPersonLastName).toBe(expectedContactPersonLastName);
     expect(extraInfo).toBe('');
     expect(membershipNumber).toBe(expectedMembershipNumber);
     expect(nativeLanguage).toBe(expectedNativeLanguage);
@@ -236,6 +268,8 @@ describe('getUpdateSignupPayload function', () => {
     });
 
     const city = 'City',
+      contactPersonFirstName = 'Contact first name',
+      contactPersonLastName = 'Contact first name',
       dateOfBirth = '10.10.1999',
       email = 'Email',
       extraInfo = 'Extra info',
@@ -265,13 +299,18 @@ describe('getUpdateSignupPayload function', () => {
     const payload = getUpdateSignupPayload({
       formValues: {
         ...SIGNUP_GROUP_INITIAL_VALUES,
-        email,
+        contactPerson: {
+          email,
+          firstName: contactPersonFirstName,
+          id: TEST_CONTACT_PERSON_ID,
+          lastName: contactPersonLastName,
+          membershipNumber,
+          nativeLanguage,
+          notifications,
+          phoneNumber,
+          serviceLanguage,
+        },
         extraInfo: '',
-        membershipNumber,
-        nativeLanguage,
-        notifications,
-        phoneNumber,
-        serviceLanguage,
         signups,
       },
       id: TEST_SIGNUP_ID,

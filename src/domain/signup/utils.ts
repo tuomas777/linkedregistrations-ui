@@ -12,12 +12,13 @@ import {
   callPut,
 } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
-import { NOTIFICATIONS } from '../signupGroup/constants';
 import {
   SignupFields,
   SignupFormFields,
+  SignupGroup,
   SignupGroupFormFields,
 } from '../signupGroup/types';
+import { getContactPersonInitialValues } from '../signupGroup/utils';
 
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
@@ -120,16 +121,14 @@ export const getSignupInitialValues = (signup: Signup): SignupFormFields => ({
 });
 
 export const getSignupGroupInitialValuesFromSignup = (
-  signup: Signup
+  signup: Signup,
+  signupGroup?: SignupGroup
 ): SignupGroupFormFields => {
+  const contactPerson =
+    signupGroup?.contact_person ?? signup?.contact_person ?? {};
   return {
-    email: signup.email ?? '',
+    contactPerson: getContactPersonInitialValues(contactPerson),
     extraInfo: '',
-    membershipNumber: signup.membership_number ?? '',
-    nativeLanguage: signup.native_language ?? '',
-    notifications: [NOTIFICATIONS.EMAIL],
-    phoneNumber: signup.phone_number ?? '',
-    serviceLanguage: signup.service_language ?? '',
     signups: [getSignupInitialValues(signup)],
     userConsent: !!signup.user_consent,
   };
@@ -145,12 +144,14 @@ export const getSignupPayload = ({
   signupData: SignupFormFields;
 }): SignupInput => {
   const {
-    email,
-    membershipNumber,
-    nativeLanguage,
-    phoneNumber,
-    serviceLanguage,
     userConsent,
+    contactPerson: {
+      email,
+      membershipNumber,
+      nativeLanguage,
+      phoneNumber,
+      serviceLanguage,
+    },
   } = formValues;
 
   const {
@@ -218,11 +219,11 @@ export const getSignupFields = ({
 
   return {
     attendeeStatus: signup.attendee_status ?? ATTENDEE_STATUS.Attending,
-    email: signup.email ?? '',
+    email: signup.contact_person?.email ?? '',
     firstName,
     fullName,
     lastName,
-    phoneNumber: signup.phone_number ?? '',
+    phoneNumber: signup.contact_person?.phone_number ?? '',
     signupGroup,
   };
 };

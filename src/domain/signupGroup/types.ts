@@ -2,7 +2,11 @@ import { stringOrNull } from '../api/types';
 import { ATTENDEE_STATUS } from '../signup/constants';
 import { ContactPerson, Signup, SignupInput } from '../signup/types';
 
-import { SIGNUP_FIELDS, SIGNUP_GROUP_FIELDS } from './constants';
+import {
+  CONTACT_PERSON_FIELDS,
+  SIGNUP_FIELDS,
+  SIGNUP_GROUP_FIELDS,
+} from './constants';
 
 export type CreateSignupGroupMutationInput = {
   extra_info: string;
@@ -36,6 +40,18 @@ export type SignupGroup = {
   signups: Signup[];
 };
 
+export type ContactPersonFormFields = {
+  [CONTACT_PERSON_FIELDS.EMAIL]: string;
+  [CONTACT_PERSON_FIELDS.FIRST_NAME]: string;
+  [CONTACT_PERSON_FIELDS.ID]: string | null;
+  [CONTACT_PERSON_FIELDS.LAST_NAME]: string;
+  [CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER]: string;
+  [CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE]: string;
+  [CONTACT_PERSON_FIELDS.NOTIFICATIONS]: string[];
+  [CONTACT_PERSON_FIELDS.PHONE_NUMBER]: string;
+  [CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE]: string;
+};
+
 export type SignupFormFields = {
   [SIGNUP_FIELDS.CITY]: string;
   [SIGNUP_FIELDS.DATE_OF_BIRTH]: string;
@@ -50,13 +66,8 @@ export type SignupFormFields = {
 };
 
 export type SignupGroupFormFields = {
-  [SIGNUP_GROUP_FIELDS.EMAIL]: string;
+  [SIGNUP_GROUP_FIELDS.CONTACT_PERSON]: ContactPersonFormFields;
   [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: string;
-  [SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER]: string;
-  [SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE]: string;
-  [SIGNUP_GROUP_FIELDS.NOTIFICATIONS]: string[];
-  [SIGNUP_GROUP_FIELDS.PHONE_NUMBER]: string;
-  [SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE]: string;
   [SIGNUP_GROUP_FIELDS.SIGNUPS]: SignupFormFields[];
   [SIGNUP_GROUP_FIELDS.USER_CONSENT]: boolean;
 };

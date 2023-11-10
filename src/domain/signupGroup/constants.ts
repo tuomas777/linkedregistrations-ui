@@ -1,4 +1,20 @@
-import { SignupFormFields, SignupGroupFormFields } from './types';
+import {
+  ContactPersonFormFields,
+  SignupFormFields,
+  SignupGroupFormFields,
+} from './types';
+
+export enum CONTACT_PERSON_FIELDS {
+  EMAIL = 'email',
+  FIRST_NAME = 'firstName',
+  ID = 'id',
+  LAST_NAME = 'lastName',
+  MEMBERSHIP_NUMBER = 'membershipNumber',
+  NATIVE_LANGUAGE = 'nativeLanguage',
+  NOTIFICATIONS = 'notifications',
+  PHONE_NUMBER = 'phoneNumber',
+  SERVICE_LANGUAGE = 'serviceLanguage',
+}
 
 export enum SIGNUP_FIELDS {
   CITY = 'city',
@@ -14,13 +30,8 @@ export enum SIGNUP_FIELDS {
 }
 
 export enum SIGNUP_GROUP_FIELDS {
-  EMAIL = 'email',
+  CONTACT_PERSON = 'contactPerson',
   EXTRA_INFO = 'extraInfo',
-  MEMBERSHIP_NUMBER = 'membershipNumber',
-  NATIVE_LANGUAGE = 'nativeLanguage',
-  NOTIFICATIONS = 'notifications',
-  PHONE_NUMBER = 'phoneNumber',
-  SERVICE_LANGUAGE = 'serviceLanguage',
   SIGNUPS = 'signups',
   USER_CONSENT = 'userConsent',
 }
@@ -29,6 +40,18 @@ export enum NOTIFICATIONS {
   EMAIL = 'email',
   SMS = 'sms',
 }
+
+export const CONTACT_PERSON_VALUES: ContactPersonFormFields = {
+  [CONTACT_PERSON_FIELDS.EMAIL]: '',
+  [CONTACT_PERSON_FIELDS.FIRST_NAME]: '',
+  [CONTACT_PERSON_FIELDS.ID]: null,
+  [CONTACT_PERSON_FIELDS.LAST_NAME]: '',
+  [CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER]: '',
+  [CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE]: '',
+  [CONTACT_PERSON_FIELDS.NOTIFICATIONS]: [NOTIFICATIONS.EMAIL],
+  [CONTACT_PERSON_FIELDS.PHONE_NUMBER]: '',
+  [CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE]: '',
+};
 
 export const SIGNUP_INITIAL_VALUES: SignupFormFields = {
   [SIGNUP_FIELDS.CITY]: '',
@@ -44,20 +67,15 @@ export const SIGNUP_INITIAL_VALUES: SignupFormFields = {
 };
 
 export const SIGNUP_GROUP_INITIAL_VALUES: SignupGroupFormFields = {
-  [SIGNUP_GROUP_FIELDS.EMAIL]: '',
+  [SIGNUP_GROUP_FIELDS.CONTACT_PERSON]: CONTACT_PERSON_VALUES,
   [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: '',
-  [SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER]: '',
-  [SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE]: '',
-  [SIGNUP_GROUP_FIELDS.NOTIFICATIONS]: [NOTIFICATIONS.EMAIL],
-  [SIGNUP_GROUP_FIELDS.PHONE_NUMBER]: '',
-  [SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE]: '',
   [SIGNUP_GROUP_FIELDS.SIGNUPS]: [],
   [SIGNUP_GROUP_FIELDS.USER_CONSENT]: false,
 };
 
 export const SIGNUP_GROUP_FORM_SELECT_FIELDS = [
-  SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE,
-  SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE,
+  `${SIGNUP_GROUP_FIELDS.CONTACT_PERSON}.${CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE}`,
+  `${SIGNUP_GROUP_FIELDS.CONTACT_PERSON}.${CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE}`,
 ];
 
 export enum SIGNUP_GROUP_ACTIONS {

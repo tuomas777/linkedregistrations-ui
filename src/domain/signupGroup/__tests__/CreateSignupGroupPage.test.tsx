@@ -34,7 +34,7 @@ import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
 import { mockedUserResponse } from '../../user/__mocks__/user';
 import CreateSignupGroupPage from '../CreateSignupGroupPage';
-import { findFirstNameInput, getSignupFormElement } from '../testUtils';
+import { findFirstNameInputs, getSignupFormElement } from '../testUtils';
 
 configure({ defaultHidden: true });
 
@@ -91,7 +91,7 @@ test.skip('page is accessible', async () => {
   });
   const { container } = renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   expect(await axe(container)).toHaveNoViolations();
 });
 
@@ -107,7 +107,7 @@ test('should validate signup group form and focus invalid field', async () => {
   pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  const firstNameInput = await findFirstNameInput();
+  const firstNameInput = (await findFirstNameInputs())[0];
   const lastNameInput = await getSignupFormElement('lastNameInput');
   const dateOfBirthInput = getSignupFormElement('dateOfBirthInput');
   const emailInput = getSignupFormElement('emailInput');

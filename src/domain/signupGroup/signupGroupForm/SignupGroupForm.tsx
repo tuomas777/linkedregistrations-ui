@@ -38,7 +38,7 @@ import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsCon
 import { Signup } from '../../signup/types';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
-  NOTIFICATIONS,
+  CONTACT_PERSON_FIELDS,
   SIGNUP_GROUP_ACTIONS,
   SIGNUP_GROUP_FIELDS,
 } from '../constants';
@@ -52,7 +52,7 @@ import ParticipantAmountSelector from '../participantAmountSelector/ParticipantA
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFormFields, SignupGroup, SignupGroupFormFields } from '../types';
-import { isSignupFieldRequired } from '../utils';
+import { getContactPersonFieldName, isSignupFieldRequired } from '../utils';
 import {
   getSignupGroupSchema,
   scrollToFirstError,
@@ -309,7 +309,7 @@ const SignupGroupForm: React.FC<Props> = ({
                   <ServerErrorSummary errors={serverErrorItems} />
                   <RegistrationWarning registration={registration} />
 
-                  {!isEditingMode ? (
+                  {!isEditingMode && (
                     <>
                       {isRegistrationPossible(registration) && (
                         <>
@@ -335,10 +335,9 @@ const SignupGroupForm: React.FC<Props> = ({
                         registration={registration}
                       />
                     </>
-                  ) : (
-                    <h2>{t('titleSignups')}</h2>
                   )}
 
+                  {isEditingMode && <h2>{t('signup.titleSignups')}</h2>}
                   <Signups
                     formDisabled={formDisabled}
                     isEditingMode={isEditingMode}
@@ -347,73 +346,116 @@ const SignupGroupForm: React.FC<Props> = ({
                   />
 
                   <h2 className={styles.sectionTitle}>
-                    {t('titleInformantInfo')}
+                    {t('contactPerson.titleContactPersonInfo')}
                   </h2>
                   <Divider />
 
-                  <Fieldset heading={t(`titleContactInfo`)}>
+                  <Fieldset heading={t(`contactPerson.titleContactInfo`)}>
                     <FormGroup>
                       <div className={styles.emailRow}>
                         <Field
-                          name={SIGNUP_GROUP_FIELDS.EMAIL}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.EMAIL
+                          )}
                           component={TextInputField}
                           disabled={formDisabled}
-                          label={t(`labelEmail`)}
-                          placeholder={getPlaceholder(t(`placeholderEmail`))}
+                          label={t(`contactPerson.labelEmail`)}
+                          placeholder={getPlaceholder(
+                            t(`contactPerson.placeholderEmail`)
+                          )}
                           readOnly={readOnly}
                           required
                         />
                         <Field
-                          name={SIGNUP_GROUP_FIELDS.PHONE_NUMBER}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                          )}
                           component={PhoneInputField}
                           disabled={formDisabled}
-                          label={t(`labelPhoneNumber`)}
+                          label={t(`contactPerson.labelPhoneNumber`)}
                           placeholder={getPlaceholder(
-                            t(`placeholderPhoneNumber`)
+                            t(`contactPerson.placeholderPhoneNumber`)
                           )}
                           readOnly={readOnly}
-                          required={
-                            values.notifications.includes(NOTIFICATIONS.SMS) ||
-                            isSignupFieldRequired(
-                              registration,
-                              SIGNUP_GROUP_FIELDS.PHONE_NUMBER
-                            )
-                          }
+                          required={isSignupFieldRequired(
+                            registration,
+                            CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                          )}
+                          type="tel"
+                        />
+                      </div>
+                    </FormGroup>
+                    <FormGroup>
+                      <div className={styles.nameRow}>
+                        <Field
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.FIRST_NAME
+                          )}
+                          component={TextInputField}
+                          disabled={formDisabled}
+                          label={t(`contactPerson.labelFirstName`)}
+                          placeholder={getPlaceholder(
+                            t(`contactPerson.placeholderFirstName`)
+                          )}
+                          readOnly={readOnly}
+                          required
+                        />
+                        <Field
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.LAST_NAME
+                          )}
+                          component={PhoneInputField}
+                          disabled={formDisabled}
+                          label={t(`contactPerson.labelLastName`)}
+                          placeholder={getPlaceholder(
+                            t(`contactPerson.placeholderLastName`)
+                          )}
+                          readOnly={readOnly}
+                          required={isSignupFieldRequired(
+                            registration,
+                            CONTACT_PERSON_FIELDS.LAST_NAME
+                          )}
                           type="tel"
                         />
                       </div>
                     </FormGroup>
                   </Fieldset>
 
-                  <Fieldset heading={t(`titleNotifications`)}>
+                  <Fieldset heading={t(`contactPerson.titleNotifications`)}>
                     <FormGroup>
                       <Field
-                        name={SIGNUP_GROUP_FIELDS.NOTIFICATIONS}
+                        name={getContactPersonFieldName(
+                          CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                        )}
                         className={styles.notifications}
                         component={CheckboxGroupField}
                         disabled={true}
-                        label={getPlaceholder(t(`titleNotifications`))}
+                        label={getPlaceholder(
+                          t(`contactPerson.titleNotifications`)
+                        )}
                         options={notificationOptions}
                         required
                       />
                     </FormGroup>
                   </Fieldset>
 
-                  <Fieldset heading={t(`titleAdditionalInfo`)}>
+                  <Fieldset heading={t(`contactPerson.titleAdditionalInfo`)}>
                     <FormGroup>
                       <div className={styles.membershipNumberRow}>
                         <Field
-                          name={SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
+                          )}
                           component={TextInputField}
                           disabled={formDisabled}
-                          label={t(`labelMembershipNumber`)}
+                          label={t(`contactPerson.labelMembershipNumber`)}
                           placeholder={getPlaceholder(
-                            t(`placeholderMembershipNumber`)
+                            t(`contactPerson.placeholderMembershipNumber`)
                           )}
                           readOnly={readOnly}
                           required={isSignupFieldRequired(
                             registration,
-                            SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER
+                            CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
                           )}
                         />
                       </div>
@@ -422,23 +464,27 @@ const SignupGroupForm: React.FC<Props> = ({
                       <div className={styles.nativeLanguageRow}>
                         <Field
                           component={SingleSelectField}
-                          name={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE
+                          )}
                           disabled={formDisabled || readOnly}
-                          label={t(`labelNativeLanguage`)}
+                          label={t(`contactPerson.labelNativeLanguage`)}
                           options={languageOptions}
                           placeholder={getPlaceholder(
-                            t(`placeholderNativeLanguage`)
+                            t(`contactPerson.placeholderNativeLanguage`)
                           )}
                           required
                         />
                         <Field
                           component={SingleSelectField}
-                          name={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE
+                          )}
                           disabled={formDisabled || readOnly}
-                          label={t(`labelServiceLanguage`)}
+                          label={t(`contactPerson.labelServiceLanguage`)}
                           options={serviceLanguageOptions}
                           placeholder={getPlaceholder(
-                            t(`placeholderServiceLanguage`)
+                            t(`contactPerson.placeholderServiceLanguage`)
                           )}
                           required
                         />

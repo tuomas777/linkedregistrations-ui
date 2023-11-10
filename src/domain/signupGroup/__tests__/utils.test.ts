@@ -1,4 +1,5 @@
 import {
+  fakeContactPerson,
   fakeRegistration,
   fakeSignup,
   fakeSignupGroup,
@@ -8,8 +9,13 @@ import {
   REGISTRATION_MANDATORY_FIELDS,
   TEST_REGISTRATION_ID,
 } from '../../registration/constants';
-import { NOTIFICATION_TYPE, TEST_SIGNUP_ID } from '../../signup/constants';
 import {
+  NOTIFICATION_TYPE,
+  TEST_CONTACT_PERSON_ID,
+  TEST_SIGNUP_ID,
+} from '../../signup/constants';
+import {
+  CONTACT_PERSON_FIELDS,
   NOTIFICATIONS,
   SIGNUP_GROUP_FIELDS,
   SIGNUP_GROUP_INITIAL_VALUES,
@@ -72,6 +78,8 @@ describe('getSignupGroupPayload function', () => {
     });
 
     const city = 'City',
+      contactPersonFirstName = 'First name',
+      contactPersonLastName = 'First name',
       dateOfBirth = '10.10.1999',
       email = 'Email',
       extraInfo = 'Extra info',
@@ -89,6 +97,17 @@ describe('getSignupGroupPayload function', () => {
     const payload = getSignupGroupPayload({
       formValues: {
         ...SIGNUP_GROUP_INITIAL_VALUES,
+        contactPerson: {
+          email,
+          firstName: contactPersonFirstName,
+          id: null,
+          lastName: contactPersonLastName,
+          membershipNumber,
+          nativeLanguage,
+          notifications,
+          phoneNumber,
+          serviceLanguage,
+        },
         signups: [
           {
             city,
@@ -103,13 +122,8 @@ describe('getSignupGroupPayload function', () => {
             zipcode,
           },
         ],
-        email,
+
         extraInfo: groupExtraInfo,
-        membershipNumber,
-        nativeLanguage,
-        notifications,
-        phoneNumber,
-        serviceLanguage,
         userConsent,
       },
       registration,
@@ -199,13 +213,18 @@ describe('getSignupDefaultInitialValues function', () => {
 describe('getSignupGroupDefaultInitialValues function', () => {
   it('should return signup group default initial values', () => {
     expect(getSignupGroupDefaultInitialValues()).toEqual({
-      email: '',
+      contactPerson: {
+        email: '',
+        firstName: '',
+        id: null,
+        lastName: '',
+        membershipNumber: '',
+        nativeLanguage: '',
+        notifications: [NOTIFICATIONS.EMAIL],
+        phoneNumber: '',
+        serviceLanguage: '',
+      },
       extraInfo: '',
-      membershipNumber: '',
-      nativeLanguage: '',
-      notifications: [NOTIFICATIONS.EMAIL],
-      phoneNumber: '',
-      serviceLanguage: '',
       signups: [
         {
           city: '',
@@ -228,32 +247,40 @@ describe('getSignupGroupDefaultInitialValues function', () => {
 describe('getSignupGroupInitialValues function', () => {
   it('should return default values if value is not set', () => {
     const {
-      email,
+      contactPerson: {
+        email,
+        membershipNumber,
+        nativeLanguage,
+        notifications,
+        phoneNumber,
+        serviceLanguage,
+      },
       extraInfo,
-      membershipNumber,
-      nativeLanguage,
-      notifications,
-      phoneNumber,
-      serviceLanguage,
       signups,
     } = getSignupGroupInitialValues(
       fakeSignupGroup({
+        contact_person: fakeContactPerson({
+          email: null,
+          first_name: null,
+          id: TEST_CONTACT_PERSON_ID,
+          last_name: null,
+          membership_number: null,
+          native_language: null,
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          phone_number: null,
+          service_language: null,
+        }),
         extra_info: null,
         signups: [
           fakeSignup({
             city: null,
+            contact_person: null,
             date_of_birth: null,
-            email: null,
             extra_info: null,
             first_name: null,
             id: TEST_SIGNUP_ID,
             last_name: null,
-            membership_number: null,
-            native_language: null,
-            notifications: NOTIFICATION_TYPE.EMAIL,
-            phone_number: null,
             responsible_for_group: true,
-            service_language: null,
             street_address: null,
             zipcode: null,
           }),
@@ -286,6 +313,8 @@ describe('getSignupGroupInitialValues function', () => {
 
   it('should return signup group initial values', () => {
     const expectedCity = 'City';
+    const expectedContactPersonFirstName = 'First name';
+    const expectedContactPersonLastName = 'Last name';
     const expectedDateOfBirth = '10.10.2021';
     const expectedEmail = 'user@email.com';
     const expectedExtraInfo = 'Extra info';
@@ -301,32 +330,41 @@ describe('getSignupGroupInitialValues function', () => {
     const expectedZip = '12345';
 
     const {
-      email,
+      contactPerson: {
+        email,
+        firstName: contactPersonFirstName,
+        lastName: contactPersonLastName,
+        membershipNumber,
+        nativeLanguage,
+        notifications,
+        phoneNumber,
+        serviceLanguage,
+      },
       extraInfo,
-      membershipNumber,
-      nativeLanguage,
-      notifications,
-      phoneNumber,
-      serviceLanguage,
       signups,
     } = getSignupGroupInitialValues(
       fakeSignupGroup({
+        contact_person: fakeContactPerson({
+          email: expectedEmail,
+          first_name: expectedContactPersonFirstName,
+          id: TEST_CONTACT_PERSON_ID,
+          last_name: expectedContactPersonLastName,
+          membership_number: expectedMembershipNumber,
+          native_language: expectedNativeLanguage,
+          notifications: NOTIFICATION_TYPE.EMAIL,
+          phone_number: expectedPhoneNumber,
+          service_language: expectedServiceLanguage,
+        }),
         extra_info: expectedGroupExtraInfo,
         signups: [
           fakeSignup({
             city: expectedCity,
             date_of_birth: '2021-10-10',
-            email: expectedEmail,
             extra_info: expectedExtraInfo,
             first_name: expectedFirstName,
             id: TEST_SIGNUP_ID,
             last_name: expectedLastName,
-            membership_number: expectedMembershipNumber,
-            native_language: expectedNativeLanguage,
-            notifications: NOTIFICATION_TYPE.EMAIL,
-            phone_number: expectedPhoneNumber,
             responsible_for_group: true,
-            service_language: expectedServiceLanguage,
             street_address: expectedStreetAddress,
             zipcode: expectedZip,
           }),
@@ -348,6 +386,9 @@ describe('getSignupGroupInitialValues function', () => {
         zipcode: expectedZip,
       },
     ]);
+    expect(email).toBe(expectedEmail);
+    expect(contactPersonFirstName).toBe(expectedContactPersonFirstName);
+    expect(contactPersonLastName).toBe(expectedContactPersonLastName);
     expect(email).toBe(expectedEmail);
     expect(extraInfo).toBe(expectedGroupExtraInfo);
     expect(membershipNumber).toBe(expectedMembershipNumber);
@@ -403,26 +444,30 @@ describe('getSignupGroupInitialValues function', () => {
 });
 
 describe('isSignupFieldRequired', () => {
-  const falseCases: [string[], SIGNUP_GROUP_FIELDS][] = [
-    [[REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER], SIGNUP_GROUP_FIELDS.EMAIL],
+  const falseCases: [string[], CONTACT_PERSON_FIELDS | SIGNUP_GROUP_FIELDS][] =
     [
-      [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
-      SIGNUP_GROUP_FIELDS.EXTRA_INFO,
-    ],
-    [
-      [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
-      SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER,
-    ],
-    [
-      [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
-      SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE,
-    ],
-    [
-      [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
-      SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE,
-    ],
-    [['not-exist'], SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE],
-  ];
+      [
+        [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
+        CONTACT_PERSON_FIELDS.EMAIL,
+      ],
+      [
+        [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
+        SIGNUP_GROUP_FIELDS.EXTRA_INFO,
+      ],
+      [
+        [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
+        CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER,
+      ],
+      [
+        [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
+        CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE,
+      ],
+      [
+        [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
+        CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE,
+      ],
+      [['not-exist'], CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE],
+    ];
 
   it.each(falseCases)(
     'should return false if field is not mandatory with args %p, result %p',
@@ -432,10 +477,10 @@ describe('isSignupFieldRequired', () => {
       ).toBe(false)
   );
 
-  const trueCases: [string[], SIGNUP_GROUP_FIELDS][] = [
+  const trueCases: [string[], CONTACT_PERSON_FIELDS | SIGNUP_GROUP_FIELDS][] = [
     [
       [REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER],
-      SIGNUP_GROUP_FIELDS.PHONE_NUMBER,
+      CONTACT_PERSON_FIELDS.PHONE_NUMBER,
     ],
   ];
 
@@ -497,6 +542,8 @@ describe('getUpdateSignupGroupPayload function', () => {
 
   it('should return signup group payload', () => {
     const city = 'City',
+      contactPersonFirstName = 'First name',
+      contactPersonLastName = 'Last name',
       dateOfBirth = '10.10.1999',
       email = 'Email',
       extraInfo = 'Extra info',
@@ -529,13 +576,18 @@ describe('getUpdateSignupGroupPayload function', () => {
     const payload = getUpdateSignupGroupPayload({
       formValues: {
         ...SIGNUP_GROUP_INITIAL_VALUES,
-        email,
+        contactPerson: {
+          email,
+          firstName: contactPersonFirstName,
+          id: TEST_CONTACT_PERSON_ID,
+          lastName: contactPersonLastName,
+          membershipNumber,
+          nativeLanguage,
+          notifications,
+          phoneNumber,
+          serviceLanguage,
+        },
         extraInfo: groupExtraInfo,
-        membershipNumber,
-        nativeLanguage,
-        notifications,
-        phoneNumber,
-        serviceLanguage,
         signups,
         userConsent,
       },

@@ -15,6 +15,7 @@ export enum NOTIFICATION_TYPE {
   SMS_EMAIL = 'sms and email',
 }
 
+export const TEST_CONTACT_PERSON_ID = 'contact:0';
 export const TEST_SIGNUP_ID = 'signup:1';
 
 export enum SIGNUP_ACTIONS {

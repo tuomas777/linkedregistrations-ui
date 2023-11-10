@@ -10,11 +10,18 @@ import {
 describe('parseSignupGroupServerErrors', () => {
   it('should set server error items', async () => {
     const error = {
-      firstName: ['The name must be specified.'],
+      contact_person: {
+        email: ['Tämän kentän arvo ei voi olla "null".'],
+      },
+      registration: ['The name must be specified.'],
       signups: [
         {
+          city: ['Tämän kentän arvo ei voi olla "null".'],
+          detail: 'The participant is too old.',
+          firstName: ['The name must be specified.'],
           non_field_errors: [
             'Kenttien email, registration tulee muodostaa uniikki joukko.',
+            'Kenttien phone_number, registration tulee muodostaa uniikki joukko.',
           ],
         },
       ],
@@ -23,11 +30,15 @@ describe('parseSignupGroupServerErrors', () => {
     expect(
       parseSignupGroupServerErrors({ error, t: i18n.t.bind(i18n) })
     ).toEqual([
-      { label: 'Etunimi', message: 'Nimi on pakollinen.' },
       {
-        label: '',
-        message: 'Sähköpostiosoitteella on jo ilmoittautuminen.',
+        label: 'Sähköpostiosoite',
+        message: 'Tämän kentän arvo ei voi olla "null".',
       },
+      { label: 'Ilmoittautuminen', message: 'Nimi on pakollinen.' },
+      { label: 'Kaupunki', message: 'Tämän kentän arvo ei voi olla "null".' },
+      { label: '', message: 'Osallistuja on liian vanha.' },
+      { label: 'Etunimi', message: 'Nimi on pakollinen.' },
+      { label: '', message: 'Sähköpostiosoitteella on jo ilmoittautuminen.' },
     ]);
   });
 
