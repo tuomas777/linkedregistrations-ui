@@ -18,10 +18,14 @@ import {
   SignupGroup,
   SignupGroupFormFields,
 } from '../signupGroup/types';
-import { getContactPersonInitialValues } from '../signupGroup/utils';
-
-import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
+  getContactPersonInitialValues,
+  getContactPersonPayload,
+} from '../signupGroup/utils';
+
+import { ATTENDEE_STATUS } from './constants';
+import {
+  ContactPersonInput,
   PatchSignupMutationInput,
   Signup,
   SignupInput,
@@ -143,16 +147,7 @@ export const getSignupPayload = ({
   responsibleForGroup: boolean;
   signupData: SignupFormFields;
 }): SignupInput => {
-  const {
-    userConsent,
-    contactPerson: {
-      email,
-      membershipNumber,
-      nativeLanguage,
-      phoneNumber,
-      serviceLanguage,
-    },
-  } = formValues;
+  const { userConsent } = formValues;
 
   const {
     city,
@@ -169,17 +164,11 @@ export const getSignupPayload = ({
     date_of_birth: dateOfBirth
       ? formatDate(stringToDate(dateOfBirth), 'yyyy-MM-dd')
       : null,
-    email: email || null,
     extra_info: extraInfo || '',
     first_name: firstName || '',
     id: id ?? undefined,
     last_name: lastName || '',
-    membership_number: membershipNumber,
-    native_language: nativeLanguage || null,
-    notifications: NOTIFICATION_TYPE.EMAIL,
-    phone_number: phoneNumber || null,
     responsible_for_group: responsibleForGroup,
-    service_language: serviceLanguage || null,
     street_address: streetAddress || null,
     zipcode: zipcode || null,
     user_consent: userConsent,
@@ -188,13 +177,16 @@ export const getSignupPayload = ({
 
 export const getUpdateSignupPayload = ({
   formValues,
+  hasSignupGroup,
   id,
   registration,
 }: {
   formValues: SignupGroupFormFields;
+  hasSignupGroup: boolean;
   id: string;
   registration: Registration;
 }): UpdateSignupMutationInput => {
+  const { contactPerson } = formValues;
   const signupData = formValues.signups[0] ?? {};
   return {
     ...getSignupPayload({
@@ -202,6 +194,9 @@ export const getUpdateSignupPayload = ({
       responsibleForGroup: !!signupData.responsibleForGroup,
       signupData,
     }),
+    contact_person: !hasSignupGroup
+      ? getContactPersonPayload(contactPerson)
+      : undefined,
     id,
     registration: registration.id,
   };
@@ -228,20 +223,39 @@ export const getSignupFields = ({
   };
 };
 
-export const omitSensitiveDataFromSignupPayload = (
-  payload: SignupInput | UpdateSignupMutationInput
-) =>
+export const omitSensitiveDataFromContactPerson = (
+  payload: ContactPersonInput
+): Partial<ContactPersonInput> =>
   omit(payload, [
-    'city',
-    'date_of_birth',
     'email',
-    'extra_info',
     'first_name',
     'last_name',
     'membership_number',
     'native_language',
     'phone_number',
     'service_language',
-    'street_address',
-    'zipcode',
   ]);
+
+export const omitSensitiveDataFromSignupPayload = (
+  payload: SignupInput | UpdateSignupMutationInput
+): Partial<SignupInput | UpdateSignupMutationInput> =>
+  omit(
+    {
+      ...payload,
+      contact_person: payload.contact_person
+        ? (omitSensitiveDataFromContactPerson(
+            payload.contact_person
+          ) as ContactPersonInput)
+        : payload.contact_person,
+    },
+    [
+      '__typename',
+      'city',
+      'date_of_birth',
+      'extra_info',
+      'first_name',
+      'last_name',
+      'street_address',
+      'zipcode',
+    ]
+  );

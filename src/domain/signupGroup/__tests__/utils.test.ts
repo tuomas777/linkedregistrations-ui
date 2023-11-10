@@ -14,6 +14,7 @@ import {
   TEST_CONTACT_PERSON_ID,
   TEST_SIGNUP_ID,
 } from '../../signup/constants';
+import { ContactPersonInput, SignupInput } from '../../signup/types';
 import {
   CONTACT_PERSON_FIELDS,
   NOTIFICATIONS,
@@ -53,6 +54,17 @@ describe('getSignupGroupPayload function', () => {
         reservationCode,
       })
     ).toEqual({
+      contact_person: {
+        email: null,
+        first_name: '',
+        id: null,
+        last_name: '',
+        membership_number: '',
+        native_language: null,
+        notifications: NOTIFICATION_TYPE.EMAIL,
+        phone_number: null,
+        service_language: null,
+      },
       extra_info: '',
       registration: registration.id,
       reservation_code: 'code',
@@ -60,16 +72,10 @@ describe('getSignupGroupPayload function', () => {
         {
           city: '',
           date_of_birth: null,
-          email: null,
           extra_info: '',
           first_name: '',
           last_name: '',
-          membership_number: '',
-          native_language: null,
-          notifications: NOTIFICATION_TYPE.EMAIL,
-          phone_number: null,
           responsible_for_group: true,
-          service_language: null,
           street_address: null,
           zipcode: null,
           user_consent: false,
@@ -78,8 +84,8 @@ describe('getSignupGroupPayload function', () => {
     });
 
     const city = 'City',
-      contactPersonFirstName = 'First name',
-      contactPersonLastName = 'First name',
+      contactPersonFirstName = 'Contact first name',
+      contactPersonLastName = 'Contact lirst name',
       dateOfBirth = '10.10.1999',
       email = 'Email',
       extraInfo = 'Extra info',
@@ -131,6 +137,17 @@ describe('getSignupGroupPayload function', () => {
     });
 
     expect(payload).toEqual({
+      contact_person: {
+        email,
+        first_name: contactPersonFirstName,
+        id: null,
+        last_name: contactPersonLastName,
+        membership_number: membershipNumber,
+        native_language: nativeLanguage,
+        notifications: NOTIFICATION_TYPE.EMAIL,
+        phone_number: phoneNumber,
+        service_language: serviceLanguage,
+      },
       extra_info: groupExtraInfo,
       registration: registration.id,
       reservation_code: reservationCode,
@@ -138,17 +155,11 @@ describe('getSignupGroupPayload function', () => {
         {
           city,
           date_of_birth: '1999-10-10',
-          email,
           extra_info: extraInfo,
           first_name: firstName,
           id: TEST_SIGNUP_ID,
           last_name: lastName,
-          membership_number: membershipNumber,
-          native_language: nativeLanguage,
-          notifications: NOTIFICATION_TYPE.EMAIL,
-          phone_number: phoneNumber,
           responsible_for_group: true,
-          service_language: serviceLanguage,
           street_address: streetAddress,
           user_consent: userConsent,
           zipcode,
@@ -515,6 +526,17 @@ describe('getUpdateSignupGroupPayload function', () => {
         registration,
       })
     ).toEqual({
+      contact_person: {
+        email: null,
+        first_name: '',
+        id: null,
+        last_name: '',
+        membership_number: '',
+        native_language: null,
+        notifications: NOTIFICATION_TYPE.EMAIL,
+        phone_number: null,
+        service_language: null,
+      },
       extra_info: '',
       id: TEST_SIGNUP_GROUP_ID,
       registration: TEST_REGISTRATION_ID,
@@ -522,16 +544,10 @@ describe('getUpdateSignupGroupPayload function', () => {
         {
           city: '',
           date_of_birth: null,
-          email: null,
           extra_info: '',
           first_name: '',
           last_name: '',
-          membership_number: '',
-          native_language: null,
-          notifications: NOTIFICATION_TYPE.EMAIL,
-          phone_number: null,
           responsible_for_group: false,
-          service_language: null,
           street_address: null,
           zipcode: null,
           user_consent: false,
@@ -542,8 +558,8 @@ describe('getUpdateSignupGroupPayload function', () => {
 
   it('should return signup group payload', () => {
     const city = 'City',
-      contactPersonFirstName = 'First name',
-      contactPersonLastName = 'Last name',
+      contactPersonFirstName = 'Contact first name',
+      contactPersonLastName = 'Contact last name',
       dateOfBirth = '10.10.1999',
       email = 'Email',
       extraInfo = 'Extra info',
@@ -596,6 +612,17 @@ describe('getUpdateSignupGroupPayload function', () => {
     });
 
     expect(payload).toEqual({
+      contact_person: {
+        email,
+        first_name: contactPersonFirstName,
+        id: TEST_CONTACT_PERSON_ID,
+        last_name: contactPersonLastName,
+        membership_number: membershipNumber,
+        native_language: nativeLanguage,
+        notifications: NOTIFICATION_TYPE.EMAIL,
+        phone_number: phoneNumber,
+        service_language: serviceLanguage,
+      },
       extra_info: groupExtraInfo,
       id: TEST_SIGNUP_GROUP_ID,
       registration: TEST_REGISTRATION_ID,
@@ -603,17 +630,11 @@ describe('getUpdateSignupGroupPayload function', () => {
         {
           city,
           date_of_birth: '1999-10-10',
-          email,
           extra_info: extraInfo,
           first_name: firstName,
           id: TEST_SIGNUP_ID,
           last_name: lastName,
-          membership_number: membershipNumber,
-          native_language: nativeLanguage,
-          notifications: NOTIFICATION_TYPE.EMAIL,
-          phone_number: phoneNumber,
           responsible_for_group: true,
-          service_language: serviceLanguage,
           street_address: streetAddress,
           zipcode,
           user_consent: userConsent,
@@ -626,24 +647,30 @@ describe('getUpdateSignupGroupPayload function', () => {
 describe('omitSensitiveDataFromSignupGroupPayload', () => {
   it('should omit sensitive data from payload', () => {
     const payload: CreateSignupGroupMutationInput = {
+      contact_person: {
+        email: 'test@email.com',
+        first_name: 'First name',
+        id: TEST_CONTACT_PERSON_ID,
+        last_name: 'Last name',
+        membership_number: 'XYZ',
+        native_language: 'fi',
+        notifications: NOTIFICATION_TYPE.EMAIL,
+        phone_number: '0441234567',
+        service_language: 'fi',
+      },
       extra_info: 'Extra info',
       registration: registration.id,
       reservation_code: 'xxx',
       signups: [
         {
           city: 'Helsinki',
+          contact_person: undefined,
           date_of_birth: '1999-10-10',
-          email: 'test@email.com',
           extra_info: 'Signup entra info',
           first_name: 'First name',
           id: '1',
           last_name: 'Last name',
-          membership_number: 'XYZ',
-          native_language: 'fi',
-          notifications: NOTIFICATION_TYPE.EMAIL,
-          phone_number: '0441234567',
           responsible_for_group: true,
-          service_language: 'fi',
           street_address: 'Address',
           zipcode: '123456',
           user_consent: true,
@@ -655,28 +682,36 @@ describe('omitSensitiveDataFromSignupGroupPayload', () => {
       payload
     ) as CreateSignupGroupMutationInput;
     expect(filteredPayload).toEqual({
+      contact_person: {
+        id: TEST_CONTACT_PERSON_ID,
+        notifications: NOTIFICATION_TYPE.EMAIL,
+      },
       registration: registration.id,
       reservation_code: 'xxx',
       signups: [
         {
           id: '1',
-          notifications: NOTIFICATION_TYPE.EMAIL,
+          contact_person: undefined,
           responsible_for_group: true,
           user_consent: true,
         },
       ],
     });
+    const signup = filteredPayload.signups?.[0] as SignupInput;
+    const contactPerson = filteredPayload.contact_person as ContactPersonInput;
     expect(filteredPayload.extra_info).toBeUndefined();
-    expect(filteredPayload.signups[0].city).toBeUndefined();
-    expect(filteredPayload.signups[0].email).toBeUndefined();
-    expect(filteredPayload.signups[0].extra_info).toBeUndefined();
-    expect(filteredPayload.signups[0].first_name).toBeUndefined();
-    expect(filteredPayload.signups[0].last_name).toBeUndefined();
-    expect(filteredPayload.signups[0].membership_number).toBeUndefined();
-    expect(filteredPayload.signups[0].native_language).toBeUndefined();
-    expect(filteredPayload.signups[0].phone_number).toBeUndefined();
-    expect(filteredPayload.signups[0].service_language).toBeUndefined();
-    expect(filteredPayload.signups[0].street_address).toBeUndefined();
-    expect(filteredPayload.signups[0].zipcode).toBeUndefined();
+    expect(contactPerson.email).toBeUndefined();
+    expect(contactPerson.first_name).toBeUndefined();
+    expect(contactPerson.last_name).toBeUndefined();
+    expect(contactPerson.membership_number).toBeUndefined();
+    expect(contactPerson.native_language).toBeUndefined();
+    expect(contactPerson.phone_number).toBeUndefined();
+    expect(contactPerson.service_language).toBeUndefined();
+    expect(signup.city).toBeUndefined();
+    expect(signup.extra_info).toBeUndefined();
+    expect(signup.first_name).toBeUndefined();
+    expect(signup.last_name).toBeUndefined();
+    expect(signup.street_address).toBeUndefined();
+    expect(signup.zipcode).toBeUndefined();
   });
 });

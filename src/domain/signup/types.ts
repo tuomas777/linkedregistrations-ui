@@ -6,21 +6,28 @@ import {
   PRESENCE_STATUS,
 } from './constants';
 
+export type ContactPersonInput = {
+  email: stringOrNull;
+  first_name: stringOrNull;
+  id: stringOrNull;
+  last_name: stringOrNull;
+  membership_number: stringOrNull;
+  native_language: stringOrNull;
+  notifications: NOTIFICATION_TYPE;
+  phone_number: stringOrNull;
+  service_language: stringOrNull;
+};
+
 export type SignupInput = {
   city?: stringOrNull;
+  contact_person?: ContactPersonInput;
   date_of_birth?: stringOrNull;
-  email?: stringOrNull;
   extra_info?: stringOrNull;
   first_name?: stringOrNull;
   id?: stringOrNull;
   last_name?: stringOrNull;
-  membership_number?: stringOrNull;
-  native_language?: stringOrNull;
-  notifications?: NOTIFICATION_TYPE;
-  phone_number?: stringOrNull;
   presence_status?: PRESENCE_STATUS;
   responsible_for_group: boolean;
-  service_language?: stringOrNull;
   street_address?: stringOrNull;
   user_consent: boolean;
   zipcode?: stringOrNull;

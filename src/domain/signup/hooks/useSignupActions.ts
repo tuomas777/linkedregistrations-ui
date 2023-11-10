@@ -98,6 +98,7 @@ const useSignupActions = ({
     setSaving(SIGNUP_ACTIONS.UPDATE);
     const payload: UpdateSignupMutationInput = getUpdateSignupPayload({
       formValues: values,
+      hasSignupGroup: Boolean(signup?.signup_group),
       id: signup?.id as string,
       registration: registration,
     });

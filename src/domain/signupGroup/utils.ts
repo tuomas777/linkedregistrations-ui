@@ -15,10 +15,16 @@ import {
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../signup/constants';
-import { ContactPerson, Signup, SignupInput } from '../signup/types';
+import {
+  ContactPerson,
+  ContactPersonInput,
+  Signup,
+  SignupInput,
+} from '../signup/types';
 import {
   getSignupInitialValues,
   getSignupPayload,
+  omitSensitiveDataFromContactPerson,
   omitSensitiveDataFromSignupPayload,
 } from '../signup/utils';
 
@@ -73,6 +79,36 @@ export const getSignupNotificationTypes = (
   }
 };
 
+export const getContactPersonPayload = (
+  formValues: ContactPersonFormFields
+): ContactPersonInput => {
+  const {
+    email,
+    firstName,
+    id,
+    lastName,
+    membershipNumber,
+    nativeLanguage,
+    notifications,
+    phoneNumber,
+    serviceLanguage,
+    ...rest
+  } = formValues;
+
+  return {
+    ...rest,
+    email: email || null,
+    first_name: firstName,
+    id: id || null,
+    last_name: lastName,
+    membership_number: membershipNumber,
+    native_language: nativeLanguage || null,
+    notifications: getSignupNotificationsCode(notifications),
+    phone_number: phoneNumber || null,
+    service_language: serviceLanguage || null,
+  };
+};
+
 export const getSignupGroupPayload = ({
   formValues,
   registration,
@@ -82,7 +118,11 @@ export const getSignupGroupPayload = ({
   registration: Registration;
   reservationCode: string;
 }): CreateSignupGroupMutationInput => {
-  const { extraInfo: groupExtraInfo, signups: signupsValues } = formValues;
+  const {
+    contactPerson,
+    extraInfo: groupExtraInfo,
+    signups: signupsValues,
+  } = formValues;
 
   const signups: SignupInput[] = signupsValues.map((signupData, index) =>
     getSignupPayload({
@@ -93,6 +133,7 @@ export const getSignupGroupPayload = ({
   );
 
   return {
+    contact_person: getContactPersonPayload(contactPerson),
     extra_info: groupExtraInfo,
     registration: registration.id,
     reservation_code: reservationCode,
@@ -109,7 +150,11 @@ export const getUpdateSignupGroupPayload = ({
   id: string;
   registration: Registration;
 }): UpdateSignupGroupMutationInput => {
-  const { extraInfo: groupExtraInfo, signups: signupsValues } = formValues;
+  const {
+    contactPerson,
+    extraInfo: groupExtraInfo,
+    signups: signupsValues,
+  } = formValues;
 
   const signups: SignupInput[] = signupsValues.map((signupData) =>
     getSignupPayload({
@@ -120,6 +165,7 @@ export const getUpdateSignupGroupPayload = ({
   );
 
   return {
+    contact_person: getContactPersonPayload(contactPerson),
     extra_info: groupExtraInfo,
     id,
     registration: registration.id,
@@ -300,9 +346,16 @@ export const updateSignupGroup = async ({
 
 export const omitSensitiveDataFromSignupGroupPayload = (
   payload: CreateSignupGroupMutationInput | UpdateSignupGroupMutationInput
-) => ({
+): Partial<CreateSignupGroupMutationInput> => ({
   ...omit(payload, ['extra_info']),
-  signups: payload.signups.map((s) => omitSensitiveDataFromSignupPayload(s)),
+  contact_person: payload.contact_person
+    ? (omitSensitiveDataFromContactPerson(
+        payload.contact_person
+      ) as ContactPersonInput)
+    : payload.contact_person,
+  signups: payload.signups.map((s) =>
+    omitSensitiveDataFromSignupPayload(s)
+  ) as SignupInput[],
 });
 
 export const getContactPersonFieldName = (name: string) =>

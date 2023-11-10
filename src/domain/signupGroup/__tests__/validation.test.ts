@@ -6,8 +6,13 @@ import { fakeRegistration } from '../../../utils/mockDataUtils';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import { Registration } from '../../registration/types';
 import { NOTIFICATIONS } from '../constants';
-import { SignupFormFields, SignupGroupFormFields } from '../types';
 import {
+  ContactPersonFormFields,
+  SignupFormFields,
+  SignupGroupFormFields,
+} from '../types';
+import {
+  getContactPersonSchema,
   getSignupGroupSchema,
   getSignupSchema,
   isAboveMinAge,
@@ -60,6 +65,18 @@ const testSignupSchema = async (
 ) => {
   try {
     await getSignupSchema(registration).validate(signup);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const testContactPersonSchema = async (
+  registration: Registration,
+  contactPerson: ContactPersonFormFields
+) => {
+  try {
+    await getContactPersonSchema(registration).validate(contactPerson);
     return true;
   } catch (e) {
     return false;
@@ -259,6 +276,115 @@ describe('signupSchema function', () => {
         ...validSignup,
         zipcode: '123456',
       })
+    ).toBe(false);
+  });
+});
+
+describe('getContactPersonSchema function', () => {
+  const registration = fakeRegistration();
+  const validContactPerson: ContactPersonFormFields = {
+    email: 'user@email.com',
+    firstName: 'First name',
+    id: null,
+    lastName: 'First name',
+    membershipNumber: '',
+    nativeLanguage: 'fi',
+    notifications: [NOTIFICATIONS.EMAIL],
+    phoneNumber: '',
+    serviceLanguage: 'fi',
+  };
+
+  test('should return true if contac person data is valid', async () => {
+    expect(
+      await testContactPersonSchema(registration, validContactPerson)
+    ).toBe(true);
+  });
+
+  test('should return false if email is missing', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        email: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if email is invalid', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        email: 'user@email.',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if phone number is missing', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        phoneNumber: '',
+        notifications: [NOTIFICATIONS.SMS],
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if phone number is invalid', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        phoneNumber: 'xxx',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if notifications is empty array', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        notifications: [],
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if native language is empty', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        nativeLanguage: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if service language is empty', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        serviceLanguage: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if membership number is set as mandatory field but value is empty', async () => {
+    expect(
+      await testContactPersonSchema(
+        fakeRegistration({ mandatory_fields: ['membership_number'] }),
+        {
+          ...validContactPerson,
+          membershipNumber: '',
+        }
+      )
+    ).toBe(false);
+  });
+
+  test('should return false if phone number is set as mandatory field but value is empty', async () => {
+    expect(
+      await testContactPersonSchema(
+        fakeRegistration({ mandatory_fields: ['phone_number'] }),
+        {
+          ...validContactPerson,
+          phoneNumber: '',
+        }
+      )
     ).toBe(false);
   });
 });

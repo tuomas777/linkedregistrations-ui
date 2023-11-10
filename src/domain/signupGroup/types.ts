@@ -1,6 +1,11 @@
 import { stringOrNull } from '../api/types';
 import { ATTENDEE_STATUS } from '../signup/constants';
-import { ContactPerson, Signup, SignupInput } from '../signup/types';
+import {
+  ContactPerson,
+  ContactPersonInput,
+  Signup,
+  SignupInput,
+} from '../signup/types';
 
 import {
   CONTACT_PERSON_FIELDS,
@@ -9,6 +14,7 @@ import {
 } from './constants';
 
 export type CreateSignupGroupMutationInput = {
+  contact_person?: ContactPersonInput;
   extra_info: string;
   registration: string;
   reservation_code: string;
@@ -28,7 +34,7 @@ export type CreateOrUpdateSignupGroupResponse = {
 };
 
 export type SignupGroup = {
-  contact_person?: ContactPerson | null;
+  contact_person?: ContactPerson;
   created_by: stringOrNull;
   created_time: stringOrNull;
   extra_info: stringOrNull;
