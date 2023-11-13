@@ -8,6 +8,7 @@ const signup = fakeSignup({
   id: TEST_SIGNUP_ID,
   date_of_birth: formatDate(subYears(new Date(), 15), 'yyyy-MM-dd'),
   phone_number: '0441234567',
+  user_consent: true,
 });
 
 export { signup };

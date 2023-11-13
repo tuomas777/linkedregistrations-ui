@@ -123,7 +123,6 @@ export const getSignupGroupInitialValuesFromSignup = (
   signup: Signup
 ): SignupGroupFormFields => {
   return {
-    accepted: true,
     email: signup.email ?? '',
     extraInfo: '',
     membershipNumber: signup.membership_number ?? '',
@@ -132,6 +131,7 @@ export const getSignupGroupInitialValuesFromSignup = (
     phoneNumber: signup.phone_number ?? '',
     serviceLanguage: signup.service_language ?? '',
     signups: [getSignupInitialValues(signup)],
+    userConsent: !!signup.user_consent,
   };
 };
 
@@ -150,6 +150,7 @@ export const getSignupPayload = ({
     nativeLanguage,
     phoneNumber,
     serviceLanguage,
+    userConsent,
   } = formValues;
 
   const {
@@ -180,6 +181,7 @@ export const getSignupPayload = ({
     service_language: serviceLanguage || null,
     street_address: streetAddress || null,
     zipcode: zipcode || null,
+    user_consent: userConsent,
   };
 };
 

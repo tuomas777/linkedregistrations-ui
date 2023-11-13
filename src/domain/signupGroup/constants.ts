@@ -14,7 +14,6 @@ export enum SIGNUP_FIELDS {
 }
 
 export enum SIGNUP_GROUP_FIELDS {
-  ACCEPTED = 'accepted',
   EMAIL = 'email',
   EXTRA_INFO = 'extraInfo',
   MEMBERSHIP_NUMBER = 'membershipNumber',
@@ -23,6 +22,7 @@ export enum SIGNUP_GROUP_FIELDS {
   PHONE_NUMBER = 'phoneNumber',
   SERVICE_LANGUAGE = 'serviceLanguage',
   SIGNUPS = 'signups',
+  USER_CONSENT = 'userConsent',
 }
 
 export enum NOTIFICATIONS {
@@ -44,7 +44,6 @@ export const SIGNUP_INITIAL_VALUES: SignupFormFields = {
 };
 
 export const SIGNUP_GROUP_INITIAL_VALUES: SignupGroupFormFields = {
-  [SIGNUP_GROUP_FIELDS.ACCEPTED]: false,
   [SIGNUP_GROUP_FIELDS.EMAIL]: '',
   [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: '',
   [SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER]: '',
@@ -53,6 +52,7 @@ export const SIGNUP_GROUP_INITIAL_VALUES: SignupGroupFormFields = {
   [SIGNUP_GROUP_FIELDS.PHONE_NUMBER]: '',
   [SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE]: '',
   [SIGNUP_GROUP_FIELDS.SIGNUPS]: [],
+  [SIGNUP_GROUP_FIELDS.USER_CONSENT]: false,
 };
 
 export const SIGNUP_GROUP_FORM_SELECT_FIELDS = [

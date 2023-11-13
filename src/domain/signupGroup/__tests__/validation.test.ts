@@ -266,7 +266,6 @@ describe('signupSchema function', () => {
 describe('testSignupGroupSchema function', () => {
   const registration = fakeRegistration();
   const validSignupGroup: SignupGroupFormFields = {
-    accepted: true,
     email: 'user@email.com',
     extraInfo: '',
     membershipNumber: '',
@@ -275,6 +274,7 @@ describe('testSignupGroupSchema function', () => {
     phoneNumber: '',
     serviceLanguage: 'fi',
     signups: [],
+    userConsent: true,
   };
 
   test('should return true if signup group data is valid', async () => {

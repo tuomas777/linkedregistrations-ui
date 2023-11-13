@@ -332,6 +332,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       responsible_for_group: false,
       service_language: 'fi',
       street_address: faker.location.streetAddress(),
+      user_consent: false,
       zipcode: faker.location.zipCode('#####'),
     },
     overrides

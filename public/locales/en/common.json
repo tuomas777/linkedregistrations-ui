@@ -94,7 +94,7 @@
       "max": "The maximum number of participants is {{max}}.",
       "min": "The minimum number of participants is {{min}}."
     },
-    "signupAccepted": "Sharing information with the organizer must be approved",
+    "signupUserConsent": "Sharing information with the organizer must be approved",
     "string": {
       "charsLeft": "{{count}} character left",
       "charsLeft_other": "{{count}} characters left",

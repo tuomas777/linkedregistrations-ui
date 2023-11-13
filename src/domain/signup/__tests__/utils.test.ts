@@ -111,6 +111,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
     const expectedPhoneNumber = '+358 44 123 4567';
     const expectedServiceLanguage = 'sv';
     const expectedStreetAddress = 'Test address';
+    const expectedUserConsent = true;
     const expectedZip = '12345';
 
     const {
@@ -122,6 +123,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
       phoneNumber,
       serviceLanguage,
       signups,
+      userConsent,
     } = getSignupGroupInitialValuesFromSignup(
       fakeSignup({
         city: expectedCity,
@@ -138,6 +140,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
         responsible_for_group: true,
         service_language: expectedServiceLanguage,
         street_address: expectedStreetAddress,
+        user_consent: expectedUserConsent,
         zipcode: expectedZip,
       })
     );
@@ -163,6 +166,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
     expect(notifications).toEqual(expectedNotifications);
     expect(phoneNumber).toBe(expectedPhoneNumber);
     expect(serviceLanguage).toBe(expectedServiceLanguage);
+    expect(userConsent).toBe(expectedUserConsent);
   });
 });
 
@@ -190,6 +194,7 @@ describe('getUpdateSignupPayload function', () => {
       responsible_for_group: false,
       service_language: null,
       street_address: null,
+      user_consent: false,
       zipcode: null,
     });
 
@@ -252,6 +257,7 @@ describe('getUpdateSignupPayload function', () => {
       responsible_for_group: true,
       service_language: serviceLanguage,
       street_address: streetAddress,
+      user_consent: false,
       zipcode,
     });
   });
@@ -274,6 +280,7 @@ describe('omitSensitiveDataFromSignupPayload', () => {
       responsible_for_group: true,
       service_language: 'fi',
       street_address: 'Address',
+      user_consent: true,
       zipcode: '123456',
     };
 
@@ -284,6 +291,7 @@ describe('omitSensitiveDataFromSignupPayload', () => {
       id: '1',
       notifications: NOTIFICATION_TYPE.EMAIL,
       responsible_for_group: true,
+      user_consent: true,
     });
     expect(filteredPayload.city).toBeUndefined();
     expect(filteredPayload.extra_info).toBeUndefined();

@@ -45,7 +45,6 @@
     "tooltip": "Entrants have been added to the queue of registrants with a reserve place. Registration is confirmed only when a place in the queue becomes available. You will receive a notification by e-mail that the place has been confirmed."
   },
   "instructions": "Registration instructions",
-  "labelAccepted": "I agree to share my information with the organizer. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Data protection notice {{openInNewTab}}\">Data protection notice</a>",
   "labelAttendeeExtraInfo": "Additional information (optional)",
   "labelCity": "City",
   "labelDateOfBirth": "Date of birth",
@@ -61,6 +60,7 @@
   "labelSignupExtraInfo": "Additional information (optional)",
   "labelStreetAddress": "Street address",
   "labelZipcode": "Postcode",
+  "labelUserConsent": "I agree to share my information with the organizer. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Data protection notice {{openInNewTab}}\">Data protection notice</a>",
   "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notifications": {
     "email": "By email",

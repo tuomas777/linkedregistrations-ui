@@ -113,7 +113,6 @@ const isSignupGroupInDehydratedState = (dehydratedState: DehydratedState) => {
 };
 
 const signupGroupValues: SignupGroupFormFields = {
-  accepted: true,
   email: 'participant@email.com',
   extraInfo: '',
   membershipNumber: '',
@@ -135,6 +134,7 @@ const signupGroupValues: SignupGroupFormFields = {
       zipcode: '00100',
     },
   ],
+  userConsent: true,
 };
 
 const mocks = [
