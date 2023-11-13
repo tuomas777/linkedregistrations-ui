@@ -87,6 +87,7 @@
   "placeholderStreetAddress": "Syötä katuosoite",
   "placeholderZipcode": "Syötä postinumero",
   "signupDefaultTitle": "Osallistuja {{index}}",
+  "signupIsEnded": "Ilmoittautuminen tapahtumaan on päättynyt",
   "timeLeft": "Aikaa jäljellä ilmoittautumisen tekoon",
   "titleAdditionalInfo": "Lisätiedot",
   "titleBasicInfo": "Ilmoittautujan perustiedot",

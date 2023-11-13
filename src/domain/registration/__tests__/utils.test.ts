@@ -18,6 +18,7 @@ import {
   isAttendeeCapacityUsed,
   isRegistrationOpen,
   isRegistrationPossible,
+  isSignupEnded,
   isWaitingListCapacityUsed,
   registrationPathBuilder,
 } from '../utils';
@@ -319,6 +320,38 @@ describe('isRegistrationOpen', () => {
         })
       )
     ).toBe(false);
+  });
+});
+
+describe('isSignupEnded', () => {
+  beforeEach(() => {
+    advanceTo('2022-11-07');
+  });
+
+  it('should return false if enrolment_start_time is not defined', () => {
+    expect(isSignupEnded(fakeRegistration({ enrolment_end_time: '' }))).toBe(
+      false
+    );
+  });
+
+  it('should return false if enrolment_start_time is in the future', () => {
+    expect(
+      isSignupEnded(
+        fakeRegistration({
+          enrolment_end_time: new Date('2022-11-08').toISOString(),
+        })
+      )
+    ).toBe(false);
+  });
+
+  it('should return true if enrolment_end_time is in the past', () => {
+    expect(
+      isSignupEnded(
+        fakeRegistration({
+          enrolment_end_time: new Date('2022-11-06').toISOString(),
+        })
+      )
+    ).toBe(true);
   });
 });
 

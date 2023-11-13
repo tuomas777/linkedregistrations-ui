@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
+import subDays from 'date-fns/subDays';
 import subYears from 'date-fns/subYears';
 import { rest } from 'msw';
 import singletonRouter from 'next/router';
@@ -209,6 +210,29 @@ test('should show server errors when post request fails', async () => {
   await user.click(submitButton);
 
   await screen.findByText(/lomakkeella on seuraavat virheet/i);
+});
+
+test('should show sign up is closed text if enrolment end date is in the past', async () => {
+  setQueryMocks(
+    rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+      res(
+        ctx.status(200),
+        ctx.json({
+          ...registration,
+          enrolment_end_time: subDays(new Date(), 2).toISOString(),
+        })
+      )
+    )
+  );
+
+  pushSummaryPageRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', {
+    name: /ilmoittautuminen tapahtumaan on päättynyt/i,
+  });
 });
 
 test('should show not found page if registration does not exist', async () => {

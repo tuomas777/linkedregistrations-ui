@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-require-imports */
+import subDays from 'date-fns/subDays';
 import subYears from 'date-fns/subYears';
 import { axe } from 'jest-axe';
 import { rest } from 'msw';
@@ -163,6 +164,29 @@ test('should validate signup group form and focus invalid field', async () => {
       `/fi/registration/${registration.id}/signup-group/create/summary`
     )
   );
+});
+
+test('should show sign up is closed text if enrolment end date is in the past', async () => {
+  setQueryMocks(
+    rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+      res(
+        ctx.status(200),
+        ctx.json({
+          ...registration,
+          enrolment_end_time: subDays(new Date(), 2).toISOString(),
+        })
+      )
+    )
+  );
+
+  pushCreateSignupGroupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  await screen.findByRole('heading', {
+    name: /ilmoittautuminen tapahtumaan on päättynyt/i,
+  });
 });
 
 test('should show not found page if registration does not exist', async () => {
