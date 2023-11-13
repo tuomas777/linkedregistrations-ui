@@ -15,6 +15,11 @@
     "title": "Tack för din registrering!"
   },
   "contactPerson": {
+    "cannotEditContactPersonNotification": {
+      "linkText": "Redigera deltagargruppen",
+      "text": "Deltagargruppens kontaktpersonsuppgifter kan inte redigeras från denna sida. Kontaktinformation kan redigeras från redigeringssidan för deltagargruppen.",
+      "title": "Kontaktinformation kan inte redigeras"
+    },
     "labelEmail": "E-postadress",
     "labelFirstName": "Förnamn",
     "labelLastName": "Efternamn",
@@ -66,6 +71,7 @@
     "tooltip": "Deltagare har lagts till i kön av anmälda med reservplats. Anmälan bekräftas först när en plats i kön blir ledig. Du får ett meddelande via e-post om att platsen är bekräftad."
   },
   "labelContactPerson": "Kontaktperson",
+  "labelExtraInfo": "Ytterligare registreringsinformation (valfritt)",
   "labelParticipantAmount": "Antal registrerade",
   "labelRegistration": "Registrering",
   "labelUserConsent": "Jag godkänner att dela min information med arrangören. Vi använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registerbeskrivningen {{openInNewTab}}\">Registerbeskrivningen</a>",
@@ -81,6 +87,7 @@
     "text": "Du kommer att få ett separat bekräftelsemeddelande om din anmälan till din e-post, om en plats blir ledig för dig.",
     "title": "Du anmäler dig till evenemanget till bokningskön"
   },
+  "placeholderExtraInfo": "Ange ytterligare information eller begäran",
   "signupIsEnded": "Anmälan till evenemanget är avslutad",
   "signup": {
     "buttonDeleteSignup": "Ta bort deltagare",

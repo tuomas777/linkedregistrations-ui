@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { axe } from 'jest-axe';
@@ -24,8 +25,10 @@ import { ROUTES } from '../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../language/__mocks__/languages';
 import { registration } from '../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../registration/constants';
+import { signupGroup } from '../../signupGroup/__mocks__/signupGroup';
 import {
   findFirstNameInputs,
+  getSignupFormElement,
   shouldRenderSignupFormFields,
   shouldRenderSignupFormReadOnlyFields,
   tryToCancel,
@@ -69,6 +72,13 @@ const mockedSignupNotCreatedByUserResponse = rest.get(
       ctx.status(200),
       ctx.json({ ...signup, is_created_by_current_user: false })
     )
+);
+const mockedSignupWithGroupResponse = rest.get(`*/signup/*`, (req, res, ctx) =>
+  res(ctx.status(200), ctx.json({ ...signup, signup_group: signupGroup.id }))
+);
+const mockedSignupGroupResponse = rest.get(
+  `*/signup_group/*`,
+  (req, res, ctx) => res(ctx.status(200), ctx.json(signupGroup))
 );
 
 const defaultMocks = [
@@ -237,6 +247,49 @@ test('all fields should be read-only if signup is not created by user', async ()
   expect(
     screen.queryByRole('button', { name: /tallenna/i })
   ).not.toBeInTheDocument();
+});
+
+test('contact person fields should be disabled if signup has a signup group', async () => {
+  setQueryMocks(
+    ...mockedLanguagesResponses,
+    mockedUserResponse,
+    mockedRegistrationResponse,
+    mockedSignupWithGroupResponse,
+    mockedSignupGroupResponse
+  );
+
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  const firstNameInput = (await findFirstNameInputs())[1];
+  const emailInput = getSignupFormElement('emailInput');
+  const phoneInput = getSignupFormElement('phoneInput');
+  const lastNameInput = screen.getAllByLabelText(/sukunimi/i)[1];
+  const membershipNumberInput = getSignupFormElement('membershipNumberInput');
+  const nativeLanguageButton = getSignupFormElement('nativeLanguageButton');
+  const serviceLanguageButton = getSignupFormElement('serviceLanguageButton');
+
+  expect(
+    screen.getByRole('heading', {
+      name: /yhteyshenkilön tietoja ei voi muokata/i,
+    })
+  ).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      'Osallistujaryhmän yhteyshenkilön tietoja ei voi muokata tältä sivulta. Yhteystietoja voi muokata osallistujaryhmän muokkaussivulta.'
+    )
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('link', { name: /muokkaa osallistujaryhmää/i })
+  ).toBeInTheDocument();
+
+  expect(emailInput).toBeDisabled();
+  expect(phoneInput).toBeDisabled();
+  expect(firstNameInput).toBeDisabled();
+  expect(lastNameInput).toBeDisabled();
+  expect(membershipNumberInput).toBeDisabled();
+  expect(nativeLanguageButton).toBeDisabled();
+  expect(serviceLanguageButton).toBeDisabled();
 });
 
 test('should route to page defined in returnPath when clicking back button', async () => {

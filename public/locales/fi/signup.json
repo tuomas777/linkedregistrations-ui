@@ -15,6 +15,11 @@
     "title": "Kiitos ilmoittautumisestasi!"
   },
   "contactPerson": {
+    "cannotEditContactPersonNotification": {
+      "linkText": "Muokkaa osallistujaryhmää",
+      "text": "Osallistujaryhmän yhteyshenkilön tietoja ei voi muokata tältä sivulta. Yhteystietoja voi muokata osallistujaryhmän muokkaussivulta.",
+      "title": "Yhteyshenkilön tietoja ei voi muokata"
+    },
     "labelEmail": "Sähköpostiosoite",
     "labelFirstName": "Etunimi",
     "labelLastName": "Sukunimi",
@@ -66,6 +71,7 @@
     "tooltip": "Ilmoittautuja on lisätty ilmoittautujien jonoon. Ilmoittautuminen varmistuu vasta, kun paikka jonossa vapautuu. Saat paikan varmistumisesta ilmoituksen sähköpostitse."
   },
   "labelContactPerson": "Yhteyshenkilö",
+  "labelExtraInfo": "Lisätietoa ilmoittautumisesta (valinnainen)",
   "labelParticipantAmount": "Ilmoittautujien määrä",
   "labelRegistration": "Ilmoittautuminen",
   "labelUserConsent": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Tietosuojaseloste {{openInNewTab}}\">Tietosuojaseloste</a>",
@@ -81,6 +87,7 @@
     "text": "Mikäli sinulle vapautuu paikka, saat ilmoittautumisestasi erillisen vahvistusviestin sähköpostiisi.",
     "title": "Olet ilmoittautumassa tapahtuman jonoon"
   },
+  "placeholderExtraInfo": "Syötä mahdollinen lisätieto tai toive",
   "signupIsEnded": "Ilmoittautuminen tapahtumaan on päättynyt",
   "signup": {
     "buttonDeleteSignup": "Poista osallistuja",

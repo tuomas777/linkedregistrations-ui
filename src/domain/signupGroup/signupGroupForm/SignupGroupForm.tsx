@@ -60,6 +60,7 @@ import {
 } from '../validation';
 
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
+import CannotEditContactPersonNotification from './cannotEditContactPersonNotification/CannotEditContactPersonNotification';
 import styles from './signupGroupForm.module.scss';
 import Signups from './signups/Signups';
 
@@ -69,6 +70,7 @@ const RegistrationWarning = dynamic(
 );
 
 type Props = {
+  contactPersonFieldsDisabled?: boolean;
   event: Event;
   initialValues: SignupGroupFormFields;
   mode: 'create-signup-group' | 'update-signup' | 'update-signup-group';
@@ -78,6 +80,7 @@ type Props = {
 };
 
 const SignupGroupForm: React.FC<Props> = ({
+  contactPersonFieldsDisabled,
   event,
   initialValues,
   mode,
@@ -103,6 +106,10 @@ const SignupGroupForm: React.FC<Props> = ({
   const readOnly = !allowToEdit;
 
   const { t } = useTranslation(['signup', 'common']);
+  const titleCannotEditContactPerson = contactPersonFieldsDisabled
+    ? t('signup:titleCannotEditContactPerson')
+    : undefined;
+
   const {
     deleteSignup,
     saving: savingSignup,
@@ -248,7 +255,9 @@ const SignupGroupForm: React.FC<Props> = ({
         () => undefined
       }
       validationSchema={
-        readOnly ? undefined : getSignupGroupSchema(registration)
+        readOnly
+          ? undefined
+          : getSignupGroupSchema(registration, !contactPersonFieldsDisabled)
       }
     >
       {({ setErrors, setFieldValue, setTouched, values }) => {
@@ -263,7 +272,10 @@ const SignupGroupForm: React.FC<Props> = ({
             setServerErrorItems([]);
             clearErrors();
 
-            await getSignupGroupSchema(registration).validate(values, {
+            await getSignupGroupSchema(
+              registration,
+              !contactPersonFieldsDisabled
+            ).validate(values, {
               abortEarly: false,
             });
 
@@ -350,6 +362,9 @@ const SignupGroupForm: React.FC<Props> = ({
                   </h2>
                   <Divider />
 
+                  {contactPersonFieldsDisabled && signup && (
+                    <CannotEditContactPersonNotification signup={signup} />
+                  )}
                   <Fieldset heading={t(`contactPerson.titleContactInfo`)}>
                     <FormGroup>
                       <div className={styles.emailRow}>
@@ -358,20 +373,21 @@ const SignupGroupForm: React.FC<Props> = ({
                             CONTACT_PERSON_FIELDS.EMAIL
                           )}
                           component={TextInputField}
-                          disabled={formDisabled}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
                           label={t(`contactPerson.labelEmail`)}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderEmail`)
                           )}
                           readOnly={readOnly}
                           required
+                          title={titleCannotEditContactPerson}
                         />
                         <Field
                           name={getContactPersonFieldName(
                             CONTACT_PERSON_FIELDS.PHONE_NUMBER
                           )}
                           component={PhoneInputField}
-                          disabled={formDisabled}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
                           label={t(`contactPerson.labelPhoneNumber`)}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderPhoneNumber`)
@@ -381,6 +397,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             registration,
                             CONTACT_PERSON_FIELDS.PHONE_NUMBER
                           )}
+                          title={titleCannotEditContactPerson}
                           type="tel"
                         />
                       </div>
@@ -392,20 +409,21 @@ const SignupGroupForm: React.FC<Props> = ({
                             CONTACT_PERSON_FIELDS.FIRST_NAME
                           )}
                           component={TextInputField}
-                          disabled={formDisabled}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
                           label={t(`contactPerson.labelFirstName`)}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderFirstName`)
                           )}
                           readOnly={readOnly}
                           required
+                          title={titleCannotEditContactPerson}
                         />
                         <Field
                           name={getContactPersonFieldName(
                             CONTACT_PERSON_FIELDS.LAST_NAME
                           )}
                           component={PhoneInputField}
-                          disabled={formDisabled}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
                           label={t(`contactPerson.labelLastName`)}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderLastName`)
@@ -415,7 +433,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             registration,
                             CONTACT_PERSON_FIELDS.LAST_NAME
                           )}
-                          type="tel"
+                          title={titleCannotEditContactPerson}
                         />
                       </div>
                     </FormGroup>
@@ -435,6 +453,7 @@ const SignupGroupForm: React.FC<Props> = ({
                         )}
                         options={notificationOptions}
                         required
+                        title={titleCannotEditContactPerson}
                       />
                     </FormGroup>
                   </Fieldset>
@@ -447,7 +466,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
                           )}
                           component={TextInputField}
-                          disabled={formDisabled}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
                           label={t(`contactPerson.labelMembershipNumber`)}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderMembershipNumber`)
@@ -457,6 +476,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             registration,
                             CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
                           )}
+                          title={titleCannotEditContactPerson}
                         />
                       </div>
                     </FormGroup>
@@ -467,26 +487,36 @@ const SignupGroupForm: React.FC<Props> = ({
                           name={getContactPersonFieldName(
                             CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE
                           )}
-                          disabled={formDisabled || readOnly}
+                          disabled={
+                            formDisabled ||
+                            contactPersonFieldsDisabled ||
+                            readOnly
+                          }
                           label={t(`contactPerson.labelNativeLanguage`)}
                           options={languageOptions}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderNativeLanguage`)
                           )}
                           required
+                          title={titleCannotEditContactPerson}
                         />
                         <Field
                           component={SingleSelectField}
                           name={getContactPersonFieldName(
                             CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE
                           )}
-                          disabled={formDisabled || readOnly}
+                          disabled={
+                            formDisabled ||
+                            contactPersonFieldsDisabled ||
+                            readOnly
+                          }
                           label={t(`contactPerson.labelServiceLanguage`)}
                           options={serviceLanguageOptions}
                           placeholder={getPlaceholder(
                             t(`contactPerson.placeholderServiceLanguage`)
                           )}
                           required
+                          title={titleCannotEditContactPerson}
                         />
                       </div>
                     </FormGroup>
@@ -531,14 +561,16 @@ const SignupGroupForm: React.FC<Props> = ({
                         />
                       </FormGroup>
 
-                      <ButtonWrapper>
-                        <Button
-                          disabled={formDisabled || readOnly}
-                          onClick={handleSubmit}
-                        >
-                          {t('buttonGoToSummary')}
-                        </Button>
-                      </ButtonWrapper>
+                      {!isEditingMode && (
+                        <ButtonWrapper>
+                          <Button
+                            disabled={formDisabled || readOnly}
+                            onClick={handleSubmit}
+                          >
+                            {t('buttonGoToSummary')}
+                          </Button>
+                        </ButtonWrapper>
+                      )}
                     </>
                   )}
                 </FormContainer>

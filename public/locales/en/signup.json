@@ -15,6 +15,11 @@
     "title": "Thank you for signing up!"
   },
   "contactPerson": {
+    "cannotEditContactPersonNotification": {
+      "linkText": "Edit the signup group",
+      "text": "The signup group's contact person information cannot be edited from this page. Contact information can be edited from the signup group's editing page.",
+      "title": "Contact person information cannot be edited"
+    },
     "labelEmail": "Email address",
     "labelFirstName": "First name",
     "labelLastName": "Last name",
@@ -66,6 +71,7 @@
   },
   "instructions": "Registration instructions",
   "labelContactPerson": "Contact person",
+  "labelExtraInfo": "Additional registration information (optional)",
   "labelParticipantAmount": "Number of registrants",
   "labelRegistration": "Registration",
   "labelUserConsent": "I agree to share my information with the organizer. We do not use the information you provide for marketing purposes. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Data protection notice {{openInNewTab}}\">Data protection notice</a>",
@@ -81,6 +87,7 @@
     "text": "You will receive a separate confirmation message about your registration to your e-mail if a place becomes available for you.",
     "title": "You are registering to the event's reservation queue"
   },
+  "placeholderExtraInfo": "Enter any additional information or request",
   "signupIsEnded": "Registration for the event has ended",
   "signup": {
     "buttonDeleteSignup": "Delete participant",

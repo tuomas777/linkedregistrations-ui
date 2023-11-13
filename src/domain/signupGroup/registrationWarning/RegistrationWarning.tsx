@@ -25,7 +25,7 @@ const RegistrationWarning: React.FC<Props> = ({ registration }) => {
   }, [registration.id]);
 
   return registrationWarning && !hasReservation ? (
-    <Notification className={styles.warning}>
+    <Notification className={styles.warning} type="info">
       {registrationWarning}
     </Notification>
   ) : null;
