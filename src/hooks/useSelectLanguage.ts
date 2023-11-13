@@ -7,13 +7,11 @@ import { OptionType } from '../types';
 
 type UseSelectLanguageState = {
   languageOptions: OptionType[];
-  changeLanguage: (
-    language: OptionType
-  ) => (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  changeLanguage: (language: string) => void;
 };
 
 const useSelectLanguage = (): UseSelectLanguageState => {
-  const { i18n, t } = useTranslation('common');
+  const { t } = useTranslation('common');
   const router = useRouter();
 
   const languageOptions: OptionType[] = React.useMemo(() => {
@@ -23,15 +21,11 @@ const useSelectLanguage = (): UseSelectLanguageState => {
     }));
   }, [t]);
 
-  const changeLanguage =
-    (newLanguage: OptionType) =>
-    async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      event?.preventDefault();
-      await router.push(router.asPath, router.asPath, {
-        locale: newLanguage.value,
-      });
-      i18n.changeLanguage(newLanguage.value);
-    };
+  const changeLanguage = (newLanguage: string) => {
+    router.push(router.asPath, router.asPath, {
+      locale: newLanguage,
+    });
+  };
 
   return { changeLanguage, languageOptions };
 };
