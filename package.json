@@ -34,7 +34,7 @@
     "react-scroll": "^1.8.9",
     "sass": "^1.66.1",
     "use-debounce": "^9.0.4",
-    "yup": "^1.2.0"
+    "yup": "^1.3.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
