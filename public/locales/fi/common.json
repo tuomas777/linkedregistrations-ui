@@ -1,5 +1,6 @@
 {
   "actions": {
+    "exportSignupsAsExcel": "Lataa osallistujalista (Excel)",
     "viewAttendanceList": "Merkkaa läsnäolijat",
     "viewSignups": "Näytä ilmoittautuneet"
   },
@@ -31,6 +32,11 @@
   "errorPage": {
     "text": "Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.",
     "title": "Valitettavasti etsimääsi sivua ei löydy"
+  },
+  "errors": {
+    "authorizationRequired": "Kirjaudu sisään suorittaaksesi tämän toiminnon.",
+    "forbidden": "Sinulla ei ole lupaa suorittaa tätä toimintoa.",
+    "serverError": "Virhe palvelimella."
   },
   "frontPage": "Etusivu",
   "headerTitle": "Helsingin kaupunki",

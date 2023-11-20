@@ -21,6 +21,11 @@ import {
 import { ROUTES } from '../../app/routes/constants';
 import { PRESENCE_STATUS } from '../../signup/constants';
 import {
+  getSignupsPageElement,
+  openSignupsPageMenu,
+  shouldExportSignupsAsExcel,
+} from '../../singups/__mocks__/testUtils';
+import {
   shouldShowInsufficientPermissionsPage,
   shouldShowNotFoundPage,
   shouldShowSigninRequiredPage,
@@ -32,6 +37,7 @@ import {
   mockedRegistrationWithoutUserAccessResponse,
   mockedRegistrationWithUserAccessResponse,
   patchedSignup,
+  registration,
   registrationId,
   signupNames,
 } from '../__mocks__/attendanceListPage';
@@ -63,26 +69,6 @@ const pushAttendanceListRoute = () => {
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
   render(<AttendanceListPage />, { session });
 
-const getElement = (key: 'menu' | 'searchInput' | 'toggle') => {
-  switch (key) {
-    case 'menu':
-      return screen.getByRole('region', { name: /valinnat/i });
-    case 'searchInput':
-      return screen.getByRole('combobox', { name: 'Hae osallistujia' });
-    case 'toggle':
-      return screen.getByRole('button', { name: /valinnat/i });
-  }
-};
-
-const openMenu = async () => {
-  const user = userEvent.setup();
-  const toggleButton = getElement('toggle');
-  await user.click(toggleButton);
-  const menu = getElement('menu');
-
-  return { menu, toggleButton };
-};
-
 // Tests
 test('should show attendance list page', async () => {
   setQueryMocks(...defaultMocks);
@@ -104,7 +90,7 @@ test('should search attendees by name', async () => {
   renderComponent();
   await loadingSpinnerIsNotInDocument();
 
-  const searchInput = getElement('searchInput');
+  const searchInput = getSignupsPageElement('searchInput');
   await user.type(searchInput, signUpName);
 
   screen.getByRole('checkbox', { name: signUpName });
@@ -122,7 +108,7 @@ test('should show no results text', async () => {
   renderComponent();
   await loadingSpinnerIsNotInDocument();
 
-  const searchInput = getElement('searchInput');
+  const searchInput = getSignupsPageElement('searchInput');
   await user.type(searchInput, 'Name not found');
 
   await screen.findByText('Ei tuloksia');
@@ -227,7 +213,7 @@ test('should route to signups page when clicking view participants button', asyn
   renderComponent();
 
   await loadingSpinnerIsNotInDocument(10000);
-  const { menu } = await openMenu();
+  const { menu } = await openSignupsPageMenu();
 
   const viewParticipantsButton = await within(menu).findByRole('button', {
     name: 'Näytä ilmoittautuneet',
@@ -238,4 +224,17 @@ test('should route to signups page when clicking view participants button', asyn
   await waitFor(() =>
     expect(mockRouter.asPath).toBe('/registration/registration:1/signup')
   );
+});
+
+test('should export signups as an excel after clicking export as excel button', async () => {
+  setQueryMocks(
+    ...defaultMocks,
+    rest.get(
+      `*registration/${registrationId}/signups/export/xlsx/`,
+      (req, res, ctx) => res(ctx.status(200), ctx.json({}))
+    )
+  );
+  pushAttendanceListRoute();
+  renderComponent();
+  await shouldExportSignupsAsExcel(registration);
 });

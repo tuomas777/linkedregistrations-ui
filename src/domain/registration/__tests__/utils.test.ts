@@ -1,15 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-named-as-default-member */
 import i18n from 'i18next';
 import { advanceTo, clear } from 'jest-date-mock';
+import { rest } from 'msw';
 
 import {
   fakeRegistration,
   getMockedSeatsReservationData,
   setSessionStorageValues,
 } from '../../../utils/mockDataUtils';
+import { fakeAuthenticatedSession } from '../../../utils/mockSession';
+import { setQueryMocks, waitFor } from '../../../utils/testUtils';
 import { TEST_REGISTRATION_ID } from '../constants';
 import { Registration, RegistrationQueryVariables } from '../types';
 import {
+  exportSignupsAsExcel,
   getAttendeeCapacityError,
   getFreeAttendeeOrWaitingListCapacity,
   getFreeWaitingListCapacity,
@@ -598,5 +603,70 @@ describe('registrationPathBuilder function', () => {
 
   it.each(cases)('should build correct path', (variables, expectedPath) =>
     expect(registrationPathBuilder(variables)).toBe(expectedPath)
+  );
+});
+
+describe('exportSignupsAsExcel function', () => {
+  const registration = fakeRegistration({ id: TEST_REGISTRATION_ID });
+
+  it('should download signups as excel', async () => {
+    const link: any = { click: jest.fn(), remove: jest.fn() };
+    global.URL.createObjectURL = jest.fn(() => 'https://test.com');
+    global.URL.revokeObjectURL = jest.fn();
+    const createElement = document.createElement;
+    document.createElement = jest.fn().mockImplementation(() => link);
+
+    setQueryMocks(
+      rest.get(
+        `*registration/${TEST_REGISTRATION_ID}/signups/export/xlsx/`,
+        (req, res, ctx) => res(ctx.status(200), ctx.json(registration))
+      )
+    );
+    exportSignupsAsExcel({
+      addNotification: jest.fn(),
+      registration,
+      session: fakeAuthenticatedSession(),
+      t: i18n.t.bind(i18n),
+      uiLanguage: 'fi',
+    });
+
+    await waitFor(() =>
+      expect(link.download).toBe(`registered_persons_${registration.id}`)
+    );
+    expect(link.href).toBe('https://test.com');
+    expect(link.click).toHaveBeenCalledTimes(1);
+    // Restore original createElement to avoid unexpected side effects
+    document.createElement = createElement;
+  });
+
+  const errorsCases: [number, string][] = [
+    [401, 'Kirjaudu sisään suorittaaksesi tämän toiminnon.'],
+    [403, 'Sinulla ei ole lupaa suorittaa tätä toimintoa.'],
+    [500, 'Virhe palvelimella.'],
+  ];
+
+  it.each(errorsCases)(
+    'should show correct correct error, %p returns %p',
+    async (status, error) => {
+      setQueryMocks(
+        rest.get(
+          `*registration/${TEST_REGISTRATION_ID}/signups/export/xlsx/`,
+          (req, res, ctx) => res(ctx.status(status), ctx.json({}))
+        )
+      );
+
+      const addNotification = jest.fn();
+      exportSignupsAsExcel({
+        addNotification,
+        registration,
+        session: fakeAuthenticatedSession(),
+        t: i18n.t.bind(i18n),
+        uiLanguage: 'fi',
+      });
+
+      await waitFor(() =>
+        expect(addNotification).toBeCalledWith({ label: error, type: 'error' })
+      );
+    }
   );
 });

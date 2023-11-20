@@ -6,6 +6,10 @@ import { checkCanUserDoRegistrationAction } from '../permissions';
 describe('checkCanUserDoRegistrationAction function', () => {
   const testAdminOrgCases: [REGISTRATION_ACTIONS, boolean, boolean, boolean][] =
     [
+      [REGISTRATION_ACTIONS.EXPORT_SIGNUPS_AS_EXCEL, false, false, false],
+      [REGISTRATION_ACTIONS.EXPORT_SIGNUPS_AS_EXCEL, false, true, false],
+      [REGISTRATION_ACTIONS.EXPORT_SIGNUPS_AS_EXCEL, true, false, false],
+      [REGISTRATION_ACTIONS.EXPORT_SIGNUPS_AS_EXCEL, true, true, true],
       [REGISTRATION_ACTIONS.VIEW_ATTENDANCE_LIST, false, false, false],
       [REGISTRATION_ACTIONS.VIEW_ATTENDANCE_LIST, false, true, false],
       [REGISTRATION_ACTIONS.VIEW_ATTENDANCE_LIST, true, false, false],

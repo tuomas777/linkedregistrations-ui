@@ -5,6 +5,7 @@ import isNil from 'lodash/isNil';
 import { TFunction } from 'next-i18next';
 
 import { MenuItemOptionProps } from '../../common/components/menuDropdown/types';
+import { NotificationProps } from '../../common/components/notification/Notification';
 import { VALIDATION_MESSAGE_KEYS } from '../../constants';
 import { ExtendedSession, Language } from '../../types';
 import getLocalisedString from '../../utils/getLocalisedString';
@@ -255,4 +256,57 @@ export const getRegistrationActionButtonProps = ({
     label: t(REGISTRATION_LABEL_KEYS[action]),
     onClick,
   };
+};
+
+const downloadBlob = (blob: Blob, filename: string) => {
+  const blobUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = blobUrl;
+  link.download = filename;
+  link.click();
+
+  // Release the object URL and remove the link
+  window.URL.revokeObjectURL(blobUrl);
+  link.remove();
+};
+
+export const exportSignupsAsExcel = async ({
+  addNotification,
+  registration,
+  session,
+  t,
+  uiLanguage,
+}: {
+  addNotification: (props: NotificationProps) => void;
+  registration: Registration;
+  session: ExtendedSession | null;
+  t: TFunction;
+  uiLanguage: Language;
+}) => {
+  const url = `/registration/${registration.id}/signups/export/xlsx/?ui_language=${uiLanguage}`;
+  try {
+    const { data } = await callGet({
+      session,
+      url,
+      config: { responseType: 'blob' },
+    });
+    downloadBlob(data, `registered_persons_${registration.id}`);
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      const { response } = error;
+      let errorMessage = '';
+      switch (response?.status) {
+        case 401:
+          errorMessage = t('common:errors.authorizationRequired');
+          break;
+        case 403:
+          errorMessage = t('common:errors.forbidden');
+          break;
+        default:
+          errorMessage = t('common:errors.serverError');
+          break;
+      }
+      addNotification({ type: 'error', label: errorMessage });
+    }
+  }
 };

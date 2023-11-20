@@ -13,7 +13,6 @@ import {
   configure,
   loadingSpinnerIsNotInDocument,
   render,
-  screen,
   setQueryMocks,
   userEvent,
   waitFor,
@@ -23,10 +22,15 @@ import { ROUTES } from '../../app/routes/constants';
 import {
   mockedRegistrationWithUserAccessResponse,
   mockedRegistrationWithoutUserAccessResponse,
+  registration,
   registrationId,
 } from '../../attendanceList/__mocks__/attendanceListPage';
 import { mockedUserResponse, user } from '../../user/__mocks__/user';
 import { TEST_USER_ID } from '../../user/constants';
+import {
+  openSignupsPageMenu,
+  shouldExportSignupsAsExcel,
+} from '../__mocks__/testUtils';
 import SignupsPage from '../SignupsPage';
 import {
   shouldShowInsufficientPermissionsPage,
@@ -61,26 +65,6 @@ const pushSignupsRoute = () => {
 
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
   render(<SignupsPage />, { session });
-
-const getElement = (key: 'menu' | 'searchInput' | 'toggle') => {
-  switch (key) {
-    case 'menu':
-      return screen.getByRole('region', { name: /valinnat/i });
-    case 'searchInput':
-      return screen.getByRole('combobox', { name: 'Hae osallistujia' });
-    case 'toggle':
-      return screen.getByRole('button', { name: /valinnat/i });
-  }
-};
-
-const openMenu = async () => {
-  const user = userEvent.setup();
-  const toggleButton = getElement('toggle');
-  await user.click(toggleButton);
-  const menu = getElement('menu');
-
-  return { menu, toggleButton };
-};
 
 // Tests
 
@@ -138,7 +122,7 @@ test('should route to signups page when clicking view attendance list button', a
   renderComponent();
 
   await loadingSpinnerIsNotInDocument(10000);
-  const { menu } = await openMenu();
+  const { menu } = await openSignupsPageMenu();
 
   const viewAttendanceListButton = await within(menu).findByRole('button', {
     name: 'Merkkaa läsnäolijat',
@@ -151,4 +135,17 @@ test('should route to signups page when clicking view attendance list button', a
       '/registration/registration:1/attendance-list'
     )
   );
+});
+
+test('should export signups as an excel after clicking export as excel button', async () => {
+  setQueryMocks(
+    ...defaultMocks,
+    rest.get(
+      `*registration/${registrationId}/signups/export/xlsx/`,
+      (req, res, ctx) => res(ctx.status(200), ctx.json({}))
+    )
+  );
+  pushSignupsRoute();
+  renderComponent();
+  await shouldExportSignupsAsExcel(registration);
 });
