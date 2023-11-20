@@ -3,6 +3,7 @@
 import { rest } from 'msw';
 import singletonRouter from 'next/router';
 import * as nextAuth from 'next-auth/react';
+import mockRouter from 'next-router-mock';
 import React from 'react';
 
 import { ExtendedSession } from '../../../types';
@@ -15,9 +16,16 @@ import {
   setQueryMocks,
   userEvent,
   waitFor,
+  within,
 } from '../../../utils/testUtils';
 import { ROUTES } from '../../app/routes/constants';
 import { PRESENCE_STATUS } from '../../signup/constants';
+import {
+  shouldShowInsufficientPermissionsPage,
+  shouldShowNotFoundPage,
+  shouldShowSigninRequiredPage,
+  shouldShowStrongIdentificationRequiredPage,
+} from '../../singups/signupsTestUtils';
 import { mockedUserResponse, user } from '../../user/__mocks__/user';
 import { TEST_USER_ID } from '../../user/constants';
 import {
@@ -55,35 +63,24 @@ const pushAttendanceListRoute = () => {
 const renderComponent = (session: ExtendedSession | null = defaultSession) =>
   render(<AttendanceListPage />, { session });
 
-const getSearchInput = () =>
-  screen.getByRole('combobox', { name: 'Hae osallistujia' });
-
-const shouldShowNotFoundPage = async () => {
-  await screen.findByRole('heading', {
-    name: 'Valitettavasti etsimääsi sivua ei löydy',
-  });
-
-  screen.getByText(
-    'Hakemaasi sivua ei löytynyt. Yritä myöhemmin uudelleen. Jos ongelma jatkuu, ota meihin yhteyttä.'
-  );
+const getElement = (key: 'menu' | 'searchInput' | 'toggle') => {
+  switch (key) {
+    case 'menu':
+      return screen.getByRole('region', { name: /valinnat/i });
+    case 'searchInput':
+      return screen.getByRole('combobox', { name: 'Hae osallistujia' });
+    case 'toggle':
+      return screen.getByRole('button', { name: /valinnat/i });
+  }
 };
 
-const shouldShowSigninRequiredPage = async () => {
-  await screen.findByRole('heading', { name: 'Kirjautuminen vaaditaan' });
+const openMenu = async () => {
+  const user = userEvent.setup();
+  const toggleButton = getElement('toggle');
+  await user.click(toggleButton);
+  const menu = getElement('menu');
 
-  screen.getByText(
-    'Sinun tulee olla kirjautunut tarkastellaksesi ilmoittautumisen tietoja.'
-  );
-};
-
-const shouldShowStrongIdentificationRequiredPage = async () => {
-  await screen.findByRole('heading', {
-    name: 'Vahva tunnistautuminen vaaditaan',
-  });
-
-  screen.getByText(
-    'Tämän sisällön näkeminen edellyttää vahvaa tunnistautumista. Kirjaudu ulos ja kokeile toista kirjautumistapaa.'
-  );
+  return { menu, toggleButton };
 };
 
 // Tests
@@ -107,7 +104,7 @@ test('should search attendees by name', async () => {
   renderComponent();
   await loadingSpinnerIsNotInDocument();
 
-  const searchInput = getSearchInput();
+  const searchInput = getElement('searchInput');
   await user.type(searchInput, signUpName);
 
   screen.getByRole('checkbox', { name: signUpName });
@@ -125,7 +122,7 @@ test('should show no results text', async () => {
   renderComponent();
   await loadingSpinnerIsNotInDocument();
 
-  const searchInput = getSearchInput();
+  const searchInput = getElement('searchInput');
   await user.type(searchInput, 'Name not found');
 
   await screen.findByText('Ei tuloksia');
@@ -197,7 +194,7 @@ test('should show strong identification required page if user is not strongly id
   await shouldShowStrongIdentificationRequiredPage();
 });
 
-test('should show not found page if has_registration_user_access is false', async () => {
+test('should show insufficient permissions page if has_registration_user_access is false', async () => {
   setQueryMocks(
     ...[mockedUserResponse, mockedRegistrationWithoutUserAccessResponse]
   );
@@ -205,7 +202,7 @@ test('should show not found page if has_registration_user_access is false', asyn
   renderComponent();
 
   await loadingSpinnerIsNotInDocument();
-  await shouldShowNotFoundPage();
+  await shouldShowInsufficientPermissionsPage();
 });
 
 test('should show not found page if registration does not exist', async () => {
@@ -220,4 +217,25 @@ test('should show not found page if registration does not exist', async () => {
 
   await loadingSpinnerIsNotInDocument();
   await shouldShowNotFoundPage();
+});
+
+test('should route to signups page when clicking view participants button', async () => {
+  const user = userEvent.setup();
+
+  setQueryMocks(...defaultMocks);
+  pushAttendanceListRoute();
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument(10000);
+  const { menu } = await openMenu();
+
+  const viewParticipantsButton = await within(menu).findByRole('button', {
+    name: 'Näytä ilmoittautuneet',
+  });
+
+  await user.click(viewParticipantsButton);
+
+  await waitFor(() =>
+    expect(mockRouter.asPath).toBe('/registration/registration:1/signup')
+  );
 });

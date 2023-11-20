@@ -38,6 +38,9 @@ export const enterKeyPressHelper = (): boolean =>
 export const escKeyPressHelper = (): boolean =>
   fireEvent.keyDown(document, { code: 27, key: 'Escape' });
 
+export const tabKeyPressHelper = (el?: HTMLElement): boolean =>
+  fireEvent.keyDown(el ?? document, { code: 9, key: 'Tab' });
+
 const customRender: CustomRender = (
   ui,
   { path = '/', query = {}, router = {}, session = null } = {}

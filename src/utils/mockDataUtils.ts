@@ -424,7 +424,7 @@ export const setSignupGroupFormSessionStorageValues = ({
   jest.spyOn(sessionStorage, 'getItem').mockImplementation((key: string) => {
     switch (key) {
       case `${FORM_NAMES.CREATE_SIGNUP_GROUP_FORM}-${registrationId}`:
-        const state: FormikState<SignupGroupFormFields> = {
+        return JSON.stringify({
           errors: {},
           isSubmitting: false,
           isValidating: false,
@@ -434,9 +434,7 @@ export const setSignupGroupFormSessionStorageValues = ({
             ...SIGNUP_GROUP_INITIAL_VALUES,
             ...signupGroupFormValues,
           },
-        };
-
-        return JSON.stringify(state);
+        } as FormikState<SignupGroupFormFields>);
       case `${RESERVATION_NAMES.SIGNUP_RESERVATION}-${registrationId}`:
         return seatsReservation ? JSON.stringify(seatsReservation) : '';
       default:
