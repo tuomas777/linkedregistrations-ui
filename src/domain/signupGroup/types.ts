@@ -28,6 +28,7 @@ export type SignupGroup = {
   created_by: stringOrNull;
   extra_info: stringOrNull;
   id: string;
+  is_created_by_current_user: boolean;
   last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
   registration: string;
@@ -66,6 +67,7 @@ export type SignupFields = {
   fullName: string;
   lastName: string;
   phoneNumber: string;
+  signupGroup: string | null;
 };
 
 export type DeleteSignupGroupMutationInput = {

@@ -19,6 +19,7 @@ import SearchRow from '../searchRow/SearchRow';
 type Props = {
   registration: Registration;
 };
+
 const AttendeeList: React.FC<Props> = ({ registration }) => {
   const { t } = useTranslation('attendanceList');
 

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { rest } from 'msw';
 import singletonRouter from 'next/router';
+import mockRouter from 'next-router-mock';
 import React from 'react';
 
 import { fakeSignups } from '../../../../utils/mockDataUtils';
@@ -15,15 +16,18 @@ import {
 import { ROUTES } from '../../../app/routes/constants';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
+import { TEST_SIGNUP_GROUP_ID } from '../../../signupGroup/constants';
 import {
   signupNames,
   signupNamesPage2,
   signups,
   signupsPage2,
+  signupsWithGroup,
 } from '../../__mocks__/signupsPage';
 import SignupsTable, { SignupsTableProps } from '../SignupsTable';
 
 configure({ defaultHidden: true });
+
 jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
 const signupName = [signupNames[0].first_name, signupNames[0].last_name].join(
@@ -102,4 +106,46 @@ test('should navigate between pages', async () => {
   // Page 1 signup should be visible.
   screen.getByText(signupName);
   expect(screen.queryByText(page2SignupName)).not.toBeInTheDocument();
+});
+
+test('should route to edit signup page when clicking signup name', async () => {
+  pushSignupsRoute();
+  setQueryMocks(
+    rest.get(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(signups))
+    )
+  );
+
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+  const signupLink = screen.getByRole('link', { name: signupName });
+  expect(signupLink).toHaveAttribute(
+    'href',
+    `/registration/${encodeURIComponent(TEST_REGISTRATION_ID)}/signup/${
+      signups.data[0].id
+    }/edit?returnPath=${encodeURIComponent(mockRouter.asPath)}`
+  );
+});
+
+test('should route to edit signup group page when clicking signup name and signup has a group', async () => {
+  pushSignupsRoute();
+  setQueryMocks(
+    rest.get(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(signupsWithGroup))
+    )
+  );
+
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+  const signupLink = screen.getByRole('link', { name: signupName });
+  expect(signupLink).toHaveAttribute(
+    'href',
+    `/registration/${encodeURIComponent(
+      TEST_REGISTRATION_ID
+    )}/signup-group/${encodeURIComponent(
+      TEST_SIGNUP_GROUP_ID
+    )}/edit?returnPath=${encodeURIComponent(mockRouter.asPath)}`
+  );
 });

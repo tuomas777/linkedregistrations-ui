@@ -44,9 +44,7 @@ const AttendanceListPage: React.FC<AttendanceListPageProps> = ({
   const { name } = getEventFields(event, locale);
 
   const goToSignupsPage = () => {
-    router.push(
-      ROUTES.SIGNUPS.replace('[registrationId]', registration.id as string)
-    );
+    router.push(ROUTES.SIGNUPS.replace('[registrationId]', registration.id));
   };
 
   const actionItems: MenuItemOptionProps[] = [

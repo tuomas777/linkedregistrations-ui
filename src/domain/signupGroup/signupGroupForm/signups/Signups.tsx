@@ -27,12 +27,14 @@ const getSignupPath = (index: number) =>
 interface Props {
   formDisabled: boolean;
   isEditingMode: boolean;
+  readOnly?: boolean;
   registration: Registration;
 }
 
 const Signups: React.FC<Props> = ({
   formDisabled,
   isEditingMode,
+  readOnly,
   registration,
 }) => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
@@ -143,6 +145,7 @@ const Signups: React.FC<Props> = ({
                     formDisabled={formDisabled}
                     index={index}
                     onDelete={openModal}
+                    readOnly={readOnly}
                     registration={registration}
                     showDelete={!isEditingMode && signups.length > 1}
                     signup={signup}

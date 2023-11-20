@@ -2,6 +2,7 @@ import range from 'lodash/range';
 
 import { fakeSignups } from '../../../utils/mockDataUtils';
 import { Meta } from '../../api/types';
+import { TEST_SIGNUP_GROUP_ID } from '../../signupGroup/constants';
 
 const TEST_PAGE_SIZE = 2;
 
@@ -17,6 +18,15 @@ const count = 30;
 const meta: Meta = { ...signups.meta, count };
 signups.meta = meta;
 
+const signupsWithGroup = fakeSignups(
+  signupNames.length,
+  signupNames.map((name, index) => ({
+    ...name,
+    id: `attending:${index}`,
+    signup_group: TEST_SIGNUP_GROUP_ID,
+  }))
+);
+
 const signupNamesPage2 = range(1, TEST_PAGE_SIZE + 1).map((n) => ({
   first_name: 'Page 2 user',
   last_name: `Last name ${n}`,
@@ -27,4 +37,10 @@ const signupsPage2 = fakeSignups(
   signupNamesPage2.map((name) => ({ ...name }))
 );
 
-export { signupNames, signupNamesPage2, signups, signupsPage2 };
+export {
+  signupNames,
+  signupNamesPage2,
+  signups,
+  signupsPage2,
+  signupsWithGroup,
+};

@@ -1,6 +1,7 @@
 @import '../../../../../styles/breakpoints.scss';
 @import '../../../../../styles//mixins.scss';
 
+.readOnlyRow,
 .nameRow {
   display: grid;
   grid-gap: var(--spacing-m);

@@ -1,4 +1,6 @@
 import { Pagination, Table } from 'hds-react';
+import omit from 'lodash/omit';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import React, { FC } from 'react';
@@ -9,11 +11,12 @@ import useCommonListProps from '../../../hooks/useCommonListProps';
 import useIdWithPrefix from '../../../hooks/useIdWithPrefix';
 import { ExtendedSession } from '../../../types';
 import skipFalsyType from '../../../utils/skipFalsyType';
+import { ROUTES } from '../../app/routes/constants';
 import { Registration } from '../../registration/types';
 import { ATTENDEE_STATUS } from '../../signup/constants';
 import { Signup } from '../../signup/types';
 import { getSignupFields } from '../../signup/utils';
-import { SIGNUPS_PAGE_SIZE } from '../constants';
+import { SIGNUPS_PAGE_SIZE, SIGNUPS_SEARCH_PARAMS } from '../constants';
 import { useSignupsQuery } from '../query';
 import { getSignupsSearchInitialValues } from '../utils';
 
@@ -24,14 +27,32 @@ type ColumnProps = {
 };
 
 const NameColumn: FC<ColumnProps> = ({ signup }) => {
-  const { fullName } = getSignupFields({
+  const router = useRouter();
+  const { fullName, signupGroup } = getSignupFields({
     signup,
   });
 
   return (
     <div className={styles.nameWrapper}>
       <span className={styles.signupName} title={fullName}>
-        {fullName}
+        <Link
+          href={{
+            pathname: signupGroup
+              ? ROUTES.EDIT_SIGNUP_GROUP
+              : ROUTES.EDIT_SIGNUP,
+            query: omit(
+              {
+                ...router.query,
+                [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: router.asPath,
+                signupGroupId: signupGroup ?? undefined,
+                signupId: signup.id,
+              },
+              signupGroup ? 'signupId' : 'signupGroupId'
+            ),
+          }}
+        >
+          {fullName}
+        </Link>
       </span>
     </div>
   );
