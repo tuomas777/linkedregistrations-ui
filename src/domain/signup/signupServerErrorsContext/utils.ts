@@ -1,13 +1,26 @@
 import { TFunction } from 'i18next';
 
 import { LEServerError, ServerErrorItem } from '../../../types';
-import isGenericServerError from '../../../utils/isGenericServerError';
+import parseServerErrorLabel from '../../../utils/parseServerErrorLabel';
 import parseServerErrorMessage from '../../../utils/parseServerErrorMessage';
 import pascalCase from '../../../utils/pascalCase';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ErrorObject = Record<string, any>;
 type ErrorType = ErrorObject | ErrorObject[] | string;
+
+const isContactPersonObjectError = ({
+  error,
+  key,
+}: {
+  error: LEServerError;
+  key: string;
+}) =>
+  key === 'contact_person' &&
+  // API returns '{contact_person: ["Tämän kentän arvo ei voi olla "null"."]}' error when
+  // trying to set null value for contact_person. Use parseContactPersonServerError only
+  // when error type is object
+  !(Array.isArray(error) && typeof error[0] == 'string');
 
 export const parseSignupGroupServerErrors = ({
   error,
@@ -46,14 +59,8 @@ export const parseSignupGroupServerErrors = ({
     error: LEServerError;
     key: string;
   }) {
-    if (
-      key === 'contact_person' &&
-      // API returns '{contact_person: ["Tämän kentän arvo ei voi olla "null"."]}' error when
-      // trying to set null value for contact_person. Use parseContactPersonServerError only
-      // when error type is object
-      !(Array.isArray(error) && typeof error[0] == 'string')
-    ) {
-      return parseContactPersonServerError(error);
+    if (isContactPersonObjectError({ key, error })) {
+      return parseContactPersonObjectServerError(error);
     }
     if (key === 'signups') {
       return parseSignupServerError(error);
@@ -61,23 +68,27 @@ export const parseSignupGroupServerErrors = ({
 
     return [
       {
-        label: parseSignupGroupServerErrorLabel({ key }),
+        label: parseServerErrorLabel({
+          key,
+          parseFn: parseSignupGroupServerErrorLabel,
+        }),
         message: parseServerErrorMessage({ error, t }),
       },
     ];
   }
 
   // Get error items for contact person fields
-  function parseContactPersonServerError(
+  function parseContactPersonObjectServerError(
     error: LEServerError
   ): ServerErrorItem[] {
-    /* istanbul ignore else */
-
     return Object.entries(error).reduce(
       (previous: ServerErrorItem[], [key, e]) => [
         ...previous,
         {
-          label: parseContactPersonServerErrorLabel({ key }),
+          label: parseServerErrorLabel({
+            key,
+            parseFn: parseContactPersonServerErrorLabel,
+          }),
           message: parseServerErrorMessage({ error: e as string[], t }),
         },
       ],
@@ -93,7 +104,10 @@ export const parseSignupGroupServerErrors = ({
         (previous: ServerErrorItem[], [key, e]) => [
           ...previous,
           {
-            label: parseSignupGroupServerErrorLabel({ key }),
+            label: parseServerErrorLabel({
+              key,
+              parseFn: parseSignupGroupServerErrorLabel,
+            }),
             message: parseServerErrorMessage({ error: e as string[], t }),
           },
         ],
@@ -109,18 +123,11 @@ export const parseSignupGroupServerErrors = ({
   }: {
     key: string;
   }): string {
-    if (isGenericServerError(key)) {
-      return '';
-    }
-
     return t(`signup:contactPerson.label${pascalCase(key)}`);
   }
 
   // Get correct field name for an error item
   function parseSignupGroupServerErrorLabel({ key }: { key: string }): string {
-    if (isGenericServerError(key)) {
-      return '';
-    }
     if (['contact_person', 'registration'].includes(key)) {
       return t(`signup:label${pascalCase(key)}`);
     }
