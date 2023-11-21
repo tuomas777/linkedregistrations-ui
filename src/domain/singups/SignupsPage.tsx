@@ -2,12 +2,15 @@
 
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MenuItemOptionProps } from '../../common/components/menuDropdown/types';
+import { useNotificationsContext } from '../../common/components/notificationsContext/hooks/useNotificationsContext';
 import PageWrapper from '../../common/components/pageWrapper/PageWrapper';
 import useLocale from '../../hooks/useLocale';
+import { ExtendedSession } from '../../types';
 import Container from '../app/layout/container/Container';
 import MainContent from '../app/layout/mainContent/MainContent';
 import TitleRow from '../app/layout/titleRow/TitleRow';
@@ -18,7 +21,10 @@ import { REGISTRATION_ACTIONS } from '../registration/constants';
 import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import RegistrationInfo from '../registration/registrationInfo/RegistrationInfo';
 import { Registration } from '../registration/types';
-import { getRegistrationActionButtonProps } from '../registration/utils';
+import {
+  exportSignupsAsExcel,
+  getRegistrationActionButtonProps,
+} from '../registration/utils';
 import useUser from '../user/hooks/useUser';
 
 import SearchPanel from './searchPanel/SearchPanel';
@@ -41,7 +47,9 @@ const SignupsPage: React.FC<AttendanceListPageProps> = ({
   registration,
 }) => {
   const { t } = useTranslation(['common', 'signups']);
+  const { addNotification } = useNotificationsContext();
   const locale = useLocale();
+  const { data: session } = useSession() as { data: ExtendedSession | null };
   const { user } = useUser();
   const router = useRouter();
   const { name } = getEventFields(event, locale);
@@ -56,6 +64,21 @@ const SignupsPage: React.FC<AttendanceListPageProps> = ({
     getRegistrationActionButtonProps({
       action: REGISTRATION_ACTIONS.VIEW_ATTENDANCE_LIST,
       onClick: goToAttendanceListPage,
+      registration,
+      t,
+      user,
+    }),
+    getRegistrationActionButtonProps({
+      action: REGISTRATION_ACTIONS.EXPORT_SIGNUPS_AS_EXCEL,
+      onClick: () => {
+        exportSignupsAsExcel({
+          addNotification,
+          registration,
+          session,
+          t,
+          uiLanguage: locale,
+        });
+      },
       registration,
       t,
       user,

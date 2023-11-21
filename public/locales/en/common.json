@@ -1,5 +1,6 @@
 {
   "actions": {
+    "exportSignupsAsExcel": "Export particpants (Excel)",
     "viewAttendanceList": "Mark attendees",
     "viewSignups": "Show participants"
   },
@@ -31,6 +32,11 @@
   "errorPage": {
     "text": "The page you were looking for was not found. Please try again later. If this problem persists, please contact us.",
     "title": "Unfortunately this page was not found"
+  },
+  "errors": {
+    "authorizationRequired": "Sign in to use this feature",
+    "forbidden": "You do not have permission to use this feature.",
+    "serverError": "Server error."
   },
   "frontPage": "Frontpage",
   "headerTitle": "City of Helsinki",

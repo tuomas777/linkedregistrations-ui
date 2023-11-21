@@ -45,9 +45,11 @@ if (!isTestEnv) {
         : response;
     },
     (err: AxiosError) => {
-      return typeof window === 'undefined'
-        ? AxiosLogger.errorLogger(err, loggerConfig)
-        : err;
+      if (typeof window === 'undefined') {
+        return AxiosLogger.errorLogger(err, loggerConfig);
+      } else {
+        throw err;
+      }
     }
   );
 }

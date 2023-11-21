@@ -30,6 +30,7 @@ export const checkCanUserDoRegistrationAction = ({
   });
 
   switch (action) {
+    case REGISTRATION_ACTIONS.EXPORT_SIGNUPS_AS_EXCEL:
     case REGISTRATION_ACTIONS.VIEW_ATTENDANCE_LIST:
     case REGISTRATION_ACTIONS.VIEW_SIGNUPS:
       return isRegistrationUser;

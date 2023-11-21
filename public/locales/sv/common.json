@@ -1,5 +1,6 @@
 {
   "actions": {
+    "exportSignupsAsExcel": "Exportera deltagare (Excel)",
     "viewAttendanceList": "Märk de närvarande",
     "viewSignups": "Visa deltagare"
   },
@@ -31,6 +32,11 @@
   "errorPage": {
     "text": "Sidan du letade efter hittades inte. Vänligen försök igen senare. Kontakta oss om problemet kvarstår.",
     "title": "Tyvärr hittades inte denna sida"
+  },
+  "errors": {
+    "authorizationRequired": "Logga in för att använda den här funktionen",
+    "forbidden": "Du har inte tillstånd att utföra den här funktionen. ",
+    "serverError": "Serverfel."
   },
   "frontPage": "Hemsida",
   "headerTitle": "Helsingfors Stad",

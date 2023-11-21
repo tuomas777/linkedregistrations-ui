@@ -59,7 +59,6 @@ const EditButtonPanel: React.FC<EditButtonPanelProps> = ({
               >
                 {t('buttonCancel')}
               </Button>,
-
               <Button
                 key="update"
                 disabled={Boolean(
