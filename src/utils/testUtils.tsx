@@ -13,7 +13,7 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { RequestHandler } from 'msw';
-import { RouterContext } from 'next/dist/shared/lib/router-context';
+import { RouterContext } from 'next/dist/shared/lib/router-context.shared-runtime';
 import { NextRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
 import React, { useMemo } from 'react';
