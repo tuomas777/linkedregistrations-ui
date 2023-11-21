@@ -1,15 +1,13 @@
 import * as nextConfig from 'next/config';
 
-const getConfig = jest.spyOn(nextConfig, 'default');
-
 export const mockConfig = (
   publicRuntimeConfig: Record<string, string>,
   serverRuntimeConfig: Record<string, string>
 ) => {
-  getConfig.mockImplementation(() => ({
+  nextConfig.setConfig({
     publicRuntimeConfig,
     serverRuntimeConfig,
-  }));
+  });
 };
 
 export const mockDefaultConfig = () => {
