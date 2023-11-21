@@ -169,17 +169,6 @@ test('should update signup', async () => {
   });
 });
 
-test('should not show back button if returnPath is not defined', async () => {
-  setQueryMocks(...defaultMocks);
-  pushEditSignupRoute(TEST_REGISTRATION_ID);
-  renderComponent();
-
-  await findFirstNameInputs();
-  expect(
-    screen.queryByRole('button', { name: 'Takaisin' })
-  ).not.toBeInTheDocument();
-});
-
 test('all fields should be read-only if signup is not created by user', async () => {
   setQueryMocks(
     ...mockedLanguagesResponses,
@@ -194,6 +183,17 @@ test('all fields should be read-only if signup is not created by user', async ()
 
   expect(
     screen.queryByRole('button', { name: /tallenna/i })
+  ).not.toBeInTheDocument();
+});
+
+test('should not show back button if returnPath is not defined', async () => {
+  setQueryMocks(...defaultMocks);
+  pushEditSignupRoute(TEST_REGISTRATION_ID);
+  renderComponent();
+
+  await findFirstNameInputs();
+  expect(
+    screen.queryByRole('button', { name: 'Takaisin' })
   ).not.toBeInTheDocument();
 });
 
@@ -219,34 +219,6 @@ test('should route to page defined in returnPath when clicking back button', asy
   expect(mockRouter.asPath).toBe(
     `/registration/${TEST_REGISTRATION_ID}/signup`
   );
-});
-
-test('should not show back button if returnPath is not defined', async () => {
-  setQueryMocks(...defaultMocks);
-  pushEditSignupRoute(TEST_REGISTRATION_ID);
-  renderComponent();
-
-  await findFirstNameInputs();
-  expect(
-    screen.queryByRole('button', { name: 'Takaisin' })
-  ).not.toBeInTheDocument();
-});
-
-test('all fields should be read-only if signup is not created by user', async () => {
-  setQueryMocks(
-    ...mockedLanguagesResponses,
-    mockedUserResponse,
-    mockedRegistrationResponse,
-    mockedSignupNotCreatedByUserResponse
-  );
-  pushEditSignupRoute(TEST_REGISTRATION_ID);
-  renderComponent();
-
-  await shouldRenderSignupFormReadOnlyFields();
-
-  expect(
-    screen.queryByRole('button', { name: /tallenna/i })
-  ).not.toBeInTheDocument();
 });
 
 test('contact person fields should be disabled if signup has a signup group', async () => {
@@ -290,30 +262,6 @@ test('contact person fields should be disabled if signup has a signup group', as
   expect(membershipNumberInput).toBeDisabled();
   expect(nativeLanguageButton).toBeDisabled();
   expect(serviceLanguageButton).toBeDisabled();
-});
-
-test('should route to page defined in returnPath when clicking back button', async () => {
-  const user = userEvent.setup();
-  setQueryMocks(
-    ...mockedLanguagesResponses,
-    mockedUserResponse,
-    mockedRegistrationResponse,
-    mockedSignupNotCreatedByUserResponse
-  );
-  pushEditSignupRoute(TEST_REGISTRATION_ID, {
-    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: ROUTES.SIGNUPS.replace(
-      '[registrationId]',
-      TEST_REGISTRATION_ID
-    ),
-  });
-  renderComponent();
-
-  await findFirstNameInputs();
-  const backButton = screen.getByRole('button', { name: 'Takaisin' });
-  await user.click(backButton);
-  expect(mockRouter.asPath).toBe(
-    `/registration/${TEST_REGISTRATION_ID}/signup`
-  );
 });
 
 test('should show error message when updating signup fails', async () => {

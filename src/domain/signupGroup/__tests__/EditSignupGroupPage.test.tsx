@@ -190,23 +190,6 @@ test('should route to page defined in returnPath when clicking back button', asy
   );
 });
 
-test('all fields should be read-only if signup is not created by user', async () => {
-  setQueryMocks(
-    ...mockedLanguagesResponses,
-    mockedUserResponse,
-    mockedRegistrationResponse,
-    mockedSignupGroupNotCreatedByUserResponse
-  );
-  pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
-  renderComponent();
-
-  await shouldRenderSignupFormReadOnlyFields();
-
-  expect(
-    screen.queryByRole('button', { name: /tallenna/i })
-  ).not.toBeInTheDocument();
-});
-
 test('should route to the first page defined in returnPath when clicking back button', async () => {
   const user = userEvent.setup();
   setQueryMocks(...defaultMocks);
@@ -215,36 +198,6 @@ test('should route to the first page defined in returnPath when clicking back bu
       ROUTES.SIGNUPS.replace('[registrationId]', TEST_REGISTRATION_ID),
       'test',
     ],
-  });
-  renderComponent();
-
-  await findFirstNameInputs();
-  const backButton = screen.getByRole('button', { name: 'Takaisin' });
-  await user.click(backButton);
-  expect(mockRouter.asPath).toBe(
-    `/registration/${TEST_REGISTRATION_ID}/signup`
-  );
-});
-
-test('should not show back button if returnPath is not defined', async () => {
-  setQueryMocks(...defaultMocks);
-  pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
-  renderComponent();
-
-  await findFirstNameInputs();
-  expect(
-    screen.queryByRole('button', { name: 'Takaisin' })
-  ).not.toBeInTheDocument();
-});
-
-test('should route to page defined in returnPath when clicking back button', async () => {
-  const user = userEvent.setup();
-  setQueryMocks(...defaultMocks);
-  pushEditSignupGroupRoute(TEST_REGISTRATION_ID, {
-    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: ROUTES.SIGNUPS.replace(
-      '[registrationId]',
-      TEST_REGISTRATION_ID
-    ),
   });
   renderComponent();
 
@@ -271,25 +224,6 @@ test('all fields should be read-only if signup is not created by user', async ()
   expect(
     screen.queryByRole('button', { name: /tallenna/i })
   ).not.toBeInTheDocument();
-});
-
-test('should route to the first page defined in returnPath when clicking back button', async () => {
-  const user = userEvent.setup();
-  setQueryMocks(...defaultMocks);
-  pushEditSignupGroupRoute(TEST_REGISTRATION_ID, {
-    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: [
-      ROUTES.SIGNUPS.replace('[registrationId]', TEST_REGISTRATION_ID),
-      'test',
-    ],
-  });
-  renderComponent();
-
-  await findFirstNameInputs();
-  const backButton = screen.getByRole('button', { name: 'Takaisin' });
-  await user.click(backButton);
-  expect(mockRouter.asPath).toBe(
-    `/registration/${TEST_REGISTRATION_ID}/signup`
-  );
 });
 
 test('should show error message when updating signup group fails', async () => {
