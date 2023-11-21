@@ -37,6 +37,15 @@ resources:
       type: git
       # Azure DevOps project/repository
       name: linkedevents/linkedevents-pipelines
+  pipelines:
+    # Pipeline trigger
+    - pipeline: build
+      source: build-linkedregistrations-ui-staging
+      # Run deploy-staging pipeline when run of build pipeline completes
+      trigger:
+        branches:
+          include:
+            - refs/tags/release-*
 
 extends:
   # Filename in Azure DevOps Repository (note possible -ui or -api)
