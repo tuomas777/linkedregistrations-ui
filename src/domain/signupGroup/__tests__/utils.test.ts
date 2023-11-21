@@ -75,7 +75,6 @@ describe('getSignupGroupPayload function', () => {
           extra_info: '',
           first_name: '',
           last_name: '',
-          responsible_for_group: true,
           street_address: null,
           zipcode: null,
           user_consent: false,
@@ -123,7 +122,6 @@ describe('getSignupGroupPayload function', () => {
             id: TEST_SIGNUP_ID,
             inWaitingList: false,
             lastName,
-            responsibleForGroup: false,
             streetAddress,
             zipcode,
           },
@@ -159,7 +157,6 @@ describe('getSignupGroupPayload function', () => {
           first_name: firstName,
           id: TEST_SIGNUP_ID,
           last_name: lastName,
-          responsible_for_group: true,
           street_address: streetAddress,
           user_consent: userConsent,
           zipcode,
@@ -214,7 +211,6 @@ describe('getSignupDefaultInitialValues function', () => {
       id: null,
       inWaitingList: false,
       lastName: '',
-      responsibleForGroup: false,
       streetAddress: '',
       zipcode: '',
     });
@@ -245,7 +241,6 @@ describe('getSignupGroupDefaultInitialValues function', () => {
           id: null,
           inWaitingList: false,
           lastName: '',
-          responsibleForGroup: false,
           streetAddress: '',
           zipcode: '',
         },
@@ -291,7 +286,6 @@ describe('getSignupGroupInitialValues function', () => {
             first_name: null,
             id: TEST_SIGNUP_ID,
             last_name: null,
-            responsible_for_group: true,
             street_address: null,
             zipcode: null,
           }),
@@ -308,7 +302,6 @@ describe('getSignupGroupInitialValues function', () => {
         id: TEST_SIGNUP_ID,
         inWaitingList: false,
         lastName: '',
-        responsibleForGroup: true,
         streetAddress: '',
         zipcode: '',
       },
@@ -375,7 +368,6 @@ describe('getSignupGroupInitialValues function', () => {
             first_name: expectedFirstName,
             id: TEST_SIGNUP_ID,
             last_name: expectedLastName,
-            responsible_for_group: true,
             street_address: expectedStreetAddress,
             zipcode: expectedZip,
           }),
@@ -392,7 +384,6 @@ describe('getSignupGroupInitialValues function', () => {
         id: TEST_SIGNUP_ID,
         inWaitingList: false,
         lastName: expectedLastName,
-        responsibleForGroup: true,
         streetAddress: expectedStreetAddress,
         zipcode: expectedZip,
       },
@@ -407,28 +398,6 @@ describe('getSignupGroupInitialValues function', () => {
     expect(notifications).toEqual(expectedNotifications);
     expect(phoneNumber).toBe(expectedPhoneNumber);
     expect(serviceLanguage).toBe(expectedServiceLanguage);
-  });
-
-  it('should sort singnups so that items where responsibleForGroup is true are at the start', () => {
-    const signup1 = fakeSignup({
-      id: 'signup:1',
-      responsible_for_group: false,
-    });
-    const signup2 = fakeSignup({ id: 'signup:2', responsible_for_group: true });
-    const signup3 = fakeSignup({ id: 'signup:3', responsible_for_group: true });
-    const signup4 = fakeSignup({
-      id: 'signup:4',
-      responsible_for_group: false,
-    });
-    const signupGroup = fakeSignupGroup({
-      signups: [signup1, signup2, signup3, signup4],
-    });
-
-    const initialValues = getSignupGroupInitialValues(signupGroup);
-    expect(initialValues.signups[0].id).toEqual(signup2.id);
-    expect(initialValues.signups[1].id).toEqual(signup3.id);
-    expect(initialValues.signups[2].id).toEqual(signup1.id);
-    expect(initialValues.signups[3].id).toEqual(signup4.id);
   });
 
   it('should set userConsent false if any signups has user_consent false', () => {
@@ -547,7 +516,6 @@ describe('getUpdateSignupGroupPayload function', () => {
           extra_info: '',
           first_name: '',
           last_name: '',
-          responsible_for_group: false,
           street_address: null,
           zipcode: null,
           user_consent: false,
@@ -583,7 +551,6 @@ describe('getUpdateSignupGroupPayload function', () => {
         id: TEST_SIGNUP_ID,
         inWaitingList: false,
         lastName,
-        responsibleForGroup: true,
         streetAddress,
         zipcode,
       },
@@ -634,7 +601,6 @@ describe('getUpdateSignupGroupPayload function', () => {
           first_name: firstName,
           id: TEST_SIGNUP_ID,
           last_name: lastName,
-          responsible_for_group: true,
           street_address: streetAddress,
           zipcode,
           user_consent: userConsent,
@@ -670,7 +636,6 @@ describe('omitSensitiveDataFromSignupGroupPayload', () => {
           first_name: 'First name',
           id: '1',
           last_name: 'Last name',
-          responsible_for_group: true,
           street_address: 'Address',
           zipcode: '123456',
           user_consent: true,
@@ -692,7 +657,6 @@ describe('omitSensitiveDataFromSignupGroupPayload', () => {
         {
           id: '1',
           contact_person: undefined,
-          responsible_for_group: true,
           user_consent: true,
         },
       ],

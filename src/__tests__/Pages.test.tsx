@@ -16,7 +16,10 @@ import { mockedLanguagesResponses } from '../domain/language/__mocks__/languages
 import { registration } from '../domain/registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import { signup } from '../domain/signup/__mocks__/signup';
-import { TEST_SIGNUP_ID } from '../domain/signup/constants';
+import {
+  TEST_CONTACT_PERSON_ID,
+  TEST_SIGNUP_ID,
+} from '../domain/signup/constants';
 import { signupGroup } from '../domain/signupGroup/__mocks__/signupGroup';
 import {
   NOTIFICATIONS,
@@ -116,13 +119,18 @@ const isSignupGroupInDehydratedState = (dehydratedState: DehydratedState) => {
 };
 
 const signupGroupValues: SignupGroupFormFields = {
-  email: 'participant@email.com',
+  contactPerson: {
+    email: 'participant@email.com',
+    firstName: 'First name',
+    lastName: 'Last name',
+    id: TEST_CONTACT_PERSON_ID,
+    membershipNumber: '',
+    nativeLanguage: 'fi',
+    notifications: [NOTIFICATIONS.EMAIL],
+    phoneNumber: '358 44 123 4567',
+    serviceLanguage: 'fi',
+  },
   extraInfo: '',
-  membershipNumber: '',
-  nativeLanguage: 'fi',
-  notifications: [NOTIFICATIONS.EMAIL],
-  phoneNumber: '358 44 123 4567',
-  serviceLanguage: 'fi',
   signups: [
     {
       city: 'City',
@@ -132,7 +140,6 @@ const signupGroupValues: SignupGroupFormFields = {
       id: TEST_SIGNUP_ID,
       inWaitingList: false,
       lastName: 'Last name',
-      responsibleForGroup: true,
       streetAddress: 'Street address',
       zipcode: '00100',
     },
@@ -215,7 +222,7 @@ describe('CreateSignupGroupPage', () => {
     setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
-      signupGroupFormValues: { ...signupGroupValues, email: '' },
+      signupGroupFormValues: signupGroupValues,
     });
 
     singletonRouter.push({
@@ -300,7 +307,7 @@ describe('SummaryPage', () => {
     setSignupGroupFormSessionStorageValues({
       registrationId: registration.id,
       seatsReservation: getMockedSeatsReservationData(1000),
-      signupGroupFormValues: { ...signupGroupValues, email: '' },
+      signupGroupFormValues: signupGroupValues,
     });
 
     singletonRouter.push({

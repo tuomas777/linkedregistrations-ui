@@ -27,7 +27,6 @@ export type SignupInput = {
   id?: stringOrNull;
   last_name?: stringOrNull;
   presence_status?: PRESENCE_STATUS;
-  responsible_for_group: boolean;
   street_address?: stringOrNull;
   user_consent: boolean;
   zipcode?: stringOrNull;
@@ -61,7 +60,6 @@ export type Signup = {
   last_name?: stringOrNull;
   presence_status?: PRESENCE_STATUS;
   registration: string;
-  responsible_for_group: boolean;
   signup_group: stringOrNull;
   street_address?: stringOrNull;
   user_consent?: boolean;

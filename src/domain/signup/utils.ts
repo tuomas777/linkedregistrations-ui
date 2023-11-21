@@ -119,7 +119,6 @@ export const getSignupInitialValues = (signup: Signup): SignupFormFields => ({
   id: signup.id,
   inWaitingList: signup.attendee_status === ATTENDEE_STATUS.Waitlisted,
   lastName: signup.last_name ?? '',
-  responsibleForGroup: !!signup.responsible_for_group,
   streetAddress: signup.street_address ?? '',
   zipcode: signup.zipcode ?? '',
 });
@@ -140,11 +139,9 @@ export const getSignupGroupInitialValuesFromSignup = (
 
 export const getSignupPayload = ({
   formValues,
-  responsibleForGroup,
   signupData,
 }: {
   formValues: SignupGroupFormFields;
-  responsibleForGroup: boolean;
   signupData: SignupFormFields;
 }): SignupInput => {
   const { userConsent } = formValues;
@@ -168,7 +165,6 @@ export const getSignupPayload = ({
     first_name: firstName || '',
     id: id ?? undefined,
     last_name: lastName || '',
-    responsible_for_group: responsibleForGroup,
     street_address: streetAddress || null,
     zipcode: zipcode || null,
     user_consent: userConsent,
@@ -191,7 +187,6 @@ export const getUpdateSignupPayload = ({
   return {
     ...getSignupPayload({
       formValues,
-      responsibleForGroup: !!signupData.responsibleForGroup,
       signupData,
     }),
     contact_person: !hasSignupGroup

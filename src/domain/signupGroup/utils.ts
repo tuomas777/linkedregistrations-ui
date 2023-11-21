@@ -124,10 +124,9 @@ export const getSignupGroupPayload = ({
     signups: signupsValues,
   } = formValues;
 
-  const signups: SignupInput[] = signupsValues.map((signupData, index) =>
+  const signups: SignupInput[] = signupsValues.map((signupData) =>
     getSignupPayload({
       formValues,
-      responsibleForGroup: index === 0,
       signupData,
     })
   );
@@ -159,7 +158,6 @@ export const getUpdateSignupGroupPayload = ({
   const signups: SignupInput[] = signupsValues.map((signupData) =>
     getSignupPayload({
       formValues,
-      responsibleForGroup: signupData.responsibleForGroup,
       signupData,
     })
   );
@@ -202,14 +200,7 @@ export const getSignupGroupInitialValues = (
 ): SignupGroupFormFields => {
   const signups: Signup[] = (
     signupGroup.signups ?? /* istanbul ignore next*/ []
-  )
-    .filter(skipFalsyType)
-    .sort((a: Signup, b: Signup) => {
-      if (a.responsible_for_group === b.responsible_for_group) {
-        return 0;
-      }
-      return a.responsible_for_group === true ? -1 : 1;
-    });
+  ).filter(skipFalsyType);
 
   return {
     contactPerson: getContactPersonInitialValues(

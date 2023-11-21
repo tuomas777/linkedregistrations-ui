@@ -76,7 +76,6 @@ const signupGroupValues: SignupGroupFormFields = {
       id: null,
       inWaitingList: false,
       lastName: 'Last name',
-      responsibleForGroup: true,
       streetAddress: 'Street address',
       zipcode: '00100',
     },

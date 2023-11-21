@@ -347,7 +347,6 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       last_name: faker.person.lastName(),
       presence_status: PRESENCE_STATUS.NotPresent,
       registration: TEST_REGISTRATION_ID,
-      responsible_for_group: false,
       signup_group: null,
       street_address: faker.location.streetAddress(),
       user_consent: false,
