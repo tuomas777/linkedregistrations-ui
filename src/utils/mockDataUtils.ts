@@ -352,6 +352,7 @@ export const fakeSignupGroup = (
       created_at: null,
       created_by: null,
       extra_info: '',
+      is_created_by_current_user: false,
       last_modified_at: null,
       last_modified_by: null,
       registration: TEST_REGISTRATION_ID,

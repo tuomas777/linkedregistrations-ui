@@ -14,6 +14,8 @@ const moduleExports = {
   },
   sentry: {
     hideSourceMaps: true,
+    disableServerWebpackPlugin: true,
+    disableClientWebpackPlugin: true,
   },
   publicRuntimeConfig: {
     linkedEventsApiBaseUrl: process.env.NEXT_PUBLIC_LINKED_EVENTS_URL,
