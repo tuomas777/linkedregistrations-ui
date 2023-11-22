@@ -15,14 +15,21 @@ import {
 import { Registration } from '../registration/types';
 import { SeatsReservation } from '../reserveSeats/types';
 import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from '../signup/constants';
-import { Signup, SignupInput } from '../signup/types';
+import {
+  ContactPerson,
+  ContactPersonInput,
+  Signup,
+  SignupInput,
+} from '../signup/types';
 import {
   getSignupInitialValues,
   getSignupPayload,
+  omitSensitiveDataFromContactPerson,
   omitSensitiveDataFromSignupPayload,
 } from '../signup/utils';
 
 import {
+  CONTACT_PERSON_FIELDS,
   NOTIFICATIONS,
   SIGNUP_FIELDS,
   SIGNUP_GROUP_FIELDS,
@@ -37,6 +44,7 @@ import {
   SignupGroupFormFields,
   SignupGroupQueryVariables,
   UpdateSignupGroupMutationInput,
+  ContactPersonFormFields,
 } from './types';
 
 export const getSignupNotificationsCode = (
@@ -71,6 +79,36 @@ export const getSignupNotificationTypes = (
   }
 };
 
+export const getContactPersonPayload = (
+  formValues: ContactPersonFormFields
+): ContactPersonInput => {
+  const {
+    email,
+    firstName,
+    id,
+    lastName,
+    membershipNumber,
+    nativeLanguage,
+    notifications,
+    phoneNumber,
+    serviceLanguage,
+    ...rest
+  } = formValues;
+
+  return {
+    ...rest,
+    email: email || null,
+    first_name: firstName,
+    id: id || null,
+    last_name: lastName,
+    membership_number: membershipNumber,
+    native_language: nativeLanguage || null,
+    notifications: getSignupNotificationsCode(notifications),
+    phone_number: phoneNumber || null,
+    service_language: serviceLanguage || null,
+  };
+};
+
 export const getSignupGroupPayload = ({
   formValues,
   registration,
@@ -80,17 +118,21 @@ export const getSignupGroupPayload = ({
   registration: Registration;
   reservationCode: string;
 }): CreateSignupGroupMutationInput => {
-  const { extraInfo: groupExtraInfo, signups: signupsValues } = formValues;
+  const {
+    contactPerson,
+    extraInfo: groupExtraInfo,
+    signups: signupsValues,
+  } = formValues;
 
-  const signups: SignupInput[] = signupsValues.map((signupData, index) =>
+  const signups: SignupInput[] = signupsValues.map((signupData) =>
     getSignupPayload({
       formValues,
-      responsibleForGroup: index === 0,
       signupData,
     })
   );
 
   return {
+    contact_person: getContactPersonPayload(contactPerson),
     extra_info: groupExtraInfo,
     registration: registration.id,
     reservation_code: reservationCode,
@@ -107,17 +149,21 @@ export const getUpdateSignupGroupPayload = ({
   id: string;
   registration: Registration;
 }): UpdateSignupGroupMutationInput => {
-  const { extraInfo: groupExtraInfo, signups: signupsValues } = formValues;
+  const {
+    contactPerson,
+    extraInfo: groupExtraInfo,
+    signups: signupsValues,
+  } = formValues;
 
   const signups: SignupInput[] = signupsValues.map((signupData) =>
     getSignupPayload({
       formValues,
-      responsibleForGroup: signupData.responsibleForGroup,
       signupData,
     })
   );
 
   return {
+    contact_person: getContactPersonPayload(contactPerson),
     extra_info: groupExtraInfo,
     id,
     registration: registration.id,
@@ -135,30 +181,32 @@ export const getSignupGroupDefaultInitialValues =
     signups: [getSignupDefaultInitialValues()],
   });
 
+export const getContactPersonInitialValues = (
+  contactPerson: Partial<ContactPerson>
+): ContactPersonFormFields => ({
+  email: contactPerson.email ?? '',
+  firstName: contactPerson.first_name ?? '',
+  id: contactPerson.id ?? null,
+  lastName: contactPerson.last_name ?? '',
+  membershipNumber: contactPerson.membership_number ?? '',
+  nativeLanguage: contactPerson.native_language ?? '',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: contactPerson.phone_number ?? '',
+  serviceLanguage: contactPerson.service_language ?? '',
+});
+
 export const getSignupGroupInitialValues = (
   signupGroup: SignupGroup
 ): SignupGroupFormFields => {
   const signups: Signup[] = (
     signupGroup.signups ?? /* istanbul ignore next*/ []
-  )
-    .filter(skipFalsyType)
-    .sort((a: Signup, b: Signup) => {
-      if (a.responsible_for_group === b.responsible_for_group) {
-        return 0;
-      }
-      return a.responsible_for_group === true ? -1 : 1;
-    });
-
-  const responsibleSignup = signups[0];
+  ).filter(skipFalsyType);
 
   return {
-    email: responsibleSignup?.email ?? '',
+    contactPerson: getContactPersonInitialValues(
+      signupGroup.contact_person ?? {}
+    ),
     extraInfo: signupGroup.extra_info ?? '',
-    membershipNumber: responsibleSignup?.membership_number ?? '',
-    nativeLanguage: responsibleSignup?.native_language ?? '',
-    notifications: [NOTIFICATIONS.EMAIL],
-    phoneNumber: responsibleSignup?.phone_number ?? '',
-    serviceLanguage: responsibleSignup?.service_language ?? '',
     signups: signups.map((su) => getSignupInitialValues(su)),
     userConsent: signups.every((su) => su.user_consent),
   };
@@ -194,7 +242,7 @@ export const getNewSignups = ({
 
 export const isSignupFieldRequired = (
   registration: Registration,
-  fieldId: SIGNUP_FIELDS | SIGNUP_GROUP_FIELDS
+  fieldId: CONTACT_PERSON_FIELDS | SIGNUP_FIELDS | SIGNUP_GROUP_FIELDS
 ): boolean => registration.mandatory_fields.includes(snakeCase(fieldId));
 
 export const isAnySignupInWaitingList = (signupGroup: SignupGroup): boolean =>
@@ -289,7 +337,17 @@ export const updateSignupGroup = async ({
 
 export const omitSensitiveDataFromSignupGroupPayload = (
   payload: CreateSignupGroupMutationInput | UpdateSignupGroupMutationInput
-) => ({
+): Partial<CreateSignupGroupMutationInput> => ({
   ...omit(payload, ['extra_info']),
-  signups: payload.signups.map((s) => omitSensitiveDataFromSignupPayload(s)),
+  contact_person: payload.contact_person
+    ? (omitSensitiveDataFromContactPerson(
+        payload.contact_person
+      ) as ContactPersonInput)
+    : payload.contact_person,
+  signups: payload.signups.map((s) =>
+    omitSensitiveDataFromSignupPayload(s)
+  ) as SignupInput[],
 });
+
+export const getContactPersonFieldName = (name: string) =>
+  `${SIGNUP_GROUP_FIELDS.CONTACT_PERSON}.${name}`;

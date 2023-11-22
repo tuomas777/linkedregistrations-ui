@@ -30,7 +30,7 @@ import { signupGroup } from '../__mocks__/signupGroup';
 import { TEST_SIGNUP_GROUP_ID } from '../constants';
 import EditSignupGroupPage from '../EditSignupGroupPage';
 import {
-  findFirstNameInput,
+  findFirstNameInputs,
   shouldRenderSignupFormFields,
   shouldRenderSignupFormReadOnlyFields,
   tryToCancel,
@@ -51,7 +51,7 @@ const renderComponent = (session: ExtendedSession | null = defaultSession) =>
 test.skip('page is accessible', async () => {
   const { container } = renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   expect(await axe(container)).toHaveNoViolations();
 });
 
@@ -112,7 +112,7 @@ test('should cancel signup group', async () => {
   pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToCancel();
 
   await waitFor(() =>
@@ -132,7 +132,7 @@ test('should show error message when cancelling signup group fails', async () =>
   pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToCancel();
 
   await screen.findByRole(
@@ -152,7 +152,7 @@ test('should update signup group', async () => {
   pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToUpdate();
 
   await screen.findByRole('alert', {
@@ -165,7 +165,7 @@ test('should not show back button if returnPath is not defined', async () => {
   pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   expect(
     screen.queryByRole('button', { name: 'Takaisin' })
   ).not.toBeInTheDocument();
@@ -182,7 +182,26 @@ test('should route to page defined in returnPath when clicking back button', asy
   });
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
+  const backButton = screen.getByRole('button', { name: 'Takaisin' });
+  await user.click(backButton);
+  expect(mockRouter.asPath).toBe(
+    `/registration/${TEST_REGISTRATION_ID}/signup`
+  );
+});
+
+test('should route to the first page defined in returnPath when clicking back button', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(...defaultMocks);
+  pushEditSignupGroupRoute(TEST_REGISTRATION_ID, {
+    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: [
+      ROUTES.SIGNUPS.replace('[registrationId]', TEST_REGISTRATION_ID),
+      'test',
+    ],
+  });
+  renderComponent();
+
+  await findFirstNameInputs();
   const backButton = screen.getByRole('button', { name: 'Takaisin' });
   await user.click(backButton);
   expect(mockRouter.asPath).toBe(
@@ -207,25 +226,6 @@ test('all fields should be read-only if signup is not created by user', async ()
   ).not.toBeInTheDocument();
 });
 
-test('should route to the first page defined in returnPath when clicking back button', async () => {
-  const user = userEvent.setup();
-  setQueryMocks(...defaultMocks);
-  pushEditSignupGroupRoute(TEST_REGISTRATION_ID, {
-    [SIGNUPS_SEARCH_PARAMS.RETURN_PATH]: [
-      ROUTES.SIGNUPS.replace('[registrationId]', TEST_REGISTRATION_ID),
-      'test',
-    ],
-  });
-  renderComponent();
-
-  await findFirstNameInput();
-  const backButton = screen.getByRole('button', { name: 'Takaisin' });
-  await user.click(backButton);
-  expect(mockRouter.asPath).toBe(
-    `/registration/${TEST_REGISTRATION_ID}/signup`
-  );
-});
-
 test('should show error message when updating signup group fails', async () => {
   setQueryMocks(
     ...defaultMocks,
@@ -236,7 +236,7 @@ test('should show error message when updating signup group fails', async () => {
   pushEditSignupGroupRoute(TEST_REGISTRATION_ID);
   renderComponent();
 
-  await findFirstNameInput();
+  await findFirstNameInputs();
   await tryToUpdate();
 
   await screen.findByRole(

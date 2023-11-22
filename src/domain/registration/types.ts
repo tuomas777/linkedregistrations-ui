@@ -13,8 +13,8 @@ export type Registration = {
   audience_max_age: numberOrNull;
   audience_min_age: numberOrNull;
   confirmation_message: LocalisedObject;
-  created_at: stringOrNull;
   created_by: stringOrNull;
+  created_time: stringOrNull;
   current_attendee_count: number;
   current_waiting_list_count: number;
   enrolment_end_time: string;
@@ -22,8 +22,8 @@ export type Registration = {
   event: Event;
   has_registration_user_access: boolean;
   instructions: LocalisedObject;
-  last_modified_at: stringOrNull;
   last_modified_by: stringOrNull;
+  last_modified_time: stringOrNull;
   mandatory_fields: string[];
   maximum_attendee_capacity: numberOrNull;
   maximum_group_size: numberOrNull;

@@ -20,7 +20,7 @@ const Signups: React.FC = () => {
 
   return (
     <div className={styles.signups}>
-      <h2>{t('titleSignupsInfo')}</h2>
+      <h2>{t('signup.titleSignupsInfo')}</h2>
       {signups.map((signup, index) => {
         return (
           <Signup

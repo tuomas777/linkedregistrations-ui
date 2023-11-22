@@ -67,8 +67,8 @@ describe('useUpdateSignupMutation', () => {
     );
     result.current.mutate({
       id: TEST_SIGNUP_ID,
-      responsible_for_group: true,
       registration: TEST_REGISTRATION_ID,
+      user_consent: true,
     });
 
     await waitFor(() => expect(result.current.data).toEqual(signup));
@@ -90,8 +90,8 @@ describe('useUpdateSignupMutation', () => {
     );
     result.current.mutate({
       id: TEST_SIGNUP_ID,
-      responsible_for_group: true,
       registration: TEST_REGISTRATION_ID,
+      user_consent: true,
     });
 
     await waitFor(() =>

@@ -12,15 +12,20 @@ import {
   callPut,
 } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
-import { NOTIFICATIONS } from '../signupGroup/constants';
 import {
   SignupFields,
   SignupFormFields,
+  SignupGroup,
   SignupGroupFormFields,
 } from '../signupGroup/types';
-
-import { ATTENDEE_STATUS, NOTIFICATION_TYPE } from './constants';
 import {
+  getContactPersonInitialValues,
+  getContactPersonPayload,
+} from '../signupGroup/utils';
+
+import { ATTENDEE_STATUS } from './constants';
+import {
+  ContactPersonInput,
   PatchSignupMutationInput,
   Signup,
   SignupInput,
@@ -114,22 +119,19 @@ export const getSignupInitialValues = (signup: Signup): SignupFormFields => ({
   id: signup.id,
   inWaitingList: signup.attendee_status === ATTENDEE_STATUS.Waitlisted,
   lastName: signup.last_name ?? '',
-  responsibleForGroup: !!signup.responsible_for_group,
   streetAddress: signup.street_address ?? '',
   zipcode: signup.zipcode ?? '',
 });
 
 export const getSignupGroupInitialValuesFromSignup = (
-  signup: Signup
+  signup: Signup,
+  signupGroup?: SignupGroup
 ): SignupGroupFormFields => {
+  const contactPerson =
+    signupGroup?.contact_person ?? signup?.contact_person ?? {};
   return {
-    email: signup.email ?? '',
+    contactPerson: getContactPersonInitialValues(contactPerson),
     extraInfo: '',
-    membershipNumber: signup.membership_number ?? '',
-    nativeLanguage: signup.native_language ?? '',
-    notifications: [NOTIFICATIONS.EMAIL],
-    phoneNumber: signup.phone_number ?? '',
-    serviceLanguage: signup.service_language ?? '',
     signups: [getSignupInitialValues(signup)],
     userConsent: !!signup.user_consent,
   };
@@ -137,21 +139,12 @@ export const getSignupGroupInitialValuesFromSignup = (
 
 export const getSignupPayload = ({
   formValues,
-  responsibleForGroup,
   signupData,
 }: {
   formValues: SignupGroupFormFields;
-  responsibleForGroup: boolean;
   signupData: SignupFormFields;
 }): SignupInput => {
-  const {
-    email,
-    membershipNumber,
-    nativeLanguage,
-    phoneNumber,
-    serviceLanguage,
-    userConsent,
-  } = formValues;
+  const { userConsent } = formValues;
 
   const {
     city,
@@ -168,17 +161,10 @@ export const getSignupPayload = ({
     date_of_birth: dateOfBirth
       ? formatDate(stringToDate(dateOfBirth), 'yyyy-MM-dd')
       : null,
-    email: email || null,
     extra_info: extraInfo || '',
     first_name: firstName || '',
     id: id ?? undefined,
     last_name: lastName || '',
-    membership_number: membershipNumber,
-    native_language: nativeLanguage || null,
-    notifications: NOTIFICATION_TYPE.EMAIL,
-    phone_number: phoneNumber || null,
-    responsible_for_group: responsibleForGroup,
-    service_language: serviceLanguage || null,
     street_address: streetAddress || null,
     zipcode: zipcode || null,
     user_consent: userConsent,
@@ -187,20 +173,25 @@ export const getSignupPayload = ({
 
 export const getUpdateSignupPayload = ({
   formValues,
+  hasSignupGroup,
   id,
   registration,
 }: {
   formValues: SignupGroupFormFields;
+  hasSignupGroup: boolean;
   id: string;
   registration: Registration;
 }): UpdateSignupMutationInput => {
+  const { contactPerson } = formValues;
   const signupData = formValues.signups[0] ?? {};
   return {
     ...getSignupPayload({
       formValues,
-      responsibleForGroup: !!signupData.responsibleForGroup,
       signupData,
     }),
+    contact_person: !hasSignupGroup
+      ? getContactPersonPayload(contactPerson)
+      : undefined,
     id,
     registration: registration.id,
   };
@@ -218,29 +209,48 @@ export const getSignupFields = ({
 
   return {
     attendeeStatus: signup.attendee_status ?? ATTENDEE_STATUS.Attending,
-    email: signup.email ?? '',
+    email: signup.contact_person?.email ?? '',
     firstName,
     fullName,
     lastName,
-    phoneNumber: signup.phone_number ?? '',
+    phoneNumber: signup.contact_person?.phone_number ?? '',
     signupGroup,
   };
 };
 
-export const omitSensitiveDataFromSignupPayload = (
-  payload: SignupInput | UpdateSignupMutationInput
-) =>
+export const omitSensitiveDataFromContactPerson = (
+  payload: ContactPersonInput
+): Partial<ContactPersonInput> =>
   omit(payload, [
-    'city',
-    'date_of_birth',
     'email',
-    'extra_info',
     'first_name',
     'last_name',
     'membership_number',
     'native_language',
     'phone_number',
     'service_language',
-    'street_address',
-    'zipcode',
   ]);
+
+export const omitSensitiveDataFromSignupPayload = (
+  payload: SignupInput | UpdateSignupMutationInput
+): Partial<SignupInput | UpdateSignupMutationInput> =>
+  omit(
+    {
+      ...payload,
+      contact_person: payload.contact_person
+        ? (omitSensitiveDataFromContactPerson(
+            payload.contact_person
+          ) as ContactPersonInput)
+        : payload.contact_person,
+    },
+    [
+      '__typename',
+      'city',
+      'date_of_birth',
+      'extra_info',
+      'first_name',
+      'last_name',
+      'street_address',
+      'zipcode',
+    ]
+  );

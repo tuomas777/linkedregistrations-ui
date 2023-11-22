@@ -1,7 +1,7 @@
 import { screen, userEvent, within } from '../../utils/testUtils';
 
-export const findFirstNameInput = () => {
-  return screen.findByRole('textbox', { name: /etunimi/i });
+export const findFirstNameInputs = () => {
+  return screen.findAllByRole('textbox', { name: /etunimi/i });
 };
 
 export const getSignupFormElement = (
@@ -42,9 +42,9 @@ export const getSignupFormElement = (
     case 'emailInput':
       return screen.getByLabelText(/sähköpostiosoite/i);
     case 'firstNameInput':
-      return screen.getByLabelText(/etunimi/i);
+      return screen.getAllByLabelText(/etunimi/i)[0];
     case 'lastNameInput':
-      return screen.getByLabelText(/sukunimi/i);
+      return screen.getAllByLabelText(/sukunimi/i)[0];
     case 'membershipNumberInput':
       return screen.getByLabelText(/jäsenkortin numero/i);
     case 'nativeLanguageButton':
@@ -73,7 +73,7 @@ export const getSignupFormElement = (
 };
 
 export const shouldRenderSignupFormFields = async () => {
-  await findFirstNameInput();
+  await findFirstNameInputs();
   getSignupFormElement('lastNameInput');
   getSignupFormElement('streetAddressInput');
   getSignupFormElement('dateOfBirthInput');
@@ -90,7 +90,7 @@ export const shouldRenderSignupFormFields = async () => {
 };
 
 export const shouldRenderSignupFormReadOnlyFields = async () => {
-  const firstNameInput = await findFirstNameInput();
+  const firstNameInput = (await findFirstNameInputs())[0];
   const lastNameInput = getSignupFormElement('lastNameInput');
   const streetAddressInput = getSignupFormElement('streetAddressInput');
   const dateOfBirthInput = getSignupFormElement('dateOfBirthInput');

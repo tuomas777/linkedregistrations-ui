@@ -56,7 +56,6 @@ const useCommonListProps = ({
   };
 
   const pageHref = (index: number) => {
-    router.query;
     const [pathname] = router.asPath.split('?');
     const searchQuery = replaceQueryParams({ page: index > 1 ? index : null });
 

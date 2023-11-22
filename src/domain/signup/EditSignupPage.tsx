@@ -9,8 +9,10 @@ import NotFound from '../notFound/NotFound';
 import useEventAndRegistrationData from '../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../registration/types';
 import SignInRequired from '../signInRequired/SignInRequired';
+import { useSignupGroupQuery } from '../signupGroup/query';
 import SignupGroupForm from '../signupGroup/signupGroupForm/SignupGroupForm';
 import { SignupGroupFormProvider } from '../signupGroup/signupGroupFormContext/SignupGroupFormContext';
+import { SignupGroup } from '../signupGroup/types';
 
 import useSignupData from './hooks/useSignupData';
 import SignupPageMeta from './signupPageMeta/SignupPageMeta';
@@ -22,15 +24,25 @@ type Props = {
   event: Event;
   registration: Registration;
   signup: Signup;
+  signupGroup?: SignupGroup;
 };
 
-const EditSignupPage: React.FC<Props> = ({ event, registration, signup }) => {
-  const initialValues = getSignupGroupInitialValuesFromSignup(signup);
+const EditSignupPage: React.FC<Props> = ({
+  event,
+  registration,
+  signup,
+  signupGroup,
+}) => {
+  const initialValues = getSignupGroupInitialValuesFromSignup(
+    signup,
+    signupGroup
+  );
 
   return (
     <MainContent>
       <SignupPageMeta event={event} />
       <SignupGroupForm
+        contactPersonFieldsDisabled={!!signup.signup_group}
         event={event}
         initialValues={initialValues}
         mode="update-signup"
@@ -51,13 +63,29 @@ const EditSignupPageWrapper: React.FC = () => {
   const { data: session } = useSession() as {
     data: ExtendedSession | null;
   };
+  const {
+    data: signupGroup,
+    isFetching: isFetchingSignupGroup,
+    status: signupGroupStatus,
+  } = useSignupGroupQuery({
+    args: { id: signup?.signup_group as string },
+    options: { enabled: !!signup?.signup_group },
+    session,
+  });
+
+  const isLoadingSignupGroup =
+    signupGroupStatus === 'loading' && isFetchingSignupGroup;
 
   if (!session) {
     return <SignInRequired />;
   }
 
   return (
-    <LoadingSpinner isLoading={isLoadingSignup || isLoadingEventOrRegistration}>
+    <LoadingSpinner
+      isLoading={
+        isLoadingSignup || isLoadingEventOrRegistration || isLoadingSignupGroup
+      }
+    >
       {event && registration && signup ? (
         <SignupGroupFormProvider registration={registration}>
           <SignupServerErrorsProvider>
@@ -65,6 +93,7 @@ const EditSignupPageWrapper: React.FC = () => {
               event={event}
               registration={registration}
               signup={signup}
+              signupGroup={signupGroup}
             />
           </SignupServerErrorsProvider>
         </SignupGroupFormProvider>

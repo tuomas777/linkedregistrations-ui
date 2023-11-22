@@ -35,12 +35,12 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
         <div className={styles.nameRow}>
           <ReadOnlyTextInput
             id={getFieldId(SIGNUP_FIELDS.FIRST_NAME)}
-            label={t(`labelFirstName`)}
+            label={t(`signup.labelFirstName`)}
             value={getFieldText(signup.firstName)}
           />
           <ReadOnlyTextInput
             id={getFieldId(SIGNUP_FIELDS.LAST_NAME)}
-            label={t(`labelLastName`)}
+            label={t(`signup.labelLastName`)}
             value={getFieldText(signup.lastName)}
           />
         </div>
@@ -49,12 +49,12 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
         <div className={styles.streetAddressRow}>
           <ReadOnlyTextInput
             id={getFieldId(SIGNUP_FIELDS.DATE_OF_BIRTH)}
-            label={t(`labelDateOfBirth`)}
+            label={t(`signup.labelDateOfBirth`)}
             value={getFieldText(signup.dateOfBirth)}
           />
           <ReadOnlyTextInput
             id={getFieldId(SIGNUP_FIELDS.STREET_ADDRESS)}
-            label={t(`labelStreetAddress`)}
+            label={t(`signup.labelStreetAddress`)}
             value={getFieldText(signup.streetAddress)}
           />
         </div>
@@ -63,12 +63,12 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
         <div className={styles.zipRow}>
           <ReadOnlyTextInput
             id={getFieldId(SIGNUP_FIELDS.ZIPCODE)}
-            label={t(`labelZipcode`)}
+            label={t(`signup.labelZipcode`)}
             value={getFieldText(signup.zipcode)}
           />
           <ReadOnlyTextInput
             id={getFieldId(SIGNUP_FIELDS.CITY)}
-            label={t(`labelCity`)}
+            label={t(`signup.labelCity`)}
             value={getFieldText(signup.city)}
           />
         </div>
@@ -77,7 +77,7 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
         id={getFieldId(SIGNUP_FIELDS.EXTRA_INFO)}
         className={styles.textArea}
         readOnly
-        label={t(`labelSignupExtraInfo`)}
+        label={t(`signup.labelExtraInfo`)}
         value={getFieldText(signup.extraInfo)}
       />
     </div>

@@ -6,8 +6,13 @@ import { fakeRegistration } from '../../../utils/mockDataUtils';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import { Registration } from '../../registration/types';
 import { NOTIFICATIONS } from '../constants';
-import { SignupFormFields, SignupGroupFormFields } from '../types';
 import {
+  ContactPersonFormFields,
+  SignupFormFields,
+  SignupGroupFormFields,
+} from '../types';
+import {
+  getContactPersonSchema,
   getSignupGroupSchema,
   getSignupSchema,
   isAboveMinAge,
@@ -60,6 +65,18 @@ const testSignupSchema = async (
 ) => {
   try {
     await getSignupSchema(registration).validate(signup);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const testContactPersonSchema = async (
+  registration: Registration,
+  contactPerson: ContactPersonFormFields
+) => {
+  try {
+    await getContactPersonSchema(registration).validate(contactPerson);
     return true;
   } catch (e) {
     return false;
@@ -140,7 +157,6 @@ describe('signupSchema function', () => {
     id: null,
     inWaitingList: true,
     lastName: 'last name',
-    responsibleForGroup: true,
     streetAddress: 'Street address',
     zipcode: '00100',
   };
@@ -263,16 +279,130 @@ describe('signupSchema function', () => {
   });
 });
 
-describe('testSignupGroupSchema function', () => {
+describe('getContactPersonSchema function', () => {
   const registration = fakeRegistration();
-  const validSignupGroup: SignupGroupFormFields = {
+  const validContactPerson: ContactPersonFormFields = {
     email: 'user@email.com',
-    extraInfo: '',
+    firstName: 'First name',
+    id: null,
+    lastName: 'First name',
     membershipNumber: '',
     nativeLanguage: 'fi',
     notifications: [NOTIFICATIONS.EMAIL],
     phoneNumber: '',
     serviceLanguage: 'fi',
+  };
+
+  test('should return true if contac person data is valid', async () => {
+    expect(
+      await testContactPersonSchema(registration, validContactPerson)
+    ).toBe(true);
+  });
+
+  test('should return false if email is missing', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        email: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if email is invalid', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        email: 'user@email.',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if phone number is missing', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        phoneNumber: '',
+        notifications: [NOTIFICATIONS.SMS],
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if phone number is invalid', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        phoneNumber: 'xxx',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if notifications is empty array', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        notifications: [],
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if native language is empty', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        nativeLanguage: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if service language is empty', async () => {
+    expect(
+      await testContactPersonSchema(registration, {
+        ...validContactPerson,
+        serviceLanguage: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return false if membership number is set as mandatory field but value is empty', async () => {
+    expect(
+      await testContactPersonSchema(
+        fakeRegistration({ mandatory_fields: ['membership_number'] }),
+        {
+          ...validContactPerson,
+          membershipNumber: '',
+        }
+      )
+    ).toBe(false);
+  });
+
+  test('should return false if phone number is set as mandatory field but value is empty', async () => {
+    expect(
+      await testContactPersonSchema(
+        fakeRegistration({ mandatory_fields: ['phone_number'] }),
+        {
+          ...validContactPerson,
+          phoneNumber: '',
+        }
+      )
+    ).toBe(false);
+  });
+});
+
+describe('testSignupGroupSchema function', () => {
+  const registration = fakeRegistration();
+  const validSignupGroup: SignupGroupFormFields = {
+    contactPerson: {
+      email: 'user@email.com',
+      firstName: 'First name',
+      id: null,
+      lastName: 'First name',
+      membershipNumber: '',
+      nativeLanguage: 'fi',
+      notifications: [NOTIFICATIONS.EMAIL],
+      phoneNumber: '',
+      serviceLanguage: 'fi',
+    },
+    extraInfo: '',
     signups: [],
     userConsent: true,
   };
@@ -287,7 +417,10 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        email: '',
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          email: '',
+        },
       })
     ).toBe(false);
   });
@@ -296,7 +429,10 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        email: 'user@email.',
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          email: 'user@email.',
+        },
       })
     ).toBe(false);
   });
@@ -305,8 +441,11 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        phoneNumber: '',
-        notifications: [NOTIFICATIONS.SMS],
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          phoneNumber: '',
+          notifications: [NOTIFICATIONS.SMS],
+        },
       })
     ).toBe(false);
   });
@@ -315,7 +454,10 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        phoneNumber: 'xxx',
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          phoneNumber: 'xxx',
+        },
       })
     ).toBe(false);
   });
@@ -324,7 +466,10 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        notifications: [],
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          notifications: [],
+        },
       })
     ).toBe(false);
   });
@@ -333,7 +478,10 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        nativeLanguage: '',
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          nativeLanguage: '',
+        },
       })
     ).toBe(false);
   });
@@ -342,7 +490,10 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        serviceLanguage: '',
+        contactPerson: {
+          ...validSignupGroup.contactPerson,
+          serviceLanguage: '',
+        },
       })
     ).toBe(false);
   });
@@ -353,7 +504,10 @@ describe('testSignupGroupSchema function', () => {
         fakeRegistration({ mandatory_fields: ['membership_number'] }),
         {
           ...validSignupGroup,
-          membershipNumber: '',
+          contactPerson: {
+            ...validSignupGroup.contactPerson,
+            membershipNumber: '',
+          },
         }
       )
     ).toBe(false);
@@ -377,7 +531,10 @@ describe('testSignupGroupSchema function', () => {
         fakeRegistration({ mandatory_fields: ['phone_number'] }),
         {
           ...validSignupGroup,
-          phoneNumber: '',
+          contactPerson: {
+            ...validSignupGroup.contactPerson,
+            phoneNumber: '',
+          },
         }
       )
     ).toBe(false);

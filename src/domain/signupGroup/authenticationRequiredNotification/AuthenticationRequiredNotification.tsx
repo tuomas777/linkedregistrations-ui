@@ -11,7 +11,11 @@ const AuthenticationRequiredNotification: React.FC = () => {
   const { t } = useTranslation('common');
 
   return (
-    <Notification className={styles.notification} label={t('common:signIn')}>
+    <Notification
+      className={styles.notification}
+      label={t('common:signIn')}
+      type="info"
+    >
       <div>{t('common:signInToEnrol')}</div>
       <Button
         className={styles.button}

@@ -38,7 +38,7 @@ import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsCon
 import { Signup } from '../../signup/types';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
-  NOTIFICATIONS,
+  CONTACT_PERSON_FIELDS,
   SIGNUP_GROUP_ACTIONS,
   SIGNUP_GROUP_FIELDS,
 } from '../constants';
@@ -52,7 +52,7 @@ import ParticipantAmountSelector from '../participantAmountSelector/ParticipantA
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFormFields, SignupGroup, SignupGroupFormFields } from '../types';
-import { isSignupFieldRequired } from '../utils';
+import { getContactPersonFieldName, isSignupFieldRequired } from '../utils';
 import {
   getSignupGroupSchema,
   scrollToFirstError,
@@ -60,6 +60,7 @@ import {
 } from '../validation';
 
 import AvailableSeatsText from './availableSeatsText/AvailableSeatsText';
+import CannotEditContactPersonNotification from './cannotEditContactPersonNotification/CannotEditContactPersonNotification';
 import styles from './signupGroupForm.module.scss';
 import Signups from './signups/Signups';
 
@@ -69,6 +70,7 @@ const RegistrationWarning = dynamic(
 );
 
 type Props = {
+  contactPersonFieldsDisabled?: boolean;
   event: Event;
   initialValues: SignupGroupFormFields;
   mode: 'create-signup-group' | 'update-signup' | 'update-signup-group';
@@ -78,6 +80,7 @@ type Props = {
 };
 
 const SignupGroupForm: React.FC<Props> = ({
+  contactPersonFieldsDisabled,
   event,
   initialValues,
   mode,
@@ -103,6 +106,10 @@ const SignupGroupForm: React.FC<Props> = ({
   const readOnly = !allowToEdit;
 
   const { t } = useTranslation(['signup', 'common']);
+  const titleCannotEditContactPerson = contactPersonFieldsDisabled
+    ? t('signup:titleCannotEditContactPerson')
+    : undefined;
+
   const {
     deleteSignup,
     saving: savingSignup,
@@ -248,7 +255,9 @@ const SignupGroupForm: React.FC<Props> = ({
         () => undefined
       }
       validationSchema={
-        readOnly ? undefined : getSignupGroupSchema(registration)
+        readOnly
+          ? undefined
+          : getSignupGroupSchema(registration, !contactPersonFieldsDisabled)
       }
     >
       {({ setErrors, setFieldValue, setTouched, values }) => {
@@ -263,7 +272,10 @@ const SignupGroupForm: React.FC<Props> = ({
             setServerErrorItems([]);
             clearErrors();
 
-            await getSignupGroupSchema(registration).validate(values, {
+            await getSignupGroupSchema(
+              registration,
+              !contactPersonFieldsDisabled
+            ).validate(values, {
               abortEarly: false,
             });
 
@@ -309,7 +321,7 @@ const SignupGroupForm: React.FC<Props> = ({
                   <ServerErrorSummary errors={serverErrorItems} />
                   <RegistrationWarning registration={registration} />
 
-                  {!isEditingMode ? (
+                  {!isEditingMode && (
                     <>
                       {isRegistrationPossible(registration) && (
                         <>
@@ -335,10 +347,9 @@ const SignupGroupForm: React.FC<Props> = ({
                         registration={registration}
                       />
                     </>
-                  ) : (
-                    <h2>{t('titleSignups')}</h2>
                   )}
 
+                  {isEditingMode && <h2>{t('signup.titleSignups')}</h2>}
                   <Signups
                     formDisabled={formDisabled}
                     isEditingMode={isEditingMode}
@@ -347,74 +358,125 @@ const SignupGroupForm: React.FC<Props> = ({
                   />
 
                   <h2 className={styles.sectionTitle}>
-                    {t('titleInformantInfo')}
+                    {t('contactPerson.titleContactPersonInfo')}
                   </h2>
                   <Divider />
 
-                  <Fieldset heading={t(`titleContactInfo`)}>
+                  {contactPersonFieldsDisabled && signup && (
+                    <CannotEditContactPersonNotification signup={signup} />
+                  )}
+                  <Fieldset heading={t(`contactPerson.titleContactInfo`)}>
                     <FormGroup>
                       <div className={styles.emailRow}>
                         <Field
-                          name={SIGNUP_GROUP_FIELDS.EMAIL}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.EMAIL
+                          )}
                           component={TextInputField}
-                          disabled={formDisabled}
-                          label={t(`labelEmail`)}
-                          placeholder={getPlaceholder(t(`placeholderEmail`))}
-                          readOnly={readOnly}
-                          required
-                        />
-                        <Field
-                          name={SIGNUP_GROUP_FIELDS.PHONE_NUMBER}
-                          component={PhoneInputField}
-                          disabled={formDisabled}
-                          label={t(`labelPhoneNumber`)}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
+                          label={t(`contactPerson.labelEmail`)}
                           placeholder={getPlaceholder(
-                            t(`placeholderPhoneNumber`)
+                            t(`contactPerson.placeholderEmail`)
                           )}
                           readOnly={readOnly}
-                          required={
-                            values.notifications.includes(NOTIFICATIONS.SMS) ||
-                            isSignupFieldRequired(
-                              registration,
-                              SIGNUP_GROUP_FIELDS.PHONE_NUMBER
-                            )
-                          }
+                          required
+                          title={titleCannotEditContactPerson}
+                        />
+                        <Field
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                          )}
+                          component={PhoneInputField}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
+                          label={t(`contactPerson.labelPhoneNumber`)}
+                          placeholder={getPlaceholder(
+                            t(`contactPerson.placeholderPhoneNumber`)
+                          )}
+                          readOnly={readOnly}
+                          required={isSignupFieldRequired(
+                            registration,
+                            CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                          )}
+                          title={titleCannotEditContactPerson}
                           type="tel"
+                        />
+                      </div>
+                    </FormGroup>
+                    <FormGroup>
+                      <div className={styles.nameRow}>
+                        <Field
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.FIRST_NAME
+                          )}
+                          component={TextInputField}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
+                          label={t(`contactPerson.labelFirstName`)}
+                          placeholder={getPlaceholder(
+                            t(`contactPerson.placeholderFirstName`)
+                          )}
+                          readOnly={readOnly}
+                          required
+                          title={titleCannotEditContactPerson}
+                        />
+                        <Field
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.LAST_NAME
+                          )}
+                          component={PhoneInputField}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
+                          label={t(`contactPerson.labelLastName`)}
+                          placeholder={getPlaceholder(
+                            t(`contactPerson.placeholderLastName`)
+                          )}
+                          readOnly={readOnly}
+                          required={isSignupFieldRequired(
+                            registration,
+                            CONTACT_PERSON_FIELDS.LAST_NAME
+                          )}
+                          title={titleCannotEditContactPerson}
                         />
                       </div>
                     </FormGroup>
                   </Fieldset>
 
-                  <Fieldset heading={t(`titleNotifications`)}>
+                  <Fieldset heading={t(`contactPerson.titleNotifications`)}>
                     <FormGroup>
                       <Field
-                        name={SIGNUP_GROUP_FIELDS.NOTIFICATIONS}
+                        name={getContactPersonFieldName(
+                          CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                        )}
                         className={styles.notifications}
                         component={CheckboxGroupField}
                         disabled={true}
-                        label={getPlaceholder(t(`titleNotifications`))}
+                        label={getPlaceholder(
+                          t(`contactPerson.titleNotifications`)
+                        )}
                         options={notificationOptions}
                         required
+                        title={titleCannotEditContactPerson}
                       />
                     </FormGroup>
                   </Fieldset>
 
-                  <Fieldset heading={t(`titleAdditionalInfo`)}>
+                  <Fieldset heading={t(`contactPerson.titleAdditionalInfo`)}>
                     <FormGroup>
                       <div className={styles.membershipNumberRow}>
                         <Field
-                          name={SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
+                          )}
                           component={TextInputField}
-                          disabled={formDisabled}
-                          label={t(`labelMembershipNumber`)}
+                          disabled={formDisabled || contactPersonFieldsDisabled}
+                          label={t(`contactPerson.labelMembershipNumber`)}
                           placeholder={getPlaceholder(
-                            t(`placeholderMembershipNumber`)
+                            t(`contactPerson.placeholderMembershipNumber`)
                           )}
                           readOnly={readOnly}
                           required={isSignupFieldRequired(
                             registration,
-                            SIGNUP_GROUP_FIELDS.MEMBERSHIP_NUMBER
+                            CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
                           )}
+                          title={titleCannotEditContactPerson}
                         />
                       </div>
                     </FormGroup>
@@ -422,25 +484,39 @@ const SignupGroupForm: React.FC<Props> = ({
                       <div className={styles.nativeLanguageRow}>
                         <Field
                           component={SingleSelectField}
-                          name={SIGNUP_GROUP_FIELDS.NATIVE_LANGUAGE}
-                          disabled={formDisabled || readOnly}
-                          label={t(`labelNativeLanguage`)}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE
+                          )}
+                          disabled={
+                            formDisabled ||
+                            contactPersonFieldsDisabled ||
+                            readOnly
+                          }
+                          label={t(`contactPerson.labelNativeLanguage`)}
                           options={languageOptions}
                           placeholder={getPlaceholder(
-                            t(`placeholderNativeLanguage`)
+                            t(`contactPerson.placeholderNativeLanguage`)
                           )}
                           required
+                          title={titleCannotEditContactPerson}
                         />
                         <Field
                           component={SingleSelectField}
-                          name={SIGNUP_GROUP_FIELDS.SERVICE_LANGUAGE}
-                          disabled={formDisabled || readOnly}
-                          label={t(`labelServiceLanguage`)}
+                          name={getContactPersonFieldName(
+                            CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE
+                          )}
+                          disabled={
+                            formDisabled ||
+                            contactPersonFieldsDisabled ||
+                            readOnly
+                          }
+                          label={t(`contactPerson.labelServiceLanguage`)}
                           options={serviceLanguageOptions}
                           placeholder={getPlaceholder(
-                            t(`placeholderServiceLanguage`)
+                            t(`contactPerson.placeholderServiceLanguage`)
                           )}
                           required
+                          title={titleCannotEditContactPerson}
                         />
                       </div>
                     </FormGroup>
@@ -485,14 +561,16 @@ const SignupGroupForm: React.FC<Props> = ({
                         />
                       </FormGroup>
 
-                      <ButtonWrapper>
-                        <Button
-                          disabled={formDisabled || readOnly}
-                          onClick={handleSubmit}
-                        >
-                          {t('buttonGoToSummary')}
-                        </Button>
-                      </ButtonWrapper>
+                      {!isEditingMode && (
+                        <ButtonWrapper>
+                          <Button
+                            disabled={formDisabled || readOnly}
+                            onClick={handleSubmit}
+                          >
+                            {t('buttonGoToSummary')}
+                          </Button>
+                        </ButtonWrapper>
+                      )}
                     </>
                   )}
                 </FormContainer>
