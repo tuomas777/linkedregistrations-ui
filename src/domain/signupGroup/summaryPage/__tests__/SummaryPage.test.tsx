@@ -29,6 +29,7 @@ import { ROUTES } from '../../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
 import { registration } from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
+import { TEST_SIGNUP_ID } from '../../../signup/constants';
 import { mockedUserResponse } from '../../../user/__mocks__/user';
 import { NOTIFICATIONS, TEST_SIGNUP_GROUP_ID } from '../../constants';
 import { SignupGroupFormFields } from '../../types';
@@ -47,25 +48,39 @@ beforeEach(() => {
   sessionStorage.clear();
 });
 
-const signup = fakeSignup();
+const signup = fakeSignup({ id: TEST_SIGNUP_ID });
 
 const signupGroup = fakeSignupGroup({
   id: TEST_SIGNUP_GROUP_ID,
-  signups: [signup],
+  signups: [signup, fakeSignup()],
 });
 
-const signupGroupValues: SignupGroupFormFields = {
-  contactPerson: {
-    email: 'participant@email.com',
-    firstName: 'First name',
-    id: null,
-    lastName: 'Last name',
-    membershipNumber: '',
-    nativeLanguage: 'fi',
-    notifications: [NOTIFICATIONS.EMAIL],
-    phoneNumber: '+358 44 123 4567',
-    serviceLanguage: 'fi',
-  },
+const signupValues = {
+  city: 'City',
+  dateOfBirth: formatDate(subYears(new Date(), 9)),
+  extraInfo: '',
+  firstName: 'First name',
+  id: null,
+  inWaitingList: false,
+  lastName: 'Last name',
+  streetAddress: 'Street address',
+  zipcode: '00100',
+};
+
+const contactPersonValues = {
+  email: 'participant@email.com',
+  firstName: 'First name',
+  id: null,
+  lastName: 'Last name',
+  membershipNumber: '',
+  nativeLanguage: 'fi',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: '+358 44 123 4567',
+  serviceLanguage: 'fi',
+};
+
+const commonSignupGroupValues = {
+  contactPerson: contactPersonValues,
   extraInfo: '',
   signups: [
     {
@@ -81,6 +96,17 @@ const signupGroupValues: SignupGroupFormFields = {
     },
   ],
   userConsent: true,
+};
+
+const signupGroupWithSingleSignupValues: SignupGroupFormFields = {
+  ...commonSignupGroupValues,
+  signups: [{ ...signupValues }],
+};
+
+const signupGroupValues: SignupGroupFormFields = {
+  ...commonSignupGroupValues,
+  contactPerson: contactPersonValues,
+  signups: [signupValues, signupValues],
 };
 
 const defaultMocks = [
@@ -156,6 +182,65 @@ test('should route to signup completed page', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json([signup]))
+    )
+  );
+
+  setSignupGroupFormSessionStorageValues({
+    registrationId: registration.id,
+    seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: signupGroupWithSingleSignupValues,
+  });
+
+  pushSummaryPageRoute(registration.id);
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const submitButton = getSubmitButton();
+  await user.click(submitButton);
+
+  await waitFor(() =>
+    expect(mockRouter.asPath).toBe(
+      `/registration/${registration.id}/signup/${TEST_SIGNUP_ID}/completed`
+    )
+  );
+});
+
+test('should show server errors when creating signup request fails', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(
+    ...defaultMocks,
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(
+        ctx.status(400),
+        ctx.json({ city: ['Tämän kentän arvo ei voi olla "null".'] })
+      )
+    )
+  );
+
+  setSignupGroupFormSessionStorageValues({
+    registrationId: registration.id,
+    seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: signupGroupWithSingleSignupValues,
+  });
+
+  pushSummaryPageRoute(registration.id);
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const submitButton = getSubmitButton();
+  await user.click(submitButton);
+
+  await screen.findByText(/lomakkeella on seuraavat virheet/i);
+});
+
+test('should route to signup group completed page', async () => {
+  const user = userEvent.setup();
+  setQueryMocks(
+    ...defaultMocks,
     rest.post(`*/signup_group/`, (req, res, ctx) =>
       res(ctx.status(201), ctx.json(signupGroup))
     )
@@ -182,7 +267,7 @@ test('should route to signup completed page', async () => {
   );
 });
 
-test('should show server errors when post request fails', async () => {
+test('should show server errors when creating signup group request fails', async () => {
   const user = userEvent.setup();
   setQueryMocks(
     ...defaultMocks,

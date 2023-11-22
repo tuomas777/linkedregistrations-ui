@@ -19,6 +19,7 @@ export const TEST_CONTACT_PERSON_ID = 'contact:0';
 export const TEST_SIGNUP_ID = 'signup:1';
 
 export enum SIGNUP_ACTIONS {
+  CREATE = 'create',
   DELETE = 'delete',
   UPDATE = 'update',
 }

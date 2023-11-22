@@ -9,6 +9,7 @@ import {
   callDelete,
   callGet,
   callPatch,
+  callPost,
   callPut,
 } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
@@ -26,6 +27,8 @@ import {
 import { ATTENDEE_STATUS } from './constants';
 import {
   ContactPersonInput,
+  CreateSignupsMutationInput,
+  CreateSignupsResponse,
   PatchSignupMutationInput,
   Signup,
   SignupInput,
@@ -49,6 +52,25 @@ export const fetchSignup = async (
     return data;
   } catch (error) {
     /* istanbul ignore next */
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
+export const createSignups = async ({
+  input,
+  session,
+}: {
+  input: CreateSignupsMutationInput;
+  session: ExtendedSession | null;
+}): Promise<CreateSignupsResponse> => {
+  try {
+    const { data } = await callPost({
+      data: JSON.stringify(input),
+      session,
+      url: '/signup/',
+    });
+    return data;
+  } catch (error) {
     throw Error(JSON.stringify((error as AxiosError).response?.data));
   }
 };
@@ -197,6 +219,32 @@ export const getUpdateSignupPayload = ({
   };
 };
 
+export const getCreateSignupsPayload = ({
+  formValues,
+  registration,
+  reservationCode,
+}: {
+  formValues: SignupGroupFormFields;
+  registration: Registration;
+  reservationCode: string;
+}): CreateSignupsMutationInput => {
+  const { contactPerson, signups: signupsValues } = formValues;
+
+  const signups: SignupInput[] = signupsValues.map((signupData) => ({
+    ...getSignupPayload({
+      formValues,
+      signupData,
+    }),
+    contact_person: getContactPersonPayload(contactPerson),
+  }));
+
+  return {
+    registration: registration.id,
+    reservation_code: reservationCode,
+    signups,
+  };
+};
+
 export const getSignupFields = ({
   signup,
 }: {
@@ -254,3 +302,10 @@ export const omitSensitiveDataFromSignupPayload = (
       'zipcode',
     ]
   );
+
+export const omitSensitiveDataFromSignupsPayload = (
+  payload: CreateSignupsMutationInput
+) => ({
+  ...payload,
+  signups: payload.signups.map((s) => omitSensitiveDataFromSignupPayload(s)),
+});

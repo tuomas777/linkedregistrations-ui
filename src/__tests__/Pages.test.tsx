@@ -30,6 +30,9 @@ import { mockedUserResponse } from '../domain/user/__mocks__/user';
 import AttendanceListPage, {
   getServerSideProps as getAttendanceListPageServerSideProps,
 } from '../pages/registration/[registrationId]/attendance-list/index';
+import SignupCompletedPage, {
+  getServerSideProps as getSignupCompletedPageServerSideProps,
+} from '../pages/registration/[registrationId]/signup/[signupId]/completed';
 import EditSignupPage, {
   getServerSideProps as getEditSignupPageServerSideProps,
 } from '../pages/registration/[registrationId]/signup/[signupId]/edit/index';
@@ -332,6 +335,31 @@ describe('SummaryPage', () => {
   });
 });
 
+describe('SignupCompletedPage', () => {
+  it('should render heading', async () => {
+    singletonRouter.push({
+      pathname: ROUTES.SIGNUP_COMPLETED,
+      query: { signupId: signup.id, registrationId: registration.id },
+    });
+
+    render(<SignupCompletedPage />);
+
+    await isHeadingRendered('Kiitos ilmoittautumisestasi!');
+  });
+
+  it('should prefetch data', async () => {
+    const { props } = (await getSignupCompletedPageServerSideProps({
+      locale: 'fi',
+      query: { registrationId: registration.id, signupId: signup.id },
+    } as unknown as GetServerSidePropsContext)) as {
+      props: ExtendedSSRConfig;
+    };
+
+    isRegistrationInDehydratedState(props.dehydratedState);
+    isSignupInDehydratedState(props.dehydratedState);
+  });
+});
+
 describe('SignupGroupCompletedPage', () => {
   it('should render heading', async () => {
     singletonRouter.push({
@@ -347,12 +375,13 @@ describe('SignupGroupCompletedPage', () => {
   it('should prefetch data', async () => {
     const { props } = (await getSignupGroupCompletedPageServerSideProps({
       locale: 'fi',
-      query: { registrationId: registration.id },
+      query: { registrationId: registration.id, signupGroupId: signupGroup.id },
     } as unknown as GetServerSidePropsContext)) as {
       props: ExtendedSSRConfig;
     };
 
     isRegistrationInDehydratedState(props.dehydratedState);
+    isSignupGroupInDehydratedState(props.dehydratedState);
   });
 });
 
