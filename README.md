@@ -127,25 +127,30 @@ Use .env.local for development.
 
     cp .env.local.example .env.local
 
-| Name                          | Description                                                                 |
-| ----------------------------- | --------------------------------------------------------------------------- |
-| PORT                          | Port where app is running. Default is 3001                                  |
-| NEXT_PUBLIC_LINKED_EVENTS_URL | linkedevents api base url                                                   |
-| NEXT_PUBLIC_ENVIRONMENT       | Environment used in Sentry. Use local for development                       |
-| NEXT_PUBLIC_SENTRY_DSN        | Sentry DSN.                                                                 |
-| SENTRY_URL                    | Url of Sentry instance. Default is https://sentry.test.hel.ninja            |
-| SENTRY_ORG                    | Sentry organization. Default is city-of-helsinki                            |
-| SENTRY_PROJECT                | Sentry project. Default is linkedregistrations-ui                           |
-| SENTRY_AUTH_TOKEN             | Sentry authentication token.                                                |
-| OIDC_ISSUER                   | Tunnistamo SSO service base url. Default is https://api.hel.fi/sso          |
-| OIDC_API_TOKENS_URL           | Tunnistamo api tokens url. Default is https://api.hel.fi/sso/api-tokens/    |
-| OIDC_CLIENT_ID                | Client id. Default is linkedcomponents-ui-test                              |
-| OIDC_CLIENT_SECRET            | Secret of the oidc client                                                   |
-| OIDC_LINKED_EVENTS_API_SCOPE  | Linked Events API scope. Default is https://api.hel.fi/auth/linkedeventsdev |
-| OIDC_TOKEN_URL                | Tunnistamo token endpoint url. Default is https://api.hel.fi/sso/token/     |
-| NEXTAUTH_SECRET               | next-auth secret                                                            |
-| NEXTAUTH_URL                  | Canonical url of the site used by next-auth                                 |
-| NEXT_ENV                      | 'development' or 'production'                                               |
+| Name                                | Description                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------------- |
+| PORT                                | Port where app is running. Default is 3001                                  |
+| NEXT_PUBLIC_LINKED_EVENTS_URL       | linkedevents api base url                                                   |
+| NEXT_PUBLIC_ENVIRONMENT             | Environment used in Sentry. Use local for development                       |
+| NEXT_PUBLIC_SENTRY_DSN              | Sentry DSN.                                                                 |
+| SENTRY_URL                          | Url of Sentry instance. Default is https://sentry.test.hel.ninja            |
+| SENTRY_ORG                          | Sentry organization. Default is city-of-helsinki                            |
+| SENTRY_PROJECT                      | Sentry project. Default is linkedregistrations-ui                           |
+| SENTRY_AUTH_TOKEN                   | Sentry authentication token.                                                |
+| OIDC_ISSUER                         | Tunnistamo SSO service base url. Default is https://api.hel.fi/sso          |
+| OIDC_API_TOKENS_URL                 | Tunnistamo api tokens url. Default is https://api.hel.fi/sso/api-tokens/    |
+| OIDC_CLIENT_ID                      | Client id. Default is linkedcomponents-ui-test                              |
+| OIDC_CLIENT_SECRET                  | Secret of the oidc client                                                   |
+| OIDC_LINKED_EVENTS_API_SCOPE        | Linked Events API scope. Default is https://api.hel.fi/auth/linkedeventsdev |
+| OIDC_TOKEN_URL                      | Tunnistamo token endpoint url. Default is https://api.hel.fi/sso/token/     |
+| NEXT_PUBLIC_MATOMO_URL              | Base url of the Matomo. Defualt is //matomo.hel.fi/                         |
+| NEXT_PUBLIC_MATOMO_SITE_ID          | Site id in the Matomo. Default is 70                                        |
+| NEXT_PUBLIC_MATOMO_JS_TRACKER_FILE  | JavaScript tracker file name. Default is matomo.js                          |
+| NEXT_PUBLIC_MATOMO_PHP_TRACKER_FILE | PHP tracker file name. Default is matomo.php                                |
+| NEXT_PUBLIC_MATOMO_ENABLED          | Flag to enable matomo. Default is false.                                    |
+| NEXTAUTH_SECRET                     | next-auth secret                                                            |
+| NEXTAUTH_URL                        | Canonical url of the site used by next-auth                                 |
+| NEXT_ENV                            | 'development' or 'production'                                               |
 
 ## Url parameters
 
