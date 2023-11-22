@@ -9,6 +9,8 @@ import NextAuth, {
 import { JWT } from 'next-auth/jwt';
 import { OAuthConfig } from 'next-auth/providers/oauth';
 
+import { SIGNOUT_REDIRECT } from '../../../constants';
+import { ROUTES } from '../../../domain/app/routes/constants';
 import {
   getApiTokensRequest,
   refreshAccessTokenRequest,
@@ -162,6 +164,29 @@ export const sessionCallback = (params: {
   return { ...session, accessToken, accessTokenExpires, user, apiTokens };
 };
 
+export const getRedirectCallback =
+  (wellKnown: string) =>
+  async ({ url, baseUrl }: { url: string; baseUrl: string }) => {
+    // Allows relative callback URLs
+    if (url.endsWith(SIGNOUT_REDIRECT)) {
+      const response = await fetch(wellKnown);
+      const { end_session_endpoint } = await response.json();
+      return `${end_session_endpoint}?post_logout_redirect_uri=${encodeURIComponent(
+        `${baseUrl}${ROUTES.LOGOUT}`
+      )}`;
+    }
+
+    if (url.startsWith('/')) {
+      return `${baseUrl}${url}`;
+    }
+    // Allows callback URLs on the same origin
+    if (new URL(url).origin === baseUrl) {
+      return url;
+    }
+
+    return baseUrl;
+  };
+
 export const getNextAuthOptions = () => {
   const {
     env,
@@ -197,6 +222,7 @@ export const getNextAuthOptions = () => {
     debug: env === 'development',
     callbacks: {
       jwt: jwtCallback,
+      redirect: getRedirectCallback(wellKnown),
       session: sessionCallback,
     },
   };

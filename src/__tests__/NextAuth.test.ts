@@ -8,9 +8,11 @@ import mockAxios from 'axios';
 import { advanceTo, clear } from 'jest-date-mock';
 import { Session, User } from 'next-auth';
 
+import { SIGNOUT_REDIRECT } from '../constants';
 import {
   getApiAccessTokens,
   getProfile,
+  getRedirectCallback,
   jwtCallback,
   refreshAccessToken,
   sessionCallback,
@@ -251,5 +253,44 @@ describe('sessionCallback function', () => {
     expect(sessionCallback({ session, token: null as any, user })).toEqual(
       session
     );
+  });
+});
+
+describe('getRedirectCallback function', () => {
+  const oidcIssuer = 'https://api.hel.fi/sso';
+  const wellKnown = `${oidcIssuer}/.well-known/openid-configuration`;
+  const redirectCallback = getRedirectCallback(wellKnown);
+  const baseUrl = 'http://localhost:3000';
+
+  test('should return url from wellKnown endpoint', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () =>
+          Promise.resolve({ end_session_endpoint: 'https://test.fi' }),
+      })
+    ) as any;
+    expect(
+      await redirectCallback({ url: `${baseUrl}${SIGNOUT_REDIRECT}`, baseUrl })
+    ).toBe(
+      'https://test.fi?post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogout'
+    );
+  });
+
+  test('should return correct url for relative url', async () => {
+    expect(await redirectCallback({ url: `/test`, baseUrl })).toBe(
+      `${baseUrl}/test`
+    );
+  });
+
+  test('should return url if URLs are on the same origin', async () => {
+    expect(await redirectCallback({ url: `${baseUrl}/test`, baseUrl })).toBe(
+      `${baseUrl}/test`
+    );
+  });
+
+  test('should return base url if URLs are on the different origin', async () => {
+    expect(
+      await redirectCallback({ url: `https://test.fi/test`, baseUrl })
+    ).toBe(baseUrl);
   });
 });

@@ -48,6 +48,10 @@
   "loading": "Laddar...",
   "loadingFinished": "Laddningen är klar",
   "logo": "Helsingfors stad - logo",
+  "logout": {
+    "text": "Du har loggat ut från tjänsten.",
+    "title": "Logga ut"
+  },
   "navigation": {
     "ariaLanguageSelection": "Välja spräk",
     "backToSignupGroupForm": "Återgå till registreringsformuläret",

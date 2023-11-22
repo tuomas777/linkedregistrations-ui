@@ -48,6 +48,10 @@
   "loading": "Ladataan...",
   "loadingFinished": "Lataaminen päättynyt",
   "logo": "Helsingin kaupunki - logo",
+  "logout": {
+    "text": "Olet kirjautunut ulos palvelusta.",
+    "title": "Uloskirjautuminen"
+  },
   "navigation": {
     "ariaLanguageSelection": "Kielen valinta",
     "backToSignupGroupForm": "Palaa ilmoittautumiskaavakkeeseen",

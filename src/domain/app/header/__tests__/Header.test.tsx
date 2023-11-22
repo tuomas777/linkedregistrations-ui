@@ -103,7 +103,10 @@ test('should start login process', async () => {
 
 test('should start logout process', async () => {
   const user = userEvent.setup();
-  jest.spyOn(nextAuth, 'signOut').mockImplementation();
+  jest
+    .spyOn(nextAuth, 'signOut')
+    .mockImplementation()
+    .mockResolvedValue({ url: 'https://test.com' });
 
   const username = 'Username';
   const userFirstName = 'User';

@@ -8,13 +8,14 @@ import {
   logoFiDark,
   logoSvDark,
 } from 'hds-react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import { MAIN_CONTENT_ID, PAGE_HEADER_ID } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import useSelectLanguage from '../../../hooks/useSelectLanguage';
+import useSignOut from '../../../hooks/useSignOut';
 import { ExtendedSession, Language } from '../../../types';
 import { getUserFirstName, getUserName } from '../../auth/utils';
 import useUser from '../../user/hooks/useUser';
@@ -43,10 +44,7 @@ const Header: React.FC = () => {
 
   const { t } = useTranslation('common');
 
-  const handleSignOut = async () => {
-    await signOut();
-    sessionStorage.clear();
-  };
+  const { handleSignOut } = useSignOut();
 
   return (
     <HdsHeader
