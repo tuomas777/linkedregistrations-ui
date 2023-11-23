@@ -27,6 +27,9 @@ import {
 } from '../domain/signupGroup/constants';
 import { SignupGroupFormFields } from '../domain/signupGroup/types';
 import { mockedUserResponse } from '../domain/user/__mocks__/user';
+import LogoutPage, {
+  getServerSideProps as getLogoutPageServerSideProps,
+} from '../pages/logout';
 import AttendanceListPage, {
   getServerSideProps as getAttendanceListPageServerSideProps,
 } from '../pages/registration/[registrationId]/attendance-list/index';
@@ -437,5 +440,26 @@ describe('SignupCancelledPage', () => {
     };
 
     isRegistrationInDehydratedState(props.dehydratedState);
+  });
+});
+
+describe('LogoutPage', () => {
+  it('should render heading', async () => {
+    singletonRouter.push({ pathname: ROUTES.LOGOUT });
+
+    render(<LogoutPage />);
+
+    await isHeadingRendered('Uloskirjautuminen');
+  });
+
+  it('should get correct translations namespaces', async () => {
+    const { props } = (await getLogoutPageServerSideProps({
+      locale: 'fi',
+      query: { registrationId: registration.id },
+    } as unknown as GetServerSidePropsContext)) as {
+      props: ExtendedSSRConfig;
+    };
+
+    expect(props._nextI18Next?.ns).toEqual(['common']);
   });
 });

@@ -35,3 +35,5 @@ export enum FORM_NAMES {
 }
 
 export const READ_ONLY_PLACEHOLDER = '-';
+
+export const SIGNOUT_REDIRECT = '/signout';

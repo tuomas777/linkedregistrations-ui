@@ -48,6 +48,10 @@
   "loading": "Loading...",
   "loadingFinished": "Loading finished",
   "logo": "City of Helsinki - logo",
+  "logout": {
+    "text": "You have been logged out of the service.",
+    "title": "Logout"
+  },
   "navigation": {
     "ariaLanguageSelection": "Choose language",
     "backToSignupGroupForm": "Back to the registration form",

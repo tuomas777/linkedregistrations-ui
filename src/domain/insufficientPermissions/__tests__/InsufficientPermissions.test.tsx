@@ -1,40 +1,27 @@
-import * as nextAuth from 'next-auth/react';
 import React from 'react';
 
+import {
+  shouldRenderErrorPageTexts,
+  shouldSignOut,
+} from '../../../common/components/errorPageWithLogoutButton/testUtils';
 import { ExtendedSession } from '../../../types';
-import { configure, render, screen, userEvent } from '../../../utils/testUtils';
-import StrongIdentificationRequired from '../InsufficientPermissions';
+import { configure, render } from '../../../utils/testUtils';
+import InsufficientPermissions from '../InsufficientPermissions';
 
 configure({ defaultHidden: true });
 
 const renderComponent = (session?: ExtendedSession) =>
-  render(<StrongIdentificationRequired />, { session });
-
-const getSignOutButton = () => {
-  return screen.getByRole('button', { name: /kirjaudu ulos/i });
-};
+  render(<InsufficientPermissions />, { session });
 
 test('should render insufficient permissions page', () => {
   renderComponent();
-
-  expect(
-    screen.getByRole('heading', { name: 'Riittämättömät käyttöoikeudet' })
-  ).toBeInTheDocument();
-
-  expect(
-    screen.getByText(
-      'Sinulla ei ole oikeuksia tämän sisällön näkemiseen. Kirjaudu ulos ja kokeile toisella käyttäjätunnuksella.'
-    )
-  ).toBeInTheDocument();
+  shouldRenderErrorPageTexts({
+    text: 'Sinulla ei ole oikeuksia tämän sisällön näkemiseen. Kirjaudu ulos ja kokeile toisella käyttäjätunnuksella.',
+    title: 'Riittämättömät käyttöoikeudet',
+  });
 });
 
-test('should start signIn process', async () => {
-  const user = userEvent.setup();
-  jest.spyOn(nextAuth, 'signOut').mockImplementation();
+test('should start signOut process', async () => {
   renderComponent();
-
-  const signoutButton = getSignOutButton();
-  await user.click(signoutButton);
-
-  expect(nextAuth.signOut).toBeCalled();
+  await shouldSignOut();
 });
