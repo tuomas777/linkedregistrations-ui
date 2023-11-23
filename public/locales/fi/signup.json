@@ -27,6 +27,7 @@
     "labelNativeLanguage": "Äidinkieli",
     "labelPhoneNumber": "Puhelinnumero",
     "labelServiceLanguage": "Asiointikieli",
+    "notificationTextContactPersonInfo": "Jos olet alaikäinen, syötä tähän huoltajasi yhteystiedot.",
     "placeholderEmail": "Syötä sähköpostiosoite",
     "placeholderFirstName": "Syötä yhteyshenkilön etunimi",
     "placeholderLastName": "Syötä yhteyshenkilön sukunimi",
@@ -74,7 +75,7 @@
   "labelExtraInfo": "Lisätietoa ilmoittautumisesta (valinnainen)",
   "labelParticipantAmount": "Ilmoittautujien määrä",
   "labelRegistration": "Ilmoittautuminen",
-  "labelUserConsent": "Hyväksyn tietojeni jakamisen järjestäjän kanssa. Emme käytä antamiasi tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Tietosuojaseloste {{openInNewTab}}\">Tietosuojaseloste</a>",
+  "labelUserConsent": "Hyväksyn tietojen jakamisen tapahtuman järjestäjän kanssa. Helsingin kaupunki ei käytä lomakkeella annettuja tietoja markkinointiin. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Tietosuojaseloste {{openInNewTab}}\">Tietosuojaseloste</a>",
   "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notifications": {
     "email": "Sähköpostilla",
@@ -91,6 +92,7 @@
   "signupIsEnded": "Ilmoittautuminen tapahtumaan on päättynyt",
   "signup": {
     "buttonDeleteSignup": "Poista osallistuja",
+    "helperExtraInfo": "Syötä tähän tiedot mahdollisista allergioista, erityisruokavalioista, esteettömyys- tai muista erityistarpeista, mikäli ne on tapahtumaan osallistumisen kannalta tarpeellisia tietoja. Välitämme tiedot tapahtumajärjestäjälle, jotta tapahtuman turvallisuus ja esteettömyys voidaan varmistaa. Syöttämällä tiedot annat suostumuksesi tietojen käsittelyyn. Antamasi suostumuksen voit peruuttaa poistamalla tiedot.",
     "labelCity": "Kaupunki",
     "labelDateOfBirth": "Syntymäaika",
     "labelExtraInfo": "Lisätietoa (valinnainen)",

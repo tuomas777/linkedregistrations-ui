@@ -27,6 +27,7 @@
     "labelNativeLanguage": "Modersmål",
     "labelPhoneNumber": "Telefonnummer",
     "labelServiceLanguage": "Transaktionsspråk",
+    "notificationTextContactPersonInfo": "Ange din vårdnadshavares kontaktuppgifter här om du är minderårig.",
     "placeholderEmail": "Skriv in din mailadress",
     "placeholderFirstName": "Ange kontaktens förnamn",
     "placeholderLastName": "Ange kontaktens efternamn",
@@ -74,7 +75,7 @@
   "labelExtraInfo": "Ytterligare registreringsinformation (valfritt)",
   "labelParticipantAmount": "Antal registrerade",
   "labelRegistration": "Registrering",
-  "labelUserConsent": "Jag godkänner att dela min information med arrangören. Vi använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registerbeskrivningen {{openInNewTab}}\">Registerbeskrivningen</a>",
+  "labelUserConsent": "Jag godkänner att dela information med evenemangsarrangören. Helsingfors stad använder inte informationen du tillhandahåller för marknadsföringsändamål. <a href={{url}} target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Registerbeskrivningen {{openInNewTab}}\">Registerbeskrivningen</a>",
   "linkDataProtectionNotice": "https://www.hel.fi/static/liitteet-2019/Kaupunginkanslia/Rekisteriselosteet/Keha/Kayttajatunnusten%20hallinta.pdf",
   "notifications": {
     "email": "Via e-post",
@@ -91,6 +92,7 @@
   "signupIsEnded": "Anmälan till evenemanget är avslutad",
   "signup": {
     "buttonDeleteSignup": "Ta bort deltagare",
+    "helperExtraInfo": "Ange här information om eventuella allergier, specialkost, tillgänglighet eller andra särskilda behov, om det är information som behövs för att delta i evenemanget. Vi vidarebefordrar informationen till arrangören för att evenemangets säkerhet och tillgänglighet kan säkerställas. Genom att ange uppgifterna ger du ditt samtycke till behandlingen av uppgifterna. Du kan återkalla ditt samtycke genom att radera uppgifterna.",
     "labelCity": "Staden",
     "labelDateOfBirth": "Födelsedatum",
     "labelExtraInfo": "Ytterligare information (valfritt)",

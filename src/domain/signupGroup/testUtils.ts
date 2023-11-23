@@ -29,7 +29,7 @@ export const getSignupFormElement = (
   switch (key) {
     case 'acceptCheckbox':
       return screen.getByLabelText(
-        /hyväksyn tietojeni jakamisen järjestäjän kanssa/i
+        /Hyväksyn tietojen jakamisen tapahtuman järjestäjän kanssa./i
       );
     case 'cancelButton':
       return screen.getByRole('button', { name: /peruuta ilmoittautuminen/i });
