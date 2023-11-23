@@ -168,6 +168,7 @@ const Signup: React.FC<Props> = ({
           className={styles.extraInfoField}
           component={TextAreaField}
           disabled={formDisabled}
+          helperText={t(`signup.helperExtraInfo`)}
           label={t(`signup.labelExtraInfo`)}
           placeholder={getPlaceholder(t(`signup.placeholderExtraInfo`))}
           readOnly={readOnly}

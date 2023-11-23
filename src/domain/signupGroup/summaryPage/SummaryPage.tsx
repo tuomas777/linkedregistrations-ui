@@ -203,6 +203,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                     <Notification
                       className={styles.notification}
                       label={t('notificationTitle')}
+                      type="info"
                     >
                       {t('notificationLabel')}
                     </Notification>

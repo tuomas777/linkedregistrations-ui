@@ -17,6 +17,7 @@ import TextAreaField from '../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../common/components/formGroup/FormGroup';
 import FormikPersist from '../../../common/components/formikPersist/FormikPersist';
+import Notification from '../../../common/components/notification/Notification';
 import { useNotificationsContext } from '../../../common/components/notificationsContext/hooks/useNotificationsContext';
 import ServerErrorSummary from '../../../common/components/serverErrorSummary/ServerErrorSummary';
 import { FORM_NAMES, READ_ONLY_PLACEHOLDER } from '../../../constants';
@@ -357,9 +358,16 @@ const SignupGroupForm: React.FC<Props> = ({
                     registration={registration}
                   />
 
-                  <h2 className={styles.sectionTitle}>
-                    {t('contactPerson.titleContactPersonInfo')}
-                  </h2>
+                  <FormGroup>
+                    <h2 className={styles.sectionTitle}>
+                      {t('contactPerson.titleContactPersonInfo')}
+                    </h2>
+                  </FormGroup>
+                  <Notification type="info">
+                    <p style={{ margin: 0 }}>
+                      {t('contactPerson.notificationTextContactPersonInfo')}
+                    </p>
+                  </Notification>
                   <Divider />
 
                   {contactPersonFieldsDisabled && signup && (
