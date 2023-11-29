@@ -423,7 +423,6 @@ const SignupGroupForm: React.FC<Props> = ({
                             t(`contactPerson.placeholderFirstName`)
                           )}
                           readOnly={readOnly}
-                          required
                           title={titleCannotEditContactPerson}
                         />
                         <Field
@@ -437,10 +436,6 @@ const SignupGroupForm: React.FC<Props> = ({
                             t(`contactPerson.placeholderLastName`)
                           )}
                           readOnly={readOnly}
-                          required={isSignupFieldRequired(
-                            registration,
-                            CONTACT_PERSON_FIELDS.LAST_NAME
-                          )}
                           title={titleCannotEditContactPerson}
                         />
                       </div>
@@ -480,10 +475,6 @@ const SignupGroupForm: React.FC<Props> = ({
                             t(`contactPerson.placeholderMembershipNumber`)
                           )}
                           readOnly={readOnly}
-                          required={isSignupFieldRequired(
-                            registration,
-                            CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
-                          )}
                           title={titleCannotEditContactPerson}
                         />
                       </div>

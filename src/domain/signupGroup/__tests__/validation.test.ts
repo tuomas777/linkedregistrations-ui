@@ -72,11 +72,10 @@ const testSignupSchema = async (
 };
 
 const testContactPersonSchema = async (
-  registration: Registration,
   contactPerson: ContactPersonFormFields
 ) => {
   try {
-    await getContactPersonSchema(registration).validate(contactPerson);
+    await getContactPersonSchema().validate(contactPerson);
     return true;
   } catch (e) {
     return false;
@@ -280,7 +279,6 @@ describe('signupSchema function', () => {
 });
 
 describe('getContactPersonSchema function', () => {
-  const registration = fakeRegistration();
   const validContactPerson: ContactPersonFormFields = {
     email: 'user@email.com',
     firstName: 'First name',
@@ -293,15 +291,13 @@ describe('getContactPersonSchema function', () => {
     serviceLanguage: 'fi',
   };
 
-  test('should return true if contac person data is valid', async () => {
-    expect(
-      await testContactPersonSchema(registration, validContactPerson)
-    ).toBe(true);
+  test('should return true if contact person data is valid', async () => {
+    expect(await testContactPersonSchema(validContactPerson)).toBe(true);
   });
 
   test('should return false if email is missing', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         email: '',
       })
@@ -310,7 +306,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if email is invalid', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         email: 'user@email.',
       })
@@ -319,7 +315,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if phone number is missing', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         phoneNumber: '',
         notifications: [NOTIFICATIONS.SMS],
@@ -329,16 +325,17 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if phone number is invalid', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         phoneNumber: 'xxx',
+        notifications: [NOTIFICATIONS.SMS],
       })
     ).toBe(false);
   });
 
   test('should return false if notifications is empty array', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         notifications: [],
       })
@@ -347,7 +344,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if native language is empty', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         nativeLanguage: '',
       })
@@ -356,34 +353,10 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if service language is empty', async () => {
     expect(
-      await testContactPersonSchema(registration, {
+      await testContactPersonSchema({
         ...validContactPerson,
         serviceLanguage: '',
       })
-    ).toBe(false);
-  });
-
-  test('should return false if membership number is set as mandatory field but value is empty', async () => {
-    expect(
-      await testContactPersonSchema(
-        fakeRegistration({ mandatory_fields: ['membership_number'] }),
-        {
-          ...validContactPerson,
-          membershipNumber: '',
-        }
-      )
-    ).toBe(false);
-  });
-
-  test('should return false if phone number is set as mandatory field but value is empty', async () => {
-    expect(
-      await testContactPersonSchema(
-        fakeRegistration({ mandatory_fields: ['phone_number'] }),
-        {
-          ...validContactPerson,
-          phoneNumber: '',
-        }
-      )
     ).toBe(false);
   });
 });
@@ -417,10 +390,7 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        contactPerson: {
-          ...validSignupGroup.contactPerson,
-          email: '',
-        },
+        contactPerson: { ...validSignupGroup.contactPerson, email: '' },
       })
     ).toBe(false);
   });
@@ -457,6 +427,7 @@ describe('testSignupGroupSchema function', () => {
         contactPerson: {
           ...validSignupGroup.contactPerson,
           phoneNumber: 'xxx',
+          notifications: [NOTIFICATIONS.SMS],
         },
       })
     ).toBe(false);
@@ -466,10 +437,7 @@ describe('testSignupGroupSchema function', () => {
     expect(
       await testSignupGroupSchema(registration, {
         ...validSignupGroup,
-        contactPerson: {
-          ...validSignupGroup.contactPerson,
-          notifications: [],
-        },
+        contactPerson: { ...validSignupGroup.contactPerson, notifications: [] },
       })
     ).toBe(false);
   });
@@ -495,48 +463,6 @@ describe('testSignupGroupSchema function', () => {
           serviceLanguage: '',
         },
       })
-    ).toBe(false);
-  });
-
-  test('should return false if membership number is set as mandatory field but value is empty', async () => {
-    expect(
-      await testSignupGroupSchema(
-        fakeRegistration({ mandatory_fields: ['membership_number'] }),
-        {
-          ...validSignupGroup,
-          contactPerson: {
-            ...validSignupGroup.contactPerson,
-            membershipNumber: '',
-          },
-        }
-      )
-    ).toBe(false);
-  });
-
-  test('should return false if extra info is set as mandatory field but value is empty', async () => {
-    expect(
-      await testSignupGroupSchema(
-        fakeRegistration({ mandatory_fields: ['extra_info'] }),
-        {
-          ...validSignupGroup,
-          extraInfo: '',
-        }
-      )
-    ).toBe(false);
-  });
-
-  test('should return false if phone number is set as mandatory field but value is empty', async () => {
-    expect(
-      await testSignupGroupSchema(
-        fakeRegistration({ mandatory_fields: ['phone_number'] }),
-        {
-          ...validSignupGroup,
-          contactPerson: {
-            ...validSignupGroup.contactPerson,
-            phoneNumber: '',
-          },
-        }
-      )
     ).toBe(false);
   });
 });
