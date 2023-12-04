@@ -60,12 +60,12 @@ const ContactPersonInfo: FC<Props> = ({
             <ReadOnlyTextInput
               id={CONTACT_PERSON_FIELDS.FIRST_NAME}
               label={t(`contactPerson.labelFirstName`)}
-              value={getFieldText(contactPerson.email)}
+              value={getFieldText(contactPerson.firstName)}
             />
             <ReadOnlyTextInput
-              id={CONTACT_PERSON_FIELDS.PHONE_NUMBER}
+              id={CONTACT_PERSON_FIELDS.LAST_NAME}
               label={t(`contactPerson.labelLastName`)}
-              value={getFieldText(contactPerson.phoneNumber)}
+              value={getFieldText(contactPerson.lastName)}
             />
           </div>
         </FormGroup>
