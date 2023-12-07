@@ -107,14 +107,12 @@ export const getSignupSchema = (registration: Registration) => {
   });
 };
 
-export const getContactPersonSchema = (registration: Registration) => {
+export const getContactPersonSchema = () => {
   return Yup.object().shape({
-    [CONTACT_PERSON_FIELDS.EMAIL]: Yup.string()
-      .email(VALIDATION_MESSAGE_KEYS.EMAIL)
-      .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED),
-    [CONTACT_PERSON_FIELDS.PHONE_NUMBER]: getStringSchema(
-      isSignupFieldRequired(registration, CONTACT_PERSON_FIELDS.PHONE_NUMBER)
-    )
+    [CONTACT_PERSON_FIELDS.EMAIL]: getStringSchema(true).email(
+      VALIDATION_MESSAGE_KEYS.EMAIL
+    ),
+    [CONTACT_PERSON_FIELDS.PHONE_NUMBER]: getStringSchema(false)
       .test(
         'isValidPhoneNumber',
         VALIDATION_MESSAGE_KEYS.PHONE,
@@ -132,21 +130,10 @@ export const getContactPersonSchema = (registration: Registration) => {
       .min(1, (param) =>
         createMinErrorMessage(param, VALIDATION_MESSAGE_KEYS.ARRAY_MIN)
       ),
-    [CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER]: getStringSchema(
-      isSignupFieldRequired(
-        registration,
-        CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER
-      )
-    ),
-    [CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE]: Yup.string().required(
-      VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
-    ),
-    [CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE]: Yup.string().required(
-      VALIDATION_MESSAGE_KEYS.STRING_REQUIRED
-    ),
-    [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: getStringSchema(
-      isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.EXTRA_INFO)
-    ),
+    [CONTACT_PERSON_FIELDS.MEMBERSHIP_NUMBER]: getStringSchema(false),
+    [CONTACT_PERSON_FIELDS.NATIVE_LANGUAGE]: getStringSchema(true),
+    [CONTACT_PERSON_FIELDS.SERVICE_LANGUAGE]: getStringSchema(true),
+    [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: getStringSchema(false),
   });
 };
 
@@ -159,8 +146,7 @@ export const getSignupGroupSchema = (
       getSignupSchema(registration)
     ),
     ...(validateContactPerson && {
-      [SIGNUP_GROUP_FIELDS.CONTACT_PERSON]:
-        getContactPersonSchema(registration),
+      [SIGNUP_GROUP_FIELDS.CONTACT_PERSON]: getContactPersonSchema(),
     }),
     [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.EXTRA_INFO)
