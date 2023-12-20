@@ -13,15 +13,23 @@ export const getApiTokensRequest = async ({
   linkedEventsApiScope: string;
   url: string;
 }): Promise<APITokens> => {
-  const response = await axios.post(url, undefined, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+  const response = await axios.post(
+    url,
+    {
+      audience: linkedEventsApiScope,
+      grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
+      permission: '#access',
     },
-    responseType: 'json',
-  });
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      responseType: 'json',
+    }
+  );
 
-  const linkedevents = response.data[linkedEventsApiScope];
+  const linkedevents = response.data.access_token;
 
   return { linkedevents };
 };

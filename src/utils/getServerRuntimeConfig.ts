@@ -9,7 +9,6 @@ const getServerRuntimeConfig = () => {
       oidcClientSecret,
       oidcIssuer,
       oidcLinkedEventsApiScope,
-      oidcTokenUrl,
     },
   } = getConfig();
 
@@ -19,8 +18,7 @@ const getServerRuntimeConfig = () => {
     !oidcClientId ||
     !oidcClientSecret ||
     !oidcIssuer ||
-    !oidcLinkedEventsApiScope ||
-    !oidcTokenUrl
+    !oidcLinkedEventsApiScope
   ) {
     throw new Error(
       'Invalid configuration. Some required server runtime variable are missing'
@@ -34,7 +32,6 @@ const getServerRuntimeConfig = () => {
     oidcClientSecret,
     oidcIssuer,
     oidcLinkedEventsApiScope,
-    oidcTokenUrl,
   };
 };
 

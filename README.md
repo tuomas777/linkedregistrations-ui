@@ -101,7 +101,6 @@ Set the following variables in `.env.local`:
 - OIDC_CLIENT_ID=linkedregistrations-ui
 - OIDC_CLIENT_SECRET=<linkedregistrations-ui client secret>
 - OIDC_LINKED_EVENTS_API_SCOPE=https://api.hel.fi/auth/linkedevents
-- OIDC_TOKEN_URL=http://tunnistamo-backend:8000/openid/token/
 - NEXT_PUBLIC_LINKED_EVENTS_URL=http://localhost:8080/v1
 
 Run `yarn && yarn dev`
@@ -131,7 +130,6 @@ Use .env.local for development.
 | OIDC_CLIENT_ID                      | Client id. Default is linkedcomponents-ui-test                              |
 | OIDC_CLIENT_SECRET                  | Secret of the oidc client                                                   |
 | OIDC_LINKED_EVENTS_API_SCOPE        | Linked Events API scope. Default is https://api.hel.fi/auth/linkedeventsdev |
-| OIDC_TOKEN_URL                      | Tunnistamo token endpoint url. Default is https://api.hel.fi/sso/token/     |
 | NEXT_PUBLIC_MATOMO_URL              | Base url of the Matomo. Defualt is //matomo.hel.fi/                         |
 | NEXT_PUBLIC_MATOMO_SITE_ID          | Site id in the Matomo. Default is 70                                        |
 | NEXT_PUBLIC_MATOMO_JS_TRACKER_FILE  | JavaScript tracker file name. Default is matomo.js                          |
