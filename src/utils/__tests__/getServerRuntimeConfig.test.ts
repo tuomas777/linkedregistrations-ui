@@ -8,7 +8,6 @@ const serverRuntimeConfig = {
   oidcClientSecret: 'secret',
   oidcIssuer: 'https://tunnistamo-backend:8000',
   oidcLinkedEventsApiScope: 'linkedevents',
-  oidcTokenUrl: 'https://tunnistamo-backend:8000/token',
 };
 
 describe('getServerRuntimeConfig function', () => {
@@ -24,7 +23,6 @@ describe('getServerRuntimeConfig function', () => {
     [{ ...serverRuntimeConfig, oidcClientSecret: '' }],
     [{ ...serverRuntimeConfig, oidcIssuer: '' }],
     [{ ...serverRuntimeConfig, oidcLinkedEventsApiScope: '' }],
-    [{ ...serverRuntimeConfig, oidcTokenUrl: '' }],
   ];
 
   it.each(cases)(

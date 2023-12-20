@@ -35,13 +35,21 @@ describe('getApiTokensRequest function', () => {
       url: apiTokensUrl,
     });
 
-    await expect(axiosFn).toHaveBeenCalledWith(apiTokensUrl, undefined, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+    await expect(axiosFn).toHaveBeenCalledWith(
+      apiTokensUrl,
+      {
+        audience: 'linkedevents',
+        grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
+        permission: '#access',
       },
-      responseType: 'json',
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        responseType: 'json',
+      }
+    );
   });
 });
 

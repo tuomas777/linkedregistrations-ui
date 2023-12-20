@@ -37,9 +37,8 @@ type SessionParams = {
   session: ExtendedSession;
 };
 
-const wellKnown = `${
-  getServerRuntimeConfig().oidcIssuer
-}/.well-known/openid-configuration`;
+const getWellKnown = () =>
+  `${getServerRuntimeConfig().oidcIssuer}/.well-known/openid-configuration`;
 
 export const getApiAccessTokens = async (
   accessToken: string | undefined
@@ -73,7 +72,7 @@ export const refreshAccessToken = async (
   }
 
   try {
-    const { token_endpoint } = await (await fetch(wellKnown)).json();
+    const { token_endpoint } = await (await fetch(getWellKnown())).json();
     const response = await refreshAccessTokenRequest({
       clientId: oidcClientId,
       clientSecret: oidcClientSecret,
@@ -169,7 +168,7 @@ export const redirectCallback = async ({
 }) => {
   // Allows relative callback URLs
   if (url.endsWith(SIGNOUT_REDIRECT)) {
-    const { end_session_endpoint } = await (await fetch(wellKnown)).json();
+    const { end_session_endpoint } = await (await fetch(getWellKnown())).json();
     return `${end_session_endpoint}?post_logout_redirect_uri=${encodeURIComponent(
       `${baseUrl}${ROUTES.LOGOUT}`
     )}`;

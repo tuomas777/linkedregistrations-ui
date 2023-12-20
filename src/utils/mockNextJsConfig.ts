@@ -20,7 +20,6 @@ export const mockDefaultConfig = () => {
       oidcClientSecret: 'secret',
       oidcApiTokensUrl: 'https://tunnistamo-backend:8000/api-tokens',
       oidcLinkedEventsApiScope: 'linkedevents',
-      oidcTokenUrl: 'https://tunnistamo-backend:8000/token',
     }
   );
 };

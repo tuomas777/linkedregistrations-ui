@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '../tests/mockNextAuth';
@@ -12,13 +10,13 @@ import { SIGNOUT_REDIRECT } from '../constants';
 import {
   getApiAccessTokens,
   getProfile,
-  getRedirectCallback,
+  redirectCallback,
   jwtCallback,
   refreshAccessToken,
   sessionCallback,
 } from '../pages/api/auth/[...nextauth]';
 import {
-  APITokens,
+  ApiTokenResponse,
   ExtendedJWT,
   RefreshTokenResponse,
   TunnistamoAccount,
@@ -27,13 +25,14 @@ import { mockDefaultConfig } from '../utils/mockNextJsConfig';
 
 afterEach(() => {
   clear();
+  jest.resetAllMocks();
 });
 
-beforeEach(() => mockDefaultConfig());
+beforeEach(() => {
+  mockDefaultConfig();
+});
 
 const accessToken = 'access-token';
-const apiToken = 'api-token';
-const linkedEventsApiScope = 'linkedevents';
 const refreshToken = 'refresh-token';
 
 const session: Session = {
@@ -70,6 +69,14 @@ const user: User = {
   id: 'user:id',
 };
 
+const apiTokenResponse: ApiTokenResponse = {
+  access_token: 'api-token',
+  id_token: 'id-token',
+  refresh_token: refreshToken,
+  token_type: 'type',
+  expires_in: 3600,
+};
+
 describe('getApiAccessTokens function', () => {
   test('should throw error if accessToken is not defined', async () => {
     await expect(
@@ -86,13 +93,12 @@ describe('getApiAccessTokens function', () => {
   });
 
   test('should return api tokens', async () => {
-    const apiTokenResponse: APITokens = { [linkedEventsApiScope]: apiToken };
     jest
       .spyOn(mockAxios, 'post')
       .mockResolvedValue({ data: { ...apiTokenResponse } });
 
     const apiTokens = await getApiAccessTokens(accessToken);
-    await expect(apiTokens).toEqual(apiTokenResponse);
+    await expect(apiTokens).toEqual({ linkedevents: 'api-token' });
   });
 });
 
@@ -114,22 +120,26 @@ describe('refreshAccessToken function', () => {
 
   test('should return refreshed token', async () => {
     const refreshResponse: RefreshTokenResponse = {
-      access_token: accessToken,
+      access_token: 'refreshed-api-token',
       id_token: 'id-token',
       refresh_token: refreshToken,
       token_type: 'type',
       expires_in: 3600,
     };
-    const apiTokenResponse: APITokens = {
-      [linkedEventsApiScope]: 'refreshed-api-token',
-    };
 
-    jest.spyOn(mockAxios, 'post').mockImplementation(async (url) => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ token_endpoint: 'https://test.fi' }),
+      })
+    ) as any;
+    mockAxios.post = jest.fn().mockImplementation(async (url) => {
       switch (url) {
-        case 'https://tunnistamo-backend:8000/token':
-          return { data: { ...refreshResponse } };
+        case 'https://test.fi':
+          return { data: refreshResponse };
         case 'https://tunnistamo-backend:8000/api-tokens':
-          return { data: { ...apiTokenResponse } };
+          return {
+            data: { ...apiTokenResponse, access_token: 'refreshed-api-token' },
+          };
       }
     });
 
@@ -151,7 +161,6 @@ describe('jwtCallback function', () => {
   test('should return session after initial sign in', async () => {
     advanceTo('2023-01-01');
 
-    const apiTokenResponse: APITokens = { [linkedEventsApiScope]: apiToken };
     jest
       .spyOn(mockAxios, 'post')
       .mockResolvedValue({ data: { ...apiTokenResponse } });
@@ -174,7 +183,6 @@ describe('jwtCallback function', () => {
   test('should return original token if token is not expired', async () => {
     advanceTo('2023-01-01');
 
-    const apiTokenResponse: APITokens = { [linkedEventsApiScope]: apiToken };
     jest
       .spyOn(mockAxios, 'post')
       .mockResolvedValue({ data: { ...apiTokenResponse } });
@@ -187,7 +195,6 @@ describe('jwtCallback function', () => {
   test('should return undefined if refreshing token fails', async () => {
     advanceTo('2023-01-01');
 
-    const apiTokenResponse: APITokens = { [linkedEventsApiScope]: apiToken };
     jest
       .spyOn(mockAxios, 'post')
       .mockResolvedValue({ data: { ...apiTokenResponse } });
@@ -209,16 +216,19 @@ describe('jwtCallback function', () => {
       token_type: 'type',
       expires_in: 3600,
     };
-    const apiTokenResponse: APITokens = {
-      [linkedEventsApiScope]: 'refreshed-api-token',
-    };
-
-    jest.spyOn(mockAxios, 'post').mockImplementation(async (url) => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ token_endpoint: 'https://test.fi' }),
+      })
+    ) as any;
+    mockAxios.post = jest.fn().mockImplementation(async (url) => {
       switch (url) {
-        case 'https://tunnistamo-backend:8000/token':
-          return { data: { ...refreshResponse } };
+        case 'https://test.fi':
+          return { data: refreshResponse };
         case 'https://tunnistamo-backend:8000/api-tokens':
-          return { data: { ...apiTokenResponse } };
+          return {
+            data: { ...apiTokenResponse, access_token: 'refreshed-api-token' },
+          };
       }
     });
 
@@ -256,10 +266,7 @@ describe('sessionCallback function', () => {
   });
 });
 
-describe('getRedirectCallback function', () => {
-  const oidcIssuer = 'https://api.hel.fi/sso';
-  const wellKnown = `${oidcIssuer}/.well-known/openid-configuration`;
-  const redirectCallback = getRedirectCallback(wellKnown);
+describe('redirectCallback function', () => {
   const baseUrl = 'http://localhost:3000';
 
   test('should return url from wellKnown endpoint', async () => {

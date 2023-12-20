@@ -42,65 +42,22 @@ The web application is running at http://localhost:3001
 
 ## Setting up complete development environment locally with docker
 
-### Set tunnistamo hostname
-
-Add the following lines to your hosts file (`/etc/hosts` on mac and linux):
-
-    127.0.0.1 tunnistamo-backend
-
-### Create a new OAuth app on GitHub
-
-Go to https://github.com/settings/developers/ and add a new app with the following settings:
-
-- Application name: can be anything, e.g. local tunnistamo
-- Homepage URL: http://tunnistamo-backend:8000
-- Authorization callback URL: http://tunnistamo-backend:8000/accounts/github/login/callback/
-
-Save. You'll need the created **Client ID** and **Client Secret** for configuring tunnistamo in the next step.
-
-### Install local tunnistamo
-
-Clone https://github.com/City-of-Helsinki/tunnistamo/.
-
-Follow the instructions for setting up tunnistamo locally. Before running `docker-compose up` set the following settings in tunnistamo roots `docker-compose.env.yaml`:
-
-- SOCIAL_AUTH_GITHUB_KEY: **Client ID** from the GitHub OAuth app
-- SOCIAL_AUTH_GITHUB_SECRET: **Client Secret** from the GitHub OAuth app
-
-After you've got tunnistamo running locally, ssh to the tunnistamo docker container:
-
-`docker-compose exec django bash`
-
-and execute the following commands inside your docker container:
-
-```bash
-./manage.py add_oidc_client -n linkedevents-api -t "code" -u http://localhost:8080/pysocial/complete/tunnistamo/ -i https://api.hel.fi/auth/linkedevents -m github -s dev -c
-./manage.py add_oidc_client -n linkedevents-api-admin -t "code" -u http://localhost:8080/pysocial/complete/tunnistamo/ -i linkedevents-api-admin -m github -s dev -c
-./manage.py add_oidc_client -n linkedregistrations-ui -t "code" -u "http://localhost:3001/api/auth/callback/tunnistamo" -i linkedregistrations-ui -m github -s dev -c
-./manage.py add_oidc_api -n linkedevents -d https://api.hel.fi/auth -s email,profile -c https://api.hel.fi/auth/linkedevents
-./manage.py add_oidc_api_scope -an linkedevents -c https://api.hel.fi/auth/linkedevents -n "Linked events" -d "Lorem ipsum"
-./manage.py add_oidc_client_to_api_scope -asi https://api.hel.fi/auth/linkedevents -c linkedevents-api-admin
-./manage.py add_oidc_client_to_api_scope -asi https://api.hel.fi/auth/linkedevents -c linkedregistrations-ui
-```
-
 ### Install local Linked Events API
 
 Clone the repository (https://github.com/City-of-Helsinki/linkedevents). Follow the instructions for running linkedevents with docker. Before running `docker compose up` use the `env.example` template as base for `/docker/django/.env` and also set the following settings there:
 
-- TOKEN_AUTH_AUTHSERVER_URL=http://tunnistamo-backend:8000/openid
-- SOCIAL_AUTH_TUNNISTAMO_OIDC_ENDPOINT=http://tunnistamo-backend:8000/openid
-- SOCIAL_AUTH_TUNNISTAMO_KEY=linkedevents-api-admin
-- SOCIAL_AUTH_TUNNISTAMO_SECRET<linkedevents-api-admin client secret from tunnistamo>
+- TOKEN_AUTH_ACCEPTED_AUDIENCE=linkedevents-api-dev
+- TOKEN_AUTH_AUTHSERVER_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus
 
 ### Linked Registrations UI
 
 Set the following variables in `.env.local`:
 
-- OIDC_ISSUER=http://tunnistamo-backend:8000/openid
-- OIDC_API_TOKENS_URL=http://tunnistamo-backend:8000/api-tokens/
-- OIDC_CLIENT_ID=linkedregistrations-ui
+- OIDC_ISSUER=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus
+- OIDC_API_TOKENS_URL=https://tunnistus.test.hel.ninja/auth/realms/helsinki-tunnistus/protocol/openid-connect/token/
+- OIDC_CLIENT_ID=linkedregistrations-ui-dev
 - OIDC_CLIENT_SECRET=<linkedregistrations-ui client secret>
-- OIDC_LINKED_EVENTS_API_SCOPE=https://api.hel.fi/auth/linkedevents
+- OIDC_LINKED_EVENTS_API_SCOPE=linkedevents-api-dev
 - NEXT_PUBLIC_LINKED_EVENTS_URL=http://localhost:8080/v1
 
 Run `yarn && yarn dev`
@@ -115,29 +72,29 @@ Use .env.local for development.
 
     cp .env.local.example .env.local
 
-| Name                                | Description                                                                 |
-| ----------------------------------- | --------------------------------------------------------------------------- |
-| PORT                                | Port where app is running. Default is 3001                                  |
-| NEXT_PUBLIC_LINKED_EVENTS_URL       | linkedevents api base url                                                   |
-| NEXT_PUBLIC_ENVIRONMENT             | Environment used in Sentry. Use local for development                       |
-| NEXT_PUBLIC_SENTRY_DSN              | Sentry DSN.                                                                 |
-| SENTRY_URL                          | Url of Sentry instance. Default is https://sentry.test.hel.ninja            |
-| SENTRY_ORG                          | Sentry organization. Default is city-of-helsinki                            |
-| SENTRY_PROJECT                      | Sentry project. Default is linkedregistrations-ui                           |
-| SENTRY_AUTH_TOKEN                   | Sentry authentication token.                                                |
-| OIDC_ISSUER                         | Tunnistamo SSO service base url. Default is https://api.hel.fi/sso          |
-| OIDC_API_TOKENS_URL                 | Tunnistamo api tokens url. Default is https://api.hel.fi/sso/api-tokens/    |
-| OIDC_CLIENT_ID                      | Client id. Default is linkedcomponents-ui-test                              |
-| OIDC_CLIENT_SECRET                  | Secret of the oidc client                                                   |
-| OIDC_LINKED_EVENTS_API_SCOPE        | Linked Events API scope. Default is https://api.hel.fi/auth/linkedeventsdev |
-| NEXT_PUBLIC_MATOMO_URL              | Base url of the Matomo. Defualt is //matomo.hel.fi/                         |
-| NEXT_PUBLIC_MATOMO_SITE_ID          | Site id in the Matomo. Default is 70                                        |
-| NEXT_PUBLIC_MATOMO_JS_TRACKER_FILE  | JavaScript tracker file name. Default is matomo.js                          |
-| NEXT_PUBLIC_MATOMO_PHP_TRACKER_FILE | PHP tracker file name. Default is matomo.php                                |
-| NEXT_PUBLIC_MATOMO_ENABLED          | Flag to enable matomo. Default is false.                                    |
-| NEXTAUTH_SECRET                     | next-auth secret                                                            |
-| NEXTAUTH_URL                        | Canonical url of the site used by next-auth                                 |
-| NEXT_ENV                            | 'development' or 'production'                                               |
+| Name                                | Description                                                                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| PORT                                | Port where app is running. Default is 3001                                                                                 |
+| NEXT_PUBLIC_LINKED_EVENTS_URL       | linkedevents api base url                                                                                                  |
+| NEXT_PUBLIC_ENVIRONMENT             | Environment used in Sentry. Use local for development                                                                      |
+| NEXT_PUBLIC_SENTRY_DSN              | Sentry DSN.                                                                                                                |
+| SENTRY_URL                          | Url of Sentry instance. Default is https://sentry.test.hel.ninja                                                           |
+| SENTRY_ORG                          | Sentry organization. Default is city-of-helsinki                                                                           |
+| SENTRY_PROJECT                      | Sentry project. Default is linkedregistrations-ui                                                                          |
+| SENTRY_AUTH_TOKEN                   | Sentry authentication token.                                                                                               |
+| OIDC_ISSUER                         | Keycloak SSO service base url. Default is https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus                          |
+| OIDC_API_TOKENS_URL                 | Keycloak api tokens url. Default is https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus/protocol/openid-connect/token/ |
+| OIDC_CLIENT_ID                      | Client id. Default is linkedregistrations-ui                                                                               |
+| OIDC_CLIENT_SECRET                  | Secret of the oidc client                                                                                                  |
+| OIDC_LINKED_EVENTS_API_SCOPE        | Linked Events API scope. Default is linkedevents-api                                                                       |
+| NEXT_PUBLIC_MATOMO_URL              | Base url of the Matomo. Defualt is //matomo.hel.fi/                                                                        |
+| NEXT_PUBLIC_MATOMO_SITE_ID          | Site id in the Matomo. Default is 70                                                                                       |
+| NEXT_PUBLIC_MATOMO_JS_TRACKER_FILE  | JavaScript tracker file name. Default is matomo.js                                                                         |
+| NEXT_PUBLIC_MATOMO_PHP_TRACKER_FILE | PHP tracker file name. Default is matomo.php                                                                               |
+| NEXT_PUBLIC_MATOMO_ENABLED          | Flag to enable matomo. Default is false.                                                                                   |
+| NEXTAUTH_SECRET                     | next-auth secret                                                                                                           |
+| NEXTAUTH_URL                        | Canonical url of the site used by next-auth                                                                                |
+| NEXT_ENV                            | 'development' or 'production'                                                                                              |
 
 ## Url parameters
 
