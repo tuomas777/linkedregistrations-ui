@@ -64,6 +64,13 @@ export const getSignupSchema = (registration: Registration) => {
     [SIGNUP_FIELDS.LAST_NAME]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.LAST_NAME)
     ),
+    [CONTACT_PERSON_FIELDS.PHONE_NUMBER]: getStringSchema(
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.PHONE_NUMBER)
+    ).test(
+      'isValidPhoneNumber',
+      VALIDATION_MESSAGE_KEYS.PHONE,
+      (value) => !value || isValidPhoneNumber(value)
+    ),
     [SIGNUP_FIELDS.STREET_ADDRESS]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.STREET_ADDRESS)
     ),

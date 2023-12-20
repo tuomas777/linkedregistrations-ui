@@ -9,6 +9,7 @@ export const getSignupFormElement = (
     | 'acceptCheckbox'
     | 'cancelButton'
     | 'cityInput'
+    | 'contactPersonPhoneInput'
     | 'dateOfBirthInput'
     | 'emailCheckbox'
     | 'emailInput'
@@ -18,7 +19,6 @@ export const getSignupFormElement = (
     | 'nativeLanguageButton'
     | 'participantAmountInput'
     | 'phoneCheckbox'
-    | 'phoneInput'
     | 'serviceLanguageButton'
     | 'streetAddressInput'
     | 'submitButton'
@@ -35,6 +35,8 @@ export const getSignupFormElement = (
       return screen.getByRole('button', { name: /peruuta ilmoittautuminen/i });
     case 'cityInput':
       return screen.getByLabelText(/kaupunki/i);
+    case 'contactPersonPhoneInput':
+      return screen.getAllByLabelText(/puhelinnumero/i)[1];
     case 'dateOfBirthInput':
       return screen.getByLabelText(/syntymäaika/i);
     case 'emailCheckbox':
@@ -55,8 +57,6 @@ export const getSignupFormElement = (
       });
     case 'phoneCheckbox':
       return screen.getByLabelText(/tekstiviestillä/i);
-    case 'phoneInput':
-      return screen.getByLabelText(/puhelinnumero/i);
     case 'serviceLanguageButton':
       return screen.getByRole('button', { name: /asiointikieli/i });
     case 'streetAddressInput':
@@ -80,7 +80,7 @@ export const shouldRenderSignupFormFields = async () => {
   getSignupFormElement('zipInput');
   getSignupFormElement('cityInput');
   getSignupFormElement('emailInput');
-  getSignupFormElement('phoneInput');
+  getSignupFormElement('contactPersonPhoneInput');
   getSignupFormElement('emailCheckbox');
   getSignupFormElement('membershipNumberInput');
   getSignupFormElement('nativeLanguageButton');
@@ -97,7 +97,7 @@ export const shouldRenderSignupFormReadOnlyFields = async () => {
   const zipInput = getSignupFormElement('zipInput');
   const cityInput = getSignupFormElement('cityInput');
   const emailInput = getSignupFormElement('emailInput');
-  const phoneInput = getSignupFormElement('phoneInput');
+  const phoneInput = getSignupFormElement('contactPersonPhoneInput');
   const membershipNumberInput = getSignupFormElement('membershipNumberInput');
   const nativeLanguageButton = getSignupFormElement('nativeLanguageButton');
   const serviceLanguageButton = getSignupFormElement('serviceLanguageButton');
