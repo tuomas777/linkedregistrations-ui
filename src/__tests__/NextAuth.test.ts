@@ -77,6 +77,32 @@ const apiTokenResponse: ApiTokenResponse = {
   expires_in: 3600,
 };
 
+const refreshResponse: RefreshTokenResponse = {
+  ...apiTokenResponse,
+  access_token: 'refreshed-api-token',
+};
+
+const testTokenUrl = 'https://test.fi';
+const testApiTokenUrl = 'https://tunnistamo-backend:8000/api-tokens';
+
+const mockTokenResonses = () => {
+  global.fetch = jest.fn(() =>
+    Promise.resolve({
+      json: () => Promise.resolve({ token_endpoint: testTokenUrl }),
+    })
+  ) as any;
+  mockAxios.post = jest.fn().mockImplementation(async (url) => {
+    switch (url) {
+      case testTokenUrl:
+        return { data: refreshResponse };
+      case testApiTokenUrl:
+        return {
+          data: { ...apiTokenResponse, access_token: 'refreshed-api-token' },
+        };
+    }
+  });
+};
+
 describe('getApiAccessTokens function', () => {
   test('should throw error if accessToken is not defined', async () => {
     await expect(
@@ -119,29 +145,7 @@ describe('refreshAccessToken function', () => {
   });
 
   test('should return refreshed token', async () => {
-    const refreshResponse: RefreshTokenResponse = {
-      access_token: 'refreshed-api-token',
-      id_token: 'id-token',
-      refresh_token: refreshToken,
-      token_type: 'type',
-      expires_in: 3600,
-    };
-
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({ token_endpoint: 'https://test.fi' }),
-      })
-    ) as any;
-    mockAxios.post = jest.fn().mockImplementation(async (url) => {
-      switch (url) {
-        case 'https://test.fi':
-          return { data: refreshResponse };
-        case 'https://tunnistamo-backend:8000/api-tokens':
-          return {
-            data: { ...apiTokenResponse, access_token: 'refreshed-api-token' },
-          };
-      }
-    });
+    mockTokenResonses();
 
     const { apiTokens } = await refreshAccessToken({ ...token, refreshToken });
     expect(apiTokens?.linkedevents).toBe('refreshed-api-token');
@@ -208,29 +212,7 @@ describe('jwtCallback function', () => {
 
   test('should refresh api token', async () => {
     advanceTo('2023-01-01');
-
-    const refreshResponse: RefreshTokenResponse = {
-      access_token: accessToken,
-      id_token: 'id-token',
-      refresh_token: refreshToken,
-      token_type: 'type',
-      expires_in: 3600,
-    };
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({ token_endpoint: 'https://test.fi' }),
-      })
-    ) as any;
-    mockAxios.post = jest.fn().mockImplementation(async (url) => {
-      switch (url) {
-        case 'https://test.fi':
-          return { data: refreshResponse };
-        case 'https://tunnistamo-backend:8000/api-tokens':
-          return {
-            data: { ...apiTokenResponse, access_token: 'refreshed-api-token' },
-          };
-      }
-    });
+    mockTokenResonses();
 
     const jwt = await jwtCallback({
       token: { ...token, accessTokenExpires: 1662531200000 },
