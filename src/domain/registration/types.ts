@@ -43,6 +43,7 @@ export type RegistrationsResponse = {
 export type RegistrationQueryVariables = {
   id: string;
   include?: string[];
+  nocache?: boolean;
 };
 
 export type RegistrationFields = {

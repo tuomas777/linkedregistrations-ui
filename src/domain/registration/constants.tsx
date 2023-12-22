@@ -12,6 +12,7 @@ export enum REGISTRATION_MANDATORY_FIELDS {
 export const TEST_REGISTRATION_ID = 'registration:1';
 
 export const REGISTRATION_INCLUDES = ['event', 'keywords', 'location'];
+export const REGISTRATION_INCLUDES_SERVER = ['event', 'keywords'];
 
 export enum REGISTRATION_ACTIONS {
   EXPORT_SIGNUPS_AS_EXCEL = 'exportSignupsAsExcel',

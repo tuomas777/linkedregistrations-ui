@@ -9,7 +9,7 @@ import { NotificationProps } from '../../common/components/notification/Notifica
 import { VALIDATION_MESSAGE_KEYS } from '../../constants';
 import { ExtendedSession, Language } from '../../types';
 import getLocalisedString from '../../utils/getLocalisedString';
-import queryBuilder from '../../utils/queryBuilder';
+import queryBuilder, { VariableToKeyItem } from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
 import {
   getSeatsReservationData,
@@ -44,14 +44,18 @@ export const fetchRegistration = async (
   }
 };
 
-export const registrationPathBuilder = (
-  args: RegistrationQueryVariables
-): string => {
+export const registrationPathBuilder = ({
+  nocache = true,
+  ...args
+}: RegistrationQueryVariables): string => {
   const { id, include } = args;
-  const variableToKeyItems = [
+  const variableToKeyItems: VariableToKeyItem[] = [
     { key: 'include', value: include },
-    { key: 'nocache', value: true },
   ];
+
+  if (nocache) {
+    variableToKeyItems.push({ key: 'nocache', value: nocache });
+  }
 
   const query = queryBuilder(variableToKeyItems);
 

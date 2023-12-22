@@ -1,14 +1,19 @@
 /* eslint-disable no-console */
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
+import { getServerSession, NextAuthOptions } from 'next-auth';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import { RegistrationQueryVariables } from '../domain/registration/types';
 import { prefetchSignupQuery } from '../domain/signup/query';
 import { prefetchSignupGroupQuery } from '../domain/signupGroup/query';
-import { ExtendedSSRConfig, TranslationNamespaces } from '../types';
+import { getNextAuthOptions } from '../pages/api/auth/[...nextauth]';
+import {
+  ExtendedSession,
+  ExtendedSSRConfig,
+  TranslationNamespaces,
+} from '../types';
 
-import { getSessionAndUser } from './getSessionAndUser';
 import prefetchRegistrationAndEvent from './prefetchRegistrationAndEvent';
 
 type Props = {
@@ -19,7 +24,7 @@ type Props = {
   translationNamespaces: TranslationNamespaces;
 };
 
-const generateSignupGetServerSideProps = ({
+const generateGetServerSideProps = ({
   overrideRegistrationsVariables,
   shouldPrefetchPlace,
   shouldPrefetchSignup,
@@ -28,10 +33,11 @@ const generateSignupGetServerSideProps = ({
 }: Props): GetServerSideProps<ExtendedSSRConfig> => {
   return async ({ locale, query, req, res }) => {
     const queryClient = new QueryClient();
-    const { session } = await getSessionAndUser(queryClient, {
+    const session = await getServerSession<NextAuthOptions, ExtendedSession>(
       req,
       res,
-    });
+      getNextAuthOptions()
+    );
 
     await prefetchRegistrationAndEvent({
       overrideRegistrationsVariables,
@@ -81,4 +87,4 @@ const generateSignupGetServerSideProps = ({
   };
 };
 
-export default generateSignupGetServerSideProps;
+export default generateGetServerSideProps;
