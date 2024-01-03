@@ -90,6 +90,7 @@ export const refreshAccessToken = async (
       ...token,
       accessToken: response.access_token,
       accessTokenExpires: Date.now() + response.expires_in * 1000,
+      idToken: response.id_token,
       refreshToken:
         response.refresh_token ??
         /* istanbul ignore next */
@@ -125,6 +126,7 @@ export const jwtCallback = async (params: {
     return {
       accessToken: account.access_token,
       accessTokenExpires: account.expires_at * 1000,
+      idToken: account.id_token,
       refreshToken: account.refresh_token,
       user,
       apiTokens,
@@ -154,9 +156,9 @@ export const sessionCallback = (params: {
 
   if (!token) return session;
 
-  const { accessToken, accessTokenExpires, user, apiTokens } = token;
+  const { user, apiTokens, idToken } = token;
 
-  return { ...session, accessToken, accessTokenExpires, user, apiTokens };
+  return { ...session, apiTokens, idToken, user };
 };
 
 export const redirectCallback = async ({

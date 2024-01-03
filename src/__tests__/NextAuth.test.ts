@@ -44,6 +44,7 @@ const token: ExtendedJWT = {
   accessToken: accessToken,
   accessTokenExpires: 1682531200000,
   apiTokens: { linkedevents: 'api-token' },
+  idToken: 'id-token',
   refreshToken,
   user: {
     email_verified: true,
@@ -177,6 +178,7 @@ describe('jwtCallback function', () => {
       apiTokens: {
         linkedevents: 'api-token',
       },
+      idToken: 'id-token',
       refreshToken: 'refresh-token',
       user: {
         id: 'user:id',
@@ -225,12 +227,9 @@ describe('jwtCallback function', () => {
 describe('sessionCallback function', () => {
   test('should return extended session', () => {
     expect(sessionCallback({ session, token, user })).toEqual({
-      accessToken: 'access-token',
-      accessTokenExpires: 1682531200000,
-      apiTokens: {
-        linkedevents: 'api-token',
-      },
+      apiTokens: { linkedevents: 'api-token' },
       expires: '2021-02-22T18:00:00.000000Z',
+      idToken: 'id-token',
       user: {
         email_verified: true,
         family_name: 'family-name',

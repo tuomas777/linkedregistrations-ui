@@ -71,16 +71,20 @@ export type APITokens = {
 };
 
 type SessionExtensions = {
-  accessToken?: string;
-  accessTokenExpires?: number;
   apiTokens?: APITokens;
-  refreshToken?: string;
+  idToken?: string;
   user?: OidcUser;
   error?: string;
 };
 
+type JWTExtensions = SessionExtensions & {
+  accessToken?: string;
+  accessTokenExpires?: number;
+  refreshToken?: string;
+};
+
 export type ExtendedSession = Session & SessionExtensions;
-export type ExtendedJWT = JWT & SessionExtensions;
+export type ExtendedJWT = JWT & JWTExtensions;
 
 export type RefreshTokenResponse = {
   access_token: string;
