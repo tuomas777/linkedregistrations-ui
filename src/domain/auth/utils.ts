@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 import { APITokens, ExtendedSession, RefreshTokenResponse } from '../../types';
-import { User } from '../user/types';
 
 export const getApiTokensRequest = async ({
   accessToken,
@@ -64,17 +63,26 @@ export const refreshAccessTokenRequest = async ({
 
 export const getUserFirstName = ({
   session,
-  user,
 }: {
   session: ExtendedSession | null;
-  user: User | undefined;
-}): string =>
-  user?.first_name || user?.display_name || session?.user?.email || '';
+}): string => {
+  if (!session?.user) {
+    return '';
+  }
+
+  const { given_name, name, email } = session.user;
+  return given_name || name || email || '';
+};
 
 export const getUserName = ({
   session,
-  user,
 }: {
   session: ExtendedSession | null;
-  user: User | undefined;
-}): string => user?.display_name || session?.user?.email || '';
+}): string => {
+  if (!session?.user) {
+    return '';
+  }
+
+  const { name, email } = session.user;
+  return name || email || '';
+};

@@ -9,7 +9,10 @@ import React from 'react';
 
 import { ExtendedSession } from '../../../../types';
 import { fakeUser } from '../../../../utils/mockDataUtils';
-import { fakeAuthenticatedSession } from '../../../../utils/mockSession';
+import {
+  fakeAuthenticatedSession,
+  fakeOidcUser,
+} from '../../../../utils/mockSession';
 import {
   configure,
   render,
@@ -108,12 +111,8 @@ test('should start logout process', async () => {
     .mockImplementation()
     .mockResolvedValue({ url: 'https://test.com' });
 
-  const username = 'Username';
   const userFirstName = 'User';
-  const userData = fakeUser({
-    display_name: username,
-    first_name: userFirstName,
-  });
+  const userData = fakeUser({ first_name: userFirstName });
 
   const mocks = [
     rest.get(`*/user/${TEST_USER_ID}/`, (req, res, ctx) =>
@@ -122,7 +121,9 @@ test('should start logout process', async () => {
   ];
   setQueryMocks(...mocks);
 
-  const session = fakeAuthenticatedSession();
+  const session = fakeAuthenticatedSession({
+    user: fakeOidcUser({ given_name: userFirstName }),
+  });
   renderComponent(session);
 
   const userMenuButton = await screen.findByRole(

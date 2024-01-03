@@ -36,7 +36,7 @@ const logoSrcFromLanguage = (lang: Language) => {
 const Header: React.FC = () => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
   const linkedEventsApiToken = session?.apiTokens?.linkedevents;
-  const { user } = useUser();
+  useUser();
 
   const locale = useLocale();
 
@@ -98,12 +98,12 @@ const Header: React.FC = () => {
           <HdsHeader.ActionBarItem
             closeIcon={<IconCross aria-hidden />}
             closeLabel={t('close')}
-            label={getUserFirstName({ session, user })}
+            label={getUserFirstName({ session })}
             fixedRightPosition
             icon={<IconUser />}
             id="action-bar-logout"
           >
-            <ActionBarDropdownHeader title={getUserName({ session, user })} />
+            <ActionBarDropdownHeader title={getUserName({ session })} />
             <ActionBarDropdownDivider />
             <ActionBarDropdowButton
               className={styles.signOutButton}
