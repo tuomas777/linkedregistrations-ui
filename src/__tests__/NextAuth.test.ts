@@ -84,7 +84,8 @@ const refreshResponse: RefreshTokenResponse = {
 };
 
 const testTokenUrl = 'https://test.fi';
-const testApiTokenUrl = 'https://tunnistamo-backend:8000/api-tokens';
+const testApiTokenUrl =
+  'https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus/protocol/openid-connect/token';
 
 const mockTokenResonses = () => {
   global.fetch = jest.fn(() =>

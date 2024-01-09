@@ -3,10 +3,11 @@ import { mockConfig } from '../mockNextJsConfig';
 
 const serverRuntimeConfig = {
   env: 'development',
-  oidcApiTokensUrl: 'https://tunnistamo-backend:8000/api-tokens',
+  oidcApiTokensUrl:
+    'https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus/protocol/openid-connect/token',
   oidcClientId: 'linkedregistrations-ui',
   oidcClientSecret: 'secret',
-  oidcIssuer: 'https://tunnistamo-backend:8000',
+  oidcIssuer: 'https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus',
   oidcLinkedEventsApiScope: 'linkedevents',
 };
 
