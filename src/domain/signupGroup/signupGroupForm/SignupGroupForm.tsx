@@ -429,7 +429,7 @@ const SignupGroupForm: React.FC<Props> = ({
                           name={getContactPersonFieldName(
                             CONTACT_PERSON_FIELDS.LAST_NAME
                           )}
-                          component={PhoneInputField}
+                          component={TextInputField}
                           disabled={formDisabled || contactPersonFieldsDisabled}
                           label={t(`contactPerson.labelLastName`)}
                           placeholder={getPlaceholder(
@@ -446,7 +446,7 @@ const SignupGroupForm: React.FC<Props> = ({
                     <FormGroup>
                       <Field
                         name={getContactPersonFieldName(
-                          CONTACT_PERSON_FIELDS.PHONE_NUMBER
+                          CONTACT_PERSON_FIELDS.NOTIFICATIONS
                         )}
                         className={styles.notifications}
                         component={CheckboxGroupField}
