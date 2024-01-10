@@ -27,7 +27,6 @@ const moduleExports = {
     oidcClientSecret: process.env.OIDC_CLIENT_SECRET,
     oidcIssuer: process.env.OIDC_ISSUER,
     oidcLinkedEventsApiScope: process.env.OIDC_LINKED_EVENTS_API_SCOPE,
-    oidcTokenUrl: process.env.OIDC_TOKEN_URL,
   },
   output: 'standalone',
 };

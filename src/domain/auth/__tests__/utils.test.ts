@@ -1,7 +1,6 @@
 import mockAxios from 'axios';
 
 import { APITokens, OidcUser, RefreshTokenResponse } from '../../../types';
-import { fakeUser } from '../../../utils/mockDataUtils';
 import {
   fakeAuthenticatedSession,
   fakeOidcUser,
@@ -35,13 +34,21 @@ describe('getApiTokensRequest function', () => {
       url: apiTokensUrl,
     });
 
-    await expect(axiosFn).toHaveBeenCalledWith(apiTokensUrl, undefined, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+    await expect(axiosFn).toHaveBeenCalledWith(
+      apiTokensUrl,
+      {
+        audience: 'linkedevents',
+        grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
+        permission: '#access',
       },
-      responseType: 'json',
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        responseType: 'json',
+      }
+    );
   });
 });
 
@@ -83,26 +90,40 @@ describe('getApiTokensRequest function', () => {
 
 describe('getUserFirstName function', () => {
   it('should return correct user first name', () => {
-    const user = fakeUser({ display_name: 'Username', first_name: 'User' });
     const session = fakeAuthenticatedSession({
-      user: fakeOidcUser({ email: 'test@email.com' }),
+      user: fakeOidcUser({
+        email: 'test@email.com',
+        given_name: 'User',
+        name: 'User name',
+      }),
     });
-    expect(getUserFirstName({ user, session })).toBe('User');
-    expect(
-      getUserFirstName({ user: { ...user, first_name: '' }, session })
-    ).toBe('Username');
+    expect(getUserFirstName({ session })).toBe('User');
     expect(
       getUserFirstName({
-        user: { ...user, display_name: '', first_name: '' },
-        session,
+        session: {
+          ...session,
+          user: { ...(session.user as OidcUser), given_name: '' },
+        },
+      })
+    ).toBe('User name');
+    expect(
+      getUserFirstName({
+        session: {
+          ...session,
+          user: { ...(session.user as OidcUser), given_name: '', name: '' },
+        },
       })
     ).toBe('test@email.com');
     expect(
       getUserFirstName({
-        user: { ...user, display_name: '', first_name: '' },
         session: {
           ...session,
-          user: { ...session.user, email: '' } as OidcUser,
+          user: {
+            ...(session.user as OidcUser),
+            given_name: '',
+            name: '',
+            email: '',
+          },
         },
       })
     ).toBe('');
@@ -111,23 +132,23 @@ describe('getUserFirstName function', () => {
 
 describe('getUserName function', () => {
   it('should return correct userame', () => {
-    const user = fakeUser({ display_name: 'Username' });
     const session = fakeAuthenticatedSession({
-      user: fakeOidcUser({ email: 'test@email.com' }),
+      user: fakeOidcUser({ email: 'test@email.com', name: 'User name' }),
     });
-    expect(getUserName({ user, session })).toBe('Username');
+    expect(getUserName({ session })).toBe('User name');
     expect(
       getUserName({
-        user: { ...user, display_name: '' },
-        session,
+        session: {
+          ...session,
+          user: { ...(session.user as OidcUser), name: '' },
+        },
       })
     ).toBe('test@email.com');
     expect(
       getUserName({
-        user: { ...user, display_name: '' },
         session: {
           ...session,
-          user: { ...session.user, email: '' } as OidcUser,
+          user: { ...(session.user as OidcUser), name: '', email: '' },
         },
       })
     ).toBe('');

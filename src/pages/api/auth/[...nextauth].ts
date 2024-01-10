@@ -37,6 +37,9 @@ type SessionParams = {
   session: ExtendedSession;
 };
 
+const getWellKnown = () =>
+  `${getServerRuntimeConfig().oidcIssuer}/.well-known/openid-configuration`;
+
 export const getApiAccessTokens = async (
   accessToken: string | undefined
 ): Promise<APITokens> => {
@@ -46,14 +49,6 @@ export const getApiAccessTokens = async (
   if (!accessToken) {
     throw new Error('Access token not available. Cannot update');
   }
-
-  /* istanbul ignore next */
-  if (!oidcLinkedEventsApiScope) {
-    throw new Error(
-      'Application configuration error, missing Linked Events Api scope.'
-    );
-  }
-
   const apiTokens = await getApiTokensRequest({
     accessToken,
     linkedEventsApiScope: oidcLinkedEventsApiScope,
@@ -70,18 +65,18 @@ export const getApiAccessTokens = async (
 export const refreshAccessToken = async (
   token: ExtendedJWT
 ): Promise<ExtendedJWT> => {
-  const { oidcClientId, oidcClientSecret, oidcTokenUrl } =
-    getServerRuntimeConfig();
+  const { oidcClientId, oidcClientSecret } = getServerRuntimeConfig();
 
   if (!token.refreshToken) {
     throw new Error('No refresh token present');
   }
 
   try {
+    const { token_endpoint } = await (await fetch(getWellKnown())).json();
     const response = await refreshAccessTokenRequest({
       clientId: oidcClientId,
       clientSecret: oidcClientSecret,
-      url: oidcTokenUrl,
+      url: token_endpoint,
       refreshToken: token.refreshToken,
     });
 
@@ -95,6 +90,7 @@ export const refreshAccessToken = async (
       ...token,
       accessToken: response.access_token,
       accessTokenExpires: Date.now() + response.expires_in * 1000,
+      idToken: response.id_token,
       refreshToken:
         response.refresh_token ??
         /* istanbul ignore next */
@@ -130,6 +126,7 @@ export const jwtCallback = async (params: {
     return {
       accessToken: account.access_token,
       accessTokenExpires: account.expires_at * 1000,
+      idToken: account.id_token,
       refreshToken: account.refresh_token,
       user,
       apiTokens,
@@ -159,43 +156,40 @@ export const sessionCallback = (params: {
 
   if (!token) return session;
 
-  const { accessToken, accessTokenExpires, user, apiTokens } = token;
+  const { user, apiTokens, idToken } = token;
 
-  return { ...session, accessToken, accessTokenExpires, user, apiTokens };
+  return { ...session, apiTokens, idToken, user };
 };
 
-export const getRedirectCallback =
-  (wellKnown: string) =>
-  async ({ url, baseUrl }: { url: string; baseUrl: string }) => {
-    // Allows relative callback URLs
-    if (url.endsWith(SIGNOUT_REDIRECT)) {
-      const response = await fetch(wellKnown);
-      const { end_session_endpoint } = await response.json();
-      return `${end_session_endpoint}?post_logout_redirect_uri=${encodeURIComponent(
-        `${baseUrl}${ROUTES.LOGOUT}`
-      )}`;
-    }
+export const redirectCallback = async ({
+  url,
+  baseUrl,
+}: {
+  url: string;
+  baseUrl: string;
+}) => {
+  // Allows relative callback URLs
+  if (url.endsWith(SIGNOUT_REDIRECT)) {
+    const { end_session_endpoint } = await (await fetch(getWellKnown())).json();
+    return `${end_session_endpoint}?post_logout_redirect_uri=${encodeURIComponent(
+      `${baseUrl}${ROUTES.LOGOUT}`
+    )}`;
+  }
 
-    if (url.startsWith('/')) {
-      return `${baseUrl}${url}`;
-    }
-    // Allows callback URLs on the same origin
-    if (new URL(url).origin === baseUrl) {
-      return url;
-    }
+  if (url.startsWith('/')) {
+    return `${baseUrl}${url}`;
+  }
+  // Allows callback URLs on the same origin
+  if (new URL(url).origin === baseUrl) {
+    return url;
+  }
 
-    return baseUrl;
-  };
+  return baseUrl;
+};
 
 export const getNextAuthOptions = () => {
-  const {
-    env,
-    oidcClientId,
-    oidcClientSecret,
-    oidcIssuer,
-    oidcLinkedEventsApiScope,
-    oidcTokenUrl,
-  } = getServerRuntimeConfig();
+  const { env, oidcClientId, oidcClientSecret, oidcIssuer } =
+    getServerRuntimeConfig();
   const wellKnown = `${oidcIssuer}/.well-known/openid-configuration`;
 
   const authOptions: NextAuthOptions = {
@@ -206,23 +200,19 @@ export const getNextAuthOptions = () => {
         type: 'oauth',
         wellKnown,
         authorization: {
-          params: {
-            response_type: 'code',
-            scope: `openid profile email ${oidcLinkedEventsApiScope}`,
-          },
+          params: { response_type: 'code', scope: `openid profile email` },
         },
         checks: ['pkce', 'state'],
         idToken: true,
         clientId: oidcClientId,
         clientSecret: oidcClientSecret,
-        token: oidcTokenUrl,
         profile: getProfile,
       } as OAuthConfig<User>,
     ],
     debug: env === 'development',
     callbacks: {
       jwt: jwtCallback,
-      redirect: getRedirectCallback(wellKnown),
+      redirect: redirectCallback,
       session: sessionCallback,
     },
   };

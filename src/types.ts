@@ -71,16 +71,20 @@ export type APITokens = {
 };
 
 type SessionExtensions = {
-  accessToken?: string;
-  accessTokenExpires?: number;
   apiTokens?: APITokens;
-  refreshToken?: string;
+  idToken?: string;
   user?: OidcUser;
   error?: string;
 };
 
+type JWTExtensions = SessionExtensions & {
+  accessToken?: string;
+  accessTokenExpires?: number;
+  refreshToken?: string;
+};
+
 export type ExtendedSession = Session & SessionExtensions;
-export type ExtendedJWT = JWT & SessionExtensions;
+export type ExtendedJWT = JWT & JWTExtensions;
 
 export type RefreshTokenResponse = {
   access_token: string;
@@ -89,6 +93,8 @@ export type RefreshTokenResponse = {
   expires_in: number;
   id_token: string;
 };
+
+export type ApiTokenResponse = RefreshTokenResponse;
 
 export type MutationCallbacks<SuccessResponseType = string> = {
   onError?: (error: any) => void;

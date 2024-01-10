@@ -2,7 +2,6 @@
 import axios from 'axios';
 
 import { APITokens, ExtendedSession, RefreshTokenResponse } from '../../types';
-import { User } from '../user/types';
 
 export const getApiTokensRequest = async ({
   accessToken,
@@ -13,15 +12,23 @@ export const getApiTokensRequest = async ({
   linkedEventsApiScope: string;
   url: string;
 }): Promise<APITokens> => {
-  const response = await axios.post(url, undefined, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+  const response = await axios.post(
+    url,
+    {
+      audience: linkedEventsApiScope,
+      grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
+      permission: '#access',
     },
-    responseType: 'json',
-  });
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      responseType: 'json',
+    }
+  );
 
-  const linkedevents = response.data[linkedEventsApiScope];
+  const linkedevents = response.data.access_token;
 
   return { linkedevents };
 };
@@ -56,17 +63,26 @@ export const refreshAccessTokenRequest = async ({
 
 export const getUserFirstName = ({
   session,
-  user,
 }: {
   session: ExtendedSession | null;
-  user: User | undefined;
-}): string =>
-  user?.first_name || user?.display_name || session?.user?.email || '';
+}): string => {
+  if (!session?.user) {
+    return '';
+  }
+
+  const { given_name, name, email } = session.user;
+  return given_name || name || email || '';
+};
 
 export const getUserName = ({
   session,
-  user,
 }: {
   session: ExtendedSession | null;
-  user: User | undefined;
-}): string => user?.display_name || session?.user?.email || '';
+}): string => {
+  if (!session?.user) {
+    return '';
+  }
+
+  const { name, email } = session.user;
+  return name || email || '';
+};

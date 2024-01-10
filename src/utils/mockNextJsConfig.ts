@@ -15,12 +15,12 @@ export const mockDefaultConfig = () => {
     { linkedEventsApiBaseUrl: 'https://linkedevents-backend:8000/v1' },
     {
       env: 'development',
-      oidcIssuer: 'https://tunnistamo-backend:8000',
+      oidcIssuer: 'https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus',
       oidcClientId: 'linkedregistrations-ui',
       oidcClientSecret: 'secret',
-      oidcApiTokensUrl: 'https://tunnistamo-backend:8000/api-tokens',
+      oidcApiTokensUrl:
+        'https://tunnistus.hel.fi/auth/realms/helsinki-tunnistus/protocol/openid-connect/token',
       oidcLinkedEventsApiScope: 'linkedevents',
-      oidcTokenUrl: 'https://tunnistamo-backend:8000/token',
     }
   );
 };
