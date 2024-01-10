@@ -235,7 +235,9 @@ test('contact person fields should be disabled if signup has a signup group', as
 
   const firstNameInput = (await findFirstNameInputs())[1];
   const emailInput = getSignupFormElement('emailInput');
-  const phoneInput = getSignupFormElement('phoneInput');
+  const contactPersonPhoneInput = getSignupFormElement(
+    'contactPersonPhoneInput'
+  );
   const lastNameInput = screen.getAllByLabelText(/sukunimi/i)[1];
   const membershipNumberInput = getSignupFormElement('membershipNumberInput');
   const nativeLanguageButton = getSignupFormElement('nativeLanguageButton');
@@ -256,7 +258,7 @@ test('contact person fields should be disabled if signup has a signup group', as
   ).toBeInTheDocument();
 
   expect(emailInput).toBeDisabled();
-  expect(phoneInput).toBeDisabled();
+  expect(contactPersonPhoneInput).toBeDisabled();
   expect(firstNameInput).toBeDisabled();
   expect(lastNameInput).toBeDisabled();
   expect(membershipNumberInput).toBeDisabled();

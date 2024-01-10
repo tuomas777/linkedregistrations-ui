@@ -2,7 +2,8 @@
 @import '../../../../../styles//mixins.scss';
 
 .readOnlyRow,
-.nameRow {
+.nameRow,
+.phoneNumberRow {
   display: grid;
   grid-gap: var(--spacing-m);
   grid-template-columns: 1fr;

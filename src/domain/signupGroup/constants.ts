@@ -24,6 +24,7 @@ export enum SIGNUP_FIELDS {
   ID = 'id',
   IN_WAITING_LIST = 'inWaitingList',
   LAST_NAME = 'lastName',
+  PHONE_NUMBER = 'phoneNumber',
   STREET_ADDRESS = 'streetAddress',
   ZIPCODE = 'zipcode',
 }
@@ -60,6 +61,7 @@ export const SIGNUP_INITIAL_VALUES: SignupFormFields = {
   [SIGNUP_FIELDS.ID]: null,
   [SIGNUP_FIELDS.IN_WAITING_LIST]: false,
   [SIGNUP_FIELDS.LAST_NAME]: '',
+  [SIGNUP_FIELDS.PHONE_NUMBER]: '',
   [SIGNUP_FIELDS.STREET_ADDRESS]: '',
   [SIGNUP_FIELDS.ZIPCODE]: '',
 };
