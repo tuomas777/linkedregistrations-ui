@@ -25,9 +25,13 @@ const SingleSelectField: React.FC<Props> = ({
   };
 
   const handleChange = (selected: OptionType) => {
-    onChange({
-      target: { id: name, value: selected.value },
-    });
+    // Set timeout to prevent Android devices to end up
+    // to an infinite loop when changing value
+    setTimeout(() => {
+      onChange({
+        target: { id: name, value: selected.value },
+      });
+    }, 5);
   };
 
   return (
