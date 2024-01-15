@@ -1,4 +1,5 @@
 import { Meta, stringOrNull } from '../api/types';
+import { PriceGroupDense } from '../priceGroup/types';
 
 import {
   ATTENDEE_STATUS,
@@ -18,6 +19,10 @@ export type ContactPersonInput = {
   service_language: stringOrNull;
 };
 
+export type SignupPriceGroupInput = {
+  registration_price_group: number;
+};
+
 export type SignupInput = {
   city?: stringOrNull;
   contact_person?: ContactPersonInput;
@@ -28,6 +33,7 @@ export type SignupInput = {
   last_name?: stringOrNull;
   phone_number: stringOrNull;
   presence_status?: PRESENCE_STATUS;
+  price_group?: SignupPriceGroupInput;
   street_address?: stringOrNull;
   user_consent: boolean;
   zipcode?: stringOrNull;
@@ -43,6 +49,16 @@ export type ContactPerson = {
   notifications?: stringOrNull;
   phone_number?: stringOrNull;
   service_language?: stringOrNull;
+};
+
+export type SignupPriceGroup = {
+  id: number;
+  price_group: PriceGroupDense;
+  price: string;
+  registration_price_group: number;
+  vat_percentage: string;
+  price_without_vat: string;
+  vat: string;
 };
 
 export type Signup = {
@@ -61,6 +77,7 @@ export type Signup = {
   last_name?: stringOrNull;
   phone_number: stringOrNull;
   presence_status?: PRESENCE_STATUS;
+  price_group: SignupPriceGroup | null;
   registration: string;
   signup_group: stringOrNull;
   street_address?: stringOrNull;

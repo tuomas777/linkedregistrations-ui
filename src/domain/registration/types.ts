@@ -5,6 +5,7 @@ import {
   stringOrNull,
 } from '../api/types';
 import { Event } from '../event/types';
+import { RegistrationPriceGroup } from '../priceGroup/types';
 import { Signup } from '../signup/types';
 
 export type Registration = {
@@ -29,6 +30,7 @@ export type Registration = {
   maximum_group_size: numberOrNull;
   minimum_attendee_capacity: numberOrNull;
   publisher: string;
+  registration_price_groups: RegistrationPriceGroup[];
   remaining_attendee_capacity: numberOrNull;
   remaining_waiting_list_capacity: numberOrNull;
   signups: Signup[] | null;

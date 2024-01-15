@@ -106,6 +106,7 @@
     "title": "Strong identification is required"
   },
   "titleServerErrorSummary": "Form contains following errors",
+  "total": "In total",
   "validation": {
     "age": {
       "max": "The maximum age is {{max}} y.",

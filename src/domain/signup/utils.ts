@@ -2,6 +2,7 @@ import { AxiosError } from 'axios';
 import omit from 'lodash/omit';
 
 import { ExtendedSession } from '../../types';
+import { featureFlagUtils } from '../../utils/featureFlags';
 import formatDate from '../../utils/formatDate';
 import skipFalsyType from '../../utils/skipFalsyType';
 import stringToDate from '../../utils/stringToDate';
@@ -142,6 +143,7 @@ export const getSignupInitialValues = (signup: Signup): SignupFormFields => ({
   inWaitingList: signup.attendee_status === ATTENDEE_STATUS.Waitlisted,
   lastName: signup.last_name ?? '',
   phoneNumber: signup.phone_number ?? '',
+  priceGroup: signup.price_group?.registration_price_group.toString() ?? '',
   streetAddress: signup.street_address ?? '',
   zipcode: signup.zipcode ?? '',
 });
@@ -177,6 +179,7 @@ export const getSignupPayload = ({
     id,
     lastName,
     phoneNumber,
+    priceGroup,
     streetAddress,
     zipcode,
   } = signupData;
@@ -190,6 +193,13 @@ export const getSignupPayload = ({
     id: id ?? undefined,
     last_name: lastName || '',
     phone_number: phoneNumber || '',
+    ...(featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION')
+      ? {
+          price_group: priceGroup
+            ? { registration_price_group: Number(priceGroup) }
+            : undefined,
+        }
+      : {}),
     street_address: streetAddress || null,
     zipcode: zipcode || null,
     user_consent: userConsent,

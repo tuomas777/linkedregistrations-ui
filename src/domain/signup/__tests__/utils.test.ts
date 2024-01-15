@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { fakeContactPerson, fakeSignup } from '../../../utils/mockDataUtils';
+import {
+  fakeContactPerson,
+  fakeSignup,
+  fakeSignupPriceGroup,
+} from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import {
   NOTIFICATIONS,
@@ -121,6 +125,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
         id: TEST_SIGNUP_ID,
         last_name: null,
         phone_number: null,
+        price_group: null,
         street_address: null,
         zipcode: null,
       })
@@ -136,6 +141,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
         inWaitingList: false,
         lastName: '',
         phoneNumber: '',
+        priceGroup: '',
         streetAddress: '',
         zipcode: '',
       },
@@ -164,6 +170,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
     const expectedNativeLanguage = 'fi';
     const expectedNotifications = [NOTIFICATIONS.EMAIL];
     const expectedPhoneNumber = '+358 44 123 4567';
+    const expectedPriceGroup = '1';
     const expectedServiceLanguage = 'sv';
     const expectedStreetAddress = 'Test address';
     const expectedUserConsent = true;
@@ -204,6 +211,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
         id: TEST_SIGNUP_ID,
         last_name: expectedLastName,
         phone_number: expectedPhoneNumber,
+        price_group: fakeSignupPriceGroup({ registration_price_group: 1 }),
         street_address: expectedStreetAddress,
         user_consent: expectedUserConsent,
         zipcode: expectedZip,
@@ -220,6 +228,7 @@ describe('getSignupGroupInitialValuesFromSignup function', () => {
         inWaitingList: false,
         lastName: expectedLastName,
         phoneNumber: expectedPhoneNumber,
+        priceGroup: expectedPriceGroup,
         streetAddress: expectedStreetAddress,
         zipcode: expectedZip,
       },
@@ -295,6 +304,7 @@ describe('getUpdateSignupPayload function', () => {
       nativeLanguage = 'fi',
       notifications = [NOTIFICATIONS.EMAIL],
       phoneNumber = '0441234567',
+      priceGroup = '1',
       serviceLanguage = 'sv',
       streetAddress = 'Street address',
       zipcode = '00100';
@@ -308,6 +318,7 @@ describe('getUpdateSignupPayload function', () => {
         inWaitingList: false,
         lastName,
         phoneNumber,
+        priceGroup,
         streetAddress,
         zipcode,
       },
@@ -353,6 +364,7 @@ describe('getUpdateSignupPayload function', () => {
       id: TEST_SIGNUP_ID,
       last_name: lastName,
       phone_number: phoneNumber,
+      price_group: { registration_price_group: 1 },
       registration: registration.id,
       street_address: streetAddress,
       user_consent: false,

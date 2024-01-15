@@ -57,3 +57,5 @@ afterAll(() => {
 });
 
 jest.setTimeout(1000000);
+
+process.env.NEXT_PUBLIC_WEB_STORE_INTEGRATION_ENABLED = 'true';
