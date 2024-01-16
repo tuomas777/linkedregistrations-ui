@@ -6,8 +6,9 @@ import { TFunction } from 'next-i18next';
 
 import { MenuItemOptionProps } from '../../common/components/menuDropdown/types';
 import { NotificationProps } from '../../common/components/notification/Notification';
-import { VALIDATION_MESSAGE_KEYS } from '../../constants';
+import { TIME_FORMAT, VALIDATION_MESSAGE_KEYS } from '../../constants';
 import { ExtendedSession, Language } from '../../types';
+import formatDate from '../../utils/formatDate';
 import getLocalisedString from '../../utils/getLocalisedString';
 import queryBuilder, { VariableToKeyItem } from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
@@ -202,6 +203,13 @@ export const getRegistrationWarning = (
   const freeWaitlistCapacity = getFreeWaitingListCapacity(registration);
 
   if (!registrationOpen) {
+    if (registration.enrolment_start_time) {
+      const enrolmentStartTime = new Date(registration.enrolment_start_time);
+      return t('signup:warnings.closedWithEnrolmentTime', {
+        openingDate: formatDate(enrolmentStartTime),
+        openingTime: formatDate(enrolmentStartTime, TIME_FORMAT),
+      });
+    }
     return t('signup:warnings.closed');
   }
 

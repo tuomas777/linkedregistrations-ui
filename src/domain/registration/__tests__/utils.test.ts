@@ -67,6 +67,17 @@ describe('getRegistrationWarning', () => {
         }),
         i18n.t.bind(i18n)
       )
+    ).toBe('Ilmoittautuminen tähän tapahtumaan avautuu 4.11.2022 klo 00.00.');
+
+    expect(
+      getRegistrationWarning(
+        fakeRegistration({
+          ...singleRegistrationOverrides,
+          enrolment_start_time: '',
+          enrolment_end_time: new Date('2022-11-06').toISOString(),
+        }),
+        i18n.t.bind(i18n)
+      )
     ).toBe(
       'Ilmoittautuminen tähän tapahtumaan on tällä hetkellä suljettu. Kokeile myöhemmin uudelleen.'
     );
