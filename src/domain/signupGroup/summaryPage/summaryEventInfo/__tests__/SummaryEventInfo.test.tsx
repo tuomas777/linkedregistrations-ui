@@ -1,6 +1,7 @@
 import { rest } from 'msw';
 import React from 'react';
 
+import { fakeEvent } from '../../../../../utils/mockDataUtils';
 import {
   configure,
   render,
@@ -8,7 +9,6 @@ import {
   setQueryMocks,
 } from '../../../../../utils/testUtils';
 import {
-  event,
   eventOverrides,
   locationText,
 } from '../../../../event/__mocks__/event';
@@ -18,13 +18,13 @@ import { registration } from '../../../../registration/__mocks__/registration';
 import SummaryEventInfo from '../SummaryEventInfo';
 
 configure({ defaultHidden: true });
+const event = fakeEvent({
+  ...eventOverrides,
+  end_time: '2020-07-13T12:00:00.000000Z',
+  start_time: '2020-07-10T12:00:00.000000Z',
+});
 
-const findElement = (key: 'location') => {
-  switch (key) {
-    case 'location':
-      return screen.findByText(locationText);
-  }
-};
+const findLocationText = () => screen.findByText(locationText);
 
 const getElement = (key: 'age' | 'date' | 'name' | 'price') => {
   switch (key) {
@@ -50,7 +50,7 @@ beforeEach(() => {
 test('should show event info', async () => {
   render(<SummaryEventInfo registration={registration} />);
 
-  await findElement('location');
+  await findLocationText();
   getElement('name');
   getElement('price');
   getElement('age');
