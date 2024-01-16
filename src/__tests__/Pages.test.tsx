@@ -146,6 +146,7 @@ const signupGroupValues: SignupGroupFormFields = {
       id: TEST_SIGNUP_ID,
       inWaitingList: false,
       lastName: 'Last name',
+      phoneNumber: '+358 44 123 4567',
       streetAddress: 'Street address',
       zipcode: '00100',
     },
