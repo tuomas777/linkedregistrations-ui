@@ -25,6 +25,7 @@ export const PAGE_HEADER_ID = 'page-header';
 export const MAIN_CONTENT_ID = 'maincontent';
 
 export const DATE_FORMAT = 'd.M.yyyy';
+export const TIME_FORMAT = 'HH.mm';
 
 export enum RESERVATION_NAMES {
   SIGNUP_RESERVATION = 'signup-reservation',
