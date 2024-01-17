@@ -2,7 +2,8 @@ import { advanceTo, clear } from 'jest-date-mock';
 import * as Yup from 'yup';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../../constants';
-import { fakeRegistration } from '../../../utils/mockDataUtils';
+import { fakeEvent, fakeRegistration } from '../../../utils/mockDataUtils';
+import { stringOrNull } from '../../api/types';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import { Registration } from '../../registration/types';
 import { NOTIFICATIONS } from '../constants';
@@ -23,7 +24,11 @@ afterEach(() => {
   clear();
 });
 
-const testAboveMinAge = async (minAge: number, date: string) => {
+const testAboveMinAge = async (
+  minAge: number,
+  date: string,
+  startTime: stringOrNull = null
+) => {
   try {
     await Yup.string()
       .test(
@@ -32,7 +37,7 @@ const testAboveMinAge = async (minAge: number, date: string) => {
           key: VALIDATION_MESSAGE_KEYS.AGE_MIN,
           min: minAge,
         }),
-        (date) => isAboveMinAge(date, minAge)
+        (date) => isAboveMinAge(date, startTime, minAge)
       )
       .validate(date);
     return true;
@@ -41,7 +46,11 @@ const testAboveMinAge = async (minAge: number, date: string) => {
   }
 };
 
-const testBelowMaxAge = async (maxAge: number, date: string) => {
+const testBelowMaxAge = async (
+  maxAge: number,
+  date: string,
+  startTime: stringOrNull = null
+) => {
   try {
     await Yup.string()
       .test(
@@ -50,7 +59,7 @@ const testBelowMaxAge = async (maxAge: number, date: string) => {
           key: VALIDATION_MESSAGE_KEYS.AGE_MAX,
           max: maxAge,
         }),
-        (date) => isBelowMaxAge(date, maxAge)
+        (date) => isBelowMaxAge(date, startTime, maxAge)
       )
       .validate(date);
     return true;
@@ -95,7 +104,7 @@ const testSignupGroupSchema = async (
 };
 
 describe('isAboveMinAge function', () => {
-  test('should return true value is null', async () => {
+  test('should return true if value is empty', async () => {
     advanceTo('2022-10-10');
 
     const result = await testAboveMinAge(9, '');
@@ -111,6 +120,14 @@ describe('isAboveMinAge function', () => {
     expect(result).toBe(false);
   });
 
+  test('should return false if age is less than min age in start time', async () => {
+    advanceTo('2022-10-10');
+
+    const result = await testAboveMinAge(9, '1.1.2022', '2022-12-12');
+
+    expect(result).toBe(false);
+  });
+
   test('should return true if age is greater than min age', async () => {
     advanceTo('2022-10-10');
 
@@ -118,10 +135,18 @@ describe('isAboveMinAge function', () => {
 
     expect(result).toBe(true);
   });
+
+  test('should return true if age is greater than min age in start time', async () => {
+    advanceTo('2022-10-10');
+
+    const result = await testAboveMinAge(9, '11.12.2012', '2022-12-12');
+
+    expect(result).toBe(true);
+  });
 });
 
 describe('isBelowMaxAge function', () => {
-  test('should return true if value is null', async () => {
+  test('should return true if value is empty', async () => {
     advanceTo('2022-10-10');
 
     const result = await testBelowMaxAge(9, '');
@@ -144,10 +169,20 @@ describe('isBelowMaxAge function', () => {
 
     expect(result).toBe(true);
   });
+
+  test('should return false if age is greater than max age in start time', async () => {
+    advanceTo('2022-10-10');
+
+    const result = await testBelowMaxAge(9, '1.1.2015', '2025-10-10');
+
+    expect(result).toBe(false);
+  });
 });
 
 describe('signupSchema function', () => {
-  const registration = fakeRegistration();
+  const registration = fakeRegistration({
+    event: fakeEvent({ start_time: null }),
+  });
   const validSignup: SignupFormFields = {
     city: 'City',
     dateOfBirth: '1.1.2000',
@@ -240,10 +275,16 @@ describe('signupSchema function', () => {
     advanceTo('2022-10-10');
 
     expect(
-      await testSignupSchema(fakeRegistration({ audience_max_age: 8 }), {
-        ...validSignup,
-        dateOfBirth: '1.1.2012',
-      })
+      await testSignupSchema(
+        fakeRegistration({
+          audience_max_age: 8,
+          event: fakeEvent({ start_time: null }),
+        }),
+        {
+          ...validSignup,
+          dateOfBirth: '1.1.2012',
+        }
+      )
     ).toBe(false);
   });
 
@@ -251,10 +292,16 @@ describe('signupSchema function', () => {
     advanceTo('2022-10-10');
 
     expect(
-      await testSignupSchema(fakeRegistration({ audience_min_age: 5 }), {
-        ...validSignup,
-        dateOfBirth: '1.1.2022',
-      })
+      await testSignupSchema(
+        fakeRegistration({
+          audience_min_age: 5,
+          event: fakeEvent({ start_time: null }),
+        }),
+        {
+          ...validSignup,
+          dateOfBirth: '1.1.2022',
+        }
+      )
     ).toBe(false);
   });
 

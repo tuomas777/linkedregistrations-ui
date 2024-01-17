@@ -1,6 +1,7 @@
 import endOfDay from 'date-fns/endOfDay';
 import isAfter from 'date-fns/isAfter';
 import isBefore from 'date-fns/isBefore';
+import max from 'date-fns/max';
 import startOfDay from 'date-fns/startOfDay';
 import subYears from 'date-fns/subYears';
 import { FormikErrors, FormikTouched } from 'formik';
@@ -32,22 +33,32 @@ import { isDateOfBirthFieldRequired, isSignupFieldRequired } from './utils';
 
 export const isAboveMinAge = (
   dateStr: stringOrNull | undefined,
+  startTime: stringOrNull,
   minAge: numberOrNull
-): boolean =>
-  minAge && dateStr && isValidDate(dateStr)
-    ? isBefore(stringToDate(dateStr), subYears(endOfDay(new Date()), minAge))
+): boolean => {
+  const now = new Date();
+  const dateToCompare = startTime ? max([new Date(startTime), now]) : now;
+
+  return minAge && dateStr && isValidDate(dateStr)
+    ? isBefore(stringToDate(dateStr), subYears(endOfDay(dateToCompare), minAge))
     : true;
+};
 
 export const isBelowMaxAge = (
   dateStr: stringOrNull | undefined,
+  startTime: stringOrNull,
   maxAge: numberOrNull
-): boolean =>
-  maxAge && dateStr && isValidDate(dateStr)
+): boolean => {
+  const now = new Date();
+  const dateToCompare = startTime ? max([new Date(startTime), now]) : now;
+
+  return maxAge && dateStr && isValidDate(dateStr)
     ? isAfter(
         stringToDate(dateStr),
-        subYears(startOfDay(new Date()), maxAge + 1)
+        subYears(startOfDay(dateToCompare), maxAge + 1)
       )
     : true;
+};
 
 const getStringSchema = (required: boolean) =>
   required
@@ -55,7 +66,11 @@ const getStringSchema = (required: boolean) =>
     : Yup.string();
 
 export const getSignupSchema = (registration: Registration) => {
-  const { audience_max_age, audience_min_age } = registration;
+  const {
+    audience_max_age,
+    audience_min_age,
+    event: { start_time },
+  } = registration;
 
   return Yup.object().shape({
     [SIGNUP_FIELDS.FIRST_NAME]: getStringSchema(
@@ -88,7 +103,7 @@ export const getSignupSchema = (registration: Registration) => {
           key: VALIDATION_MESSAGE_KEYS.AGE_MIN,
           min: audience_min_age,
         }),
-        (date) => isAboveMinAge(date, audience_min_age)
+        (date) => isAboveMinAge(date, start_time, audience_min_age)
       )
       .test(
         'isBelowMaxAge',
@@ -96,7 +111,7 @@ export const getSignupSchema = (registration: Registration) => {
           key: VALIDATION_MESSAGE_KEYS.AGE_MAX,
           max: audience_max_age,
         }),
-        (date) => isBelowMaxAge(date, audience_max_age)
+        (date) => isBelowMaxAge(date, start_time, audience_max_age)
       ),
     [SIGNUP_FIELDS.ZIPCODE]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.ZIPCODE)

@@ -1,3 +1,5 @@
+import addDays from 'date-fns/addDays';
+
 import {
   fakeEvent,
   fakeLocalisedObject,
@@ -19,7 +21,7 @@ export const eventOverrides = {
   audience_max_age: 15,
   audience_min_age: 8,
   description: fakeLocalisedObject('Event description'),
-  end_time: '2020-07-13T12:00:00.000000Z',
+  end_time: addDays(new Date(), 1).toISOString(),
   keywords: keywordsResponse.data,
   images: imagesResponse.data,
   name: fakeLocalisedObject(eventName),
@@ -27,7 +29,7 @@ export const eventOverrides = {
   offers: fakeOffers(1, [
     { is_free: false, price: fakeLocalisedObject('Event price') },
   ]),
-  start_time: '2020-07-10T12:00:00.000000Z',
+  start_time: new Date().toISOString(),
 };
 
 export const locationText = [locationName, streetAddress, addressLocality].join(

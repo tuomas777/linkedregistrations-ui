@@ -1,18 +1,17 @@
 import { rest } from 'msw';
 import React from 'react';
 
-import { fakeLocalisedObject } from '../../../../utils/mockDataUtils';
+import {
+  fakeEvent,
+  fakeLocalisedObject,
+} from '../../../../utils/mockDataUtils';
 import {
   configure,
   render,
   screen,
   setQueryMocks,
 } from '../../../../utils/testUtils';
-import {
-  event,
-  eventOverrides,
-  locationText,
-} from '../../../event/__mocks__/event';
+import { eventOverrides, locationText } from '../../../event/__mocks__/event';
 import { keywordsOverrides } from '../../../keyword/__mocks__/keyword';
 import { place } from '../../../place/__mocks__/place';
 import { TEST_PLACE_ID } from '../../../place/constants';
@@ -21,12 +20,13 @@ import EventInfo from '../EventInfo';
 
 configure({ defaultHidden: true });
 
-const findElement = (key: 'location') => {
-  switch (key) {
-    case 'location':
-      return screen.findByText(locationText);
-  }
-};
+const event = fakeEvent({
+  ...eventOverrides,
+  end_time: '2020-07-13T12:00:00.000000Z',
+  start_time: '2020-07-10T12:00:00.000000Z',
+});
+
+const findLocationText = () => screen.findByText(locationText);
 
 const getElement = (key: 'age' | 'date' | 'description' | 'name' | 'price') => {
   switch (key) {
@@ -54,7 +54,7 @@ beforeEach(() => {
 test('should show event info', async () => {
   render(<EventInfo event={event} registration={registration} />);
 
-  await findElement('location');
+  await findLocationText();
   getElement('name');
   keywordsOverrides.forEach((item) =>
     screen.getByText(item.name?.fi as string)
