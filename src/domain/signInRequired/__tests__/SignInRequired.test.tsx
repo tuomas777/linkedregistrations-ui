@@ -36,5 +36,7 @@ test('should start signIn process', async () => {
   const signInButton = getSignInButton();
   await user.click(signInButton);
 
-  expect(nextAuth.signIn).toBeCalledWith('tunnistamo');
+  expect(nextAuth.signIn).toBeCalledWith('tunnistamo', undefined, {
+    ui_locales: 'fi',
+  });
 });

@@ -1,16 +1,17 @@
-import { signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import Button from '../../common/components/button/Button';
 import ErrorTemplate from '../../common/components/errorTemplate/ErrorTemplate';
 import ErrorPageMeta from '../../common/components/errrorPageMeta/ErrorPageMeta';
+import useSignIn from '../../hooks/useSignIn';
 import MainContent from '../app/layout/mainContent/MainContent';
 
 import styles from './signInRequired.module.scss';
 
 const SignInRequired: React.FC = () => {
   const { t } = useTranslation('common');
+  const { handleSignIn } = useSignIn();
 
   return (
     <>
@@ -25,7 +26,7 @@ const SignInRequired: React.FC = () => {
             <div className={styles.buttons}>
               <Button
                 fullWidth={true}
-                onClick={() => signIn('tunnistamo')}
+                onClick={handleSignIn}
                 type="button"
                 variant="primary"
               >
