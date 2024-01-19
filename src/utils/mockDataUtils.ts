@@ -16,6 +16,7 @@ import { Event, Offer } from '../domain/event/types';
 import { Image, ImagesResponse } from '../domain/image/types';
 import { Keyword, KeywordsResponse } from '../domain/keyword/types';
 import { LanguagesResponse, LELanguage } from '../domain/language/types';
+import { Payment } from '../domain/payment/types';
 import { Place } from '../domain/place/types';
 import {
   PriceGroupDense,
@@ -373,6 +374,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       last_modified_by: null,
       last_modified_time: null,
       last_name: faker.person.lastName(),
+      payment: null,
       phone_number: null,
       presence_status: PRESENCE_STATUS.NotPresent,
       price_group: null,
@@ -401,8 +403,30 @@ export const fakeSignupGroup = (
       is_created_by_current_user: false,
       last_modified_by: null,
       last_modified_time: null,
+      payment: null,
       registration: TEST_REGISTRATION_ID,
       signups: [],
+    },
+    overrides
+  );
+};
+
+export const fakePayment = (overrides?: Partial<Payment>): Payment => {
+  const id = overrides?.id || faker.number.int();
+  const order_id = faker.string.uuid();
+
+  return merge<Payment, typeof overrides>(
+    {
+      id,
+      amount: '12.00',
+      checkout_url: 'https://payment.com',
+      created_by: null,
+      created_time: null,
+      external_order_id: order_id,
+      last_modified_by: null,
+      last_modified_time: null,
+      logged_in_checkout_url: 'https://payment.com',
+      status: 'created',
     },
     overrides
   );

@@ -14,6 +14,7 @@ import {
   useUpdateSignupMutation,
 } from '../mutation';
 import {
+  CreateSignupsResponse,
   DeleteSignupMutationInput,
   Signup,
   SignupInput,
@@ -34,7 +35,7 @@ interface Props {
 type UseSignupActionsState = {
   createSignups: (
     values: SignupGroupFormFields,
-    callbacks?: MutationCallbacks
+    callbacks?: MutationCallbacks<CreateSignupsResponse>
   ) => Promise<void>;
   deleteSignup: (callbacks?: MutationCallbacks) => Promise<void>;
   saving: SIGNUP_ACTIONS | null;
@@ -56,12 +57,25 @@ const useSignupActions = ({
     setSaving(null);
   };
 
+  const clean = () => {
+    savingFinished();
+    closeModal();
+  };
+
+  const cleanAfterCreate = async (
+    response: CreateSignupsResponse,
+    callbacks?: MutationCallbacks<CreateSignupsResponse>
+  ) => {
+    clean();
+    // Call callback function if defined
+    await callbacks?.onSuccess?.(response);
+  };
+
   const cleanAfterUpdate = async (
     id: string,
     callbacks?: MutationCallbacks
   ) => {
-    savingFinished();
-    closeModal();
+    clean();
     // Call callback function if defined
     await callbacks?.onSuccess?.(id);
   };
@@ -111,7 +125,7 @@ const useSignupActions = ({
 
   const createSignups = async (
     values: SignupGroupFormFields,
-    callbacks?: MutationCallbacks
+    callbacks?: MutationCallbacks<CreateSignupsResponse>
   ) => {
     setSaving(SIGNUP_ACTIONS.CREATE);
     const reservationData = getSeatsReservationData(registration.id);
@@ -132,9 +146,7 @@ const useSignupActions = ({
         });
       },
       onSuccess: (data) => {
-        const id = data[0].id;
-
-        cleanAfterUpdate(id, callbacks);
+        cleanAfterCreate(data, callbacks);
       },
     });
   };

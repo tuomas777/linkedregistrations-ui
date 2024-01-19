@@ -20,6 +20,7 @@ import MainContent from '../../app/layout/mainContent/MainContent';
 import { ROUTES } from '../../app/routes/constants';
 import { Event } from '../../event/types';
 import NotFound from '../../notFound/NotFound';
+import { Payment } from '../../payment/types';
 import useEventAndRegistrationData from '../../registration/hooks/useEventAndRegistrationData';
 import { Registration } from '../../registration/types';
 import { isSignupEnded } from '../../registration/utils';
@@ -34,12 +35,15 @@ import Divider from '../divider/Divider';
 import EventInfo from '../eventInfo/EventInfo';
 import FormContainer from '../formContainer/FormContainer';
 import useSignupGroupActions from '../hooks/useSignupGroupActions';
+import useSignupPriceGroupOptions from '../hooks/useSignupPriceGroupOptions';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { SignupGroupFormProvider } from '../signupGroupFormContext/SignupGroupFormContext';
 import SignupIsEnded from '../signupIsEnded/SignupIsEnded';
+import { SignupGroupFormFields } from '../types';
 import {
   clearCreateSignupGroupFormData,
   getSignupGroupDefaultInitialValues,
+  shouldCreatePayment,
 } from '../utils';
 import { getSignupGroupSchema } from '../validation';
 
@@ -73,6 +77,8 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
   const { t } = useTranslation(['summary']);
   const router = useRouter();
 
+  const signupGroupOptions = useSignupPriceGroupOptions(registration);
+
   const clearTimerAndStorage = () => {
     // Disable reservation timer callbacks
     // so user is not redirected to create signup page
@@ -82,6 +88,9 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     clearSeatsReservationData(registration.id);
   };
 
+  const goToPaymentPage = (payment: Payment) => {
+    window.open(payment.logged_in_checkout_url, '_self', 'noopener,noreferrer');
+  };
   const goToSignupCompletedPage = (signupId: string) => {
     clearTimerAndStorage();
 
@@ -128,6 +137,38 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
     });
   };
 
+  const handleCreateSignup = (values: SignupGroupFormFields) => {
+    createSignups(values, {
+      onError: (error) =>
+        showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+      onSuccess: (response) => {
+        if (response) {
+          if (response[0].payment) {
+            goToPaymentPage(response[0].payment);
+          } else {
+            goToSignupCompletedPage(response[0].id);
+          }
+        }
+      },
+    });
+  };
+
+  const handleCreateSignupGroup = (values: SignupGroupFormFields) => {
+    createSignupGroup(values, {
+      onError: (error) =>
+        showServerErrors({ error: JSON.parse(error.message) }, 'signup'),
+      onSuccess: (response) => {
+        if (response) {
+          if (response.payment) {
+            goToPaymentPage(response.payment);
+          } else {
+            goToSignupGroupCompletedPage(response.id);
+          }
+        }
+      },
+    });
+  };
+
   if (!session) {
     return (
       <MainContent className={styles.summaryPage}>
@@ -141,6 +182,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
       </MainContent>
     );
   }
+
   return (
     <MainContent className={styles.summaryPage}>
       <>
@@ -155,6 +197,13 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
           validationSchema={() => getSignupGroupSchema(registration)}
         >
           {({ values }) => {
+            const sendButtonLabel = shouldCreatePayment(
+              signupGroupOptions,
+              values.signups
+            )
+              ? t('buttonGoToPayment')
+              : t('buttonSend');
+
             const handleSubmit = async () => {
               try {
                 setServerErrorItems([]);
@@ -164,24 +213,9 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                 });
 
                 if (values.signups.length === 1) {
-                  createSignups(values, {
-                    onError: (error) =>
-                      showServerErrors(
-                        { error: JSON.parse(error.message) },
-                        'signup'
-                      ),
-                    onSuccess: (id) => goToSignupCompletedPage(id as string),
-                  });
+                  handleCreateSignup(values);
                 } else {
-                  createSignupGroup(values, {
-                    onError: (error) =>
-                      showServerErrors(
-                        { error: JSON.parse(error.message) },
-                        'signup'
-                      ),
-                    onSuccess: (id) =>
-                      goToSignupGroupCompletedPage(id as string),
-                  });
+                  handleCreateSignupGroup(values);
                 }
               } catch (e) {
                 goToCreateSignupGroupPage();
@@ -238,11 +272,11 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                         savingSignup === SIGNUP_ACTIONS.CREATE ||
                         savingSignupGroup === SIGNUP_GROUP_ACTIONS.CREATE
                       }
-                      loadingText={t('buttonSend')}
+                      loadingText={sendButtonLabel}
                       key="save"
                       onClick={handleSubmit}
                     >
-                      {t('buttonSend')}
+                      {sendButtonLabel}
                     </Button>,
                   ]}
                 ></ButtonPanel>

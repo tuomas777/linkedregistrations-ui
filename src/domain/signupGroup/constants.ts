@@ -88,3 +88,4 @@ export enum SIGNUP_GROUP_ACTIONS {
 }
 
 export const TEST_SIGNUP_GROUP_ID = 'signupGroup:1';
+export const TEST_REGISTRATION_PRICE_GROUP_ID = 1;

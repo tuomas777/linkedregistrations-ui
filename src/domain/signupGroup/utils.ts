@@ -4,7 +4,9 @@ import omit from 'lodash/omit';
 import snakeCase from 'lodash/snakeCase';
 
 import { FORM_NAMES } from '../../constants';
-import { ExtendedSession } from '../../types';
+import { ExtendedSession, Language } from '../../types';
+import { featureFlagUtils } from '../../utils/featureFlags';
+import getLocalisedString from '../../utils/getLocalisedString';
 import skipFalsyType from '../../utils/skipFalsyType';
 import {
   callDelete,
@@ -131,9 +133,12 @@ export const getSignupGroupPayload = ({
       signupData,
     })
   );
+  const priceGroupOptions = getSignupPriceGroupOptions(registration, 'fi');
+  const createPayment = shouldCreatePayment(priceGroupOptions, signupsValues);
 
   return {
     contact_person: getContactPersonPayload(contactPerson),
+    create_payment: createPayment,
     extra_info: groupExtraInfo,
     registration: registration.id,
     reservation_code: reservationCode,
@@ -363,3 +368,31 @@ export const calculateTotalPrice = (
       (priceGroupOptions.find((o) => o.value === curr.priceGroup)?.price ?? 0),
     0
   );
+
+export const getSignupPriceGroupOptions = (
+  registration: Registration,
+  locale: Language
+) => {
+  return (
+    registration.registration_price_groups?.map((pg) => {
+      const price = pg?.price ? Number(pg.price) : 0;
+
+      return {
+        label: [
+          `${getLocalisedString(pg?.price_group?.description, locale)}`,
+          `${price.toFixed(2).replace('.', ',')} €`,
+        ].join(' '),
+        price,
+        value: pg?.id?.toString() ?? /* istanbul ignore next */ '',
+      };
+    }) ?? /* istanbul ignore next */ []
+  );
+};
+
+export const shouldCreatePayment = (
+  priceGroupOptions: SignupPriceGroupOption[],
+  signups: SignupFormFields[]
+) =>
+  featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+  calculateTotalPrice(priceGroupOptions, signups) > 0 &&
+  signups.every((su) => !su.inWaitingList);

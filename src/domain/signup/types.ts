@@ -1,4 +1,5 @@
 import { Meta, stringOrNull } from '../api/types';
+import { Payment } from '../payment/types';
 import { PriceGroupDense } from '../priceGroup/types';
 
 import {
@@ -26,6 +27,7 @@ export type SignupPriceGroupInput = {
 export type SignupInput = {
   city?: stringOrNull;
   contact_person?: ContactPersonInput;
+  create_payment?: boolean;
   date_of_birth?: stringOrNull;
   extra_info?: stringOrNull;
   first_name?: stringOrNull;
@@ -75,6 +77,7 @@ export type Signup = {
   last_modified_by: stringOrNull;
   last_modified_time: stringOrNull;
   last_name?: stringOrNull;
+  payment: Payment | null;
   phone_number: stringOrNull;
   presence_status?: PRESENCE_STATUS;
   price_group: SignupPriceGroup | null;
