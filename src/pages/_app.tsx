@@ -48,10 +48,7 @@ const MyApp = ({
 
   return (
     <NotificationsProvider>
-      <SessionProvider
-        session={session}
-        refetchInterval={/* 5 minutes */ 5 * 60}
-      >
+      <SessionProvider session={session} refetchInterval={30}>
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
             <CookieConsent />
