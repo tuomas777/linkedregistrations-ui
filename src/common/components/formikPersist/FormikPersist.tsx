@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 import { FormikProps, useFormikContext } from 'formik';
-import { getSession } from 'next-auth/react';
 import * as React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -29,9 +28,7 @@ const FormikPersist = ({
 
   const debouncedSaveForm = useDebouncedCallback(
     async (data: FormikProps<Record<string, unknown>>) => {
-      const session = await getSession();
-      /* istanbul ignore next */
-      if (!session || savingDisabled || !isMounted.current) return;
+      if (savingDisabled || !isMounted.current) return;
 
       if (isSessionStorage) {
         window.sessionStorage.setItem(name, JSON.stringify(data));
