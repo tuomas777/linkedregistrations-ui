@@ -25,6 +25,8 @@ import {
 } from '../../../types';
 import getServerRuntimeConfig from '../../../utils/getServerRuntimeConfig';
 
+const REFRESH_THRESHOLD_SECONDS = 60;
+
 type JwtParams = {
   token: ExtendedJWT;
   user?: OidcUser;
@@ -133,7 +135,10 @@ export const jwtCallback = async (params: {
     };
   }
 
-  if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
+  if (
+    token.accessTokenExpires &&
+    Date.now() < token.accessTokenExpires - REFRESH_THRESHOLD_SECONDS * 1000
+  ) {
     return token;
   }
 
