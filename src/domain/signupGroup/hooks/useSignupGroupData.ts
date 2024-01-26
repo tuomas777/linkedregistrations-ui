@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
 import { ExtendedSession } from '../../../types';
+import getStringValueFromQuery from '../../../utils/getStringValueFromQuery';
 import { useSignupGroupQuery } from '../query';
 import { SignupGroup } from '../types';
 
@@ -11,8 +12,9 @@ type UseSignupGroupDataState = {
 };
 
 const useSignupGroupData = (): UseSignupGroupDataState => {
-  const router = useRouter();
-  const { query } = router;
+  const { query } = useRouter();
+  const accessCode = getStringValueFromQuery(query, 'access_code');
+  const id = query.signupGroupId as string;
   const { data: session } = useSession() as { data: ExtendedSession | null };
 
   const {
@@ -20,7 +22,7 @@ const useSignupGroupData = (): UseSignupGroupDataState => {
     isFetching,
     status,
   } = useSignupGroupQuery({
-    args: { id: query.signupGroupId as string },
+    args: { accessCode, id },
     session,
   });
 

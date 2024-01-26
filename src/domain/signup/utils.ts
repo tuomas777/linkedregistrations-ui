@@ -4,6 +4,7 @@ import omit from 'lodash/omit';
 import { ExtendedSession } from '../../types';
 import { featureFlagUtils } from '../../utils/featureFlags';
 import formatDate from '../../utils/formatDate';
+import queryBuilder from '../../utils/queryBuilder';
 import skipFalsyType from '../../utils/skipFalsyType';
 import stringToDate from '../../utils/stringToDate';
 import {
@@ -15,6 +16,7 @@ import {
 } from '../app/axios/axiosClient';
 import { Registration } from '../registration/types';
 import {
+  DeleteSignupGroupMutationInput,
   SignupFields,
   SignupFormFields,
   SignupGroup,
@@ -40,7 +42,11 @@ import {
 } from './types';
 
 export const signupPathBuilder = (args: SignupQueryVariables): string => {
-  return `/signup/${args.id}/`;
+  const { accessCode, id } = args;
+  const variableToKeyItems = [{ key: 'access_code', value: accessCode }];
+
+  const query = queryBuilder(variableToKeyItems);
+  return `/signup/${id}/${query}`;
 };
 
 export const fetchSignup = async (
@@ -79,16 +85,16 @@ export const createSignups = async ({
 };
 
 export const deleteSignup = async ({
-  id,
+  input,
   session,
 }: {
-  id: string;
+  input: DeleteSignupGroupMutationInput;
   session: ExtendedSession | null;
 }): Promise<null> => {
   try {
     const { data } = await callDelete({
       session,
-      url: signupPathBuilder({ id }),
+      url: signupPathBuilder(input),
     });
     return data;
   } catch (error) {
@@ -329,3 +335,6 @@ export const omitSensitiveDataFromSignupsPayload = (
   ...payload,
   signups: payload.signups.map((s) => omitSensitiveDataFromSignupPayload(s)),
 });
+
+export const canEditSignup = (signup: Signup): boolean =>
+  signup.has_contact_person_access || signup.is_created_by_current_user;

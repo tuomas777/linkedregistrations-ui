@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
-import isArray from 'lodash/isArray';
 import { NextParsedUrlQuery } from 'next/dist/server/request-meta';
 
 import { ExtendedSession } from '../../types';
+import getStringValueFromQuery from '../../utils/getStringValueFromQuery';
 import queryBuilder from '../../utils/queryBuilder';
 import { callGet } from '../app/axios/axiosClient';
 import { SignupsResponse } from '../signup/types';
@@ -12,11 +12,11 @@ import { SignupSearchInitialValues, SignupsQueryVariables } from './types';
 export const getSignupsSearchInitialValues = (
   query: NextParsedUrlQuery
 ): SignupSearchInitialValues => {
-  const { page, text } = query;
+  const { page } = query;
 
   return {
     page: Number.isInteger(Number(page)) ? Number(page) : 1,
-    text: isArray(text) ? text[0] : text ?? '',
+    text: getStringValueFromQuery(query, 'text'),
   };
 };
 

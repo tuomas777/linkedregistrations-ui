@@ -15,9 +15,9 @@ import {
 } from '../mutation';
 import {
   CreateSignupsResponse,
-  DeleteSignupMutationInput,
   Signup,
   SignupInput,
+  SignupQueryVariables,
   UpdateSignupMutationInput,
 } from '../types';
 import {
@@ -81,7 +81,7 @@ const useSignupActions = ({
   };
 
   const { handleError } = useHandleError<
-    | DeleteSignupMutationInput
+    | SignupQueryVariables
     | Partial<UpdateSignupMutationInput>
     | Partial<SignupInput>,
     Signup
@@ -102,10 +102,7 @@ const useSignupActions = ({
 
     const id = signup?.id as string;
     deleteSignupMutation.mutate(
-      {
-        registrationId: registration.id,
-        signupId: id,
-      },
+      { id },
       {
         onError: (error, variables) => {
           handleError({
@@ -158,12 +155,14 @@ const useSignupActions = ({
     setSaving(SIGNUP_ACTIONS.UPDATE);
 
     const id = signup?.id as string;
-    const payload: UpdateSignupMutationInput = getUpdateSignupPayload({
-      formValues: values,
-      hasSignupGroup: Boolean(signup?.signup_group),
-      id: signup?.id as string,
-      registration: registration,
-    });
+    const payload: UpdateSignupMutationInput = {
+      ...getUpdateSignupPayload({
+        formValues: values,
+        hasSignupGroup: Boolean(signup?.signup_group),
+        id: signup?.id as string,
+        registration: registration,
+      }),
+    };
 
     updateSignupMutation.mutate(payload, {
       onError: (error, variables) => {

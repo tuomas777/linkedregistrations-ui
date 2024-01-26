@@ -45,14 +45,7 @@ export const useDeleteSignupMutation = ({
   options?: UseMutationOptions<null, Error, DeleteSignupMutationInput>;
   session: ExtendedSession | null;
 }): UseMutationResult<null, Error, DeleteSignupMutationInput> => {
-  return useMutation(
-    ({ signupId }) =>
-      deleteSignup({
-        id: signupId,
-        session,
-      }),
-    options
-  );
+  return useMutation((input) => deleteSignup({ input, session }), options);
 };
 
 export const usePatchSignupMutation = ({
@@ -62,14 +55,7 @@ export const usePatchSignupMutation = ({
   options?: UseMutationOptions<Signup, Error, PatchSignupMutationInput>;
   session: ExtendedSession | null;
 }): UseMutationResult<Signup, Error, PatchSignupMutationInput> => {
-  return useMutation(
-    (input) =>
-      patchSignup({
-        input,
-        session,
-      }),
-    options
-  );
+  return useMutation((input) => patchSignup({ input, session }), options);
 };
 
 export const useUpdateSignupMutation = ({
@@ -79,12 +65,5 @@ export const useUpdateSignupMutation = ({
   options?: UseMutationOptions<Signup, Error, UpdateSignupMutationInput>;
   session: ExtendedSession | null;
 }): UseMutationResult<Signup, Error, UpdateSignupMutationInput> => {
-  return useMutation(
-    (input) =>
-      updateSignup({
-        input,
-        session,
-      }),
-    options
-  );
+  return useMutation((input) => updateSignup({ input, session }), options);
 };
