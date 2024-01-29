@@ -358,10 +358,15 @@ describe('signupSchema function', () => {
     advanceTo('2022-10-10');
 
     expect(
-      await testSignupSchema(fakeRegistration(), {
-        ...validSignup,
-        dateOfBirth: '1.1.202',
-      })
+      await testSignupSchema(
+        fakeRegistration({
+          audience_min_age: 10,
+        }),
+        {
+          ...validSignup,
+          dateOfBirth: '1.1.202',
+        }
+      )
     ).toBe(false);
   });
 
@@ -389,10 +394,15 @@ describe('signupSchema function', () => {
 
   test('should return false if zip is invalid', async () => {
     expect(
-      await testSignupSchema(registration, {
-        ...validSignup,
-        zipcode: '123456',
-      })
+      await testSignupSchema(
+        fakeRegistration({
+          mandatory_fields: [REGISTRATION_MANDATORY_FIELDS.ZIPCODE],
+        }),
+        {
+          ...validSignup,
+          zipcode: '123456',
+        }
+      )
     ).toBe(false);
   });
 });

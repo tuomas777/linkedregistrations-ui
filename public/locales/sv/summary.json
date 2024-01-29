@@ -26,6 +26,7 @@
     "labelExtraInfo": "Ytterligare information",
     "labelFirstName": "Förnamn",
     "labelLastName": "Efternamn",
+    "labelPhoneNumber": "Telefonnummer",
     "labelStreetAddress": "Gatuadress",
     "labelZipcode": "Postnummer",
     "titleSignupsInfo": "Registranternas uppgifter"

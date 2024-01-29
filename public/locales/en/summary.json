@@ -26,6 +26,7 @@
     "labelExtraInfo": "Additional information (optional)",
     "labelFirstName": "First name",
     "labelLastName": "Last name",
+    "labelPhoneNumber": "Telephone number",
     "labelStreetAddress": "Street address",
     "labelZipcode": "Postcode",
     "titleSignupsInfo": "Registrants' information"
