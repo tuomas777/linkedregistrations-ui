@@ -101,7 +101,9 @@ test('should start login process', async () => {
   const signInMenuButton = getElement('signInMenuButton');
   await user.click(signInMenuButton);
 
-  expect(nextAuth.signIn).toBeCalledWith('tunnistamo');
+  expect(nextAuth.signIn).toBeCalledWith('tunnistamo', undefined, {
+    ui_locales: 'fi',
+  });
 });
 
 test('should start logout process', async () => {

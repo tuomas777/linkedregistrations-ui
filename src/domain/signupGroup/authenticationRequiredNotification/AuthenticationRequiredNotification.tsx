@@ -1,14 +1,15 @@
-import { signIn } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import Button from '../../../common/components/button/Button';
 import Notification from '../../../common/components/notification/Notification';
+import useSignIn from '../../../hooks/useSignIn';
 
 import styles from './authenticationRequiredNotification.module.scss';
 
 const AuthenticationRequiredNotification: React.FC = () => {
   const { t } = useTranslation('common');
+  const { handleSignIn } = useSignIn();
 
   return (
     <Notification
@@ -19,7 +20,7 @@ const AuthenticationRequiredNotification: React.FC = () => {
       <div>{t('common:signInToEnrol')}</div>
       <Button
         className={styles.button}
-        onClick={() => signIn('tunnistamo')}
+        onClick={handleSignIn}
         type="button"
         variant="primary"
       >

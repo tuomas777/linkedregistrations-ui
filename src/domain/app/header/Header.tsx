@@ -8,13 +8,14 @@ import {
   logoFiDark,
   logoSvDark,
 } from 'hds-react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
 import { MAIN_CONTENT_ID, PAGE_HEADER_ID } from '../../../constants';
 import useLocale from '../../../hooks/useLocale';
 import useSelectLanguage from '../../../hooks/useSelectLanguage';
+import useSignIn from '../../../hooks/useSignIn';
 import useSignOut from '../../../hooks/useSignOut';
 import { ExtendedSession, Language } from '../../../types';
 import { getUserFirstName, getUserName } from '../../auth/utils';
@@ -45,6 +46,7 @@ const Header: React.FC = () => {
   const { t } = useTranslation('common');
 
   const { handleSignOut } = useSignOut();
+  const { handleSignIn } = useSignIn();
 
   return (
     <HdsHeader
@@ -87,7 +89,7 @@ const Header: React.FC = () => {
             <ActionBarDropdowButton
               className={styles.signInButton}
               iconRight={<IconSignin size="m" aria-hidden />}
-              onClick={() => signIn('tunnistamo')}
+              onClick={handleSignIn}
             >
               {t('common:signIn')}
             </ActionBarDropdowButton>
