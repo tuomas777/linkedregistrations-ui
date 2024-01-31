@@ -29,8 +29,13 @@ import {
   SIGNUP_GROUP_FIELDS,
   SIGNUP_GROUP_FORM_SELECT_FIELDS,
 } from './constants';
-import { SignupGroupFormFields } from './types';
-import { isDateOfBirthFieldRequired, isSignupFieldRequired } from './utils';
+import { SignupFormFields, SignupGroupFormFields } from './types';
+import {
+  calculateTotalPrice,
+  getSignupPriceGroupOptions,
+  isDateOfBirthFieldRequired,
+  isSignupFieldRequired,
+} from './utils';
 
 export const isAboveMinAge = (
   dateStr: stringOrNull | undefined,
@@ -134,7 +139,13 @@ export const getSignupSchema = (registration: Registration) => {
   });
 };
 
-export const getContactPersonSchema = () => {
+export const getContactPersonSchema = (
+  registration: Registration,
+  signups: SignupFormFields[]
+) => {
+  const priceGroupOptions = getSignupPriceGroupOptions(registration, 'fi');
+  const paymentRequired = calculateTotalPrice(priceGroupOptions, signups) > 0;
+
   return Yup.object().shape({
     [CONTACT_PERSON_FIELDS.EMAIL]: getStringSchema(true).email(
       VALIDATION_MESSAGE_KEYS.EMAIL
@@ -152,6 +163,8 @@ export const getContactPersonSchema = () => {
             ? schema.required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
             : schema
       ),
+    [CONTACT_PERSON_FIELDS.FIRST_NAME]: getStringSchema(paymentRequired),
+    [CONTACT_PERSON_FIELDS.LAST_NAME]: getStringSchema(paymentRequired),
     [CONTACT_PERSON_FIELDS.NOTIFICATIONS]: Yup.array()
       .required(VALIDATION_MESSAGE_KEYS.ARRAY_REQUIRED)
       .min(1, (param) =>
@@ -173,7 +186,11 @@ export const getSignupGroupSchema = (
       getSignupSchema(registration)
     ),
     ...(validateContactPerson && {
-      [SIGNUP_GROUP_FIELDS.CONTACT_PERSON]: getContactPersonSchema(),
+      [SIGNUP_GROUP_FIELDS.CONTACT_PERSON]: Yup.object().when(
+        [SIGNUP_GROUP_FIELDS.SIGNUPS],
+        ([signups]: SignupFormFields[][]) =>
+          getContactPersonSchema(registration, signups)
+      ),
     }),
     [SIGNUP_GROUP_FIELDS.EXTRA_INFO]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_GROUP_FIELDS.EXTRA_INFO)

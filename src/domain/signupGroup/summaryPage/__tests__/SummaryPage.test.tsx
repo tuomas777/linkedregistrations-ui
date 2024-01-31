@@ -11,6 +11,7 @@ import React from 'react';
 import { ExtendedSession } from '../../../../types';
 import formatDate from '../../../../utils/formatDate';
 import {
+  fakePayment,
   fakeSignup,
   fakeSignupGroup,
   getMockedSeatsReservationData,
@@ -27,11 +28,18 @@ import {
 } from '../../../../utils/testUtils';
 import { ROUTES } from '../../../app/routes/constants';
 import { mockedLanguagesResponses } from '../../../language/__mocks__/languages';
-import { registration } from '../../../registration/__mocks__/registration';
+import {
+  registration,
+  registrationWithPriceGroup,
+} from '../../../registration/__mocks__/registration';
 import { TEST_REGISTRATION_ID } from '../../../registration/constants';
 import { TEST_SIGNUP_ID } from '../../../signup/constants';
 import { mockedUserResponse } from '../../../user/__mocks__/user';
-import { NOTIFICATIONS, TEST_SIGNUP_GROUP_ID } from '../../constants';
+import {
+  NOTIFICATIONS,
+  TEST_REGISTRATION_PRICE_GROUP_ID,
+  TEST_SIGNUP_GROUP_ID,
+} from '../../constants';
 import { SignupGroupFormFields } from '../../types';
 import SummaryPage from '../SummaryPage';
 
@@ -49,10 +57,20 @@ beforeEach(() => {
 });
 
 const signup = fakeSignup({ id: TEST_SIGNUP_ID });
+const signupWithPayment = fakeSignup({
+  id: TEST_SIGNUP_ID,
+  payment: fakePayment({ logged_in_checkout_url: 'https://payment.com' }),
+});
 
 const signupGroup = fakeSignupGroup({
   id: TEST_SIGNUP_GROUP_ID,
   signups: [signup, fakeSignup()],
+});
+
+const signupGroupWithPayment = fakeSignupGroup({
+  id: TEST_SIGNUP_GROUP_ID,
+  signups: [signup, fakeSignup()],
+  payment: fakePayment({ logged_in_checkout_url: 'https://payment.com' }),
 });
 
 const signupValues = {
@@ -64,6 +82,21 @@ const signupValues = {
   inWaitingList: false,
   lastName: 'Last name',
   phoneNumber: '+358 44 123 4567',
+  priceGroup: '',
+  streetAddress: 'Street address',
+  zipcode: '00100',
+};
+
+const signupWithPriceGroupValues = {
+  city: 'City',
+  dateOfBirth: formatDate(subYears(new Date(), 9)),
+  extraInfo: '',
+  firstName: 'First name',
+  id: null,
+  inWaitingList: false,
+  lastName: 'Last name',
+  phoneNumber: '+358 44 123 4567',
+  priceGroup: TEST_REGISTRATION_PRICE_GROUP_ID.toString(),
   streetAddress: 'Street address',
   zipcode: '00100',
 };
@@ -105,10 +138,20 @@ const signupGroupWithSingleSignupValues: SignupGroupFormFields = {
   signups: [{ ...signupValues }],
 };
 
+const signupGroupWithSignupWithPriceGroupValues: SignupGroupFormFields = {
+  ...commonSignupGroupValues,
+  signups: [{ ...signupWithPriceGroupValues }],
+};
+
 const signupGroupValues: SignupGroupFormFields = {
   ...commonSignupGroupValues,
   contactPerson: contactPersonValues,
   signups: [signupValues, signupValues],
+};
+
+const signupGroupWithPaymentValues: SignupGroupFormFields = {
+  ...commonSignupGroupValues,
+  signups: [signupWithPriceGroupValues, signupWithPriceGroupValues],
 };
 
 const defaultMocks = [
@@ -131,6 +174,29 @@ const renderComponent = (session: ExtendedSession | null = defaultSession) =>
 
 const getSubmitButton = () => {
   return screen.getByRole('button', { name: /lähetä ilmoittautuminen/i });
+};
+
+const getPaymentButton = () => {
+  return screen.getByRole('button', { name: /siirry maksamaan/i });
+};
+
+const testMovingToPaymentSite = async () => {
+  const user = userEvent.setup();
+
+  renderComponent();
+
+  await loadingSpinnerIsNotInDocument();
+
+  const submitButton = getPaymentButton();
+  await user.click(submitButton);
+
+  await waitFor(() =>
+    expect(window.open).toBeCalledWith(
+      'https://payment.com',
+      '_self',
+      'noopener,noreferrer'
+    )
+  );
 };
 
 test('should route back to signup form if reservation data is missing', async () => {
@@ -210,6 +276,29 @@ test('should route to signup completed page', async () => {
   );
 });
 
+test('should route to payment service after creating chargeable signup', async () => {
+  window.open = jest.fn();
+  setQueryMocks(
+    ...mockedLanguagesResponses,
+    mockedUserResponse,
+    rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(registrationWithPriceGroup))
+    ),
+    rest.post(`*/signup/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json([signupWithPayment]))
+    )
+  );
+
+  setSignupGroupFormSessionStorageValues({
+    registrationId: registrationWithPriceGroup.id,
+    seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: signupGroupWithSignupWithPriceGroupValues,
+  });
+
+  pushSummaryPageRoute(registrationWithPriceGroup.id);
+  await testMovingToPaymentSite();
+});
+
 test('should show server errors when creating signup request fails', async () => {
   const user = userEvent.setup();
   setQueryMocks(
@@ -267,6 +356,29 @@ test('should route to signup group completed page', async () => {
       `/registration/${registration.id}/signup-group/${TEST_SIGNUP_GROUP_ID}/completed`
     )
   );
+});
+
+test('should route to payment service after creating chargeable signup group', async () => {
+  window.open = jest.fn();
+  setQueryMocks(
+    ...mockedLanguagesResponses,
+    mockedUserResponse,
+    rest.get(`*/registration/${TEST_REGISTRATION_ID}/`, (req, res, ctx) =>
+      res(ctx.status(200), ctx.json(registrationWithPriceGroup))
+    ),
+    rest.post(`*/signup_group/`, (req, res, ctx) =>
+      res(ctx.status(201), ctx.json(signupGroupWithPayment))
+    )
+  );
+
+  setSignupGroupFormSessionStorageValues({
+    registrationId: registrationWithPriceGroup.id,
+    seatsReservation: getMockedSeatsReservationData(1000),
+    signupGroupFormValues: signupGroupWithPaymentValues,
+  });
+
+  pushSummaryPageRoute(registrationWithPriceGroup.id);
+  await testMovingToPaymentSite();
 });
 
 test('should show server errors when creating signup group request fails', async () => {

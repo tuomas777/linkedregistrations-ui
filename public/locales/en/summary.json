@@ -1,4 +1,5 @@
 {
+  "buttonGoToPayment": "Go to checkout",
   "buttonSend": "Submit registration",
   "contactPerson": {
     "labelEmail": "Email address",

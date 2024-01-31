@@ -23,6 +23,8 @@ import {
 import {
   getContactPersonInitialValues,
   getContactPersonPayload,
+  getSignupPriceGroupOptions,
+  shouldCreatePayment,
 } from '../signupGroup/utils';
 
 import { ATTENDEE_STATUS } from './constants';
@@ -242,12 +244,15 @@ export const getCreateSignupsPayload = ({
   reservationCode: string;
 }): CreateSignupsMutationInput => {
   const { contactPerson, signups: signupsValues } = formValues;
+  const priceGroupOptions = getSignupPriceGroupOptions(registration, 'fi');
+  const createPayment = shouldCreatePayment(priceGroupOptions, signupsValues);
 
   const signups: SignupInput[] = signupsValues.map((signupData) => ({
     ...getSignupPayload({
       formValues,
       signupData,
     }),
+    create_payment: createPayment,
     contact_person: getContactPersonPayload(contactPerson),
   }));
 

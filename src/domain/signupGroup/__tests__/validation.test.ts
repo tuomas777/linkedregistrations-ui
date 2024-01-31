@@ -28,6 +28,32 @@ afterEach(() => {
   clear();
 });
 
+const validSignup: SignupFormFields = {
+  city: 'City',
+  dateOfBirth: '1.1.2000',
+  extraInfo: '',
+  firstName: 'first name',
+  id: null,
+  inWaitingList: true,
+  lastName: 'last name',
+  phoneNumber: '0441234567',
+  priceGroup: '',
+  streetAddress: 'Street address',
+  zipcode: '00100',
+};
+
+const validContactPerson: ContactPersonFormFields = {
+  email: 'user@email.com',
+  firstName: 'First name',
+  id: null,
+  lastName: 'First name',
+  membershipNumber: '',
+  nativeLanguage: 'fi',
+  notifications: [NOTIFICATIONS.EMAIL],
+  phoneNumber: '',
+  serviceLanguage: 'fi',
+};
+
 const testAboveMinAge = async (
   minAge: number,
   date: string,
@@ -85,10 +111,12 @@ const testSignupSchema = async (
 };
 
 const testContactPersonSchema = async (
+  registration: Registration,
+  signups: SignupFormFields[],
   contactPerson: ContactPersonFormFields
 ) => {
   try {
-    await getContactPersonSchema().validate(contactPerson);
+    await getContactPersonSchema(registration, signups).validate(contactPerson);
     return true;
   } catch (e) {
     return false;
@@ -370,25 +398,18 @@ describe('signupSchema function', () => {
 });
 
 describe('getContactPersonSchema function', () => {
-  const validContactPerson: ContactPersonFormFields = {
-    email: 'user@email.com',
-    firstName: 'First name',
-    id: null,
-    lastName: 'First name',
-    membershipNumber: '',
-    nativeLanguage: 'fi',
-    notifications: [NOTIFICATIONS.EMAIL],
-    phoneNumber: '',
-    serviceLanguage: 'fi',
-  };
+  const registration = fakeRegistration();
+  const signups: SignupFormFields[] = [];
 
   test('should return true if contact person data is valid', async () => {
-    expect(await testContactPersonSchema(validContactPerson)).toBe(true);
+    expect(
+      await testContactPersonSchema(registration, signups, validContactPerson)
+    ).toBe(true);
   });
 
   test('should return false if email is missing', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         email: '',
       })
@@ -397,7 +418,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if email is invalid', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         email: 'user@email.',
       })
@@ -406,7 +427,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if phone number is missing', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         phoneNumber: '',
         notifications: [NOTIFICATIONS.SMS],
@@ -416,7 +437,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if phone number is invalid', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         phoneNumber: 'xxx',
         notifications: [NOTIFICATIONS.SMS],
@@ -424,9 +445,69 @@ describe('getContactPersonSchema function', () => {
     ).toBe(false);
   });
 
+  test('should return true if signup is free and first name is empty', async () => {
+    const registration = fakeRegistration({
+      registration_price_groups: [
+        fakeRegistrationPriceGroup({ id: 1, price: '0.00' }),
+      ],
+    });
+    const signups: SignupFormFields[] = [{ ...validSignup, priceGroup: '1' }];
+    expect(
+      await testContactPersonSchema(registration, signups, {
+        ...validContactPerson,
+        firstName: '',
+      })
+    ).toBe(true);
+  });
+
+  test('should return false if payment is required and first name is empty', async () => {
+    const registration = fakeRegistration({
+      registration_price_groups: [
+        fakeRegistrationPriceGroup({ id: 1, price: '12.00' }),
+      ],
+    });
+    const signups: SignupFormFields[] = [{ ...validSignup, priceGroup: '1' }];
+    expect(
+      await testContactPersonSchema(registration, signups, {
+        ...validContactPerson,
+        firstName: '',
+      })
+    ).toBe(false);
+  });
+
+  test('should return true if signup is free and last name is empty', async () => {
+    const registration = fakeRegistration({
+      registration_price_groups: [
+        fakeRegistrationPriceGroup({ id: 1, price: '0.00' }),
+      ],
+    });
+    const signups: SignupFormFields[] = [{ ...validSignup, priceGroup: '1' }];
+    expect(
+      await testContactPersonSchema(registration, signups, {
+        ...validContactPerson,
+        lastName: '',
+      })
+    ).toBe(true);
+  });
+
+  test('should return false if payment is required and last name is empty', async () => {
+    const registration = fakeRegistration({
+      registration_price_groups: [
+        fakeRegistrationPriceGroup({ id: 1, price: '12.00' }),
+      ],
+    });
+    const signups: SignupFormFields[] = [{ ...validSignup, priceGroup: '1' }];
+    expect(
+      await testContactPersonSchema(registration, signups, {
+        ...validContactPerson,
+        lastName: '',
+      })
+    ).toBe(false);
+  });
+
   test('should return false if notifications is empty array', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         notifications: [],
       })
@@ -435,7 +516,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if native language is empty', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         nativeLanguage: '',
       })
@@ -444,7 +525,7 @@ describe('getContactPersonSchema function', () => {
 
   test('should return false if service language is empty', async () => {
     expect(
-      await testContactPersonSchema({
+      await testContactPersonSchema(registration, signups, {
         ...validContactPerson,
         serviceLanguage: '',
       })

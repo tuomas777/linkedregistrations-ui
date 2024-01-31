@@ -1,8 +1,12 @@
 import addDays from 'date-fns/addDays';
 import subDays from 'date-fns/subDays';
 
-import { fakeRegistration } from '../../../utils/mockDataUtils';
+import {
+  fakeRegistration,
+  fakeRegistrationPriceGroup,
+} from '../../../utils/mockDataUtils';
 import { event } from '../../event/__mocks__/event';
+import { TEST_REGISTRATION_PRICE_GROUP_ID } from '../../signupGroup/constants';
 import {
   REGISTRATION_MANDATORY_FIELDS,
   TEST_REGISTRATION_ID,
@@ -32,4 +36,22 @@ const registration = fakeRegistration({
   ],
 });
 
-export { registration };
+const registrationWithPriceGroup = fakeRegistration({
+  ...registrationOverrides,
+  id: TEST_REGISTRATION_ID,
+  event,
+  audience_max_age: 18,
+  audience_min_age: 8,
+  mandatory_fields: [
+    REGISTRATION_MANDATORY_FIELDS.FIRST_NAME,
+    REGISTRATION_MANDATORY_FIELDS.LAST_NAME,
+  ],
+  registration_price_groups: [
+    fakeRegistrationPriceGroup({
+      id: TEST_REGISTRATION_PRICE_GROUP_ID,
+      price: '12.00',
+    }),
+  ],
+});
+
+export { registration, registrationWithPriceGroup };

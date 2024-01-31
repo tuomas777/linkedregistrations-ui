@@ -49,11 +49,16 @@ import EventInfo from '../eventInfo/EventInfo';
 import FormContainer from '../formContainer/FormContainer';
 import useNotificationOptions from '../hooks/useNotificationOptions';
 import useSignupGroupActions from '../hooks/useSignupGroupActions';
+import useSignupPriceGroupOptions from '../hooks/useSignupPriceGroupOptions';
 import ParticipantAmountSelector from '../participantAmountSelector/ParticipantAmountSelector';
 import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFormFields, SignupGroup, SignupGroupFormFields } from '../types';
-import { getContactPersonFieldName, isSignupFieldRequired } from '../utils';
+import {
+  getContactPersonFieldName,
+  isSignupFieldRequired,
+  shouldCreatePayment,
+} from '../utils';
 import {
   getSignupGroupSchema,
   scrollToFirstError,
@@ -110,6 +115,8 @@ const SignupGroupForm: React.FC<Props> = ({
   const titleCannotEditContactPerson = contactPersonFieldsDisabled
     ? t('signup:titleCannotEditContactPerson')
     : undefined;
+
+  const priceGroupOptions = useSignupPriceGroupOptions(registration);
 
   const {
     deleteSignup,
@@ -262,6 +269,11 @@ const SignupGroupForm: React.FC<Props> = ({
       }
     >
       {({ setErrors, setFieldValue, setTouched, values }) => {
+        const createPayment = shouldCreatePayment(
+          priceGroupOptions,
+          values.signups
+        );
+
         const clearErrors = () => setErrors({});
 
         const setSignups = (signups: SignupFormFields[]) => {
@@ -420,6 +432,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             t(`contactPerson.placeholderFirstName`)
                           )}
                           readOnly={readOnly}
+                          required={createPayment}
                           title={titleCannotEditContactPerson}
                         />
                         <Field
@@ -433,6 +446,7 @@ const SignupGroupForm: React.FC<Props> = ({
                             t(`contactPerson.placeholderLastName`)
                           )}
                           readOnly={readOnly}
+                          required={createPayment}
                           title={titleCannotEditContactPerson}
                         />
                       </div>
