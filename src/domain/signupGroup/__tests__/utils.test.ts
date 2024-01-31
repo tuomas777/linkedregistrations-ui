@@ -3,6 +3,7 @@ import {
   fakeRegistration,
   fakeSignup,
   fakeSignupGroup,
+  fakeSignupPriceGroup,
 } from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import {
@@ -15,6 +16,7 @@ import {
   TEST_SIGNUP_ID,
 } from '../../signup/constants';
 import { ContactPersonInput, SignupInput } from '../../signup/types';
+import { getSignupInitialValues } from '../../signup/utils';
 import {
   CONTACT_PERSON_FIELDS,
   NOTIFICATIONS,
@@ -25,7 +27,9 @@ import {
 } from '../constants';
 import {
   CreateSignupGroupMutationInput,
+  SignupFormFields,
   SignupGroupQueryVariables,
+  SignupPriceGroupOption,
 } from '../types';
 import {
   getSignupDefaultInitialValues,
@@ -38,6 +42,7 @@ import {
   omitSensitiveDataFromSignupGroupPayload,
   isSignupFieldRequired,
   signupGroupPathBuilder,
+  calculateTotalPrice,
 } from '../utils';
 
 describe('getSignupGroupPayload function', () => {
@@ -96,6 +101,7 @@ describe('getSignupGroupPayload function', () => {
       nativeLanguage = 'fi',
       notifications = [NOTIFICATIONS.EMAIL],
       phoneNumber = '0441234567',
+      priceGroup = '1',
       serviceLanguage = 'sv',
       streetAddress = 'Street address',
       userConsent = true,
@@ -124,6 +130,7 @@ describe('getSignupGroupPayload function', () => {
             inWaitingList: false,
             lastName,
             phoneNumber,
+            priceGroup,
             streetAddress,
             zipcode,
           },
@@ -160,6 +167,7 @@ describe('getSignupGroupPayload function', () => {
           id: TEST_SIGNUP_ID,
           last_name: lastName,
           phone_number: phoneNumber,
+          price_group: { registration_price_group: 1 },
           street_address: streetAddress,
           user_consent: userConsent,
           zipcode,
@@ -215,6 +223,7 @@ describe('getSignupDefaultInitialValues function', () => {
       inWaitingList: false,
       lastName: '',
       phoneNumber: '',
+      priceGroup: '',
       streetAddress: '',
       zipcode: '',
     });
@@ -246,6 +255,7 @@ describe('getSignupGroupDefaultInitialValues function', () => {
           inWaitingList: false,
           lastName: '',
           phoneNumber: '',
+          priceGroup: '',
           streetAddress: '',
           zipcode: '',
         },
@@ -292,6 +302,7 @@ describe('getSignupGroupInitialValues function', () => {
             id: TEST_SIGNUP_ID,
             last_name: null,
             phone_number: null,
+            price_group: null,
             street_address: null,
             zipcode: null,
           }),
@@ -309,6 +320,7 @@ describe('getSignupGroupInitialValues function', () => {
         inWaitingList: false,
         lastName: '',
         phoneNumber: '',
+        priceGroup: '',
         streetAddress: '',
         zipcode: '',
       },
@@ -336,6 +348,7 @@ describe('getSignupGroupInitialValues function', () => {
     const expectedNativeLanguage = 'fi';
     const expectedNotifications = [NOTIFICATIONS.EMAIL];
     const expectedPhoneNumber = '+358 44 123 4567';
+    const expectedPriceGroup = '1';
     const expectedServiceLanguage = 'sv';
     const expectedStreetAddress = 'Test address';
     const expectedZip = '12345';
@@ -376,6 +389,7 @@ describe('getSignupGroupInitialValues function', () => {
             id: TEST_SIGNUP_ID,
             last_name: expectedLastName,
             phone_number: expectedPhoneNumber,
+            price_group: fakeSignupPriceGroup({ registration_price_group: 1 }),
             street_address: expectedStreetAddress,
             zipcode: expectedZip,
           }),
@@ -393,6 +407,7 @@ describe('getSignupGroupInitialValues function', () => {
         inWaitingList: false,
         lastName: expectedLastName,
         phoneNumber: expectedPhoneNumber,
+        priceGroup: expectedPriceGroup,
         streetAddress: expectedStreetAddress,
         zipcode: expectedZip,
       },
@@ -548,6 +563,7 @@ describe('getUpdateSignupGroupPayload function', () => {
       nativeLanguage = 'fi',
       notifications = [NOTIFICATIONS.EMAIL],
       phoneNumber = '0441234567',
+      priceGroup = '1',
       serviceLanguage = 'sv',
       streetAddress = 'Street address',
       userConsent = true,
@@ -562,6 +578,7 @@ describe('getUpdateSignupGroupPayload function', () => {
         inWaitingList: false,
         lastName,
         phoneNumber,
+        priceGroup,
         streetAddress,
         zipcode,
       },
@@ -613,6 +630,7 @@ describe('getUpdateSignupGroupPayload function', () => {
           id: TEST_SIGNUP_ID,
           last_name: lastName,
           phone_number: phoneNumber,
+          price_group: { registration_price_group: 1 },
           street_address: streetAddress,
           zipcode,
           user_consent: userConsent,
@@ -690,5 +708,41 @@ describe('omitSensitiveDataFromSignupGroupPayload', () => {
     expect(signup.last_name).toBeUndefined();
     expect(signup.street_address).toBeUndefined();
     expect(signup.zipcode).toBeUndefined();
+  });
+});
+
+describe('calculateTotalPrice', () => {
+  it('should calculate correct total price', () => {
+    const priceGroupOptions: SignupPriceGroupOption[] = [
+      { label: 'Price 1', value: '1', price: 12.0 },
+      { label: 'Price 2', value: '2', price: 8.0 },
+      { label: 'Price 3', value: '3', price: 15.0 },
+      { label: 'Price 4', value: '4', price: 0 },
+    ];
+    const signups: SignupFormFields[] = [
+      getSignupInitialValues(
+        fakeSignup({
+          price_group: fakeSignupPriceGroup({ registration_price_group: 1 }),
+        })
+      ),
+      getSignupInitialValues(
+        fakeSignup({
+          price_group: fakeSignupPriceGroup({ registration_price_group: 2 }),
+        })
+      ),
+      getSignupInitialValues(
+        fakeSignup({
+          price_group: fakeSignupPriceGroup({ registration_price_group: 3 }),
+        })
+      ),
+      getSignupInitialValues(
+        fakeSignup({
+          price_group: fakeSignupPriceGroup({ registration_price_group: 4 }),
+        })
+      ),
+    ];
+
+    const totalPrice = calculateTotalPrice(priceGroupOptions, signups);
+    expect(totalPrice).toEqual(35);
   });
 });

@@ -73,6 +73,8 @@ ARG NEXTAUTH_URL
 
 ARG NEXT_ENV
 
+ARG NEXT_PUBLIC_WEB_STORE_INTEGRATION_ENABLED
+
 RUN yarn build
 
 # ============================================================

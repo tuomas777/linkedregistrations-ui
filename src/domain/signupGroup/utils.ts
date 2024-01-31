@@ -45,6 +45,7 @@ import {
   SignupGroupQueryVariables,
   UpdateSignupGroupMutationInput,
   ContactPersonFormFields,
+  SignupPriceGroupOption,
 } from './types';
 
 export const getSignupNotificationsCode = (
@@ -351,3 +352,14 @@ export const omitSensitiveDataFromSignupGroupPayload = (
 
 export const getContactPersonFieldName = (name: string) =>
   `${SIGNUP_GROUP_FIELDS.CONTACT_PERSON}.${name}`;
+
+export const calculateTotalPrice = (
+  priceGroupOptions: SignupPriceGroupOption[],
+  signups: SignupFormFields[]
+) =>
+  signups.reduce(
+    (prev, curr) =>
+      prev +
+      (priceGroupOptions.find((o) => o.value === curr.priceGroup)?.price ?? 0),
+    0
+  );

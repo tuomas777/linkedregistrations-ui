@@ -107,6 +107,7 @@
     "title": "Vahva tunnistautuminen vaaditaan"
   },
   "titleServerErrorSummary": "Lomakkeella on seuraavat virheet",
+  "total": "Yhteensä",
   "validation": {
     "age": {
       "max": "Yläikäraja on {{max}}v.",

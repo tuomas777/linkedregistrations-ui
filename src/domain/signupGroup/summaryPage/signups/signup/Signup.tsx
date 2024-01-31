@@ -4,8 +4,11 @@ import React from 'react';
 
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import TextArea from '../../../../../common/components/textArea/TextArea';
+import { featureFlagUtils } from '../../../../../utils/featureFlags';
+import { Registration } from '../../../../registration/types';
 import { SIGNUP_FIELDS } from '../../../constants';
 import Divider from '../../../divider/Divider';
+import useSignupPriceGroupOptions from '../../../hooks/useSignupPriceGroupOptions';
 import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
 import { SignupFormFields } from '../../../types';
 import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
@@ -13,12 +16,22 @@ import ReadOnlyTextInput from '../../readOnlyTextInput/ReadOnlyTextInput';
 import styles from './signup.module.scss';
 
 export type SignupProps = {
+  registration: Registration;
   signup: SignupFormFields;
   signupPath: string;
 };
 
-const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
+const Signup: React.FC<SignupProps> = ({
+  registration,
+  signup,
+  signupPath,
+}) => {
   const { t } = useTranslation('summary');
+
+  const priceGroupOptions = useSignupPriceGroupOptions(registration);
+  const priceGroupText = priceGroupOptions?.find(
+    (o) => o.value === signup.priceGroup
+  )?.label;
 
   const getFieldId = (field: string) => `${signupPath}.${field}`;
 
@@ -29,6 +42,9 @@ const Signup: React.FC<SignupProps> = ({ signup, signupPath }) => {
       <Divider />
       <div className={styles.iconRow}>
         <IconUser aria-hidden className={styles.icon} size="m" />
+        {featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+          priceGroupText &&
+          [priceGroupText, signup.inWaitingList ? ' — ' : ''].join('')}
         {signup.inWaitingList && <InWaitingListInfo />}
       </div>
       <FormGroup>

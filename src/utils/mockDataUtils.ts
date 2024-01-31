@@ -17,6 +17,10 @@ import { Image, ImagesResponse } from '../domain/image/types';
 import { Keyword, KeywordsResponse } from '../domain/keyword/types';
 import { LanguagesResponse, LELanguage } from '../domain/language/types';
 import { Place } from '../domain/place/types';
+import {
+  PriceGroupDense,
+  RegistrationPriceGroup,
+} from '../domain/priceGroup/types';
 import { TEST_REGISTRATION_ID } from '../domain/registration/constants';
 import {
   Registration,
@@ -28,7 +32,12 @@ import {
   NOTIFICATION_TYPE,
   PRESENCE_STATUS,
 } from '../domain/signup/constants';
-import { ContactPerson, Signup, SignupsResponse } from '../domain/signup/types';
+import {
+  ContactPerson,
+  Signup,
+  SignupPriceGroup,
+  SignupsResponse,
+} from '../domain/signup/types';
 import { SIGNUP_GROUP_INITIAL_VALUES } from '../domain/signupGroup/constants';
 import {
   SignupGroup,
@@ -252,6 +261,24 @@ export const fakePlace = (overrides?: Partial<Place>): Place => {
   );
 };
 
+export const fakeRegistrationPriceGroup = (
+  overrides?: Partial<RegistrationPriceGroup>
+): RegistrationPriceGroup => {
+  const id = overrides?.id ?? faker.number.int();
+
+  return merge<RegistrationPriceGroup, typeof overrides>(
+    {
+      id,
+      price: faker.string.numeric(),
+      price_group: fakePriceGroupDense(),
+      price_without_vat: faker.string.numeric(),
+      vat: faker.string.numeric(),
+      vat_percentage: '24.00',
+    },
+    overrides
+  );
+};
+
 export const fakeRegistrations = (
   count = 1,
   registrations?: Partial<Registration>[]
@@ -289,6 +316,7 @@ export const fakeRegistration = (
       maximum_group_size: null,
       minimum_attendee_capacity: null,
       publisher: event.publisher,
+      registration_price_groups: [],
       remaining_attendee_capacity: null,
       remaining_waiting_list_capacity: null,
       signups: [],
@@ -347,6 +375,7 @@ export const fakeSignup = (overrides?: Partial<Signup>): Signup => {
       last_name: faker.person.lastName(),
       phone_number: null,
       presence_status: PRESENCE_STATUS.NotPresent,
+      price_group: null,
       registration: TEST_REGISTRATION_ID,
       signup_group: null,
       street_address: faker.location.streetAddress(),
@@ -374,6 +403,39 @@ export const fakeSignupGroup = (
       last_modified_time: null,
       registration: TEST_REGISTRATION_ID,
       signups: [],
+    },
+    overrides
+  );
+};
+
+export const fakePriceGroupDense = (
+  overrides?: Partial<PriceGroupDense>
+): PriceGroupDense => {
+  const id = overrides?.id ?? faker.number.int();
+
+  return merge<PriceGroupDense, typeof overrides>(
+    {
+      id,
+      description: fakeLocalisedObject(),
+    },
+    overrides
+  );
+};
+
+export const fakeSignupPriceGroup = (
+  overrides?: Partial<SignupPriceGroup>
+): SignupPriceGroup => {
+  const id = overrides?.id ?? faker.number.int();
+
+  return merge<SignupPriceGroup, typeof overrides>(
+    {
+      id,
+      price: faker.string.numeric(),
+      price_group: fakePriceGroupDense(),
+      price_without_vat: faker.string.numeric(),
+      registration_price_group: faker.number.int(),
+      vat: faker.string.numeric(),
+      vat_percentage: '24.00',
     },
     overrides
   );

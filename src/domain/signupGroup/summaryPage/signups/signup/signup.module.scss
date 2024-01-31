@@ -20,6 +20,7 @@
   }
 }
 
+.priceGroupRow,
 .nameRow,
 .zipRow {
   display: grid;
@@ -44,6 +45,7 @@
   align-items: center;
   margin-bottom: var(--spacing-s);
   font-size: var(--fontsize-body-l);
+  white-space: break-spaces;
 
   .icon {
     margin-right: var(--spacing-2-xs);

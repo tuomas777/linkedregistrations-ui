@@ -2,7 +2,11 @@ import { advanceTo, clear } from 'jest-date-mock';
 import * as Yup from 'yup';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../../constants';
-import { fakeEvent, fakeRegistration } from '../../../utils/mockDataUtils';
+import {
+  fakeEvent,
+  fakeRegistration,
+  fakeRegistrationPriceGroup,
+} from '../../../utils/mockDataUtils';
 import { stringOrNull } from '../../api/types';
 import { REGISTRATION_MANDATORY_FIELDS } from '../../registration/constants';
 import { Registration } from '../../registration/types';
@@ -182,6 +186,7 @@ describe('isBelowMaxAge function', () => {
 describe('signupSchema function', () => {
   const registration = fakeRegistration({
     event: fakeEvent({ start_time: null }),
+    registration_price_groups: [fakeRegistrationPriceGroup({ id: 1 })],
   });
   const validSignup: SignupFormFields = {
     city: 'City',
@@ -192,12 +197,28 @@ describe('signupSchema function', () => {
     inWaitingList: true,
     lastName: 'last name',
     phoneNumber: '0441234567',
+    priceGroup: '1',
     streetAddress: 'Street address',
     zipcode: '00100',
   };
 
   test('should return true if signup is valid', async () => {
     expect(await testSignupSchema(registration, validSignup)).toBe(true);
+  });
+
+  test('should return false if price group is missing', async () => {
+    expect(
+      await testSignupSchema(registration, { ...validSignup, priceGroup: '' })
+    ).toBe(false);
+  });
+
+  test("should return false if price group is missing but registration doesn't have any price group", async () => {
+    expect(
+      await testSignupSchema(
+        fakeRegistration({ registration_price_groups: [] }),
+        { ...validSignup, priceGroup: '' }
+      )
+    ).toBe(true);
   });
 
   test('should return false if first name is missing', async () => {

@@ -1,18 +1,21 @@
 import { Field } from 'formik';
 import { Fieldset, IconTrash } from 'hds-react';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import Accordion from '../../../../../common/components/accordion/Accordion';
 import DateInputField from '../../../../../common/components/formFields/DateInputField';
+import SingleSelectField from '../../../../../common/components/formFields/SingleSelectField';
 import TextAreaField from '../../../../../common/components/formFields/TextAreaField';
 import TextInputField from '../../../../../common/components/formFields/TextInputField';
 import FormGroup from '../../../../../common/components/formGroup/FormGroup';
 import { READ_ONLY_PLACEHOLDER } from '../../../../../constants';
 import useLocale from '../../../../../hooks/useLocale';
+import { featureFlagUtils } from '../../../../../utils/featureFlags';
 import skipFalsyType from '../../../../../utils/skipFalsyType';
 import { Registration } from '../../../../registration/types';
 import { SIGNUP_FIELDS } from '../../../constants';
+import useSignupPriceGroupOptions from '../../../hooks/useSignupPriceGroupOptions';
 import InWaitingListInfo from '../../../inWaitingListInfo/InWaitingListInfo';
 import { useSignupGroupFormContext } from '../../../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFormFields } from '../../../types';
@@ -23,9 +26,10 @@ import {
 
 import styles from './signup.module.scss';
 
-type Props = {
+export type SignupProps = {
   formDisabled: boolean;
   index: number;
+  isEditingMode: boolean;
   onDelete: () => void;
   readOnly?: boolean;
   registration: Registration;
@@ -37,9 +41,10 @@ type Props = {
 const getFieldName = (signupPath: string, field: string) =>
   `${signupPath}.${field}`;
 
-const Signup: React.FC<Props> = ({
+const Signup: React.FC<SignupProps> = ({
   formDisabled,
   index,
+  isEditingMode,
   onDelete,
   readOnly,
   registration,
@@ -57,6 +62,27 @@ const Signup: React.FC<Props> = ({
 
   const getRowClassName = (className: string) =>
     readOnly ? styles.readOnlyRow : className;
+
+  const priceGroupOptions = useSignupPriceGroupOptions(registration);
+
+  const accordionLabel = useMemo(() => {
+    const nameText =
+      [signup.firstName, signup.lastName].filter(skipFalsyType).join(' ') ||
+      t('signup.signupDefaultTitle', { index: index + 1 });
+    const optionText =
+      featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+      priceGroupOptions?.find((o) => o.value === signup.priceGroup)?.label;
+
+    return optionText ? [nameText, optionText].join(' — ') : nameText;
+  }, [
+    index,
+    priceGroupOptions,
+    signup.firstName,
+    signup.lastName,
+    signup.priceGroup,
+    t,
+  ]);
+
   return (
     <Accordion
       deleteButton={
@@ -76,12 +102,26 @@ const Signup: React.FC<Props> = ({
       toggleButtonIcon={
         signup.inWaitingList ? <InWaitingListInfo /> : undefined
       }
-      toggleButtonLabel={
-        [signup.firstName, signup.lastName].filter(skipFalsyType).join(' ') ||
-        t('signup.signupDefaultTitle', { index: index + 1 })
-      }
+      toggleButtonLabel={accordionLabel}
     >
       <Fieldset heading={t(`signup.titleBasicInfo`)}>
+        {featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+          priceGroupOptions && (
+            <FormGroup>
+              <div className={getRowClassName(styles.nameRow)}>
+                <Field
+                  name={getFieldName(signupPath, SIGNUP_FIELDS.PRICE_GROUP)}
+                  component={SingleSelectField}
+                  disabled={formDisabled || isEditingMode}
+                  label={t('signup.labelPriceGroup')}
+                  options={priceGroupOptions}
+                  placeholder={t('signup.placeholderPriceGroup')}
+                  required={!!priceGroupOptions?.length}
+                />
+              </div>
+            </FormGroup>
+          )}
+
         <FormGroup>
           <div className={getRowClassName(styles.nameRow)}>
             <Field

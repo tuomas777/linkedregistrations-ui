@@ -10,6 +10,7 @@ import { scroller } from 'react-scroll';
 import * as Yup from 'yup';
 
 import { VALIDATION_MESSAGE_KEYS } from '../../constants';
+import { featureFlagUtils } from '../../utils/featureFlags';
 import isValidDate from '../../utils/isValidDate';
 import stringToDate from '../../utils/stringToDate';
 import {
@@ -73,6 +74,10 @@ export const getSignupSchema = (registration: Registration) => {
   } = registration;
 
   return Yup.object().shape({
+    [SIGNUP_FIELDS.PRICE_GROUP]: getStringSchema(
+      featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+        !!registration.registration_price_groups?.length
+    ),
     [SIGNUP_FIELDS.FIRST_NAME]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.FIRST_NAME)
     ),
@@ -220,7 +225,11 @@ const getFocusableFieldId = (
   fieldType: 'default' | 'checkboxGroup' | 'select';
 } => {
   // For the select elements, focus the toggle button
-  if (SIGNUP_GROUP_FORM_SELECT_FIELDS.find((item) => item === fieldName)) {
+  if (
+    SIGNUP_GROUP_FORM_SELECT_FIELDS.find((item) =>
+      new RegExp(item).test(fieldName)
+    )
+  ) {
     return { fieldId: `${fieldName}-toggle-button`, fieldType: 'select' };
   } else if (
     fieldName ===

@@ -107,6 +107,7 @@
     "title": "Stark identifiering krävs"
   },
   "titleServerErrorSummary": "Formuläret innehåller följande fel",
+  "total": "Totalt",
   "validation": {
     "age": {
       "max": "Maxåldern är {{max}} år.",

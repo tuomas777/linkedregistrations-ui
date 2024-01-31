@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import React, { useRef, useState } from 'react';
 
 import { ExtendedSession } from '../../../../types';
+import { featureFlagUtils } from '../../../../utils/featureFlags';
 import { reportError } from '../../../app/sentry/utils';
 import { Registration } from '../../../registration/types';
 import { useUpdateSeatsReservationMutation } from '../../../reserveSeats/mutation';
@@ -15,6 +16,7 @@ import { useSignupServerErrorsContext } from '../../../signup/signupServerErrors
 import { SIGNUP_GROUP_FIELDS } from '../../constants';
 import ConfirmDeleteParticipantModal from '../../modals/confirmDeleteSignupFromFormModal/ConfirmDeleteSignupFromFormModal';
 import { useSignupGroupFormContext } from '../../signupGroupFormContext/hooks/useSignupGroupFormContext';
+import TotalPrice from '../../totalPrice/TotalPrice';
 import { SignupFormFields } from '../../types';
 import { getNewSignups } from '../../utils';
 
@@ -95,69 +97,75 @@ const Signups: React.FC<Props> = ({
   });
 
   return (
-    <div className={styles.accordions}>
-      <FieldArray
-        name={SIGNUP_GROUP_FIELDS.SIGNUPS}
-        render={() => (
-          <div>
-            {signups.map((signup, index: number) => {
-              const openModal = () => {
-                setOpenModalIndex(index);
-              };
+    <>
+      <div className={styles.accordions}>
+        <FieldArray
+          name={SIGNUP_GROUP_FIELDS.SIGNUPS}
+          render={() => (
+            <div>
+              {signups.map((signup, index: number) => {
+                const openModal = () => {
+                  setOpenModalIndex(index);
+                };
 
-              const deleteParticipant = async () => {
-                setSaving(true);
+                const deleteParticipant = async () => {
+                  setSaving(true);
 
-                const reservationData = getSeatsReservationData(
-                  registration.id
-                );
-
-                /* istanbul ignore next */
-                if (!reservationData) {
-                  throw new Error(
-                    'Reservation data is not stored to session storage'
+                  const reservationData = getSeatsReservationData(
+                    registration.id
                   );
-                }
 
-                // Clear server errors
-                setServerErrorItems([]);
+                  /* istanbul ignore next */
+                  if (!reservationData) {
+                    throw new Error(
+                      'Reservation data is not stored to session storage'
+                    );
+                  }
 
-                indexToRemove.current = index;
+                  // Clear server errors
+                  setServerErrorItems([]);
 
-                updateSeatsReservationMutation.mutate({
-                  code: reservationData.code,
-                  id: reservationData.id,
-                  registration: registration.id,
-                  seats: signups.length - 1,
-                });
-              };
+                  indexToRemove.current = index;
 
-              return (
-                <React.Fragment key={index}>
-                  <ConfirmDeleteParticipantModal
-                    isOpen={openModalIndex === index}
-                    isSaving={saving}
-                    onClose={closeModal}
-                    onDelete={deleteParticipant}
-                    participantCount={1}
-                  />
-                  <Signup
-                    formDisabled={formDisabled}
-                    index={index}
-                    onDelete={openModal}
-                    readOnly={readOnly}
-                    registration={registration}
-                    showDelete={!isEditingMode && signups.length > 1}
-                    signup={signup}
-                    signupPath={getSignupPath(index)}
-                  />
-                </React.Fragment>
-              );
-            })}
-          </div>
-        )}
-      />
-    </div>
+                  updateSeatsReservationMutation.mutate({
+                    code: reservationData.code,
+                    id: reservationData.id,
+                    registration: registration.id,
+                    seats: signups.length - 1,
+                  });
+                };
+
+                return (
+                  <React.Fragment key={index}>
+                    <ConfirmDeleteParticipantModal
+                      isOpen={openModalIndex === index}
+                      isSaving={saving}
+                      onClose={closeModal}
+                      onDelete={deleteParticipant}
+                      participantCount={1}
+                    />
+                    <Signup
+                      formDisabled={formDisabled}
+                      index={index}
+                      isEditingMode={isEditingMode}
+                      onDelete={openModal}
+                      readOnly={readOnly}
+                      registration={registration}
+                      showDelete={!isEditingMode && signups.length > 1}
+                      signup={signup}
+                      signupPath={getSignupPath(index)}
+                    />
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          )}
+        />
+      </div>
+      {featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') && (
+        <TotalPrice registration={registration} signups={signups} />
+      )}
+    </>
   );
 };
 

@@ -221,7 +221,7 @@ const SummaryPage: FC<SummaryPageProps> = ({ event, registration }) => {
                       registration={registration}
                     />
                     <Divider />
-                    <Signups />
+                    <Signups registration={registration} />
                     <ContactPersonInfo values={values} />
                   </FormContainer>
                 </Container>
