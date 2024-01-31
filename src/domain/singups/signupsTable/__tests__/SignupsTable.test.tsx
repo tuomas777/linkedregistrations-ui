@@ -65,7 +65,13 @@ test('should render signups table', async () => {
 
   screen.getByRole('table', { name: 'Signups table' });
 
-  const columnHeaders = ['Nimi', 'Sähköposti', 'Puhelinnumero', 'Status'];
+  const columnHeaders = [
+    'Nimi',
+    'Puhelinnumero',
+    'Yhteyshenkilön sähköposti',
+    'Yhteyshenkilön puhelinnumero',
+    'Status',
+  ];
 
   for (const name of columnHeaders) {
     screen.getByRole('columnheader', { name });

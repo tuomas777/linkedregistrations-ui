@@ -11,9 +11,10 @@
   },
   "signupsTableCaption": "Osallistujat",
   "signupsTableColumns": {
-    "email": "Sähköposti",
+    "contactPersonEmail": "Yhteyshenkilön sähköposti",
+    "contactPersonPhoneNumber": "Yhteyshenkilön puhelinnumero",
     "name": "Nimi",
-    "phone": "Puhelinnumero",
+    "phoneNumber": "Puhelinnumero",
     "status": "Status"
   }
 }

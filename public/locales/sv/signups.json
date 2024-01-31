@@ -11,9 +11,10 @@
   },
   "signupsTableCaption": "Deltagarna",
   "signupsTableColumns": {
-    "email": "E-post",
+    "contactPersonEmail": "Kontaktpersons e-post",
+    "contactPersonPhoneNumber": "Kontaktpersons telefonnummer",
     "name": "Name",
-    "phone": "Telefonnummer",
+    "phoneNumber": "Telefonnummer",
     "status": "Status"
   }
 }
