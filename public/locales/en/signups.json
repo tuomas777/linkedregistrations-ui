@@ -11,9 +11,10 @@
   },
   "signupsTableCaption": "Participants",
   "signupsTableColumns": {
-    "email": "Email",
+    "contactPersonEmail": "Contact person's email",
+    "contactPersonPhoneNumber": "Contact person's phone number",
     "name": "Name",
-    "phone": "Phone number",
+    "phoneNumber": "Phone number",
     "status": "Status"
   }
 }

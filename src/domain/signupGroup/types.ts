@@ -86,7 +86,8 @@ export type SignupGroupFormFields = {
 
 export type SignupFields = {
   attendeeStatus: ATTENDEE_STATUS;
-  email: string;
+  contactPersonEmail: string;
+  contactPersonPhoneNumber: string;
   firstName: string;
   fullName: string;
   lastName: string;

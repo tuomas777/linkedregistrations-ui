@@ -7,6 +7,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import LoadingSpinner from '../../../common/components/loadingSpinner/LoadingSpinner';
+import { READ_ONLY_PLACEHOLDER } from '../../../constants';
 import useCommonListProps from '../../../hooks/useCommonListProps';
 import useIdWithPrefix from '../../../hooks/useIdWithPrefix';
 import { ExtendedSession } from '../../../types';
@@ -26,6 +27,9 @@ import styles from './signupsTable.module.scss';
 type ColumnProps = {
   signup: Signup;
 };
+
+const getValueOrPlaceholder = (value: string | null | undefined) =>
+  value || READ_ONLY_PLACEHOLDER;
 
 const NameColumn: FC<ColumnProps> = ({ signup }) => {
   const router = useRouter();
@@ -52,14 +56,18 @@ const NameColumn: FC<ColumnProps> = ({ signup }) => {
             ),
           }}
         >
-          {fullName}
+          {getValueOrPlaceholder(fullName)}
         </Link>
       </span>
     </div>
   );
 };
 
-const EmailColumn: FC<ColumnProps> = ({ signup }) => {
+const PhoneColumn: FC<ColumnProps> = ({ signup }) => {
+  return getSignupFields({ signup }).phoneNumber;
+};
+
+const ContactPersonEmailColumn: FC<ColumnProps> = ({ signup }) => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
   const { data, isFetching } = useSignupGroupQuery({
     args: { id: signup.signup_group as string },
@@ -73,12 +81,15 @@ const EmailColumn: FC<ColumnProps> = ({ signup }) => {
       isLoading={isFetching}
       small
     >
-      {data?.contact_person?.email || signup.contact_person?.email || '-'}
+      {getValueOrPlaceholder(
+        data?.contact_person?.email ||
+          getSignupFields({ signup }).contactPersonEmail
+      )}
     </LoadingSpinner>
   );
 };
 
-const PhoneColumn: FC<ColumnProps> = ({ signup }) => {
+const ContactPersonPhoneColumn: FC<ColumnProps> = ({ signup }) => {
   const { data: session } = useSession() as { data: ExtendedSession | null };
   const { data, isFetching } = useSignupGroupQuery({
     args: { id: signup.signup_group as string },
@@ -92,9 +103,10 @@ const PhoneColumn: FC<ColumnProps> = ({ signup }) => {
       isLoading={isFetching}
       small
     >
-      {data?.contact_person?.phone_number ||
-        signup.contact_person?.phone_number ||
-        '-'}
+      {getValueOrPlaceholder(
+        data?.contact_person?.phone_number ||
+          getSignupFields({ signup }).contactPersonPhoneNumber
+      )}
     </LoadingSpinner>
   );
 };
@@ -105,7 +117,7 @@ const AttendeeStatusColumn: FC<ColumnProps> = ({ signup }) => {
     signup,
   });
 
-  return <>{t(`signups:attendeeStatus.${attendeeStatus}`)}</>;
+  return getValueOrPlaceholder(t(`signups:attendeeStatus.${attendeeStatus}`));
 };
 
 export interface SignupsTableProps {
@@ -150,13 +162,18 @@ const SignupsTable: React.FC<SignupsTableProps> = ({
     []
   );
 
-  const MemoizedEmailColumn = React.useCallback(
-    (signup: Signup) => <EmailColumn signup={signup} />,
+  const MemoizedPhoneColumn = React.useCallback(
+    (signup: Signup) => <PhoneColumn signup={signup} />,
     []
   );
 
-  const MemoizedPhoneColumn = React.useCallback(
-    (signup: Signup) => <PhoneColumn signup={signup} />,
+  const MemoizedContactPersonEmailColumn = React.useCallback(
+    (signup: Signup) => <ContactPersonEmailColumn signup={signup} />,
+    []
+  );
+
+  const MemoizedContactPersonPhoneColumn = React.useCallback(
+    (signup: Signup) => <ContactPersonPhoneColumn signup={signup} />,
     []
   );
 
@@ -182,14 +199,21 @@ const SignupsTable: React.FC<SignupsTableProps> = ({
             transform: MemoizedNameColumn,
           },
           {
-            key: 'email',
-            headerName: t('signups:signupsTableColumns.email'),
-            transform: MemoizedEmailColumn,
+            key: 'phone',
+            headerName: t('signups:signupsTableColumns.phoneNumber'),
+            transform: MemoizedPhoneColumn,
           },
           {
-            key: 'phone',
-            headerName: t('signups:signupsTableColumns.phone'),
-            transform: MemoizedPhoneColumn,
+            key: 'contactPersonEmail',
+            headerName: t('signups:signupsTableColumns.contactPersonEmail'),
+            transform: MemoizedContactPersonEmailColumn,
+          },
+          {
+            key: 'contactPersonPhoneNumber',
+            headerName: t(
+              'signups:signupsTableColumns.contactPersonPhoneNumber'
+            ),
+            transform: MemoizedContactPersonPhoneColumn,
           },
           {
             key: 'status',

@@ -275,11 +275,12 @@ export const getSignupFields = ({
 
   return {
     attendeeStatus: signup.attendee_status ?? ATTENDEE_STATUS.Attending,
-    email: signup.contact_person?.email ?? '',
+    contactPersonEmail: signup.contact_person?.email ?? '',
+    contactPersonPhoneNumber: signup.contact_person?.phone_number ?? '',
     firstName,
     fullName,
     lastName,
-    phoneNumber: signup.contact_person?.phone_number ?? '',
+    phoneNumber: signup.phone_number ?? '',
     signupGroup,
   };
 };

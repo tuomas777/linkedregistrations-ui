@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  fakeContactPerson,
-  fakeSignup,
-  fakeSignupPriceGroup,
-} from '../../../utils/mockDataUtils';
+import { fakeSignup, fakeSignupPriceGroup } from '../../../utils/mockDataUtils';
 import { registration } from '../../registration/__mocks__/registration';
 import {
   NOTIFICATIONS,
   SIGNUP_GROUP_INITIAL_VALUES,
+  TEST_SIGNUP_GROUP_ID,
 } from '../../signupGroup/constants';
 import {
-  ATTENDEE_STATUS,
   NOTIFICATION_TYPE,
   TEST_CONTACT_PERSON_ID,
   TEST_SIGNUP_ID,
@@ -35,58 +31,64 @@ describe('signupPathBuilder function', () => {
 });
 
 describe('getSignupFields function', () => {
-  it('should return empty string for each field if value is null', () => {
+  it('should return default values if value is not set', () => {
     const {
-      attendeeStatus,
-      email,
+      contactPersonEmail,
+      contactPersonPhoneNumber,
       firstName,
-      fullName,
       lastName,
       phoneNumber,
     } = getSignupFields({
       signup: fakeSignup({
-        attendee_status: null as any,
-        contact_person: fakeContactPerson({
+        contact_person: {
           email: null,
+          first_name: null,
+          last_name: null,
+          id: '',
           phone_number: null,
-        }),
+        },
         first_name: null,
+        id: '',
         last_name: null,
+        phone_number: null,
       }),
     });
-    expect(attendeeStatus).toBe(ATTENDEE_STATUS.Attending);
-    expect(email).toBe('');
+
+    expect(contactPersonEmail).toBe('');
+    expect(contactPersonPhoneNumber).toBe('');
     expect(firstName).toBe('');
-    expect(fullName).toBe('');
     expect(lastName).toBe('');
     expect(phoneNumber).toBe('');
   });
 
-  it('should return correct signup fields', () => {
-    const {
-      attendeeStatus,
-      email,
-      firstName,
-      fullName,
-      lastName,
-      phoneNumber,
-    } = getSignupFields({
-      signup: fakeSignup({
-        attendee_status: ATTENDEE_STATUS.Waitlisted,
-        contact_person: fakeContactPerson({
-          email: 'test@email.com',
-          phone_number: '+358 44 1234567',
+  it('should return correct signupfields', () => {
+    expect(
+      getSignupFields({
+        signup: fakeSignup({
+          contact_person: {
+            email: 'contact@email.com',
+            first_name: 'Contact person first name',
+            last_name: 'Contact person last name',
+            id: '',
+            phone_number: '0401234567',
+          },
+          first_name: 'First name',
+          id: TEST_SIGNUP_ID,
+          last_name: 'Last name',
+          phone_number: '0407654321',
+          signup_group: TEST_SIGNUP_GROUP_ID,
         }),
-        first_name: 'Test',
-        last_name: 'User',
-      }),
+      })
+    ).toEqual({
+      attendeeStatus: 'attending',
+      contactPersonEmail: 'contact@email.com',
+      contactPersonPhoneNumber: '0401234567',
+      firstName: 'First name',
+      fullName: 'First name Last name',
+      lastName: 'Last name',
+      phoneNumber: '0407654321',
+      signupGroup: 'signupGroup:1',
     });
-    expect(attendeeStatus).toBe(ATTENDEE_STATUS.Waitlisted);
-    expect(email).toBe('test@email.com');
-    expect(firstName).toBe('Test');
-    expect(fullName).toBe('Test User');
-    expect(lastName).toBe('User');
-    expect(phoneNumber).toBe('+358 44 1234567');
   });
 });
 
