@@ -14,15 +14,15 @@ test('should return language options', async () => {
   await waitFor(() => expect(result.current.length).toBeTruthy());
 
   expect(result.current).toEqual([
-    { label: 'Arabia', value: 'ar' },
+    { label: 'Suomi', value: 'fi' },
+    { label: 'Ruotsi', value: 'sv' },
     { label: 'Englanti', value: 'en' },
+    { label: 'Arabia', value: 'ar' },
     { label: 'Espanja', value: 'es' },
     { label: 'Kiina', value: 'zh_hans' },
     { label: 'Persia', value: 'fa' },
     { label: 'Ranska', value: 'fr' },
-    { label: 'Ruotsi', value: 'sv' },
     { label: 'Somali', value: 'so' },
-    { label: 'Suomi', value: 'fi' },
     { label: 'Turkki', value: 'tr' },
     { label: 'Venäjä', value: 'ru' },
     { label: 'Viro', value: 'et' },
@@ -41,9 +41,9 @@ test('should return service language options', async () => {
   await waitFor(() => expect(result.current.length).toBeTruthy());
 
   expect(result.current).toEqual([
-    { label: 'Englanti', value: 'en' },
-    { label: 'Ruotsi', value: 'sv' },
     { label: 'Suomi', value: 'fi' },
+    { label: 'Ruotsi', value: 'sv' },
+    { label: 'Englanti', value: 'en' },
   ]);
 });
 
