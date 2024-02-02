@@ -14,6 +14,7 @@ import {
   TranslationNamespaces,
 } from '../types';
 
+import getStringValueFromQuery from './getStringValueFromQuery';
 import prefetchRegistrationAndEvent from './prefetchRegistrationAndEvent';
 
 type Props = {
@@ -38,6 +39,7 @@ const generateGetServerSideProps = ({
       res,
       getNextAuthOptions()
     );
+    const accessCode = getStringValueFromQuery(query, 'access_code');
 
     await prefetchRegistrationAndEvent({
       overrideRegistrationsVariables,
@@ -50,7 +52,7 @@ const generateGetServerSideProps = ({
     try {
       if (shouldPrefetchSignup && typeof query?.signupId === 'string') {
         await prefetchSignupQuery({
-          args: { id: query.signupId },
+          args: { id: query.signupId, accessCode },
           queryClient,
           session,
         });
@@ -65,7 +67,7 @@ const generateGetServerSideProps = ({
         typeof query?.signupGroupId === 'string'
       ) {
         await prefetchSignupGroupQuery({
-          args: { id: query.signupGroupId },
+          args: { id: query.signupGroupId, accessCode },
           queryClient,
           session,
         });

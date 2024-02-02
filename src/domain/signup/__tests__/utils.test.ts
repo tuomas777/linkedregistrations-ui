@@ -11,8 +11,9 @@ import {
   TEST_CONTACT_PERSON_ID,
   TEST_SIGNUP_ID,
 } from '../constants';
-import { SignupInput, SignupQueryVariables } from '../types';
+import { Signup, SignupInput, SignupQueryVariables } from '../types';
 import {
+  canEditSignup,
   getSignupFields,
   getSignupGroupInitialValuesFromSignup,
   getUpdateSignupPayload,
@@ -20,9 +21,52 @@ import {
   signupPathBuilder,
 } from '../utils';
 
+describe('canEditSignup function', () => {
+  const cases: [Signup, boolean][] = [
+    [
+      fakeSignup({
+        has_contact_person_access: false,
+        is_created_by_current_user: false,
+      }),
+      false,
+    ],
+    [
+      fakeSignup({
+        has_contact_person_access: true,
+        is_created_by_current_user: false,
+      }),
+      true,
+    ],
+    [
+      fakeSignup({
+        has_contact_person_access: false,
+        is_created_by_current_user: true,
+      }),
+      true,
+    ],
+    [
+      fakeSignup({
+        has_contact_person_access: true,
+        is_created_by_current_user: true,
+      }),
+      true,
+    ],
+  ];
+
+  it.each(cases)(
+    'should return true if signup can be edited',
+    (signup, expectedResult) =>
+      expect(canEditSignup(signup)).toBe(expectedResult)
+  );
+});
+
 describe('signupPathBuilder function', () => {
   const cases: [SignupQueryVariables, string][] = [
     [{ id: 'signup:1' }, '/signup/signup:1/'],
+    [
+      { id: 'signup:1', accessCode: 'access-code' },
+      '/signup/signup:1/?access_code=access-code',
+    ],
   ];
 
   it.each(cases)('should build correct path', (variables, expectedPath) =>

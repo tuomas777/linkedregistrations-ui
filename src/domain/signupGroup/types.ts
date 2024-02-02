@@ -24,10 +24,21 @@ export type CreateSignupGroupMutationInput = {
   signups: SignupInput[];
 };
 
-export type UpdateSignupGroupMutationInput = { id: string } & Omit<
-  CreateSignupGroupMutationInput,
-  'reservation_code'
+export type SignupGroupQueryVariables = {
+  accessCode?: string;
+  id: string;
+};
+
+export type DeleteSignupGroupMutationInput = Omit<
+  SignupGroupQueryVariables,
+  'accessCode'
 >;
+
+export type UpdateSignupGroupMutationInput = Omit<
+  SignupGroupQueryVariables,
+  'accessCode'
+> &
+  Omit<CreateSignupGroupMutationInput, 'reservation_code'>;
 
 export type CreateOrUpdateSignupGroupResponse = {
   extra_info: string;
@@ -42,6 +53,7 @@ export type SignupGroup = {
   created_by: stringOrNull;
   created_time: stringOrNull;
   extra_info: stringOrNull;
+  has_contact_person_access: boolean;
   id: string;
   is_created_by_current_user: boolean;
   last_modified_by: stringOrNull;
@@ -93,14 +105,6 @@ export type SignupFields = {
   lastName: string;
   phoneNumber: string;
   signupGroup: string | null;
-};
-
-export type DeleteSignupGroupMutationInput = {
-  id: string;
-};
-
-export type SignupGroupQueryVariables = {
-  id: string;
 };
 
 export type SignupPriceGroupOption = OptionType & { price: number };

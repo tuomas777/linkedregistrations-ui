@@ -15,9 +15,9 @@ import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSi
 import {
   CreateOrUpdateSignupGroupResponse,
   CreateSignupGroupMutationInput,
-  DeleteSignupGroupMutationInput,
   SignupGroup,
   SignupGroupFormFields,
+  SignupGroupQueryVariables,
   UpdateSignupGroupMutationInput,
 } from '../types';
 import {
@@ -81,7 +81,7 @@ const useSignupGroupActions = ({
   };
 
   const { handleError } = useHandleError<
-    Partial<CreateSignupGroupMutationInput> | DeleteSignupGroupMutationInput,
+    Partial<CreateSignupGroupMutationInput> | SignupGroupQueryVariables,
     SignupGroup
   >();
 
@@ -155,13 +155,13 @@ const useSignupGroupActions = ({
 
     setSaving(SIGNUP_GROUP_ACTIONS.UPDATE);
 
-    const payload: UpdateSignupGroupMutationInput = getUpdateSignupGroupPayload(
-      {
+    const payload: UpdateSignupGroupMutationInput = {
+      ...getUpdateSignupGroupPayload({
         formValues: values,
         id,
         registration: registration,
-      }
-    );
+      }),
+    };
 
     updateSignupGroupMutation.mutate(payload, {
       onError: (error, variables) => {

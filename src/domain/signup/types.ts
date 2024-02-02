@@ -73,6 +73,7 @@ export type Signup = {
   date_of_birth?: stringOrNull;
   extra_info?: stringOrNull;
   first_name?: stringOrNull;
+  has_contact_person_access: boolean;
   is_created_by_current_user: boolean;
   last_modified_by: stringOrNull;
   last_modified_time: stringOrNull;
@@ -101,20 +102,25 @@ export type CreateSignupsMutationInput = {
   signups: SignupInput[];
 };
 
-export type DeleteSignupMutationInput = {
-  registrationId: string;
-  signupId: string;
+export type SignupQueryVariables = {
+  accessCode?: string;
+  id: string;
 };
 
-export type UpdateSignupMutationInput = {
-  id: string;
+export type DeleteSignupMutationInput = Omit<
+  SignupQueryVariables,
+  'accessCode'
+>;
+
+export type UpdateSignupMutationInput = Omit<
+  SignupQueryVariables,
+  'accessCode'
+> & {
   registration: string;
 } & SignupInput;
 
-export type PatchSignupMutationInput = {
-  id: string;
-} & Partial<UpdateSignupMutationInput>;
-
-export type SignupQueryVariables = {
-  id: string;
-};
+export type PatchSignupMutationInput = Omit<
+  SignupQueryVariables,
+  'accessCode'
+> &
+  Partial<UpdateSignupMutationInput>;

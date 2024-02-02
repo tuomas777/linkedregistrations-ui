@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
 import { ExtendedSession } from '../../../types';
+import getStringValueFromQuery from '../../../utils/getStringValueFromQuery';
 import { useSignupQuery } from '../query';
 import { Signup } from '../types';
 
@@ -19,8 +20,9 @@ type UseSignupDataState = {
 const useSignupData = ({
   id: _id,
 }: UseSignupDataProps = {}): UseSignupDataState => {
-  const router = useRouter();
-  const { query } = router;
+  const { query } = useRouter();
+  const accessCode = getStringValueFromQuery(query, 'access_code');
+  const id = _id ?? (query.signupId as string);
   const { data: session } = useSession() as { data: ExtendedSession | null };
 
   const {
@@ -29,7 +31,7 @@ const useSignupData = ({
     refetch,
     status,
   } = useSignupQuery({
-    args: { id: _id ?? (query.signupId as string) },
+    args: { id, accessCode },
     session,
   });
 

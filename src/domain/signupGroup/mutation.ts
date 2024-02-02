@@ -9,8 +9,8 @@ import { ExtendedSession } from '../../types';
 import {
   CreateSignupGroupMutationInput,
   CreateOrUpdateSignupGroupResponse,
-  DeleteSignupGroupMutationInput,
   UpdateSignupGroupMutationInput,
+  DeleteSignupGroupMutationInput,
 } from './types';
 import {
   createSignupGroup,
@@ -44,9 +44,9 @@ export const useDeleteSignupGroupMutation = ({
   session: ExtendedSession | null;
 }): UseMutationResult<null, Error, DeleteSignupGroupMutationInput> => {
   return useMutation(
-    ({ id }) =>
+    (input) =>
       deleteSignupGroup({
-        id,
+        input,
         session,
       }),
     options

@@ -31,6 +31,7 @@ import {
 import {
   CreateSignupGroupMutationInput,
   SignupFormFields,
+  SignupGroup,
   SignupGroupQueryVariables,
   SignupPriceGroupOption,
 } from '../types';
@@ -47,7 +48,47 @@ import {
   signupGroupPathBuilder,
   calculateTotalPrice,
   shouldCreatePayment,
+  canEditSignupGroup,
 } from '../utils';
+
+describe('canEditSignupGroup function', () => {
+  const cases: [SignupGroup, boolean][] = [
+    [
+      fakeSignupGroup({
+        has_contact_person_access: false,
+        is_created_by_current_user: false,
+      }),
+      false,
+    ],
+    [
+      fakeSignupGroup({
+        has_contact_person_access: true,
+        is_created_by_current_user: false,
+      }),
+      true,
+    ],
+    [
+      fakeSignupGroup({
+        has_contact_person_access: false,
+        is_created_by_current_user: true,
+      }),
+      true,
+    ],
+    [
+      fakeSignupGroup({
+        has_contact_person_access: true,
+        is_created_by_current_user: true,
+      }),
+      true,
+    ],
+  ];
+
+  it.each(cases)(
+    'should return true if signup group can be edited',
+    (signupGroup, expectedResult) =>
+      expect(canEditSignupGroup(signupGroup)).toBe(expectedResult)
+  );
+});
 
 describe('getSignupGroupPayload function', () => {
   const reservationCode = 'code';
@@ -514,6 +555,10 @@ describe('isSignupFieldRequired', () => {
 describe('signupGroupPathBuilder function', () => {
   const cases: [SignupGroupQueryVariables, string][] = [
     [{ id: 'signupGroup:1' }, '/signup_group/signupGroup:1/'],
+    [
+      { id: 'signupGroup:1', accessCode: 'access-code' },
+      '/signup_group/signupGroup:1/?access_code=access-code',
+    ],
   ];
 
   it.each(cases)('should build correct path', (variables, expectedPath) =>

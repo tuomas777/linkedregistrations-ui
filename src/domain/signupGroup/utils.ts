@@ -7,6 +7,7 @@ import { FORM_NAMES } from '../../constants';
 import { ExtendedSession, Language } from '../../types';
 import { featureFlagUtils } from '../../utils/featureFlags';
 import getLocalisedString from '../../utils/getLocalisedString';
+import queryBuilder from '../../utils/queryBuilder';
 import skipFalsyType from '../../utils/skipFalsyType';
 import {
   callDelete,
@@ -48,6 +49,7 @@ import {
   UpdateSignupGroupMutationInput,
   ContactPersonFormFields,
   SignupPriceGroupOption,
+  DeleteSignupGroupMutationInput,
 } from './types';
 
 export const getSignupNotificationsCode = (
@@ -266,7 +268,11 @@ export const isDateOfBirthFieldRequired = (
 export const signupGroupPathBuilder = (
   args: SignupGroupQueryVariables
 ): string => {
-  return `/signup_group/${args.id}/`;
+  const { accessCode, id } = args;
+  const variableToKeyItems = [{ key: 'access_code', value: accessCode }];
+
+  const query = queryBuilder(variableToKeyItems);
+  return `/signup_group/${id}/${query}`;
 };
 
 export const createSignupGroup = async ({
@@ -305,16 +311,16 @@ export const fetchSignupGroup = async (
 };
 
 export const deleteSignupGroup = async ({
-  id,
+  input,
   session,
 }: {
-  id: string;
+  input: DeleteSignupGroupMutationInput;
   session: ExtendedSession | null;
 }): Promise<null> => {
   try {
     const { data } = await callDelete({
       session,
-      url: signupGroupPathBuilder({ id }),
+      url: signupGroupPathBuilder(input),
     });
     return data;
   } catch (error) {
@@ -396,3 +402,7 @@ export const shouldCreatePayment = (
   featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
   calculateTotalPrice(priceGroupOptions, signups) > 0 &&
   signups.every((su) => !su.inWaitingList);
+
+export const canEditSignupGroup = (signupGroup: SignupGroup) =>
+  signupGroup.is_created_by_current_user ||
+  signupGroup.has_contact_person_access;

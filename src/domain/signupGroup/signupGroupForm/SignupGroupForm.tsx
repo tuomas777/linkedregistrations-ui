@@ -37,6 +37,7 @@ import useSignupActions from '../../signup/hooks/useSignupActions';
 import ConfirmDeleteSignupModal from '../../signup/modals/confirmDeleteSignupModal/ConfirmDeleteSignupModal';
 import { useSignupServerErrorsContext } from '../../signup/signupServerErrorsContext/hooks/useSignupServerErrorsContext';
 import { Signup } from '../../signup/types';
+import { canEditSignup } from '../../signup/utils';
 import ButtonWrapper from '../buttonWrapper/ButtonWrapper';
 import {
   CONTACT_PERSON_FIELDS,
@@ -55,6 +56,7 @@ import ReservationTimer from '../reservationTimer/ReservationTimer';
 import { useSignupGroupFormContext } from '../signupGroupFormContext/hooks/useSignupGroupFormContext';
 import { SignupFormFields, SignupGroup, SignupGroupFormFields } from '../types';
 import {
+  canEditSignupGroup,
   getContactPersonFieldName,
   isSignupFieldRequired,
   shouldCreatePayment,
@@ -98,16 +100,12 @@ const SignupGroupForm: React.FC<Props> = ({
     mode === 'update-signup' || mode === 'update-signup-group';
   const allowToEdit = useMemo((): boolean => {
     if (mode === 'update-signup') {
-      return !!signup?.is_created_by_current_user;
+      return Boolean(signup && canEditSignup(signup));
     } else if (mode === 'update-signup-group') {
-      return !!signupGroup?.is_created_by_current_user;
+      return Boolean(signupGroup && canEditSignupGroup(signupGroup));
     }
     return true;
-  }, [
-    mode,
-    signup?.is_created_by_current_user,
-    signupGroup?.is_created_by_current_user,
-  ]);
+  }, [mode, signup, signupGroup]);
 
   const readOnly = !allowToEdit;
 

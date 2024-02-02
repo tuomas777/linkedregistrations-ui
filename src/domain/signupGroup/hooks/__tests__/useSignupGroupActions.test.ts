@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { rest } from 'msw';
 
@@ -9,6 +10,8 @@ import {
   TEST_SIGNUP_GROUP_ID,
 } from '../../constants';
 import useSignupGroupAction from '../useSignupGroupActions';
+
+jest.mock('next/dist/client/router', () => require('next-router-mock'));
 
 describe('useSignupGroupActions', () => {
   it('should call onSuccess when updated successfully', async () => {
