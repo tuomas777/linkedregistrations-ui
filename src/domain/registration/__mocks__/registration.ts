@@ -18,6 +18,14 @@ const enrolment_end_time = addDays(now, 1).toISOString();
 const registrationOverrides = {
   enrolment_end_time,
   enrolment_start_time,
+  mandatory_fields: [
+    REGISTRATION_MANDATORY_FIELDS.FIRST_NAME,
+    REGISTRATION_MANDATORY_FIELDS.LAST_NAME,
+    REGISTRATION_MANDATORY_FIELDS.STREET_ADDRESS,
+    REGISTRATION_MANDATORY_FIELDS.ZIPCODE,
+    REGISTRATION_MANDATORY_FIELDS.CITY,
+    REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER,
+  ],
   maximum_attendee_capacity: 10,
   remaining_attendee_capacity: 10,
   remaining_waiting_list_capacity: 10,
@@ -33,6 +41,10 @@ const registration = fakeRegistration({
   mandatory_fields: [
     REGISTRATION_MANDATORY_FIELDS.FIRST_NAME,
     REGISTRATION_MANDATORY_FIELDS.LAST_NAME,
+    REGISTRATION_MANDATORY_FIELDS.STREET_ADDRESS,
+    REGISTRATION_MANDATORY_FIELDS.ZIPCODE,
+    REGISTRATION_MANDATORY_FIELDS.CITY,
+    REGISTRATION_MANDATORY_FIELDS.PHONE_NUMBER,
   ],
 });
 
@@ -54,4 +66,4 @@ const registrationWithPriceGroup = fakeRegistration({
   ],
 });
 
-export { registration, registrationWithPriceGroup };
+export { registration, registrationWithPriceGroup, registrationOverrides };

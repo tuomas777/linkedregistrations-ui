@@ -109,7 +109,11 @@ test('should validate signup group form and focus invalid field', async () => {
 
   const firstNameInput = (await findFirstNameInputs())[0];
   const lastNameInput = await getSignupFormElement('lastNameInput');
+  const phoneInput = await getSignupFormElement('phoneInput');
   const dateOfBirthInput = getSignupFormElement('dateOfBirthInput');
+  const streetAddressInput = getSignupFormElement('streetAddressInput');
+  const zipInput = getSignupFormElement('zipInput');
+  const cityInput = getSignupFormElement('cityInput');
   const emailInput = getSignupFormElement('emailInput');
   const contactPersonPhoneInput = getSignupFormElement(
     'contactPersonPhoneInput'
@@ -130,9 +134,25 @@ test('should validate signup group form and focus invalid field', async () => {
 
   await user.type(lastNameInput, signupValues.lastName);
   await user.click(submitButton);
+  await waitFor(() => expect(phoneInput).toHaveFocus());
+
+  await user.type(phoneInput, signupValues.phoneNumber);
+  await user.click(submitButton);
+  await waitFor(() => expect(streetAddressInput).toHaveFocus());
+
+  await user.type(streetAddressInput, signupValues.streetAddress);
+  await user.click(submitButton);
   await waitFor(() => expect(dateOfBirthInput).toHaveFocus());
 
   await user.type(dateOfBirthInput, formatDate(subYears(new Date(), 15)));
+  await user.click(submitButton);
+  await waitFor(() => expect(zipInput).toHaveFocus());
+
+  await user.type(zipInput, signupValues.zip);
+  await user.click(submitButton);
+  await waitFor(() => expect(cityInput).toHaveFocus());
+
+  await user.type(cityInput, signupValues.city);
   await user.click(submitButton);
   await waitFor(() => expect(emailInput).toHaveFocus());
   expect(emailInput).toBeRequired();

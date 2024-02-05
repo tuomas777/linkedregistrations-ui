@@ -66,9 +66,12 @@ export const isBelowMaxAge = (
     : true;
 };
 
-const getStringSchema = (required: boolean) =>
+const getStringSchema = (
+  required: boolean,
+  schema?: Yup.StringSchema<string | undefined>
+): Yup.StringSchema<string | undefined> =>
   required
-    ? Yup.string().required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+    ? schema ?? Yup.string().required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
     : Yup.string();
 
 export const getSignupSchema = (registration: Registration) => {
@@ -89,46 +92,54 @@ export const getSignupSchema = (registration: Registration) => {
     [SIGNUP_FIELDS.LAST_NAME]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.LAST_NAME)
     ),
-    [CONTACT_PERSON_FIELDS.PHONE_NUMBER]: getStringSchema(
-      isSignupFieldRequired(registration, SIGNUP_FIELDS.PHONE_NUMBER)
-    ).test(
-      'isValidPhoneNumber',
-      VALIDATION_MESSAGE_KEYS.PHONE,
-      (value) => !value || isValidPhoneNumber(value)
+    [SIGNUP_FIELDS.PHONE_NUMBER]: getStringSchema(
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.PHONE_NUMBER),
+      Yup.string()
+        .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+        .test(
+          'isValidPhoneNumber',
+          VALIDATION_MESSAGE_KEYS.PHONE,
+          (value) => !value || isValidPhoneNumber(value)
+        )
     ),
     [SIGNUP_FIELDS.STREET_ADDRESS]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.STREET_ADDRESS)
     ),
     [SIGNUP_FIELDS.DATE_OF_BIRTH]: getStringSchema(
-      isDateOfBirthFieldRequired(registration)
-    )
-      .test(
-        'isValidDate',
-        VALIDATION_MESSAGE_KEYS.DATE,
-        (date) => !date || isValidDate(date)
-      )
-      .test(
-        'isAboveMinAge',
-        () => ({
-          key: VALIDATION_MESSAGE_KEYS.AGE_MIN,
-          min: audience_min_age,
-        }),
-        (date) => isAboveMinAge(date, start_time, audience_min_age)
-      )
-      .test(
-        'isBelowMaxAge',
-        () => ({
-          key: VALIDATION_MESSAGE_KEYS.AGE_MAX,
-          max: audience_max_age,
-        }),
-        (date) => isBelowMaxAge(date, start_time, audience_max_age)
-      ),
+      isDateOfBirthFieldRequired(registration),
+      Yup.string()
+        .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+        .test(
+          'isValidDate',
+          VALIDATION_MESSAGE_KEYS.DATE,
+          (date) => !date || isValidDate(date)
+        )
+        .test(
+          'isAboveMinAge',
+          () => ({
+            key: VALIDATION_MESSAGE_KEYS.AGE_MIN,
+            min: audience_min_age,
+          }),
+          (date) => isAboveMinAge(date, start_time, audience_min_age)
+        )
+        .test(
+          'isBelowMaxAge',
+          () => ({
+            key: VALIDATION_MESSAGE_KEYS.AGE_MAX,
+            max: audience_max_age,
+          }),
+          (date) => isBelowMaxAge(date, start_time, audience_max_age)
+        )
+    ),
     [SIGNUP_FIELDS.ZIPCODE]: getStringSchema(
-      isSignupFieldRequired(registration, SIGNUP_FIELDS.ZIPCODE)
-    ).test(
-      'isValidZip',
-      VALIDATION_MESSAGE_KEYS.ZIP,
-      (value) => !value || isValidZip(value)
+      isSignupFieldRequired(registration, SIGNUP_FIELDS.ZIPCODE),
+      Yup.string()
+        .required(VALIDATION_MESSAGE_KEYS.STRING_REQUIRED)
+        .test(
+          'isValidZip',
+          VALIDATION_MESSAGE_KEYS.ZIP,
+          (value) => !value || isValidZip(value)
+        )
     ),
     [SIGNUP_FIELDS.CITY]: getStringSchema(
       isSignupFieldRequired(registration, SIGNUP_FIELDS.CITY)

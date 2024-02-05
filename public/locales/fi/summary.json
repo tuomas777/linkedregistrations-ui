@@ -27,6 +27,7 @@
     "labelFirstName": "Etunimi",
     "labelLastName": "Sukunimi",
     "labelParticipantAmount": "Ilmoittautujien määrä",
+    "labelPhoneNumber": "Puhelinnumero",
     "labelStreetAddress": "Katuosoite",
     "labelZipcode": "Postinumero",
     "titleSignupsInfo": "Ilmoittautujien tiedot"

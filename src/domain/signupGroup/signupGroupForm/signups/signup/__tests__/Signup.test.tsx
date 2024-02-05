@@ -13,15 +13,21 @@ import {
   render,
   screen,
 } from '../../../../../../utils/testUtils';
+import { registrationOverrides } from '../../../../../registration/__mocks__/registration';
 import { SIGNUP_INITIAL_VALUES } from '../../../../constants';
 import { SignupGroupFormProvider } from '../../../../signupGroupFormContext/SignupGroupFormContext';
+import {
+  HIDE_NOT_MANDATORY_FIELD_CASES,
+  shouldRenderSignupFields,
+} from '../../../../testUtils';
 import Signup, { SignupProps } from '../Signup';
 
 configure({ defaultHidden: true });
 
 const TEST_REGISTRATION_PRICE_GROUP_ID = 1;
-const registration = fakeRegistration();
+const registration = fakeRegistration(registrationOverrides);
 const registrationWithPriceGroup = fakeRegistration({
+  ...registrationOverrides,
   registration_price_groups: [
     fakeRegistrationPriceGroup({
       id: TEST_REGISTRATION_PRICE_GROUP_ID,
@@ -46,8 +52,10 @@ const defaultProps: SignupProps = {
 
 const renderComponent = (props?: Partial<SignupProps>) =>
   render(
-    <Formik initialValues={{}} onSubmit={jest.fn()}>
-      <SignupGroupFormProvider registration={registration}>
+    <Formik initialValues={[]} onSubmit={jest.fn()}>
+      <SignupGroupFormProvider
+        registration={props?.registration ?? defaultProps.registration}
+      >
         <Signup {...defaultProps} {...props} />
       </SignupGroupFormProvider>
     </Formik>
@@ -64,7 +72,11 @@ test('should use default name in accordion label', async () => {
 
 test('should shown name in accordion label', async () => {
   renderComponent({
-    signup: { ...SIGNUP_INITIAL_VALUES, firstName: 'First', lastName: 'Last' },
+    signup: {
+      ...SIGNUP_INITIAL_VALUES,
+      firstName: 'First',
+      lastName: 'Last',
+    },
   });
   await loadingSpinnerIsNotInDocument();
 
@@ -103,3 +115,23 @@ test('price group button should be disabled in editing mode', async () => {
 
   expect(screen.getByRole('button', { name: 'Asiakasryhmä *' })).toBeDisabled();
 });
+
+test('should display all mandatory fields', () => {
+  renderComponent();
+  shouldRenderSignupFields();
+});
+
+test.each(HIDE_NOT_MANDATORY_FIELD_CASES)(
+  'should hide not mandatory field, %s',
+  (mandatoryField, hiddenFieldLabel) => {
+    renderComponent({
+      registration: fakeRegistration({
+        ...registrationOverrides,
+        mandatory_fields: registrationOverrides.mandatory_fields.filter(
+          (i) => i !== mandatoryField
+        ),
+      }),
+    });
+    expect(screen.queryByLabelText(hiddenFieldLabel)).not.toBeInTheDocument();
+  }
+);
