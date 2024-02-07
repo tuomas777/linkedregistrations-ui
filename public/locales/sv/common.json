@@ -38,6 +38,10 @@
     "forbidden": "Du har inte tillstånd att utföra den här funktionen. ",
     "serverError": "Serverfel."
   },
+  "eventCalendarButton": {
+    "label": "Lägg till i kalendern",
+    "failedToCreateFile": "Det gick inte att skapa kalenderfil"
+  },
   "frontPage": "Hemsida",
   "headerTitle": "Helsingfors Stad",
   "helsinkiProfile": "Helsingfors profil",

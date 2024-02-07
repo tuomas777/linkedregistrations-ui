@@ -38,6 +38,10 @@
     "forbidden": "Sinulla ei ole lupaa suorittaa tätä toimintoa.",
     "serverError": "Virhe palvelimella."
   },
+  "eventCalendarButton": {
+    "label": "Lisää kalenteriin",
+    "failedToCreateFile": "Kalenteritiedoston luominen epäonnistui."
+  },
   "frontPage": "Etusivu",
   "headerTitle": "Helsingin kaupunki",
   "helsinkiProfile": "Helsinki-profiili",

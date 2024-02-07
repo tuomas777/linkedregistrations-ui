@@ -5,7 +5,7 @@ import isNil from 'lodash/isNil';
 import { TFunction } from 'next-i18next';
 
 import { MenuItemOptionProps } from '../../common/components/menuDropdown/types';
-import { NotificationProps } from '../../common/components/notification/Notification';
+import { AddNotificationFn } from '../../common/components/notificationsContext/NotificationsContext';
 import { TIME_FORMAT, VALIDATION_MESSAGE_KEYS } from '../../constants';
 import { ExtendedSession, Language } from '../../types';
 import formatDate from '../../utils/formatDate';
@@ -289,7 +289,7 @@ export const exportSignupsAsExcel = async ({
   t,
   uiLanguage,
 }: {
-  addNotification: (props: NotificationProps) => void;
+  addNotification: AddNotificationFn;
   registration: Registration;
   session: ExtendedSession | null;
   t: TFunction;

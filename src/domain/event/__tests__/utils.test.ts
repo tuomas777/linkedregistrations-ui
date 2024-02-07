@@ -1,10 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import i18n from 'i18next';
+import * as ics from 'ics';
+import { clear, advanceTo } from 'jest-date-mock';
+
 import {
   fakeEvent,
   fakeLocalisedObject,
   fakeOffers,
+  fakePlace,
 } from '../../../utils/mockDataUtils';
 import { imagesResponse } from '../../image/__mocks__/image';
-import { getEventFields } from '../utils';
+import { event } from '../__mocks__/event';
+import { TEST_EVENT_ID } from '../constants';
+import {
+  downloadEventIcsFile,
+  getEventAttributes,
+  getEventFields,
+  getEventLocationText,
+} from '../utils';
+
+afterEach(() => {
+  clear();
+  jest.restoreAllMocks();
+});
 
 describe('getEventFields function', () => {
   it('should return default values if value is not set', () => {
@@ -66,5 +84,135 @@ describe('getEventFields function', () => {
     expect(imageUrl).toBe(expectedImageUrl);
     expect(offers).toEqual(expectedOffers);
     expect(startTime).toEqual(new Date(expectedStartTime));
+  });
+});
+
+describe('getEventLocationText function', () => {
+  test('should return location text', async () => {
+    const result = getEventLocationText({
+      event: {
+        ...event,
+        location: fakePlace({
+          address_locality: fakeLocalisedObject('City'),
+          name: fakeLocalisedObject('Name'),
+          street_address: fakeLocalisedObject('Street'),
+        }),
+      },
+      locale: 'fi',
+    });
+
+    expect(result).toEqual('Name, Street, City');
+  });
+
+  test('should return default value if place is missing', async () => {
+    const result = getEventLocationText({
+      event: { ...event, location: null },
+      locale: 'fi',
+    });
+
+    expect(result).toEqual('-');
+  });
+});
+
+describe('getEventAttributes', () => {
+  const eventOverrides = {
+    id: TEST_EVENT_ID,
+    location: fakePlace({
+      address_locality: fakeLocalisedObject('Helsinki'),
+      name: fakeLocalisedObject('Location name'),
+      street_address: fakeLocalisedObject('Street address'),
+    }),
+    name: fakeLocalisedObject('Event name'),
+    short_description: fakeLocalisedObject('Event description'),
+    end_time: '2022-07-10T12:00:00.000000Z',
+    start_time: '2020-07-10T12:00:00.000000Z',
+  };
+
+  it('should get event attributes for ics file', async () => {
+    const eventAttributes = getEventAttributes({
+      event: fakeEvent(eventOverrides),
+      locale: 'fi',
+    });
+
+    expect(eventAttributes).toEqual({
+      description: 'Event description',
+      end: [2022, 7, 10, 12, 0],
+      location: 'Location name, Street address, Helsinki',
+      start: [2020, 7, 10, 12, 0],
+      title: 'Event name',
+    });
+  });
+
+  it('should user start time as end time value', async () => {
+    const eventAttributes = getEventAttributes({
+      event: fakeEvent({ ...eventOverrides, end_time: null }),
+      locale: 'fi',
+    });
+
+    expect(eventAttributes).toEqual({
+      description: 'Event description',
+      end: [2020, 7, 10, 12, 0],
+      location: 'Location name, Street address, Helsinki',
+      start: [2020, 7, 10, 12, 0],
+      title: 'Event name',
+    });
+  });
+
+  it('should user current time as start time value is start time is not defined', async () => {
+    advanceTo('2023-12-05');
+    const eventAttributes = getEventAttributes({
+      event: fakeEvent({ ...eventOverrides, end_time: null, start_time: null }),
+      locale: 'fi',
+    });
+
+    expect(eventAttributes).toEqual({
+      description: 'Event description',
+      end: [2023, 12, 5, 0, 0],
+      location: 'Location name, Street address, Helsinki',
+      start: [2023, 12, 5, 0, 0],
+      title: 'Event name',
+    });
+  });
+});
+
+describe('downloadEventIcsFile', () => {
+  it('should download the file successfully', async () => {
+    const link = { click: jest.fn() } as any;
+    const href = 'https://test.com';
+
+    jest.spyOn(document, 'createElement').mockImplementation(() => link);
+    global.URL.createObjectURL = jest.fn(() => href);
+    global.URL.revokeObjectURL = jest.fn();
+
+    await downloadEventIcsFile({
+      addNotification: jest.fn(),
+      event: fakeEvent({ id: TEST_EVENT_ID }),
+      locale: 'fi',
+      t: i18n.t.bind(i18n),
+    });
+
+    expect(link.download).toEqual(`event_${TEST_EVENT_ID}.ics`);
+    expect(link.href).toEqual(href);
+    expect(link.click).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call addNotification if ics createEvent fails', async () => {
+    jest
+      .spyOn(ics, 'createEvent')
+      .mockImplementation(((_: any, callback: ics.NodeCallback) =>
+        callback(new Error('error'), '')) as any);
+    const addNotification = jest.fn();
+
+    await downloadEventIcsFile({
+      addNotification,
+      event: fakeEvent({ id: TEST_EVENT_ID }),
+      locale: 'fi',
+      t: i18n.t.bind(i18n),
+    });
+
+    expect(addNotification).toHaveBeenCalledWith({
+      label: 'Kalenteritiedoston luominen epäonnistui.',
+      type: 'error',
+    });
   });
 });

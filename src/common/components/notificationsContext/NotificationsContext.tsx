@@ -9,8 +9,10 @@ import React, {
 
 import Notification, { NotificationProps } from '../notification/Notification';
 
+export type AddNotificationFn = (props: NotificationProps) => void;
+
 export type NotificationsContextProps = {
-  addNotification: (props: NotificationProps) => void;
+  addNotification: AddNotificationFn;
 };
 
 export const NotificationsContext = createContext<
@@ -22,7 +24,7 @@ export const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const value = useMemo<NotificationsContextProps>(() => {
     return {
-      addNotification: (props: NotificationProps) =>
+      addNotification: (props) =>
         setNotifications((items) => [
           ...items,
           { ...props, id: uniqueId('notification-') },
