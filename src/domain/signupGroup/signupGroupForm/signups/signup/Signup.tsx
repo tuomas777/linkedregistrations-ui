@@ -113,22 +113,24 @@ const Signup: React.FC<SignupProps> = ({
       toggleButtonLabel={accordionLabel}
     >
       <Fieldset heading={t(`signup.titleBasicInfo`)}>
-        {featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
-          priceGroupOptions && (
-            <FormGroup>
-              <div className={getRowClassName(styles.nameRow)}>
-                <Field
-                  name={getFieldName(signupPath, SIGNUP_FIELDS.PRICE_GROUP)}
-                  component={SingleSelectField}
-                  disabled={formDisabled || isEditingMode}
-                  label={t('signup.labelPriceGroup')}
-                  options={priceGroupOptions}
-                  placeholder={t('signup.placeholderPriceGroup')}
-                  required={!!priceGroupOptions?.length}
-                />
-              </div>
-            </FormGroup>
-          )}
+        {Boolean(
+          featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+            priceGroupOptions.length
+        ) && (
+          <FormGroup>
+            <div className={getRowClassName(styles.nameRow)}>
+              <Field
+                name={getFieldName(signupPath, SIGNUP_FIELDS.PRICE_GROUP)}
+                component={SingleSelectField}
+                disabled={formDisabled || isEditingMode}
+                label={t('signup.labelPriceGroup')}
+                options={priceGroupOptions}
+                placeholder={t('signup.placeholderPriceGroup')}
+                required={!!priceGroupOptions?.length}
+              />
+            </div>
+          </FormGroup>
+        )}
 
         {(isSignupFieldRequired(registration, SIGNUP_FIELDS.FIRST_NAME) ||
           isSignupFieldRequired(registration, SIGNUP_FIELDS.LAST_NAME)) && (
