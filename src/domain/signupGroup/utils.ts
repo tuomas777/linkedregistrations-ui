@@ -140,7 +140,10 @@ export const getSignupGroupPayload = ({
 
   return {
     contact_person: getContactPersonPayload(contactPerson),
-    create_payment: createPayment,
+    ...(featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+    createPayment
+      ? { create_payment: createPayment }
+      : {}),
     extra_info: groupExtraInfo,
     registration: registration.id,
     reservation_code: reservationCode,

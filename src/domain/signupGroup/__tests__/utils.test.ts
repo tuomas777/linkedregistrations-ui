@@ -115,7 +115,6 @@ describe('getSignupGroupPayload function', () => {
         phone_number: null,
         service_language: null,
       },
-      create_payment: false,
       extra_info: '',
       registration: registration.id,
       reservation_code: 'code',
