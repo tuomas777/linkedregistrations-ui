@@ -258,7 +258,10 @@ export const getCreateSignupsPayload = ({
       formValues,
       signupData,
     }),
-    create_payment: createPayment,
+    ...(featureFlagUtils.isFeatureEnabled('WEB_STORE_INTEGRATION') &&
+    createPayment
+      ? { create_payment: createPayment }
+      : {}),
     contact_person: getContactPersonPayload(contactPerson),
   }));
 
