@@ -99,6 +99,7 @@ test('should show default signup completed text', async () => {
   screen.getByText(
     `Olet ilmoittanut tapahtumaamme ${eventOverrides.name?.fi} – sydämellisesti tervetuloa!`
   );
+  screen.getByRole('button', { name: 'Lisää kalenteriin' });
 });
 
 test('should show added to waiting list text', async () => {

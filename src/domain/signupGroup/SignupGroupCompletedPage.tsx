@@ -7,6 +7,7 @@ import LoadingSpinner from '../../common/components/loadingSpinner/LoadingSpinne
 import SuccessTemplate from '../../common/components/successTemplate/SuccessTemplate';
 import useLocale from '../../hooks/useLocale';
 import MainContent from '../app/layout/mainContent/MainContent';
+import EventCalendarButton from '../event/eventCalendarButton/EventCalendarButton';
 import { Event } from '../event/types';
 import { getEventFields } from '../event/utils';
 import NotFound from '../notFound/NotFound';
@@ -17,6 +18,7 @@ import { SIGNUP_QUERY_PARAMS } from '../signup/constants';
 
 import ConfirmationMessage from './confirmationMessage/ConfirmationMessage';
 import useSignupGroupData from './hooks/useSignupGroupData';
+import styles from './signupGroupCompletedPage.module.scss';
 import { isAnySignupInWaitingList } from './utils';
 
 type Props = {
@@ -69,11 +71,16 @@ export const SignupCompletedPage: React.FC<Props> = ({
               dangerouslySetInnerHTML={{
                 __html: t('completedPage.redirectInfo2', {
                   url: redirectUrl,
-                }) as string,
+                }),
               }}
             />
           </>
         )}
+
+        <EventCalendarButton
+          className={styles.eventCalendarButton}
+          event={registration.event}
+        />
       </SuccessTemplate>
     </MainContent>
   );

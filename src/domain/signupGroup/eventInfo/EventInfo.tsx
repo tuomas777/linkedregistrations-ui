@@ -5,9 +5,8 @@ import React from 'react';
 import TextWithIcon from '../../../common/components/textWithIcon/TextWithIcon';
 import useLocale from '../../../hooks/useLocale';
 import getLocalisedString from '../../../utils/getLocalisedString';
-import useEventLocationText from '../../event/hooks/useEventLocationText';
 import { Event } from '../../event/types';
-import { getEventFields } from '../../event/utils';
+import { getEventFields, getEventLocationText } from '../../event/utils';
 import { Registration } from '../../registration/types';
 import { getRegistrationFields } from '../../registration/utils';
 import Instructions from '../instructions/Instructions';
@@ -39,7 +38,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ event, registration }) => {
     locale
   );
 
-  const locationText = useEventLocationText(event);
+  const locationText = getEventLocationText({ event, locale });
 
   return (
     <div className={styles.eventInfo}>
