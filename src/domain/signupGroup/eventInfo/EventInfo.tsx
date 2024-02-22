@@ -14,6 +14,7 @@ import Instructions from '../instructions/Instructions';
 import AudienceAgeText from './AudienceAgeText';
 import DateText from './DateText';
 import styles from './eventInfo.module.scss';
+import EventTimes from './EventTimes';
 import PriceText from './PriceText';
 
 type EventInfoProps = {
@@ -92,6 +93,9 @@ const EventInfo: React.FC<EventInfoProps> = ({ event, registration }) => {
               />
             }
           />
+        </div>
+        <div className={styles.eventTimesRow}>
+          <EventTimes event={event} />
         </div>
       </div>
     </div>

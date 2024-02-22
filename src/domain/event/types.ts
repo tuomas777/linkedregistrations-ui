@@ -92,3 +92,9 @@ export type EventFields = {
   shortDescription: string;
   startTime: Date | null;
 };
+
+export type EventQueryVariables = {
+  id: string;
+  include?: string[];
+  nocache?: boolean;
+};
