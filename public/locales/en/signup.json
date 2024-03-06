@@ -64,6 +64,7 @@
     },
     "freeEvent": "Free"
   },
+  "eventTimes": "All event times",
   "freeAttendeeCapacity": "Available seats",
   "freeWaitingListCapacity": "Available waiting list seats",
   "inWaitingList": {

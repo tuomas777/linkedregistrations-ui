@@ -64,6 +64,7 @@
     },
     "freeEvent": "Maksuton"
   },
+  "eventTimes": "Kaikki tapahtuma-ajat",
   "freeAttendeeCapacity": "Saatavilla olevia paikkoja",
   "freeWaitingListCapacity": "Saatavilla olevia jonopaikkoja",
   "instructions": "Ilmoittautumisohjeet",

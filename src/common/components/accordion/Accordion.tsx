@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { IconAngleDown, IconAngleUp } from 'hds-react';
 import React, { useRef } from 'react';
 
@@ -6,6 +7,7 @@ import useIdWithPrefix from '../../../hooks/useIdWithPrefix';
 import styles from './accordion.module.scss';
 
 export interface AccordionProps {
+  className?: string;
   deleteButton?: React.ReactElement;
   id?: string;
   onClick: () => void;
@@ -31,6 +33,7 @@ type ContentProps = {
 
 const Accordion: React.FC<React.PropsWithChildren<AccordionProps>> = ({
   children,
+  className,
   deleteButton,
   id: _id,
   onClick,
@@ -77,7 +80,7 @@ const Accordion: React.FC<React.PropsWithChildren<AccordionProps>> = ({
   );
 
   return (
-    <div className={styles.accordion}>
+    <div className={classNames(styles.accordion, className)}>
       <div className={styles.headingWrapper}>
         <div
           {...toggleButtonProps}

@@ -64,6 +64,7 @@
     },
     "freeEvent": "Fri"
   },
+  "eventTimes": "Alla evenemangstider",
   "freeAttendeeCapacity": "Tillgängliga platser",
   "freeWaitingListCapacity": "Tillgängliga väntelistplatser",
   "instructions": "Registreringsinstruktioner",

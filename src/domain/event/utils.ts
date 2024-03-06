@@ -1,12 +1,15 @@
+import { AxiosError } from 'axios';
 import { DateArray, DateTime, EventAttributes, createEvent } from 'ics';
 import { TFunction } from 'next-i18next';
 
 import { AddNotificationFn } from '../../common/components/notificationsContext/NotificationsContext';
-import { Language } from '../../types';
+import { ExtendedSession, Language } from '../../types';
 import getLocalisedString from '../../utils/getLocalisedString';
+import queryBuilder, { VariableToKeyItem } from '../../utils/queryBuilder';
+import { callGet } from '../app/axios/axiosClient';
 import { getPlaceFields } from '../place/utils';
 
-import { Event, EventFields } from './types';
+import { Event, EventFields, EventQueryVariables } from './types';
 
 export const getEventFields = (event: Event, locale: Language): EventFields => {
   return {
@@ -114,4 +117,37 @@ export const downloadEventIcsFile = async ({
       type: 'error',
     });
   }
+};
+
+export const fetchEvent = async (
+  args: EventQueryVariables,
+  session: ExtendedSession | null
+): Promise<Event> => {
+  try {
+    const { data } = await callGet({
+      session,
+      url: eventPathBuilder(args),
+    });
+    return data;
+  } catch (error) {
+    throw Error(JSON.stringify((error as AxiosError).response?.data));
+  }
+};
+
+export const eventPathBuilder = ({
+  nocache = true,
+  ...args
+}: EventQueryVariables): string => {
+  const { id, include } = args;
+  const variableToKeyItems: VariableToKeyItem[] = [
+    { key: 'include', value: include },
+  ];
+
+  if (nocache) {
+    variableToKeyItems.push({ key: 'nocache', value: nocache });
+  }
+
+  const query = queryBuilder(variableToKeyItems);
+
+  return `/event/${id}/${query}`;
 };

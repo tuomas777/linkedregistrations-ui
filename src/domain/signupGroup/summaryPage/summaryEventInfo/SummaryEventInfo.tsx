@@ -8,6 +8,7 @@ import { Registration } from '../../../registration/types';
 import { getRegistrationFields } from '../../../registration/utils';
 import AudienceAgeText from '../../eventInfo/AudienceAgeText';
 import DateText from '../../eventInfo/DateText';
+import EventTimes from '../../eventInfo/EventTimes';
 import PriceText from '../../eventInfo/PriceText';
 
 import styles from './summaryEventInfo.module.scss';
@@ -62,6 +63,7 @@ const EventInfo: React.FC<EventInfoProps> = ({ registration }) => {
           }
         />
       </div>
+      <EventTimes event={event} />
     </div>
   );
 };
