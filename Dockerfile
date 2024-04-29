@@ -78,7 +78,7 @@ ARG NEXT_PUBLIC_WEB_STORE_INTEGRATION_ENABLED
 RUN yarn build
 
 # ============================================================
-FROM registry.access.redhat.com/ubi8/nodejs-16 AS production
+FROM registry.access.redhat.com/ubi9/nodejs-18 AS production
 # ============================================================
 WORKDIR /app
 
