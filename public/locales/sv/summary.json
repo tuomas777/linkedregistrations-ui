@@ -17,8 +17,8 @@
   },
   "labelExtraInfo": "Ytterligare registreringsinformation",
   "labelParticipantAmount": "Antal registrerade",
-  "notificationLabel": "Kontrollera dina registreringsuppgifter och tryck på knappen Skicka in registrering för att skicka registreringsformuläret.",
-  "notificationTitle": "Kontrollera sammanfattningen och skicka din anmälan",
+  "notificationLabel": "Vi skickar ett separat bekräftelsemeddelande när evenemangsarrangören har behandlat och bekräftat din registrering.",
+  "notificationTitle": "Bekräftelse av registrering",
   "pageTitle": "Bekräftelse av registrering",
   "signup": {
     "labelCity": "Staden",
