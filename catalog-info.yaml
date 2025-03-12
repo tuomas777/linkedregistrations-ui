@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: linkedregistrations-ui
+  title: Linked Registrations UI
+  description: A Next.js application for managing event registrations, utilizing the linkedevents-api.
+  annotations:
+    backstage.io/docs-url: 'https://github.com/tuomas777/linkedregistrations-ui/blob/main/README.md'
+spec:
+  type: website
+  lifecycle: unknown
+  owner: platta
+  repository: https://github.com/tuomas777/linkedregistrations-ui
+  consumesApis:
+    - linkedevents-api
