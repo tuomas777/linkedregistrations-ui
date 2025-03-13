@@ -13,3 +13,4 @@ spec:
   repository: https://github.com/tuomas777/linkedregistrations-ui
   consumesApis:
     - linkedevents-api
+  system: linkedevents-system
