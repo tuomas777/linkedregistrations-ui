@@ -6,6 +6,8 @@ metadata:
   description: A Next.js application for managing event registrations, utilizing the linkedevents-api.
   annotations:
     backstage.io/docs-url: 'https://github.com/tuomas777/linkedregistrations-ui/blob/main/README.md'
+  tags:
+    - UI
 spec:
   type: website
   lifecycle: unknown
